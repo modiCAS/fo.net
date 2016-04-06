@@ -436,27 +436,22 @@ namespace Fonet.Layout
             int leaderPatternWidth, int leaderAlignment )
         {
             var leaderLength = 0;
-            var dotIndex = '.';
-            int dotWidth =
-                _currentFontState.GetWidth( _currentFontState.MapCharacter( dotIndex ) );
-            var whitespaceIndex = ' ';
+            const char dotIndex = '.';
+            int dotWidth = _currentFontState.GetWidth( _currentFontState.MapCharacter( dotIndex ) );
+            const char whitespaceIndex = ' ';
             int whitespaceWidth =
                 _currentFontState.GetWidth( _currentFontState.MapCharacter( whitespaceIndex ) );
 
             int remainingWidth = GetRemainingWidth();
 
-            if ( remainingWidth <= leaderLengthOptimum
-                || remainingWidth <= leaderLengthMaximum )
+            if ( remainingWidth <= leaderLengthOptimum || remainingWidth <= leaderLengthMaximum )
                 leaderLength = remainingWidth;
-            else if ( remainingWidth > leaderLengthOptimum
-                && remainingWidth > leaderLengthMaximum )
+            else if ( remainingWidth > leaderLengthOptimum && remainingWidth > leaderLengthMaximum )
                 leaderLength = leaderLengthMaximum;
-            else if ( leaderLengthOptimum > leaderLengthMaximum
-                && leaderLengthOptimum < remainingWidth )
+            else if ( leaderLengthOptimum > leaderLengthMaximum && leaderLengthOptimum < remainingWidth )
                 leaderLength = leaderLengthOptimum;
 
-            if ( leaderLength <= 0 )
-                return;
+            if ( leaderLength <= 0 ) return;
 
             switch ( leaderPattern )
             {
@@ -464,21 +459,19 @@ namespace Fonet.Layout
                 var spaceArea = new InlineSpace( leaderLength );
                 PendingAreas.Add( spaceArea );
                 break;
+
             case LeaderPattern.Rule:
-                var leaderArea = new LeaderArea( FontState, _red, _green,
-                    _blue, "", leaderLength,
-                    leaderPattern,
-                    ruleThickness, ruleStyle );
+                var leaderArea = new LeaderArea( FontState, _red, _green, _blue,
+                    string.Empty, leaderLength, leaderPattern, ruleThickness, ruleStyle );
                 leaderArea.SetYOffset( _placementOffset );
                 PendingAreas.Add( leaderArea );
                 break;
+
             case LeaderPattern.Dots:
-                if ( leaderPatternWidth < dotWidth )
-                    leaderPatternWidth = 0;
+                if ( leaderPatternWidth < dotWidth ) leaderPatternWidth = 0;
                 if ( leaderPatternWidth == 0 )
                 {
-                    PendingAreas.Add( BuildSimpleLeader( dotIndex,
-                        leaderLength ) );
+                    PendingAreas.Add( BuildSimpleLeader( dotIndex, leaderLength ) );
                 }
                 else
                 {
@@ -496,32 +489,29 @@ namespace Fonet.Layout
                         }
                     }
 
-                    var spaceBetweenDots =
-                        new InlineSpace( leaderPatternWidth - dotWidth, false );
+                    var spaceBetweenDots = new InlineSpace( leaderPatternWidth - dotWidth, false );
 
                     var leaderPatternArea = new WordArea( _currentFontState, _red,
-                        _green, _blue,
-                        ".", dotWidth );
+                        _green, _blue, ".", dotWidth );
                     leaderPatternArea.SetYOffset( _placementOffset );
-                    var dotsFactor =
-                        (int)Math.Floor( leaderLength
-                            / (double)leaderPatternWidth );
+                    var dotsFactor = (int)Math.Floor( leaderLength / (double)leaderPatternWidth );
 
                     for ( var i = 0; i < dotsFactor; i++ )
                     {
                         PendingAreas.Add( leaderPatternArea );
                         PendingAreas.Add( spaceBetweenDots );
                     }
-                    PendingAreas.Add( new InlineSpace( leaderLength
-                        - dotsFactor
-                            * leaderPatternWidth ) );
+
+                    PendingAreas.Add( new InlineSpace( leaderLength - dotsFactor * leaderPatternWidth ) );
                 }
                 break;
+
             case LeaderPattern.Usecontent:
                 FonetDriver.ActiveDriver.FireFonetError(
                     "leader-pattern=\"use-content\" not supported by this version of FO.NET" );
                 return;
             }
+
             PendingWidth += leaderLength;
             Prev = Text;
         }
@@ -546,7 +536,7 @@ namespace Fonet.Layout
 
         public void Align( int type )
         {
-            var padding = 0;
+            int padding;
 
             switch ( type )
             {
