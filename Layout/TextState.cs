@@ -2,39 +2,39 @@ namespace Fonet.Layout
 {
     internal class TextState
     {
-        protected bool linethrough;
+        protected bool Linethrough;
 
-        protected bool overlined;
-        protected bool underlined;
+        protected bool Overlined;
+        protected bool Underlined;
 
-        public bool getUnderlined()
+        public bool GetUnderlined()
         {
-            return underlined;
+            return Underlined;
         }
 
-        public void setUnderlined( bool ul )
+        public void SetUnderlined( bool ul )
         {
-            underlined = ul;
+            Underlined = ul;
         }
 
-        public bool getOverlined()
+        public bool GetOverlined()
         {
-            return overlined;
+            return Overlined;
         }
 
-        public void setOverlined( bool ol )
+        public void SetOverlined( bool ol )
         {
-            overlined = ol;
+            Overlined = ol;
         }
 
-        public bool getLineThrough()
+        public bool GetLineThrough()
         {
-            return linethrough;
+            return Linethrough;
         }
 
-        public void setLineThrough( bool lt )
+        public void SetLineThrough( bool lt )
         {
-            linethrough = lt;
+            Linethrough = lt;
         }
     }
 }

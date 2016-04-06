@@ -2,7 +2,7 @@ namespace Fonet.Fo.Pagination
 {
     internal abstract class PageMasterReference : FObj, ISubSequenceSpecifier
     {
-        public PageMasterReference( FObj parent, PropertyList propertyList )
+        protected PageMasterReference( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
             Name = GetElementName();

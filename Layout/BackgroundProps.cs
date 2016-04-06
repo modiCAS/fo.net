@@ -5,16 +5,16 @@ namespace Fonet.Layout
 {
     internal class BackgroundProps
     {
-        public int backAttachment = 0;
+        public int BackAttachment = 0;
 
-        public ColorType backColor = null;
+        public ColorType BackColor = null;
 
-        public FonetImage backImage = null;
+        public FonetImage BackImage = null;
 
-        public Length backPosHorizontal = null;
+        public Length BackPosHorizontal = null;
 
-        public Length backPosVertical = null;
+        public Length BackPosVertical = null;
 
-        public int backRepeat = 0;
+        public int BackRepeat = 0;
     }
 }

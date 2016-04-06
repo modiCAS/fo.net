@@ -1,4 +1,4 @@
-namespace Fonet.Pdf.Gdi.Font
+namespace Fonet.Pdf.Gdi.Font.Tables
 {
     /// <summary>
     ///     Summary description for HorizontalMetric.

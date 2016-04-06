@@ -20,17 +20,17 @@ namespace Fonet.Render.Pdf
     /// </remarks>
     public sealed class PdfRendererOptions
     {
-        private FontType fontType = FontType.Link;
+        private FontType _fontType = FontType.Link;
 
-        private StringCollection keywords;
+        private StringCollection _keywords;
 
         /// <remarks>
         ///     The given initial value zero's out first two bits.
         ///     The PDF specification dictates that these entries must be 0.
         /// </remarks>
-        private BitVector32 permissions = new BitVector32( -4 );
+        private BitVector32 _permissions = new BitVector32( -4 );
 
-        private readonly GdiPrivateFontCollection privateFonts = new GdiPrivateFontCollection();
+        private readonly GdiPrivateFontCollection _privateFonts = new GdiPrivateFontCollection();
 
         public PdfRendererOptions()
         {
@@ -107,11 +107,11 @@ namespace Fonet.Render.Pdf
             get
             {
                 var sb = new StringBuilder();
-                if ( keywords != null )
+                if ( _keywords != null )
                 {
-                    for ( int i = 0, j = keywords.Count; i < j; i++ )
+                    for ( int i = 0, j = _keywords.Count; i < j; i++ )
                     {
-                        sb.Append( keywords[ i ] );
+                        sb.Append( _keywords[ i ] );
                         if ( i != j - 1 )
                             sb.Append( ", " );
                     }
@@ -149,7 +149,7 @@ namespace Fonet.Render.Pdf
         /// </summary>
         internal bool HasPermissions
         {
-            get { return permissions.Data != -4; }
+            get { return _permissions.Data != -4; }
         }
 
         /// <summary>
@@ -157,7 +157,7 @@ namespace Fonet.Render.Pdf
         /// </summary>
         internal int Permissions
         {
-            get { return permissions.Data; }
+            get { return _permissions.Data; }
         }
 
         /// <summary>
@@ -168,8 +168,8 @@ namespace Fonet.Render.Pdf
         /// </value>
         public bool EnablePrinting
         {
-            get { return permissions[ 4 ]; }
-            set { permissions[ 4 ] = value; }
+            get { return _permissions[ 4 ]; }
+            set { _permissions[ 4 ] = value; }
         }
 
         /// <summary>
@@ -181,8 +181,8 @@ namespace Fonet.Render.Pdf
         /// </value>
         public bool EnableModify
         {
-            get { return permissions[ 8 ]; }
-            set { permissions[ 8 ] = value; }
+            get { return _permissions[ 8 ]; }
+            set { _permissions[ 8 ] = value; }
         }
 
         /// <summary>
@@ -193,8 +193,8 @@ namespace Fonet.Render.Pdf
         /// </value>
         public bool EnableCopy
         {
-            get { return permissions[ 16 ]; }
-            set { permissions[ 16 ] = value; }
+            get { return _permissions[ 16 ]; }
+            set { _permissions[ 16 ] = value; }
         }
 
         /// <summary>
@@ -206,8 +206,8 @@ namespace Fonet.Render.Pdf
         /// </value>
         public bool EnableAdd
         {
-            get { return permissions[ 32 ]; }
-            set { permissions[ 32 ] = value; }
+            get { return _permissions[ 32 ]; }
+            set { _permissions[ 32 ] = value; }
         }
 
         /// <summary>
@@ -218,8 +218,8 @@ namespace Fonet.Render.Pdf
         /// </value>
         public FontType FontType
         {
-            get { return fontType; }
-            set { fontType = value; }
+            get { return _fontType; }
+            set { _fontType = value; }
         }
 
         /// <summary>
@@ -239,9 +239,9 @@ namespace Fonet.Render.Pdf
         /// <param name="keyword">The keyword to be added.</param>
         public void AddKeyword( string keyword )
         {
-            if ( keywords == null )
-                keywords = new StringCollection();
-            keywords.Add( keyword );
+            if ( _keywords == null )
+                _keywords = new StringCollection();
+            _keywords.Add( keyword );
         }
 
         /// <summary>
@@ -264,7 +264,7 @@ namespace Fonet.Render.Pdf
         /// </exception>
         public void AddPrivateFont( FileInfo fileInfo )
         {
-            privateFonts.AddFontFile( fileInfo );
+            _privateFonts.AddFontFile( fileInfo );
         }
     }
 }

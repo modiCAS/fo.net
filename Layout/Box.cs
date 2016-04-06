@@ -4,9 +4,9 @@ namespace Fonet.Layout
 {
     internal abstract class Box
     {
-        protected internal AreaTree areaTree = null;
-        protected internal Area parent;
+        protected internal AreaTree AreaTree = null;
+        protected internal Area Parent;
 
-        public abstract void render( PdfRenderer renderer );
+        public abstract void Render( PdfRenderer renderer );
     }
 }

@@ -1,6 +1,6 @@
 namespace Fonet.Fo.Pagination
 {
-    internal class SinglePageMasterReference : PageMasterReference, ISubSequenceSpecifier
+    internal class SinglePageMasterReference : PageMasterReference
     {
         private const int First = 0;
 

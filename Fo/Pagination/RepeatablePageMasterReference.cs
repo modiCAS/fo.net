@@ -3,7 +3,7 @@ using System;
 namespace Fonet.Fo.Pagination
 {
     internal class RepeatablePageMasterReference :
-        PageMasterReference, ISubSequenceSpecifier
+        PageMasterReference
     {
         private const int Infinite = -1;
 

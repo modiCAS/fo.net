@@ -9,7 +9,7 @@ namespace Fonet.Fo
 
         public const int MarkerBreakAfter = -1001;
 
-        protected string AreaClass = Fonet.Layout.AreaClass.UNASSIGNED;
+        protected string AreaClass = Fonet.Layout.AreaClass.Unassigned;
 
         public int AreasGenerated = 0;
 

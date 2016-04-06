@@ -14,7 +14,7 @@ namespace Fonet.Fo.Flow
         protected int SpaceAfter;
         protected int SpaceBefore;
 
-        public AbstractTableBody( FObj parent, PropertyList propertyList ) : base( parent, propertyList )
+        protected AbstractTableBody( FObj parent, PropertyList propertyList ) : base( parent, propertyList )
         {
             if ( !( parent is Table ) )
             {
@@ -30,7 +30,7 @@ namespace Fonet.Fo.Flow
 
         public virtual void SetYPosition( int value )
         {
-            AreaContainer.setYPosition( value );
+            AreaContainer.SetYPosition( value );
         }
 
         public virtual int GetYPosition()
@@ -62,7 +62,7 @@ namespace Fonet.Fo.Flow
 
                 try
                 {
-                    area.getIDReferences().CreateID( ID );
+                    area.GetIDReferences().CreateID( ID );
                 }
                 catch ( FonetException e )
                 {
@@ -70,7 +70,7 @@ namespace Fonet.Fo.Flow
                 }
 
                 if ( area is BlockArea )
-                    area.end();
+                    area.End();
 
                 if ( RowSpanMgr == null )
                     RowSpanMgr = new RowSpanMgr( Columns.Count );
@@ -79,27 +79,26 @@ namespace Fonet.Fo.Flow
             }
 
             if ( SpaceBefore != 0 && Marker == 0 )
-                area.increaseHeight( SpaceBefore );
+                area.IncreaseHeight( SpaceBefore );
 
             if ( Marker == 0 )
-                area.getIDReferences().ConfigureID( ID, area );
+                area.GetIDReferences().ConfigureID( ID, area );
 
-            int spaceLeft = area.spaceLeft();
+            int spaceLeft = area.SpaceLeft();
 
             AreaContainer =
-                new AreaContainer( PropMgr.GetFontState( area.getFontInfo() ), 0,
-                    area.getContentHeight(),
-                    area.getContentWidth(),
-                    area.spaceLeft(), Position.Relative );
-            AreaContainer.foCreator = this;
-            AreaContainer.setPage( area.getPage() );
-            AreaContainer.setParent( area );
-            AreaContainer.setBackground( PropMgr.GetBackgroundProps() );
-            AreaContainer.setBorderAndPadding( PropMgr.GetBorderAndPadding() );
-            AreaContainer.start();
+                new AreaContainer( PropMgr.GetFontState( area.GetFontInfo() ), 0,
+                    area.GetContentHeight(),
+                    area.GetContentWidth(),
+                    area.SpaceLeft(), Position.Relative ) { FoCreator = this };
+            AreaContainer.SetPage( area.GetPage() );
+            AreaContainer.SetParent( area );
+            AreaContainer.SetBackground( PropMgr.GetBackgroundProps() );
+            AreaContainer.SetBorderAndPadding( PropMgr.GetBorderAndPadding() );
+            AreaContainer.Start();
 
-            AreaContainer.setAbsoluteHeight( area.getAbsoluteHeight() );
-            AreaContainer.setIDReferences( area.getIDReferences() );
+            AreaContainer.SetAbsoluteHeight( area.GetAbsoluteHeight() );
+            AreaContainer.SetIDReferences( area.GetIDReferences() );
 
             var keepWith = new Hashtable();
             int numChildren = Children.Count;
@@ -146,14 +145,14 @@ namespace Fonet.Fo.Flow
                     if ( status.IsPageBreak() )
                     {
                         Marker = i;
-                        area.addChild( AreaContainer );
+                        area.AddChild( AreaContainer );
 
-                        area.increaseHeight( AreaContainer.GetHeight() );
+                        area.IncreaseHeight( AreaContainer.GetHeight() );
                         if ( i == numChildren - 1 )
                         {
                             Marker = MarkerBreakAfter;
                             if ( SpaceAfter != 0 )
-                                area.increaseHeight( SpaceAfter );
+                                area.IncreaseHeight( SpaceAfter );
                         }
                         return status;
                     }
@@ -178,11 +177,11 @@ namespace Fonet.Fo.Flow
                     Marker = i;
                     if ( i != 0 && status.GetCode() == Status.AreaFullNone )
                         status = new Status( Status.AreaFullSome );
-                    if ( !( i == 0 && AreaContainer.getContentHeight() <= 0 ) )
+                    if ( !( i == 0 && AreaContainer.GetContentHeight() <= 0 ) )
                     {
-                        area.addChild( AreaContainer );
+                        area.AddChild( AreaContainer );
 
-                        area.increaseHeight( AreaContainer.GetHeight() );
+                        area.IncreaseHeight( AreaContainer.GetHeight() );
                     }
 
                     RowSpanMgr.SetIgnoreKeeps( true );
@@ -198,23 +197,23 @@ namespace Fonet.Fo.Flow
                 else
                     endKeepGroup = true;
                 lastRow = row;
-                area.setMaxHeight( area.getMaxHeight() - spaceLeft
-                    + AreaContainer.getMaxHeight() );
-                spaceLeft = area.spaceLeft();
+                area.SetMaxHeight( area.GetMaxHeight() - spaceLeft
+                    + AreaContainer.GetMaxHeight() );
+                spaceLeft = area.SpaceLeft();
             }
-            area.addChild( AreaContainer );
-            AreaContainer.end();
+            area.AddChild( AreaContainer );
+            AreaContainer.End();
 
-            area.increaseHeight( AreaContainer.GetHeight() );
+            area.IncreaseHeight( AreaContainer.GetHeight() );
 
             if ( SpaceAfter != 0 )
             {
-                area.increaseHeight( SpaceAfter );
-                area.setMaxHeight( area.getMaxHeight() - SpaceAfter );
+                area.IncreaseHeight( SpaceAfter );
+                area.SetMaxHeight( area.GetMaxHeight() - SpaceAfter );
             }
 
             if ( area is BlockArea )
-                area.start();
+                area.Start();
 
             return new Status( Status.Ok );
         }
@@ -222,24 +221,24 @@ namespace Fonet.Fo.Flow
         internal void RemoveLayout( Area area )
         {
             if ( AreaContainer != null )
-                area.removeChild( AreaContainer );
+                area.RemoveChild( AreaContainer );
             if ( SpaceBefore != 0 )
-                area.increaseHeight( -SpaceBefore );
+                area.IncreaseHeight( -SpaceBefore );
             if ( SpaceAfter != 0 )
-                area.increaseHeight( -SpaceAfter );
+                area.IncreaseHeight( -SpaceAfter );
             ResetMarker();
-            RemoveID( area.getIDReferences() );
+            RemoveID( area.GetIDReferences() );
         }
 
         private bool StartsAc( Area area )
         {
             Area parent = null;
 
-            while ( ( parent = area.getParent() ) != null &&
-                parent.hasNonSpaceChildren() == false )
+            while ( ( parent = area.GetParent() ) != null &&
+                parent.HasNonSpaceChildren() == false )
             {
                 if ( parent is AreaContainer &&
-                    ( (AreaContainer)parent ).getPosition() == Position.Absolute )
+                    ( (AreaContainer)parent ).GetPosition() == Position.Absolute )
                     return true;
                 area = parent;
             }

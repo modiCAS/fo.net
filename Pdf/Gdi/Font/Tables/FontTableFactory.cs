@@ -1,6 +1,6 @@
 using System;
 
-namespace Fonet.Pdf.Gdi.Font
+namespace Fonet.Pdf.Gdi.Font.Tables
 {
     /// <summary>
     ///     Instantiates a font table from a table tag.

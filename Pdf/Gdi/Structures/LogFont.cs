@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace Fonet.Pdf.Gdi
+namespace Fonet.Pdf.Gdi.Structures
 {
     /// <summary>
     ///     TODO: Figure out why CreateFontIndirect fails when this class

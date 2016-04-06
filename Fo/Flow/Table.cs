@@ -95,10 +95,10 @@ namespace Fonet.Fo.Flow
                         == GenericBoolean.Enums.True;
 
                 if ( area is BlockArea )
-                    area.end();
+                    area.End();
                 if ( _areaContainer
                     == null )
-                    area.getIDReferences().CreateID( _id );
+                    area.GetIDReferences().CreateID( _id );
 
                 Marker = 0;
 
@@ -113,26 +113,25 @@ namespace Fonet.Fo.Flow
             }
 
             if ( _spaceBefore != 0 && Marker == 0 )
-                area.addDisplaySpace( _spaceBefore );
+                area.AddDisplaySpace( _spaceBefore );
 
             if ( Marker == 0 && _areaContainer == null )
-                area.getIDReferences().ConfigureID( _id, area );
+                area.GetIDReferences().ConfigureID( _id, area );
 
-            int spaceLeft = area.spaceLeft();
+            int spaceLeft = area.SpaceLeft();
             _areaContainer =
-                new AreaContainer( PropMgr.GetFontState( area.getFontInfo() ), 0, 0,
-                    area.getAllocationWidth(), area.spaceLeft(),
-                    Position.Static );
+                new AreaContainer( PropMgr.GetFontState( area.GetFontInfo() ), 0, 0,
+                    area.GetAllocationWidth(), area.SpaceLeft(),
+                    Position.Static ) { FoCreator = this };
 
-            _areaContainer.foCreator = this;
-            _areaContainer.setPage( area.getPage() );
-            _areaContainer.setParent( area );
-            _areaContainer.setBackground( PropMgr.GetBackgroundProps() );
-            _areaContainer.setBorderAndPadding( PropMgr.GetBorderAndPadding() );
-            _areaContainer.start();
+            _areaContainer.SetPage( area.GetPage() );
+            _areaContainer.SetParent( area );
+            _areaContainer.SetBackground( PropMgr.GetBackgroundProps() );
+            _areaContainer.SetBorderAndPadding( PropMgr.GetBorderAndPadding() );
+            _areaContainer.Start();
 
-            _areaContainer.setAbsoluteHeight( area.getAbsoluteHeight() );
-            _areaContainer.setIDReferences( area.getIDReferences() );
+            _areaContainer.SetAbsoluteHeight( area.GetAbsoluteHeight() );
+            _areaContainer.SetIDReferences( area.GetIDReferences() );
 
             var addedHeader = false;
             var addedFooter = false;
@@ -147,9 +146,9 @@ namespace Fonet.Fo.Flow
                         "table-layout=auto is not supported, using fixed!" );
                 }
                 _contentWidth =
-                    CalcFixedColumnWidths( _areaContainer.getAllocationWidth() );
+                    CalcFixedColumnWidths( _areaContainer.GetAllocationWidth() );
             }
-            _areaContainer.setAllocationWidth( _contentWidth );
+            _areaContainer.SetAllocationWidth( _contentWidth );
             LayoutColumns( _areaContainer );
 
             for ( int i = Marker; i < numChildren; i++ )
@@ -196,8 +195,8 @@ namespace Fonet.Fo.Flow
                         }
                         addedHeader = true;
                         _tableHeader.ResetMarker();
-                        area.setMaxHeight( area.getMaxHeight() - spaceLeft
-                            + _areaContainer.getMaxHeight() );
+                        area.SetMaxHeight( area.GetMaxHeight() - spaceLeft
+                            + _areaContainer.GetMaxHeight() );
                     }
                     if ( _tableFooter != null && !_omitFooterAtBreak
                         && !addedFooter )
@@ -224,10 +223,10 @@ namespace Fonet.Fo.Flow
                                 _tableFooter.RemoveLayout( _areaContainer );
                             ResetMarker();
                         }
-                        if ( _areaContainer.getContentHeight() > 0 )
+                        if ( _areaContainer.GetContentHeight() > 0 )
                         {
-                            area.addChild( _areaContainer );
-                            area.increaseHeight( _areaContainer.GetHeight() );
+                            area.AddChild( _areaContainer );
+                            area.IncreaseHeight( _areaContainer.GetHeight() );
                             if ( _omitHeaderAtBreak )
                                 _tableHeader = null;
                             if ( _tableFooter != null && !_omitFooterAtBreak )
@@ -242,8 +241,8 @@ namespace Fonet.Fo.Flow
                         return status;
                     }
                     _bodyCount++;
-                    area.setMaxHeight( area.getMaxHeight() - spaceLeft
-                        + _areaContainer.getMaxHeight() );
+                    area.SetMaxHeight( area.GetMaxHeight() - spaceLeft
+                        + _areaContainer.GetMaxHeight() );
                     if ( _tableFooter != null && !_omitFooterAtBreak )
                     {
                         ( (TableBody)fo ).SetYPosition( _tableFooter.GetYPosition() );
@@ -259,8 +258,8 @@ namespace Fonet.Fo.Flow
                 {
                     FonetDriver.ActiveDriver.FireFonetWarning(
                         "Footer could not fit on page, moving last body row to next page" );
-                    area.addChild( _areaContainer );
-                    area.increaseHeight( _areaContainer.GetHeight() );
+                    area.AddChild( _areaContainer );
+                    area.IncreaseHeight( _areaContainer.GetHeight() );
                     if ( _omitHeaderAtBreak )
                         _tableHeader = null;
                     _tableFooter.RemoveLayout( _areaContainer );
@@ -274,16 +273,16 @@ namespace Fonet.Fo.Flow
 
             SetupColumnHeights();
 
-            _areaContainer.end();
-            area.addChild( _areaContainer );
+            _areaContainer.End();
+            area.AddChild( _areaContainer );
 
-            area.increaseHeight( _areaContainer.GetHeight() );
+            area.IncreaseHeight( _areaContainer.GetHeight() );
 
             if ( _spaceAfter != 0 )
-                area.addDisplaySpace( _spaceAfter );
+                area.AddDisplaySpace( _spaceAfter );
 
             if ( area is BlockArea )
-                area.start();
+                area.Start();
 
             if ( _breakAfter == GenericBreak.Enums.Page )
             {
@@ -311,7 +310,7 @@ namespace Fonet.Fo.Flow
             foreach ( TableColumn c in _columns )
             {
                 if ( c != null )
-                    c.SetHeight( _areaContainer.getContentHeight() );
+                    c.SetHeight( _areaContainer.GetContentHeight() );
             }
         }
 
@@ -462,17 +461,14 @@ namespace Fonet.Fo.Flow
         public override int GetContentWidth()
         {
             if ( _areaContainer != null )
-                return _areaContainer.getContentWidth();
+                return _areaContainer.GetContentWidth();
             return 0;
         }
 
         private void SetIpd( bool bHasProportionalUnits, int maxAllocIpd )
         {
             bool bMaxIsSpecified = !_ipd.GetMaximum().GetLength().IsAuto();
-            if ( bMaxIsSpecified )
-                _maxIpd = _ipd.GetMaximum().GetLength().MValue();
-            else
-                _maxIpd = maxAllocIpd;
+            _maxIpd = bMaxIsSpecified ? _ipd.GetMaximum().GetLength().MValue() : maxAllocIpd;
 
             if ( _ipd.GetOptimum().GetLength().IsAuto() )
                 _optIpd = -1;

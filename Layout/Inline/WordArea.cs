@@ -4,25 +4,25 @@ namespace Fonet.Layout.Inline
 {
     internal class WordArea : InlineArea
     {
-        private readonly string text;
+        private readonly string _text;
 
         public WordArea(
             FontState fontState, float red, float green,
             float blue, string text, int width )
             : base( fontState, width, red, green, blue )
         {
-            this.text = text;
-            contentRectangleWidth = width;
+            this._text = text;
+            ContentRectangleWidth = width;
         }
 
-        public override void render( PdfRenderer renderer )
+        public override void Render( PdfRenderer renderer )
         {
             renderer.RenderWordArea( this );
         }
 
-        public string getText()
+        public string GetText()
         {
-            return text;
+            return _text;
         }
     }
 }

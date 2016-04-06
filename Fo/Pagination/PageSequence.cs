@@ -163,10 +163,10 @@ namespace Fonet.Fo.Pagination
                 _currentPage = MakePage( areaTree, firstAvailPageNumber,
                     tempIsFirstPage, isEmptyPage );
 
-                _currentPage.setNumber( CurrentPageNumber );
+                _currentPage.SetNumber( CurrentPageNumber );
                 string formattedPageNumber =
                     _pageNumberGenerator.MakeFormattedPageNumber( CurrentPageNumber );
-                _currentPage.setFormattedNumber( formattedPageNumber );
+                _currentPage.SetFormattedNumber( formattedPageNumber );
                 _root.SetRunningPageNumberCounter( CurrentPageNumber );
 
                 FonetDriver.ActiveDriver.FireFonetInfo(
@@ -182,8 +182,8 @@ namespace Fonet.Fo.Pagination
                 }
                 else
                 {
-                    BodyAreaContainer bodyArea = _currentPage.getBody();
-                    bodyArea.setIDReferences( areaTree.getIDReferences() );
+                    BodyAreaContainer bodyArea = _currentPage.GetBody();
+                    bodyArea.SetIDReferences( areaTree.GetIDReferences() );
 
                     Flow.Flow flow = GetCurrentFlow( RegionBody.RegionClass );
 
@@ -196,10 +196,10 @@ namespace Fonet.Fo.Pagination
                     status = flow.Layout( bodyArea );
                 }
 
-                _currentPage.setPageSequence( this );
+                _currentPage.SetPageSequence( this );
                 FormatStaticContent( areaTree );
 
-                areaTree.addPage( _currentPage );
+                areaTree.AddPage( _currentPage );
                 PageCount++;
             }
             while ( FlowsAreIncomplete() );
@@ -216,11 +216,11 @@ namespace Fonet.Fo.Pagination
                 isFirstPage, isEmptyPage );
             if ( pageMaster == null )
                 throw new FonetException( "page masters exhausted. Cannot recover." );
-            Page p = pageMaster.makePage( areaTree );
+            Page p = pageMaster.MakePage( areaTree );
             if ( _currentPage != null )
             {
-                ArrayList foots = _currentPage.getPendingFootnotes();
-                p.setPendingFootnotes( foots );
+                ArrayList foots = _currentPage.GetPendingFootnotes();
+                p.SetPendingFootnotes( foots );
             }
             return p;
         }
@@ -230,14 +230,14 @@ namespace Fonet.Fo.Pagination
             SimplePageMaster simpleMaster = GetCurrentSimplePageMaster();
 
             if ( simpleMaster.GetRegion( RegionBefore.RegionClass ) != null
-                && _currentPage.getBefore() != null )
+                && _currentPage.GetBefore() != null )
             {
                 var staticFlow =
                     (Flow.Flow)_flowMap[ simpleMaster.GetRegion( RegionBefore.RegionClass ).GetRegionName() ];
                 if ( staticFlow != null )
                 {
-                    AreaContainer beforeArea = _currentPage.getBefore();
-                    beforeArea.setIDReferences( areaTree.getIDReferences() );
+                    AreaContainer beforeArea = _currentPage.GetBefore();
+                    beforeArea.SetIDReferences( areaTree.GetIDReferences() );
                     LayoutStaticContent( staticFlow,
                         simpleMaster.GetRegion( RegionBefore.RegionClass ),
                         beforeArea );
@@ -245,14 +245,14 @@ namespace Fonet.Fo.Pagination
             }
 
             if ( simpleMaster.GetRegion( RegionAfter.RegionClass ) != null
-                && _currentPage.getAfter() != null )
+                && _currentPage.GetAfter() != null )
             {
                 var staticFlow =
                     (Flow.Flow)_flowMap[ simpleMaster.GetRegion( RegionAfter.RegionClass ).GetRegionName() ];
                 if ( staticFlow != null )
                 {
-                    AreaContainer afterArea = _currentPage.getAfter();
-                    afterArea.setIDReferences( areaTree.getIDReferences() );
+                    AreaContainer afterArea = _currentPage.GetAfter();
+                    afterArea.SetIDReferences( areaTree.GetIDReferences() );
                     LayoutStaticContent( staticFlow,
                         simpleMaster.GetRegion( RegionAfter.RegionClass ),
                         afterArea );
@@ -260,14 +260,14 @@ namespace Fonet.Fo.Pagination
             }
 
             if ( simpleMaster.GetRegion( RegionStart.RegionClass ) != null
-                && _currentPage.getStart() != null )
+                && _currentPage.GetStart() != null )
             {
                 var staticFlow =
                     (Flow.Flow)_flowMap[ simpleMaster.GetRegion( RegionStart.RegionClass ).GetRegionName() ];
                 if ( staticFlow != null )
                 {
-                    AreaContainer startArea = _currentPage.getStart();
-                    startArea.setIDReferences( areaTree.getIDReferences() );
+                    AreaContainer startArea = _currentPage.GetStart();
+                    startArea.SetIDReferences( areaTree.GetIDReferences() );
                     LayoutStaticContent( staticFlow,
                         simpleMaster.GetRegion( RegionStart.RegionClass ),
                         startArea );
@@ -275,14 +275,14 @@ namespace Fonet.Fo.Pagination
             }
 
             if ( simpleMaster.GetRegion( RegionEnd.RegionClass ) != null
-                && _currentPage.getEnd() != null )
+                && _currentPage.GetEnd() != null )
             {
                 var staticFlow =
                     (Flow.Flow)_flowMap[ simpleMaster.GetRegion( RegionEnd.RegionClass ).GetRegionName() ];
                 if ( staticFlow != null )
                 {
-                    AreaContainer endArea = _currentPage.getEnd();
-                    endArea.setIDReferences( areaTree.getIDReferences() );
+                    AreaContainer endArea = _currentPage.GetEnd();
+                    endArea.SetIDReferences( areaTree.GetIDReferences() );
                     LayoutStaticContent( staticFlow,
                         simpleMaster.GetRegion( RegionEnd.RegionClass ),
                         endArea );
@@ -525,14 +525,14 @@ namespace Fonet.Fo.Pagination
                     _currentPage = MakePage( areaTree, firstAvailPageNumber, false, true );
                     string formattedPageNumber =
                         _pageNumberGenerator.MakeFormattedPageNumber( CurrentPageNumber );
-                    _currentPage.setFormattedNumber( formattedPageNumber );
-                    _currentPage.setPageSequence( this );
+                    _currentPage.SetFormattedNumber( formattedPageNumber );
+                    _currentPage.SetPageSequence( this );
                     FormatStaticContent( areaTree );
 
                     FonetDriver.ActiveDriver.FireFonetInfo(
                         "[forced-" + firstAvailPageNumber + "]" );
 
-                    areaTree.addPage( _currentPage );
+                    areaTree.AddPage( _currentPage );
                     _root.SetRunningPageNumberCounter( CurrentPageNumber );
                     _isForcing = false;
                 }

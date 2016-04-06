@@ -24,13 +24,12 @@ namespace Fonet.Fo.Flow
 
             AccessibilityProps mAccProps = PropMgr.GetAccessibilityProps();
             string id = Properties.GetProperty( "id" ).GetString();
-            area.getIDReferences().InitializeID( id, area );
+            area.GetIDReferences().InitializeID( id, area );
 
             var block = (Block)Children[ 0 ];
 
-            Status status;
-            status = block.Layout( area );
-            area.addDisplaySpace( -block.GetAreaHeight() );
+            Status status = block.Layout( area );
+            area.AddDisplaySpace( -block.GetAreaHeight() );
             return status;
         }
 

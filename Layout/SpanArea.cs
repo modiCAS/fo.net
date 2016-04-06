@@ -6,9 +6,9 @@ namespace Fonet.Layout
     internal class SpanArea : AreaContainer
     {
         private bool _isBalanced;
-        private readonly int columnCount;
-        private int columnGap;
-        private int currentColumn = 1;
+        private readonly int _columnCount;
+        private int _columnGap;
+        private int _currentColumn = 1;
 
         public SpanArea( FontState fontState, int xPosition, int yPosition,
             int allocationWidth, int maxHeight, int columnCount,
@@ -16,9 +16,9 @@ namespace Fonet.Layout
                 base( fontState, xPosition, yPosition, allocationWidth, maxHeight,
                     Position.Absolute )
         {
-            contentRectangleWidth = allocationWidth;
-            this.columnCount = columnCount;
-            this.columnGap = columnGap;
+            ContentRectangleWidth = allocationWidth;
+            this._columnCount = columnCount;
+            this._columnGap = columnGap;
 
             int columnWidth = ( allocationWidth - columnGap * ( columnCount - 1 ) )
                 / columnCount;
@@ -30,91 +30,91 @@ namespace Fonet.Layout
                 var colArea = new ColumnArea( fontState, colXPosition,
                     colYPosition, columnWidth,
                     maxHeight, columnCount );
-                addChild( colArea );
-                colArea.setColumnIndex( columnIndex + 1 );
+                AddChild( colArea );
+                colArea.SetColumnIndex( columnIndex + 1 );
             }
         }
 
-        public override void render( PdfRenderer renderer )
+        public override void Render( PdfRenderer renderer )
         {
             renderer.RenderSpanArea( this );
         }
 
-        public override void end()
+        public override void End()
         {
         }
 
-        public override void start()
+        public override void Start()
         {
         }
 
-        public override int spaceLeft()
+        public override int SpaceLeft()
         {
-            return maxHeight - currentHeight;
+            return MaxHeight - CurrentHeight;
         }
 
-        public int getColumnCount()
+        public int GetColumnCount()
         {
-            return columnCount;
+            return _columnCount;
         }
 
-        public int getCurrentColumn()
+        public int GetCurrentColumn()
         {
-            return currentColumn;
+            return _currentColumn;
         }
 
-        public void setCurrentColumn( int currentColumn )
+        public void SetCurrentColumn( int currentColumn )
         {
-            if ( currentColumn <= columnCount )
-                this.currentColumn = currentColumn;
+            if ( currentColumn <= _columnCount )
+                this._currentColumn = currentColumn;
             else
-                this.currentColumn = columnCount;
+                this._currentColumn = _columnCount;
         }
 
-        public AreaContainer getCurrentColumnArea()
+        public AreaContainer GetCurrentColumnArea()
         {
-            return (AreaContainer)getChildren()[ currentColumn - 1 ];
+            return (AreaContainer)GetChildren()[ _currentColumn - 1 ];
         }
 
-        public bool isBalanced()
+        public bool IsBalanced()
         {
             return _isBalanced;
         }
 
-        public void setIsBalanced()
+        public void SetIsBalanced()
         {
             _isBalanced = true;
         }
 
-        public int getTotalContentHeight()
+        public int GetTotalContentHeight()
         {
             var totalContentHeight = 0;
-            foreach ( AreaContainer ac in getChildren() )
-                totalContentHeight += ac.getContentHeight();
+            foreach ( AreaContainer ac in GetChildren() )
+                totalContentHeight += ac.GetContentHeight();
             return totalContentHeight;
         }
 
-        public int getMaxContentHeight()
+        public int GetMaxContentHeight()
         {
             var maxContentHeight = 0;
-            foreach ( AreaContainer nextElm in getChildren() )
+            foreach ( AreaContainer nextElm in GetChildren() )
             {
-                if ( nextElm.getContentHeight() > maxContentHeight )
-                    maxContentHeight = nextElm.getContentHeight();
+                if ( nextElm.GetContentHeight() > maxContentHeight )
+                    maxContentHeight = nextElm.GetContentHeight();
             }
             return maxContentHeight;
         }
 
-        public override void setPage( Page page )
+        public override void SetPage( Page page )
         {
-            this.page = page;
-            foreach ( AreaContainer ac in getChildren() )
-                ac.setPage( page );
+            this.Page = page;
+            foreach ( AreaContainer ac in GetChildren() )
+                ac.SetPage( page );
         }
 
-        public bool isLastColumn()
+        public bool IsLastColumn()
         {
-            return currentColumn == columnCount;
+            return _currentColumn == _columnCount;
         }
     }
 }

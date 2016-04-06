@@ -62,8 +62,6 @@ namespace Fonet.Fo.Flow
 
         public override Status Layout( Area area )
         {
-            BlockArea blockArea;
-
             if ( Marker == MarkerBreakAfter )
                 return new Status( Status.Ok );
 
@@ -101,10 +99,10 @@ namespace Fonet.Fo.Flow
                 _id = Properties.GetProperty( "id" ).GetString();
 
                 if ( area is BlockArea )
-                    area.end();
+                    area.End();
 
-                if ( area.getIDReferences() != null )
-                    area.getIDReferences().CreateID( _id );
+                if ( area.GetIDReferences() != null )
+                    area.GetIDReferences().CreateID( _id );
 
                 Marker = 0;
 
@@ -154,36 +152,35 @@ namespace Fonet.Fo.Flow
             }
 
             if ( _spaceBefore != 0 && Marker == 0 )
-                area.addDisplaySpace( _spaceBefore );
+                area.AddDisplaySpace( _spaceBefore );
 
             if ( _anythingLaidOut )
                 _textIndent = 0;
 
-            if ( Marker == 0 && area.getIDReferences() != null )
-                area.getIDReferences().ConfigureID( _id, area );
+            if ( Marker == 0 && area.GetIDReferences() != null )
+                area.GetIDReferences().ConfigureID( _id, area );
 
-            int spaceLeft = area.spaceLeft();
-            blockArea =
-                new BlockArea( PropMgr.GetFontState( area.getFontInfo() ),
-                    area.getAllocationWidth(), area.spaceLeft(),
-                    _startIndent, _endIndent, _textIndent, _align,
-                    _alignLast, _lineHeight );
-            blockArea.setGeneratedBy( this );
+            int spaceLeft = area.SpaceLeft();
+            var blockArea = new BlockArea( PropMgr.GetFontState( area.GetFontInfo() ),
+                area.GetAllocationWidth(), area.SpaceLeft(),
+                _startIndent, _endIndent, _textIndent, _align,
+                _alignLast, _lineHeight );
+            blockArea.SetGeneratedBy( this );
             AreasGenerated++;
             if ( AreasGenerated == 1 )
-                blockArea.isFirst( true );
-            blockArea.addLineagePair( this, AreasGenerated );
-            blockArea.setParent( area );
-            blockArea.setPage( area.getPage() );
-            blockArea.setBackground( PropMgr.GetBackgroundProps() );
-            blockArea.setBorderAndPadding( PropMgr.GetBorderAndPadding() );
-            blockArea.setHyphenation( PropMgr.GetHyphenationProps() );
-            blockArea.start();
+                blockArea.IsFirst( true );
+            blockArea.AddLineagePair( this, AreasGenerated );
+            blockArea.SetParent( area );
+            blockArea.SetPage( area.GetPage() );
+            blockArea.SetBackground( PropMgr.GetBackgroundProps() );
+            blockArea.SetBorderAndPadding( PropMgr.GetBorderAndPadding() );
+            blockArea.SetHyphenation( PropMgr.GetHyphenationProps() );
+            blockArea.Start();
 
-            blockArea.setAbsoluteHeight( area.getAbsoluteHeight() );
-            blockArea.setIDReferences( area.getIDReferences() );
+            blockArea.SetAbsoluteHeight( area.GetAbsoluteHeight() );
+            blockArea.SetIDReferences( area.GetIDReferences() );
 
-            blockArea.setTableCellXOffset( area.getTableCellXOffset() );
+            blockArea.SetTableCellXOffset( area.GetTableCellXOffset() );
 
             for ( int i = Marker; i < Children.Count; i++ )
             {
@@ -197,10 +194,10 @@ namespace Fonet.Fo.Flow
                         if ( i != 0 )
                         {
                             status = new Status( Status.AreaFullSome );
-                            area.addChild( blockArea );
-                            area.setMaxHeight( area.getMaxHeight() - spaceLeft
-                                + blockArea.getMaxHeight() );
-                            area.increaseHeight( blockArea.GetHeight() );
+                            area.AddChild( blockArea );
+                            area.SetMaxHeight( area.GetMaxHeight() - spaceLeft
+                                + blockArea.GetMaxHeight() );
+                            area.IncreaseHeight( blockArea.GetHeight() );
                             _anythingLaidOut = true;
 
                             return status;
@@ -208,32 +205,32 @@ namespace Fonet.Fo.Flow
                         _anythingLaidOut = false;
                         return status;
                     }
-                    area.addChild( blockArea );
-                    area.setMaxHeight( area.getMaxHeight() - spaceLeft
-                        + blockArea.getMaxHeight() );
-                    area.increaseHeight( blockArea.GetHeight() );
+                    area.AddChild( blockArea );
+                    area.SetMaxHeight( area.GetMaxHeight() - spaceLeft
+                        + blockArea.GetMaxHeight() );
+                    area.IncreaseHeight( blockArea.GetHeight() );
                     _anythingLaidOut = true;
                     return status;
                 }
                 _anythingLaidOut = true;
             }
 
-            blockArea.end();
+            blockArea.End();
 
-            area.setMaxHeight( area.getMaxHeight() - spaceLeft
-                + blockArea.getMaxHeight() );
+            area.SetMaxHeight( area.GetMaxHeight() - spaceLeft
+                + blockArea.GetMaxHeight() );
 
-            area.addChild( blockArea );
+            area.AddChild( blockArea );
 
-            area.increaseHeight( blockArea.GetHeight() );
+            area.IncreaseHeight( blockArea.GetHeight() );
 
             if ( _spaceAfter != 0 )
-                area.addDisplaySpace( _spaceAfter );
+                area.AddDisplaySpace( _spaceAfter );
 
             if ( area is BlockArea )
-                area.start();
+                area.Start();
             _areaHeight = blockArea.GetHeight();
-            _contentWidth = blockArea.getContentWidth();
+            _contentWidth = blockArea.GetContentWidth();
             int breakAfterStatus = PropMgr.CheckBreakAfter( area );
             if ( breakAfterStatus != Status.Ok )
             {
@@ -248,7 +245,7 @@ namespace Fonet.Fo.Flow
                 return new Status( Status.KeepWithNext );
             }
 
-            blockArea.isLast( true );
+            blockArea.IsLast( true );
             blockArea = null;
             return new Status( Status.Ok );
         }

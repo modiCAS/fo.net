@@ -47,7 +47,6 @@ namespace Fonet.Fo.Expr
             CurrentTokenValue = null;
             _currentTokenStartIndex = _exprIndex;
             bool currentMaybeOperator = _recognizeOperator;
-            bool bSawDecimal;
             _recognizeOperator = true;
             for ( ;; )
             {
@@ -111,6 +110,7 @@ namespace Fonet.Fo.Expr
                 case '8':
                 case '9':
                     ScanDigits();
+                    bool bSawDecimal;
                     if ( _exprIndex < _exprLength && _expr[ _exprIndex ] == '.' )
                     {
                         _exprIndex++;

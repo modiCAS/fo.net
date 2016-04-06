@@ -18,14 +18,13 @@ namespace Fonet.Fo.Flow
 
         public override Status Layout( Area area )
         {
-            BlockArea blockArea;
             if ( !( area is BlockArea ) )
             {
                 FonetDriver.ActiveDriver.FireFonetWarning(
                     "fo:leader must be a direct child of fo:block " );
                 return new Status( Status.Ok );
             }
-            blockArea = (BlockArea)area;
+            var blockArea = (BlockArea)area;
 
             AccessibilityProps mAccProps = PropMgr.GetAccessibilityProps();
             AuralProps mAurProps = PropMgr.GetAuralProps();
@@ -48,7 +47,7 @@ namespace Fonet.Fo.Flow
             if ( maxlength is PercentLength )
             {
                 leaderLengthMaximum = (int)( ( (PercentLength)maxlength ).Value()
-                    * area.getAllocationWidth() );
+                    * area.GetAllocationWidth() );
             }
             else
                 leaderLengthMaximum = maxlength.MValue();
@@ -61,10 +60,10 @@ namespace Fonet.Fo.Flow
                 Properties.GetProperty( "leader-alignment" ).GetEnum();
 
             string id = Properties.GetProperty( "id" ).GetString();
-            blockArea.getIDReferences().InitializeID( id, blockArea );
+            blockArea.GetIDReferences().InitializeID( id, blockArea );
 
             int succeeded = AddLeader( blockArea,
-                PropMgr.GetFontState( area.getFontInfo() ),
+                PropMgr.GetFontState( area.GetFontInfo() ),
                 red, green, blue, leaderPattern,
                 leaderLengthMinimum, leaderLengthOptimum,
                 leaderLengthMaximum, ruleThickness,
@@ -82,14 +81,14 @@ namespace Fonet.Fo.Flow
             int ruleStyle, int leaderPatternWidth,
             int leaderAlignment )
         {
-            LineArea la = ba.getCurrentLineArea();
+            LineArea la = ba.GetCurrentLineArea();
             if ( la == null )
                 return -1;
 
-            la.changeFont( fontState );
-            la.changeColor( red, green, blue );
+            la.ChangeFont( fontState );
+            la.ChangeColor( red, green, blue );
 
-            if ( leaderLengthOptimum <= la.getRemainingWidth() )
+            if ( leaderLengthOptimum <= la.GetRemainingWidth() )
             {
                 la.AddLeader( leaderPattern, leaderLengthMinimum,
                     leaderLengthOptimum, leaderLengthMaximum, ruleStyle,
@@ -97,13 +96,13 @@ namespace Fonet.Fo.Flow
             }
             else
             {
-                la = ba.createNextLineArea();
+                la = ba.CreateNextLineArea();
                 if ( la == null )
                     return -1;
-                la.changeFont( fontState );
-                la.changeColor( red, green, blue );
+                la.ChangeFont( fontState );
+                la.ChangeColor( red, green, blue );
 
-                if ( leaderLengthMinimum <= la.getContentWidth() )
+                if ( leaderLengthMinimum <= la.GetContentWidth() )
                 {
                     la.AddLeader( leaderPattern, leaderLengthMinimum,
                         leaderLengthOptimum, leaderLengthMaximum,
@@ -114,7 +113,7 @@ namespace Fonet.Fo.Flow
                 {
                     FonetDriver.ActiveDriver.FireFonetWarning(
                         "Leader doesn't fit into line, it will be clipped to fit." );
-                    la.AddLeader( leaderPattern, la.getRemainingWidth(),
+                    la.AddLeader( leaderPattern, la.GetRemainingWidth(),
                         leaderLengthOptimum, leaderLengthMaximum,
                         ruleStyle, ruleThickness, leaderPatternWidth,
                         leaderAlignment );

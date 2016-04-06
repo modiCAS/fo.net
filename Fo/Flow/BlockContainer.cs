@@ -47,7 +47,7 @@ namespace Fonet.Fo.Flow
                 _span = Properties.GetProperty( "span" ).GetEnum();
 
                 string id = Properties.GetProperty( "id" ).GetString();
-                area.getIDReferences().InitializeID( id, area );
+                area.GetIDReferences().InitializeID( id, area );
             }
 
             var container = (AreaContainer)area;
@@ -58,18 +58,18 @@ namespace Fonet.Fo.Flow
             }
 
             _areaContainer =
-                new AreaContainer( PropMgr.GetFontState( container.getFontInfo() ),
-                    container.getXPosition() + _left,
+                new AreaContainer( PropMgr.GetFontState( container.GetFontInfo() ),
+                    container.GetXPosition() + _left,
                     container.GetYPosition() - _top, _width, _height,
                     _position );
 
-            _areaContainer.setPage( area.getPage() );
-            _areaContainer.setBackground( PropMgr.GetBackgroundProps() );
-            _areaContainer.setBorderAndPadding( PropMgr.GetBorderAndPadding() );
-            _areaContainer.start();
+            _areaContainer.SetPage( area.GetPage() );
+            _areaContainer.SetBackground( PropMgr.GetBackgroundProps() );
+            _areaContainer.SetBorderAndPadding( PropMgr.GetBorderAndPadding() );
+            _areaContainer.Start();
 
-            _areaContainer.setAbsoluteHeight( 0 );
-            _areaContainer.setIDReferences( area.getIDReferences() );
+            _areaContainer.SetAbsoluteHeight( 0 );
+            _areaContainer.SetIDReferences( area.GetIDReferences() );
 
             int numChildren = Children.Count;
             for ( int i = Marker; i < numChildren; i++ )
@@ -78,10 +78,10 @@ namespace Fonet.Fo.Flow
                 Status status = fo.Layout( _areaContainer );
             }
 
-            _areaContainer.end();
+            _areaContainer.End();
             if ( _position == Position.Absolute )
                 _areaContainer.SetHeight( _height );
-            area.addChild( _areaContainer );
+            area.AddChild( _areaContainer );
 
             return new Status( Status.Ok );
         }
@@ -89,7 +89,7 @@ namespace Fonet.Fo.Flow
         public override int GetContentWidth()
         {
             if ( _areaContainer != null )
-                return _areaContainer.getContentWidth();
+                return _areaContainer.GetContentWidth();
             return 0;
         }
 

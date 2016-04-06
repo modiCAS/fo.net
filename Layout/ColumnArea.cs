@@ -5,50 +5,50 @@ namespace Fonet.Layout
 {
     internal class ColumnArea : AreaContainer
     {
-        private int columnIndex;
-        private int maxColumns;
+        private int _columnIndex;
+        private int _maxColumns;
 
         public ColumnArea( FontState fontState, int xPosition, int yPosition,
             int allocationWidth, int maxHeight, int columnCount )
             : base( fontState, xPosition, yPosition,
                 allocationWidth, maxHeight, Position.Absolute )
         {
-            maxColumns = columnCount;
-            setAreaName( "normal-flow-ref.-area" );
+            _maxColumns = columnCount;
+            SetAreaName( "normal-flow-ref.-area" );
         }
 
-        public override void render( PdfRenderer renderer )
+        public override void Render( PdfRenderer renderer )
         {
             renderer.RenderAreaContainer( this );
         }
 
-        public override void end()
+        public override void End()
         {
         }
 
-        public override void start()
+        public override void Start()
         {
         }
 
-        public override int spaceLeft()
+        public override int SpaceLeft()
         {
-            return maxHeight - currentHeight;
+            return MaxHeight - CurrentHeight;
         }
 
-        public int getColumnIndex()
+        public int GetColumnIndex()
         {
-            return columnIndex;
+            return _columnIndex;
         }
 
-        public void setColumnIndex( int columnIndex )
+        public void SetColumnIndex( int columnIndex )
         {
-            this.columnIndex = columnIndex;
+            this._columnIndex = columnIndex;
         }
 
-        public void incrementSpanIndex()
+        public void IncrementSpanIndex()
         {
-            var span = (SpanArea)parent;
-            span.setCurrentColumn( span.getCurrentColumn() + 1 );
+            var span = (SpanArea)Parent;
+            span.SetCurrentColumn( span.GetCurrentColumn() + 1 );
         }
     }
 }

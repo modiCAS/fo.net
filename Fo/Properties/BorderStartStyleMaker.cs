@@ -16,16 +16,12 @@ namespace Fonet.Fo.Properties
 
         public override bool IsCorrespondingForced( PropertyList propertyList )
         {
-            var sbExpr = new StringBuilder();
+            var sbExpr = new StringBuilder { Length = 0 };
 
-            sbExpr.Length = 0;
             sbExpr.Append( "border-" );
             sbExpr.Append( propertyList.WmRelToAbs( PropertyList.Start ) );
             sbExpr.Append( "-style" );
-            if ( propertyList.GetExplicitProperty( sbExpr.ToString() ) != null )
-                return true;
-
-            return false;
+            return propertyList.GetExplicitProperty( sbExpr.ToString() ) != null;
         }
 
 

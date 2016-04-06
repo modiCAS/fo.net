@@ -31,16 +31,14 @@ namespace Fonet.DataTypes
 
         internal void CreateInternalLinkGoTo( PdfObjectId objectId )
         {
-            if ( _internalLinkGoToPageReference == null )
-                _internalLinkGoTo = new PdfGoTo( null, objectId );
-            else
-                _internalLinkGoTo = new PdfGoTo( _internalLinkGoToPageReference, objectId );
+            _internalLinkGoTo = _internalLinkGoToPageReference == null
+                ? new PdfGoTo( null, objectId )
+                : new PdfGoTo( _internalLinkGoToPageReference, objectId );
 
-            if ( _xPosition != 0 )
-            {
-                _internalLinkGoTo.X = _xPosition;
-                _internalLinkGoTo.Y = _yPosition;
-            }
+            if ( _xPosition == 0 ) return;
+
+            _internalLinkGoTo.X = _xPosition;
+            _internalLinkGoTo.Y = _yPosition;
         }
 
         internal void SetInternalLinkGoToPageReference( PdfObjectReference pageReference )

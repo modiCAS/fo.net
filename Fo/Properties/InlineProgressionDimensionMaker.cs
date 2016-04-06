@@ -79,9 +79,8 @@ namespace Fonet.Fo.Properties
         protected override Property MakeCompound( PropertyList pList, FObj fo )
         {
             var p = new LengthRange();
-            Property subProp;
 
-            subProp = GetSubpropMaker( "minimum" ).Make( pList,
+            Property subProp = GetSubpropMaker( "minimum" ).Make( pList,
                 GetDefaultForMinimum(), fo );
             p.SetComponent( "minimum", subProp, true );
 
@@ -169,25 +168,18 @@ namespace Fonet.Fo.Properties
         {
             FObj parentFo = propertyList.GetParentFObj();
             var sbExpr = new StringBuilder();
-            Property p = null;
 
             sbExpr.Append( propertyList.WmRelToAbs( PropertyList.Inlineprogdim ) );
 
-            p = propertyList.GetExplicitOrShorthandProperty( sbExpr.ToString() );
+            Property p = propertyList.GetExplicitOrShorthandProperty( sbExpr.ToString() );
 
-            if ( p != null )
-                p = ConvertProperty( p, propertyList, parentFo );
-
-            else
-                p = MakeCompound( propertyList, parentFo );
-
-            Property subprop;
+            p = p != null ? ConvertProperty( p, propertyList, parentFo ) : MakeCompound( propertyList, parentFo );
 
             sbExpr.Length = 0;
             sbExpr.Append( "min-" );
             sbExpr.Append( propertyList.WmRelToAbs( PropertyList.Inlineprogdim ) );
 
-            subprop = propertyList.GetExplicitOrShorthandProperty( sbExpr.ToString() );
+            Property subprop = propertyList.GetExplicitOrShorthandProperty( sbExpr.ToString() );
 
             if ( subprop != null )
                 SetSubprop( p, "minimum", subprop );
@@ -204,9 +196,9 @@ namespace Fonet.Fo.Properties
             return p;
         }
 
-        private class SpMinimumMaker : LengthProperty.Maker
+        private sealed class SpMinimumMaker : LengthProperty.Maker
         {
-            protected internal SpMinimumMaker( string sPropName ) : base( sPropName )
+            internal SpMinimumMaker( string sPropName ) : base( sPropName )
             {
             }
 

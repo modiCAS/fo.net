@@ -2,7 +2,7 @@ namespace Fonet.Pdf
 {
     public abstract class PdfFont : PdfDictionary
     {
-        public PdfFont( string fontname, PdfObjectId objectId )
+        protected PdfFont( string fontname, PdfObjectId objectId )
             : base( objectId )
         {
             this[ PdfName.Names.Type ] = PdfName.Names.Font;

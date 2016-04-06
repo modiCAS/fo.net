@@ -43,7 +43,7 @@ namespace Fonet.Fo.Pagination
                 startY,
                 extent,
                 startH );
-            area.setBackground( PropMgr.GetBackgroundProps() );
+            area.SetBackground( PropMgr.GetBackgroundProps() );
 
             return area;
         }

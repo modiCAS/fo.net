@@ -6,76 +6,76 @@ namespace Fonet.Layout
 {
     internal class LinkSet
     {
-        public const int INTERNAL = 0;
-        public const int EXTERNAL = 1;
-        private readonly Area area;
-        private int contentRectangleWidth;
-        private readonly string destination;
-        protected int endIndent = 0;
-        private readonly int linkType;
-        private int maxY;
-        private ArrayList rects = new ArrayList();
-        protected int startIndent = 0;
-        private int xoffset;
-        private int yoffset;
+        public const int Internal = 0;
+        public const int External = 1;
+        private readonly Area _area;
+        private int _contentRectangleWidth;
+        private readonly string _destination;
+        protected int EndIndent = 0;
+        private readonly int _linkType;
+        private int _maxY;
+        private ArrayList _rects = new ArrayList();
+        protected int StartIndent = 0;
+        private int _xoffset;
+        private int _yoffset;
 
         public LinkSet( string destination, Area area, int linkType )
         {
-            this.destination = destination;
-            this.area = area;
-            this.linkType = linkType;
+            this._destination = destination;
+            this._area = area;
+            this._linkType = linkType;
         }
 
-        public void addRect( Rectangle r, LineArea lineArea, InlineArea inlineArea )
+        public void AddRect( Rectangle r, LineArea lineArea, InlineArea inlineArea )
         {
             var linkedRectangle = new LinkedRectangle( r, lineArea, inlineArea );
-            linkedRectangle.setY( yoffset );
-            if ( yoffset > maxY )
-                maxY = yoffset;
-            rects.Add( linkedRectangle );
+            linkedRectangle.SetY( _yoffset );
+            if ( _yoffset > _maxY )
+                _maxY = _yoffset;
+            _rects.Add( linkedRectangle );
         }
 
-        public void setYOffset( int y )
+        public void SetYOffset( int y )
         {
-            yoffset = y;
+            _yoffset = y;
         }
 
-        public void setXOffset( int x )
+        public void SetXOffset( int x )
         {
-            xoffset = x;
+            _xoffset = x;
         }
 
-        public void setContentRectangleWidth( int contentRectangleWidth )
+        public void SetContentRectangleWidth( int contentRectangleWidth )
         {
-            this.contentRectangleWidth = contentRectangleWidth;
+            this._contentRectangleWidth = contentRectangleWidth;
         }
 
-        public void applyAreaContainerOffsets( AreaContainer ac, Area area )
+        public void ApplyAreaContainerOffsets( AreaContainer ac, Area area )
         {
-            int height = area.getAbsoluteHeight();
+            int height = area.GetAbsoluteHeight();
             var ba = (BlockArea)area;
-            foreach ( LinkedRectangle r in rects )
+            foreach ( LinkedRectangle r in _rects )
             {
-                r.setX( r.getX() + ac.getXPosition() + area.getTableCellXOffset() );
-                r.setY( ac.GetYPosition() - height + ( maxY - r.getY() ) - ba.getHalfLeading() );
+                r.SetX( r.GetX() + ac.GetXPosition() + area.GetTableCellXOffset() );
+                r.SetY( ac.GetYPosition() - height + ( _maxY - r.GetY() ) - ba.GetHalfLeading() );
             }
         }
 
-        public void mergeLinks()
+        public void MergeLinks()
         {
-            int numRects = rects.Count;
+            int numRects = _rects.Count;
             if ( numRects == 1 )
                 return;
 
-            var curRect = new LinkedRectangle( (LinkedRectangle)rects[ 0 ] );
+            var curRect = new LinkedRectangle( (LinkedRectangle)_rects[ 0 ] );
             var nv = new ArrayList();
 
             for ( var ri = 1; ri < numRects; ri++ )
             {
-                var r = (LinkedRectangle)rects[ ri ];
+                var r = (LinkedRectangle)_rects[ ri ];
 
-                if ( r.getLineArea() == curRect.getLineArea() )
-                    curRect.SetWidth( r.getX() + r.getWidth() - curRect.getX() );
+                if ( r.GetLineArea() == curRect.GetLineArea() )
+                    curRect.SetWidth( r.GetX() + r.GetWidth() - curRect.GetX() );
                 else
                 {
                     nv.Add( curRect );
@@ -86,46 +86,46 @@ namespace Fonet.Layout
                     nv.Add( curRect );
             }
 
-            rects = nv;
+            _rects = nv;
         }
 
-        public void align()
+        public void Align()
         {
-            foreach ( LinkedRectangle r in rects )
+            foreach ( LinkedRectangle r in _rects )
             {
-                r.setX( r.getX() + r.getLineArea().getStartIndent()
-                    + r.getInlineArea().getXOffset() );
+                r.SetX( r.GetX() + r.GetLineArea().GetStartIndent()
+                    + r.GetInlineArea().GetXOffset() );
             }
         }
 
-        public string getDest()
+        public string GetDest()
         {
-            return destination;
+            return _destination;
         }
 
-        public ArrayList getRects()
+        public ArrayList GetRects()
         {
-            return rects;
+            return _rects;
         }
 
-        public int getEndIndent()
+        public int GetEndIndent()
         {
-            return endIndent;
+            return EndIndent;
         }
 
-        public int getStartIndent()
+        public int GetStartIndent()
         {
-            return startIndent;
+            return StartIndent;
         }
 
-        public Area getArea()
+        public Area GetArea()
         {
-            return area;
+            return _area;
         }
 
-        public int getLinkType()
+        public int GetLinkType()
         {
-            return linkType;
+            return _linkType;
         }
     }
 }

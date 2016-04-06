@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace Fonet.Pdf.Gdi.Font
+namespace Fonet.Pdf.Gdi.Font.Tables
 {
     /// <summary>
     ///     Class that represents the Naming ('name') table

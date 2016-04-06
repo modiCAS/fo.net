@@ -8,8 +8,7 @@ namespace Fonet.Fo
 
         public ListProperty( Property prop )
         {
-            List = new ArrayList();
-            List.Add( prop );
+            List = new ArrayList { prop };
         }
 
         public void AddProperty( Property prop )
@@ -29,7 +28,7 @@ namespace Fonet.Fo
 
         internal class Maker : PropertyMaker
         {
-            public Maker( string name ) : base( name )
+            protected Maker( string name ) : base( name )
             {
             }
 

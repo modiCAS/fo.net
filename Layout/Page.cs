@@ -8,214 +8,214 @@ namespace Fonet.Layout
 {
     internal class Page
     {
-        private AreaContainer after;
-        private readonly AreaTree areaTree;
-        private AreaContainer before;
-        private BodyAreaContainer body;
-        private AreaContainer end;
-        private ArrayList footnotes;
-        protected string formattedPageNumber;
-        private readonly int height;
-        private readonly ArrayList idList = new ArrayList();
-        protected ArrayList linkSets = new ArrayList();
-        private readonly ArrayList markers;
-        protected int pageNumber;
-        private PageSequence pageSequence;
-        private AreaContainer start;
-        private readonly int width;
+        private AreaContainer _after;
+        private readonly AreaTree _areaTree;
+        private AreaContainer _before;
+        private BodyAreaContainer _body;
+        private AreaContainer _end;
+        private ArrayList _footnotes;
+        protected string FormattedPageNumber;
+        private readonly int _height;
+        private readonly ArrayList _idList = new ArrayList();
+        protected ArrayList LinkSets = new ArrayList();
+        private readonly ArrayList _markers;
+        protected int PageNumber;
+        private PageSequence _pageSequence;
+        private AreaContainer _start;
+        private readonly int _width;
 
         internal Page( AreaTree areaTree, int height, int width )
         {
-            this.areaTree = areaTree;
-            this.height = height;
-            this.width = width;
-            markers = new ArrayList();
+            this._areaTree = areaTree;
+            this._height = height;
+            this._width = width;
+            _markers = new ArrayList();
         }
 
-        public IDReferences getIDReferences()
+        public IDReferences GetIDReferences()
         {
-            return areaTree.getIDReferences();
+            return _areaTree.GetIDReferences();
         }
 
-        public void setPageSequence( PageSequence pageSequence )
+        public void SetPageSequence( PageSequence pageSequence )
         {
-            this.pageSequence = pageSequence;
+            this._pageSequence = pageSequence;
         }
 
-        public PageSequence getPageSequence()
+        public PageSequence GetPageSequence()
         {
-            return pageSequence;
+            return _pageSequence;
         }
 
-        public AreaTree getAreaTree()
+        public AreaTree GetAreaTree()
         {
-            return areaTree;
+            return _areaTree;
         }
 
-        public void setNumber( int number )
+        public void SetNumber( int number )
         {
-            pageNumber = number;
+            PageNumber = number;
         }
 
-        public int getNumber()
+        public int GetNumber()
         {
-            return pageNumber;
+            return PageNumber;
         }
 
-        public void setFormattedNumber( string number )
+        public void SetFormattedNumber( string number )
         {
-            formattedPageNumber = number;
+            FormattedPageNumber = number;
         }
 
-        public string getFormattedNumber()
+        public string GetFormattedNumber()
         {
-            return formattedPageNumber;
+            return FormattedPageNumber;
         }
 
-        internal void addAfter( AreaContainer area )
+        internal void AddAfter( AreaContainer area )
         {
-            after = area;
-            area.setPage( this );
+            _after = area;
+            area.SetPage( this );
         }
 
-        internal void addBefore( AreaContainer area )
+        internal void AddBefore( AreaContainer area )
         {
-            before = area;
-            area.setPage( this );
+            _before = area;
+            area.SetPage( this );
         }
 
-        public void addBody( BodyAreaContainer area )
+        public void AddBody( BodyAreaContainer area )
         {
-            body = area;
-            area.setPage( this );
-            area.getMainReferenceArea().setPage( this );
-            area.getBeforeFloatReferenceArea().setPage( this );
-            area.getFootnoteReferenceArea().setPage( this );
+            _body = area;
+            area.SetPage( this );
+            area.GetMainReferenceArea().SetPage( this );
+            area.GetBeforeFloatReferenceArea().SetPage( this );
+            area.GetFootnoteReferenceArea().SetPage( this );
         }
 
-        internal void addEnd( AreaContainer area )
+        internal void AddEnd( AreaContainer area )
         {
-            end = area;
-            area.setPage( this );
+            _end = area;
+            area.SetPage( this );
         }
 
-        internal void addStart( AreaContainer area )
+        internal void AddStart( AreaContainer area )
         {
-            start = area;
-            area.setPage( this );
+            _start = area;
+            area.SetPage( this );
         }
 
-        public void render( PdfRenderer renderer )
+        public void Render( PdfRenderer renderer )
         {
             renderer.RenderPage( this );
         }
 
-        public AreaContainer getAfter()
+        public AreaContainer GetAfter()
         {
-            return after;
+            return _after;
         }
 
-        public AreaContainer getBefore()
+        public AreaContainer GetBefore()
         {
-            return before;
+            return _before;
         }
 
-        public AreaContainer getStart()
+        public AreaContainer GetStart()
         {
-            return start;
+            return _start;
         }
 
-        public AreaContainer getEnd()
+        public AreaContainer GetEnd()
         {
-            return end;
+            return _end;
         }
 
-        public BodyAreaContainer getBody()
+        public BodyAreaContainer GetBody()
         {
-            return body;
+            return _body;
         }
 
         public int GetHeight()
         {
-            return height;
+            return _height;
         }
 
-        public int getWidth()
+        public int GetWidth()
         {
-            return width;
+            return _width;
         }
 
-        public FontInfo getFontInfo()
+        public FontInfo GetFontInfo()
         {
-            return areaTree.getFontInfo();
+            return _areaTree.GetFontInfo();
         }
 
-        public void addLinkSet( LinkSet linkSet )
+        public void AddLinkSet( LinkSet linkSet )
         {
-            linkSets.Add( linkSet );
+            LinkSets.Add( linkSet );
         }
 
-        public ArrayList getLinkSets()
+        public ArrayList GetLinkSets()
         {
-            return linkSets;
+            return LinkSets;
         }
 
-        public bool hasLinks()
+        public bool HasLinks()
         {
-            return linkSets.Count != 0;
+            return LinkSets.Count != 0;
         }
 
-        public void addToIDList( string id )
+        public void AddToIDList( string id )
         {
-            idList.Add( id );
+            _idList.Add( id );
         }
 
-        public ArrayList getIDList()
+        public ArrayList GetIDList()
         {
-            return idList;
+            return _idList;
         }
 
-        public ArrayList getPendingFootnotes()
+        public ArrayList GetPendingFootnotes()
         {
-            return footnotes;
+            return _footnotes;
         }
 
-        public void setPendingFootnotes( ArrayList v )
+        public void SetPendingFootnotes( ArrayList v )
         {
-            footnotes = v;
-            if ( footnotes != null )
+            _footnotes = v;
+            if ( _footnotes != null )
             {
-                foreach ( FootnoteBody fb in footnotes )
+                foreach ( FootnoteBody fb in _footnotes )
                 {
                     if ( !Footnote.LayoutFootnote( this, fb, null ) )
                     {
                         // footnotes are too large to fit on empty page.
                     }
                 }
-                footnotes = null;
+                _footnotes = null;
             }
         }
 
-        public void addPendingFootnote( FootnoteBody fb )
+        public void AddPendingFootnote( FootnoteBody fb )
         {
-            if ( footnotes == null )
-                footnotes = new ArrayList();
-            footnotes.Add( fb );
+            if ( _footnotes == null )
+                _footnotes = new ArrayList();
+            _footnotes.Add( fb );
         }
 
-        public void unregisterMarker( Marker marker )
+        public void UnregisterMarker( Marker marker )
         {
-            markers.Remove( marker );
+            _markers.Remove( marker );
         }
 
-        public void registerMarker( Marker marker )
+        public void RegisterMarker( Marker marker )
         {
-            markers.Add( marker );
+            _markers.Add( marker );
         }
 
-        public ArrayList getMarkers()
+        public ArrayList GetMarkers()
         {
-            return markers;
+            return _markers;
         }
     }
 }

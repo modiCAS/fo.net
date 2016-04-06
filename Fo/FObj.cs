@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using Fonet.DataTypes;
 using Fonet.Layout;
 
@@ -104,20 +105,15 @@ namespace Fonet.Fo
         {
             if ( Children != null )
             {
-                for ( var i = 0; i < Children.Count; i++ )
+                if ( Children.Cast<FoNode>().Any( child => !child.MayPrecedeMarker() ) )
                 {
-                    var child = (FoNode)Children[ i ];
-                    if ( !child.MayPrecedeMarker() )
-                    {
-                        throw new FonetException(
-                            string.Format( "A fo:marker must be an initial child of '{0}'", GetName() ) );
-                    }
+                    throw new FonetException(
+                        string.Format( "A fo:marker must be an initial child of '{0}'", GetName() ) );
                 }
             }
             if ( _markerClassNames == null )
             {
-                _markerClassNames = new Hashtable();
-                _markerClassNames.Add( markerClassName, string.Empty );
+                _markerClassNames = new Hashtable { { markerClassName, string.Empty } };
             }
             else if ( !_markerClassNames.ContainsKey( markerClassName ) )
                 _markerClassNames.Add( markerClassName, string.Empty );

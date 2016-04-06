@@ -2,19 +2,19 @@ namespace Fonet.Layout
 {
     internal class MarginInlineProps
     {
-        public int endIndent = 0;
+        public int EndIndent = 0;
 
-        public int marginBottom = 0;
+        public int MarginBottom = 0;
 
-        public int marginLeft = 0;
+        public int MarginLeft = 0;
 
-        public int marginRight = 0;
-        public int marginTop = 0;
+        public int MarginRight = 0;
+        public int MarginTop = 0;
 
-        public int spaceAfter = 0;
+        public int SpaceAfter = 0;
 
-        public int spaceBefore = 0;
+        public int SpaceBefore = 0;
 
-        public int startIndent = 0;
+        public int StartIndent = 0;
     }
 }

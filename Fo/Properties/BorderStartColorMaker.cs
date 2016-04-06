@@ -23,9 +23,8 @@ namespace Fonet.Fo.Properties
 
         public override bool IsCorrespondingForced( PropertyList propertyList )
         {
-            var sbExpr = new StringBuilder();
+            var sbExpr = new StringBuilder { Length = 0 };
 
-            sbExpr.Length = 0;
             sbExpr.Append( "border-" );
             sbExpr.Append( propertyList.WmRelToAbs( PropertyList.Start ) );
             sbExpr.Append( "-color" );
@@ -54,9 +53,7 @@ namespace Fonet.Fo.Properties
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( _mDefaultProp == null )
-                _mDefaultProp = Make( propertyList, "black", propertyList.GetParentFObj() );
-            return _mDefaultProp;
+            return _mDefaultProp ?? ( _mDefaultProp = Make( propertyList, "black", propertyList.GetParentFObj() ) );
         }
     }
 }

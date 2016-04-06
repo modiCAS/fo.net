@@ -1,26 +1,26 @@
 namespace Fonet.Layout
 {
-    internal class AreaClass
+    internal static class AreaClass
     {
-        public static string UNASSIGNED = "unassigned";
+        public const string Unassigned = "unassigned";
 
-        public static string XSL_NORMAL = "xsl-normal";
+        public const string XslNormal = "xsl-normal";
 
-        public static string XSL_ABSOLUTE = "xsl-absolute";
+        public const string XslAbsolute = "xsl-absolute";
 
-        public static string XSL_FOOTNOTE = "xsl-footnote";
+        public const string XslFootnote = "xsl-footnote";
 
-        public static string XSL_SIDE_FLOAT = "xsl-side-float";
+        public const string XslSideFloat = "xsl-side-float";
 
-        public static string XSL_BEFORE_FLOAT = "xsl-before-float";
+        public const string XslBeforeFloat = "xsl-before-float";
 
-        public static string setAreaClass( string areaClass )
+        public static string SetAreaClass( string areaClass )
         {
-            if ( areaClass.Equals( XSL_NORMAL ) ||
-                areaClass.Equals( XSL_ABSOLUTE ) ||
-                areaClass.Equals( XSL_FOOTNOTE ) ||
-                areaClass.Equals( XSL_SIDE_FLOAT ) ||
-                areaClass.Equals( XSL_BEFORE_FLOAT ) )
+            if ( areaClass.Equals( XslNormal ) ||
+                areaClass.Equals( XslAbsolute ) ||
+                areaClass.Equals( XslFootnote ) ||
+                areaClass.Equals( XslSideFloat ) ||
+                areaClass.Equals( XslBeforeFloat ) )
                 return areaClass;
             throw new FonetException( "Unknown area class '" + areaClass + "'" );
         }

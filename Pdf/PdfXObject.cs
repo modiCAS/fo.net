@@ -7,15 +7,15 @@ namespace Fonet.Pdf
         public PdfXObject( byte[] objectData, PdfName name, PdfObjectId objectId )
             : base( objectId )
         {
-            this._objectData = objectData;
+            _objectData = objectData;
             Name = name;
-            base.Dictionary[ PdfName.Names.Type ] = PdfName.Names.XObject;
+            Dictionary[ PdfName.Names.Type ] = PdfName.Names.XObject;
         }
 
         public PdfName SubType
         {
-            get { return (PdfName)base.Dictionary[ PdfName.Names.Subtype ]; }
-            set { base.Dictionary[ PdfName.Names.Subtype ] = value; }
+            get { return (PdfName)Dictionary[ PdfName.Names.Subtype ]; }
+            set { Dictionary[ PdfName.Names.Subtype ] = value; }
         }
 
         public PdfName Name { get; private set; }

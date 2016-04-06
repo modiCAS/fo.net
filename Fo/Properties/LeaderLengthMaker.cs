@@ -74,9 +74,8 @@ namespace Fonet.Fo.Properties
         protected override Property MakeCompound( PropertyList pList, FObj fo )
         {
             var p = new LengthRange();
-            Property subProp;
 
-            subProp = GetSubpropMaker( "minimum" ).Make( pList,
+            Property subProp = GetSubpropMaker( "minimum" ).Make( pList,
                 GetDefaultForMinimum(), fo );
             p.SetComponent( "minimum", subProp, true );
 

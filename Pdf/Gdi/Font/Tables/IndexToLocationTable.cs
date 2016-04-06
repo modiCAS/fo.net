@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace Fonet.Pdf.Gdi.Font
+namespace Fonet.Pdf.Gdi.Font.Tables
 {
     /// <summary>
     ///     Class that represents the Index To Location ('loca') table.

@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace Fonet.Pdf.Gdi
+namespace Fonet.Pdf.Gdi.Structures
 {
     /// <summary>
     ///     The Rect structure defines the coordinates of the upper-left

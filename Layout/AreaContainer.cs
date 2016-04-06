@@ -4,68 +4,68 @@ namespace Fonet.Layout
 {
     internal class AreaContainer : Area
     {
-        private string areaName;
-        private readonly int position;
-        private int xPosition;
-        private int yPosition;
+        private string _areaName;
+        private readonly int _position;
+        private int _xPosition;
+        private int _yPosition;
 
         public AreaContainer( FontState fontState, int xPosition, int yPosition,
             int allocationWidth, int maxHeight, int position )
             : base( fontState, allocationWidth, maxHeight )
         {
-            this.xPosition = xPosition;
-            this.yPosition = yPosition;
-            this.position = position;
+            _xPosition = xPosition;
+            _yPosition = yPosition;
+            _position = position;
         }
 
-        public override void render( PdfRenderer renderer )
+        public override void Render( PdfRenderer renderer )
         {
             renderer.RenderAreaContainer( this );
         }
 
-        public int getPosition()
+        public int GetPosition()
         {
-            return position;
+            return _position;
         }
 
-        public int getXPosition()
+        public int GetXPosition()
         {
-            return xPosition;
+            return _xPosition;
         }
 
-        public void setXPosition( int value )
+        public void SetXPosition( int value )
         {
-            xPosition = value;
+            _xPosition = value;
         }
 
         public int GetYPosition()
         {
-            return yPosition;
+            return _yPosition;
         }
 
         public int GetCurrentYPosition()
         {
-            return yPosition;
+            return _yPosition;
         }
 
-        public void setYPosition( int value )
+        public void SetYPosition( int value )
         {
-            yPosition = value;
+            _yPosition = value;
         }
 
-        public void shiftYPosition( int value )
+        public void ShiftYPosition( int value )
         {
-            yPosition += value;
+            _yPosition += value;
         }
 
-        public string getAreaName()
+        public string GetAreaName()
         {
-            return areaName;
+            return _areaName;
         }
 
-        public void setAreaName( string areaName )
+        public void SetAreaName( string areaName )
         {
-            this.areaName = areaName;
+            _areaName = areaName;
         }
     }
 }

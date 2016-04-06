@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Text;
+using Fonet.Pdf.Gdi.Font.Tables;
 
 namespace Fonet.Pdf.Gdi.Font
 {

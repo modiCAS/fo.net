@@ -102,7 +102,6 @@ namespace Fonet.Fo.Flow
             {
             case Constants.Always:
                 return new KeepValue( KeepValue.KeepWithAlways, 0 );
-            case Constants.Auto:
             default:
                 return new KeepValue( KeepValue.KeepWithAuto, 0 );
             }
@@ -121,7 +120,7 @@ namespace Fonet.Fo.Flow
                 if ( _cellArray == null )
                 {
                     InitCellArray();
-                    area.getIDReferences().CreateID( _id );
+                    area.GetIDReferences().CreateID( _id );
                 }
 
                 Marker = 0;
@@ -131,23 +130,23 @@ namespace Fonet.Fo.Flow
             }
 
             if ( Marker == 0 )
-                area.getIDReferences().ConfigureID( _id, area );
+                area.GetIDReferences().ConfigureID( _id, area );
 
-            int spaceLeft = area.spaceLeft();
+            int spaceLeft = area.SpaceLeft();
 
             _areaContainer =
-                new AreaContainer( PropMgr.GetFontState( area.getFontInfo() ), 0, 0,
-                    area.getContentWidth(), spaceLeft,
+                new AreaContainer( PropMgr.GetFontState( area.GetFontInfo() ), 0, 0,
+                    area.GetContentWidth(), spaceLeft,
                     Position.Relative );
-            _areaContainer.foCreator = this;
-            _areaContainer.setPage( area.getPage() );
-            _areaContainer.setParent( area );
+            _areaContainer.FoCreator = this;
+            _areaContainer.SetPage( area.GetPage() );
+            _areaContainer.SetParent( area );
 
-            _areaContainer.setBackground( PropMgr.GetBackgroundProps() );
-            _areaContainer.start();
+            _areaContainer.SetBackground( PropMgr.GetBackgroundProps() );
+            _areaContainer.Start();
 
-            _areaContainer.setAbsoluteHeight( area.getAbsoluteHeight() );
-            _areaContainer.setIDReferences( area.getIDReferences() );
+            _areaContainer.SetAbsoluteHeight( area.GetAbsoluteHeight() );
+            _areaContainer.SetIDReferences( area.GetIDReferences() );
 
             _largestCellHeight = _minHeight;
 
@@ -186,7 +185,7 @@ namespace Fonet.Fo.Flow
                         || rowSpan > 1 )
                     {
                         ResetMarker();
-                        RemoveID( area.getIDReferences() );
+                        RemoveID( area.GetIDReferences() );
                         return new Status( Status.AreaFullNone );
                     }
                     if ( status.GetCode() == Status.AreaFullSome )
@@ -203,8 +202,8 @@ namespace Fonet.Fo.Flow
                     _largestCellHeight = hi;
             }
 
-            area.setMaxHeight( area.getMaxHeight() - spaceLeft
-                + _areaContainer.getMaxHeight() );
+            area.SetMaxHeight( area.GetMaxHeight() - spaceLeft
+                + _areaContainer.GetMaxHeight() );
 
             for ( var iCol = 1; iCol <= _columns.Count; iCol++ )
             {
@@ -215,16 +214,16 @@ namespace Fonet.Fo.Flow
 
             _rowSpanMgr.FinishRow( _largestCellHeight );
 
-            area.addChild( _areaContainer );
+            area.AddChild( _areaContainer );
             _areaContainer.SetHeight( _largestCellHeight );
             _areaAdded = true;
-            _areaContainer.end();
+            _areaContainer.End();
 
-            area.addDisplaySpace( _largestCellHeight
-                + _areaContainer.getPaddingTop()
-                + _areaContainer.getBorderTopWidth()
-                + _areaContainer.getPaddingBottom()
-                + _areaContainer.getBorderBottomWidth() );
+            area.AddDisplaySpace( _largestCellHeight
+                + _areaContainer.GetPaddingTop()
+                + _areaContainer.GetBorderTopWidth()
+                + _areaContainer.GetPaddingBottom()
+                + _areaContainer.GetBorderBottomWidth() );
 
             if ( someCellDidNotLayoutCompletely )
                 return new Status( Status.AreaFullSome );
@@ -266,10 +265,10 @@ namespace Fonet.Fo.Flow
         public void RemoveLayout( Area area )
         {
             if ( _areaAdded )
-                area.removeChild( _areaContainer );
+                area.RemoveChild( _areaContainer );
             _areaAdded = false;
             ResetMarker();
-            RemoveID( area.getIDReferences() );
+            RemoveID( area.GetIDReferences() );
         }
 
         public new void ResetMarker()

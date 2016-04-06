@@ -13,59 +13,59 @@ namespace Fonet.Render.Pdf.Fonts
     /// <remarks>
     ///     TODO: Support font subsetting
     /// </remarks>
-    internal class Type2CIDFont : CIDFont, IFontDescriptor
+    internal class Type2CidFont : CidFont, IFontDescriptor
     {
         public const string IdentityHEncoding = "Identity-H";
 
         /// <summary>
         ///     Windows font name, e.g. 'Arial Bold'
         /// </summary>
-        protected string baseFontName;
+        protected string BaseFontName;
 
         /// <summary>
         ///     Wrapper around a Win32 HDC.
         /// </summary>
-        protected GdiDeviceContent dc;
+        protected GdiDeviceContent Dc;
 
         /// <summary>
         ///     List of kerning pairs.
         /// </summary>
-        protected GdiKerningPairs kerning;
+        protected GdiKerningPairs Kerning;
 
         /// <summary>
         ///     Provides font metrics using the Win32 Api.
         /// </summary>
-        protected GdiFontMetrics metrics;
+        protected GdiFontMetrics Metrics;
 
         /// <summary>
         /// </summary>
-        protected FontProperties properties;
+        protected FontProperties Properties;
 
         /// <summary>
         ///     Maps character code to glyph index.  The array is based on the
         ///     value of <see cref="FirstChar" />.
         /// </summary>
-        protected GdiUnicodeRanges unicodeRanges;
+        protected GdiUnicodeRanges UnicodeRanges;
 
         /// <summary>
         ///     Maps a glyph index to a character code.
         /// </summary>
-        protected SortedList usedGlyphs;
+        protected SortedList UsedGlyphs;
 
         /// <summary>
         ///     Maps a glyph index to a PDF width
         /// </summary>
-        protected int[] widths;
+        protected int[] WidthArray;
 
         /// <summary>
         ///     Class constructor.
         /// </summary>
         /// <param name="properties"></param>
-        public Type2CIDFont( FontProperties properties )
+        public Type2CidFont( FontProperties properties )
         {
-            this.properties = properties;
-            baseFontName = properties.FaceName.Replace( " ", "-" );
-            usedGlyphs = new SortedList();
+            this.Properties = properties;
+            BaseFontName = properties.FaceName.Replace( " ", "-" );
+            UsedGlyphs = new SortedList();
 
             ObtainFontMetrics();
         }
@@ -75,26 +75,26 @@ namespace Fonet.Render.Pdf.Fonts
         /// </summary>
         private void ObtainFontMetrics()
         {
-            dc = new GdiDeviceContent();
+            Dc = new GdiDeviceContent();
             GdiFont font = GdiFont.CreateDesignFont(
-                properties.FaceName, properties.IsBold, properties.IsItalic, dc );
-            unicodeRanges = new GdiUnicodeRanges( dc );
-            metrics = font.GetMetrics( dc );
+                Properties.FaceName, Properties.IsBold, Properties.IsItalic, Dc );
+            UnicodeRanges = new GdiUnicodeRanges( Dc );
+            Metrics = font.GetMetrics( Dc );
         }
 
         /// <summary>
         ///     Class destructor.
         /// </summary>
-        ~Type2CIDFont()
+        ~Type2CidFont()
         {
-            dc.Dispose();
+            Dc.Dispose();
         }
 
         #region Implementation of CIDFont members
 
         public override string CidBaseFont
         {
-            get { return baseFontName; }
+            get { return BaseFontName; }
         }
 
         public override PdfWArray WArray
@@ -104,7 +104,7 @@ namespace Fonet.Render.Pdf.Fonts
                 // The widths array for a font using the Unicode encoding is enormous.
                 // Instead of encoding the entire widths array, we generated a subset 
                 // based on the used glyphs only.
-                IList indicies = usedGlyphs.GetKeyList();
+                IList indicies = UsedGlyphs.GetKeyList();
                 int[] subsetWidths = GetSubsetWidthsArray( indicies );
 
                 var widthsArray = new PdfWArray( (int)indicies[ 0 ] );
@@ -119,7 +119,7 @@ namespace Fonet.Render.Pdf.Fonts
             get
             {
                 // The usedGlyphs sorted list maps glyph indices to unicode values
-                return (IDictionary)usedGlyphs.Clone();
+                return (IDictionary)UsedGlyphs.Clone();
             }
         }
 
@@ -132,12 +132,12 @@ namespace Fonet.Render.Pdf.Fonts
             var subsetWidths = new int[ lastIndex - firstIndex + 1 ];
             Array.Clear( subsetWidths, 0, subsetWidths.Length );
 
-            var firstChar = (char)metrics.FirstChar;
-            foreach ( DictionaryEntry entry in usedGlyphs )
+            var firstChar = (char)Metrics.FirstChar;
+            foreach ( DictionaryEntry entry in UsedGlyphs )
             {
                 var c = (char)entry.Value;
                 var glyphIndex = (int)entry.Key;
-                subsetWidths[ glyphIndex - firstIndex ] = widths[ glyphIndex ];
+                subsetWidths[ glyphIndex - firstIndex ] = WidthArray[ glyphIndex ];
             }
             return subsetWidths;
         }
@@ -156,7 +156,7 @@ namespace Fonet.Render.Pdf.Fonts
 
         public override string FontName
         {
-            get { return baseFontName; }
+            get { return BaseFontName; }
         }
 
         public override string Encoding
@@ -177,7 +177,7 @@ namespace Fonet.Render.Pdf.Fonts
         public override ushort MapCharacter( char c )
         {
             // Obtain glyph index from Unicode character
-            ushort glyphIndex = unicodeRanges.MapCharacter( c );
+            ushort glyphIndex = UnicodeRanges.MapCharacter( c );
 
             AddGlyphToCharMapping( glyphIndex, c );
 
@@ -187,33 +187,33 @@ namespace Fonet.Render.Pdf.Fonts
         protected virtual void AddGlyphToCharMapping( ushort glyphIndex, char c )
         {
             // The usedGlyphs dictionary permits a reverse lookup (glyph index to char)
-            if ( !usedGlyphs.ContainsKey( (int)glyphIndex ) )
-                usedGlyphs.Add( (int)glyphIndex, c );
+            if ( !UsedGlyphs.ContainsKey( (int)glyphIndex ) )
+                UsedGlyphs.Add( (int)glyphIndex, c );
         }
 
         public override int Ascender
         {
-            get { return metrics.Ascent; }
+            get { return Metrics.Ascent; }
         }
 
         public override int Descender
         {
-            get { return metrics.Descent; }
+            get { return Metrics.Descent; }
         }
 
         public override int CapHeight
         {
-            get { return metrics.CapHeight; }
+            get { return Metrics.CapHeight; }
         }
 
         public override int FirstChar
         {
-            get { return metrics.FirstChar; }
+            get { return Metrics.FirstChar; }
         }
 
         public override int LastChar
         {
-            get { return metrics.LastChar; }
+            get { return Metrics.LastChar; }
         }
 
         public override int GetWidth( ushort charIndex )
@@ -221,7 +221,7 @@ namespace Fonet.Render.Pdf.Fonts
             EnsureWidthsArray();
 
             // The widths array is keyed on character code, not glyph index
-            return widths[ charIndex ];
+            return WidthArray[ charIndex ];
         }
 
         public override int[] Widths
@@ -229,14 +229,14 @@ namespace Fonet.Render.Pdf.Fonts
             get
             {
                 EnsureWidthsArray();
-                return widths;
+                return WidthArray;
             }
         }
 
         protected void EnsureWidthsArray()
         {
-            if ( widths == null )
-                widths = metrics.GetWidths();
+            if ( WidthArray == null )
+                WidthArray = Metrics.GetWidths();
         }
 
         #endregion
@@ -245,56 +245,56 @@ namespace Fonet.Render.Pdf.Fonts
 
         public int Flags
         {
-            get { return metrics.Flags; }
+            get { return Metrics.Flags; }
         }
 
         public int[] FontBBox
         {
-            get { return metrics.BoundingBox; }
+            get { return Metrics.BoundingBox; }
         }
 
         public int ItalicAngle
         {
-            get { return metrics.ItalicAngle; }
+            get { return Metrics.ItalicAngle; }
         }
 
         public int StemV
         {
-            get { return metrics.StemV; }
+            get { return Metrics.StemV; }
         }
 
         public bool HasKerningInfo
         {
             get
             {
-                if ( kerning == null )
-                    kerning = metrics.KerningPairs;
-                return kerning.Count != 0;
+                if ( Kerning == null )
+                    Kerning = Metrics.KerningPairs;
+                return Kerning.Count != 0;
             }
         }
 
         public bool IsEmbeddable
         {
-            get { return metrics.IsEmbeddable; }
+            get { return Metrics.IsEmbeddable; }
         }
 
         public bool IsSubsettable
         {
-            get { return metrics.IsSubsettable; }
+            get { return Metrics.IsSubsettable; }
         }
 
         public virtual byte[] FontData
         {
-            get { return metrics.GetFontData(); }
+            get { return Metrics.GetFontData(); }
         }
 
         public GdiKerningPairs KerningInfo
         {
             get
             {
-                if ( kerning == null )
-                    kerning = metrics.KerningPairs;
-                return kerning;
+                if ( Kerning == null )
+                    Kerning = Metrics.KerningPairs;
+                return Kerning;
             }
         }
 

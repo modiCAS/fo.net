@@ -1,6 +1,6 @@
 using System;
 
-namespace Fonet.Pdf.Gdi.Font
+namespace Fonet.Pdf.Gdi.Font.Tables
 {
     /// <summary>
     ///     Class that represents the Horizontal Metrics ('maxp') table.

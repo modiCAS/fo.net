@@ -132,7 +132,7 @@ namespace Fonet.Pdf
 
             if ( currentPage != null )
             {
-                foreach ( string id in currentPage.getIDList() )
+                foreach ( string id in currentPage.GetIDList() )
                     _idReferences.SetInternalGoToPageReference( id, page.GetReference() );
             }
 
@@ -150,7 +150,7 @@ namespace Fonet.Pdf
             var link = new PdfLink( Doc.NextObjectId(), rect );
             _objects.Add( link );
 
-            if ( linkType == LinkSet.EXTERNAL )
+            if ( linkType == LinkSet.External )
             {
                 if ( destination.EndsWith( ".pdf" ) )
                 {

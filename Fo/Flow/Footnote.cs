@@ -37,10 +37,10 @@ namespace Fonet.Fo.Flow
                 {
                     fbody = fo;
                     if ( area is BlockArea )
-                        ( (BlockArea)area ).addFootnote( (FootnoteBody)fbody );
+                        ( (BlockArea)area ).AddFootnote( (FootnoteBody)fbody );
                     else
                     {
-                        Page page = area.getPage();
+                        Page page = area.GetPage();
                         LayoutFootnote( page, (FootnoteBody)fbody, area );
                     }
                 }
@@ -60,20 +60,20 @@ namespace Fonet.Fo.Flow
         {
             try
             {
-                BodyAreaContainer bac = p.getBody();
-                AreaContainer footArea = bac.getFootnoteReferenceArea();
-                footArea.setIDReferences( bac.getIDReferences() );
+                BodyAreaContainer bac = p.GetBody();
+                AreaContainer footArea = bac.GetFootnoteReferenceArea();
+                footArea.SetIDReferences( bac.GetIDReferences() );
                 int basePos = footArea.GetCurrentYPosition()
                     - footArea.GetHeight();
                 int oldHeight = footArea.GetHeight();
                 if ( area != null )
                 {
-                    footArea.setMaxHeight( area.getMaxHeight() - area.GetHeight()
+                    footArea.SetMaxHeight( area.GetMaxHeight() - area.GetHeight()
                         + footArea.GetHeight() );
                 }
                 else
                 {
-                    footArea.setMaxHeight( bac.getMaxHeight()
+                    footArea.SetMaxHeight( bac.GetMaxHeight()
                         + footArea.GetHeight() );
                 }
                 Status status = fb.Layout( footArea );
@@ -81,14 +81,14 @@ namespace Fonet.Fo.Flow
                     return false;
                 if ( area != null )
                 {
-                    area.setMaxHeight( area.getMaxHeight()
+                    area.SetMaxHeight( area.GetMaxHeight()
                         - footArea.GetHeight() + oldHeight );
                 }
-                if ( bac.getFootnoteState() == 0 )
+                if ( bac.GetFootnoteState() == 0 )
                 {
-                    Area ar = bac.getMainReferenceArea();
+                    Area ar = bac.GetMainReferenceArea();
                     DecreaseMaxHeight( ar, footArea.GetHeight() - oldHeight );
-                    footArea.setYPosition( basePos + footArea.GetHeight() );
+                    footArea.SetYPosition( basePos + footArea.GetHeight() );
                 }
             }
             catch ( FonetException )
@@ -100,8 +100,8 @@ namespace Fonet.Fo.Flow
 
         protected static void DecreaseMaxHeight( Area ar, int change )
         {
-            ar.setMaxHeight( ar.getMaxHeight() - change );
-            ArrayList childs = ar.getChildren();
+            ar.SetMaxHeight( ar.GetMaxHeight() - change );
+            ArrayList childs = ar.GetChildren();
             foreach ( object obj in childs )
             {
                 if ( obj is Area )

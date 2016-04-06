@@ -64,7 +64,7 @@ namespace Fonet.Pdf
                 else
                 {
                     // A character indexed font that may be subsetted.
-                    var cid = (CIDFont)realMetrics;
+                    var cid = (CidFont)realMetrics;
                     pdfFont = CreateCidFont( pdfFontID, font, cid );
                 }
             }
@@ -91,7 +91,7 @@ namespace Fonet.Pdf
         /// <param name="cidFont">The underlying CID font.</param>
         /// <returns></returns>
         private PdfFont CreateCidFont(
-            string pdfFontID, Font font, CIDFont cidFont )
+            string pdfFontID, Font font, CidFont cidFont )
         {
             // The font descriptor is required to access licensing details are 
             // obtain the font program itself as a byte array

@@ -8,107 +8,107 @@ namespace Fonet.Layout
 {
     internal abstract class Area : Box
     {
-        protected bool _isFirst;
-        protected bool _isLast;
-        private int absoluteYTop;
-        protected int allocationWidth;
-        protected string areaClass = null;
-        protected BackgroundProps background;
-        protected BorderAndPadding bp;
-        protected ArrayList children = new ArrayList();
-        protected int contentRectangleWidth;
-        protected int currentHeight;
+        private bool _isFirst;
+        private bool _isLast;
+        private int _absoluteYTop;
+        protected int AllocationWidth;
+        protected string AreaClass = null;
+        private BackgroundProps _background;
+        private BorderAndPadding _bp;
+        protected ArrayList Children = new ArrayList();
+        protected int ContentRectangleWidth;
+        protected int CurrentHeight;
 
-        public FObj foCreator;
-        protected FontState fontState;
-        protected FObj generatedBy;
-        private IDReferences idReferences;
-        protected ArrayList markers;
-        protected int maxHeight;
-        protected Page page;
-        protected Hashtable returnedBy;
-        protected int tableCellXOffset;
+        public FObj FoCreator;
+        protected FontState FontState;
+        private FObj _generatedBy;
+        private IDReferences _idReferences;
+        private ArrayList _markers;
+        protected int MaxHeight;
+        protected Page Page;
+        private Hashtable _returnedBy;
+        private int _tableCellXOffset;
 
-        public Area( FontState fontState )
+        protected Area( FontState fontState )
         {
-            setFontState( fontState );
-            markers = new ArrayList();
-            returnedBy = new Hashtable();
+            SetFontState( fontState );
+            _markers = new ArrayList();
+            _returnedBy = new Hashtable();
         }
 
-        public Area( FontState fontState, int allocationWidth, int maxHeight )
+        protected Area( FontState fontState, int allocationWidth, int maxHeight )
         {
-            setFontState( fontState );
-            this.allocationWidth = allocationWidth;
-            contentRectangleWidth = allocationWidth;
-            this.maxHeight = maxHeight;
-            markers = new ArrayList();
-            returnedBy = new Hashtable();
+            SetFontState( fontState );
+            this.AllocationWidth = allocationWidth;
+            ContentRectangleWidth = allocationWidth;
+            this.MaxHeight = maxHeight;
+            _markers = new ArrayList();
+            _returnedBy = new Hashtable();
         }
 
-        private void setFontState( FontState fontState )
+        private void SetFontState( FontState fontState )
         {
-            this.fontState = fontState;
+            this.FontState = fontState;
         }
 
-        public void addChild( Box child )
+        public void AddChild( Box child )
         {
-            children.Add( child );
-            child.parent = this;
+            Children.Add( child );
+            child.Parent = this;
         }
 
-        public void addChildAtStart( Box child )
+        public void AddChildAtStart( Box child )
         {
-            children.Insert( 0, child );
-            child.parent = this;
+            Children.Insert( 0, child );
+            child.Parent = this;
         }
 
-        public void addDisplaySpace( int size )
+        public void AddDisplaySpace( int size )
         {
-            addChild( new DisplaySpace( size ) );
-            currentHeight += size;
+            AddChild( new DisplaySpace( size ) );
+            CurrentHeight += size;
         }
 
-        public void addInlineSpace( int size )
+        public void AddInlineSpace( int size )
         {
-            addChild( new InlineSpace( size ) );
+            AddChild( new InlineSpace( size ) );
         }
 
-        public FontInfo getFontInfo()
+        public FontInfo GetFontInfo()
         {
-            return page.getFontInfo();
+            return Page.GetFontInfo();
         }
 
-        public virtual void end()
+        public virtual void End()
         {
         }
 
-        public int getAllocationWidth()
+        public int GetAllocationWidth()
         {
-            return allocationWidth;
+            return AllocationWidth;
         }
 
-        public void setAllocationWidth( int w )
+        public void SetAllocationWidth( int w )
         {
-            allocationWidth = w;
-            contentRectangleWidth = allocationWidth;
+            AllocationWidth = w;
+            ContentRectangleWidth = AllocationWidth;
         }
 
-        public ArrayList getChildren()
+        public ArrayList GetChildren()
         {
-            return children;
+            return Children;
         }
 
-        public bool hasChildren()
+        public bool HasChildren()
         {
-            return children.Count != 0;
+            return Children.Count != 0;
         }
 
-        public bool hasNonSpaceChildren()
+        public bool HasNonSpaceChildren()
         {
-            if ( children.Count > 0 )
+            if ( Children.Count > 0 )
             {
-                foreach ( object child in children )
+                foreach ( object child in Children )
                 {
                     if ( !( child is DisplaySpace ) )
                         return true;
@@ -117,248 +117,248 @@ namespace Fonet.Layout
             return false;
         }
 
-        public virtual int getContentWidth()
+        public virtual int GetContentWidth()
         {
-            return contentRectangleWidth;
+            return ContentRectangleWidth;
         }
 
         public FontState GetFontState()
         {
-            return fontState;
+            return FontState;
         }
 
-        public virtual int getContentHeight()
+        public virtual int GetContentHeight()
         {
-            return currentHeight;
+            return CurrentHeight;
         }
 
         public virtual int GetHeight()
         {
-            return currentHeight + getPaddingTop() + getPaddingBottom()
-                + getBorderTopWidth() + getBorderBottomWidth();
+            return CurrentHeight + GetPaddingTop() + GetPaddingBottom()
+                + GetBorderTopWidth() + GetBorderBottomWidth();
         }
 
-        public int getMaxHeight()
+        public int GetMaxHeight()
         {
-            return maxHeight;
+            return MaxHeight;
         }
 
-        public Page getPage()
+        public Page GetPage()
         {
-            return page;
+            return Page;
         }
 
-        public BackgroundProps getBackground()
+        public BackgroundProps GetBackground()
         {
-            return background;
+            return _background;
         }
 
-        public int getPaddingTop()
+        public int GetPaddingTop()
         {
-            return bp == null ? 0 : bp.getPaddingTop( false );
+            return _bp == null ? 0 : _bp.GetPaddingTop( false );
         }
 
-        public int getPaddingLeft()
+        public int GetPaddingLeft()
         {
-            return bp == null ? 0 : bp.getPaddingLeft( false );
+            return _bp == null ? 0 : _bp.GetPaddingLeft( false );
         }
 
-        public int getPaddingBottom()
+        public int GetPaddingBottom()
         {
-            return bp == null ? 0 : bp.getPaddingBottom( false );
+            return _bp == null ? 0 : _bp.GetPaddingBottom( false );
         }
 
-        public int getPaddingRight()
+        public int GetPaddingRight()
         {
-            return bp == null ? 0 : bp.getPaddingRight( false );
+            return _bp == null ? 0 : _bp.GetPaddingRight( false );
         }
 
-        public int getBorderTopWidth()
+        public int GetBorderTopWidth()
         {
-            return bp == null ? 0 : bp.getBorderTopWidth( false );
+            return _bp == null ? 0 : _bp.GetBorderTopWidth( false );
         }
 
-        public int getBorderRightWidth()
+        public int GetBorderRightWidth()
         {
-            return bp == null ? 0 : bp.getBorderRightWidth( false );
+            return _bp == null ? 0 : _bp.GetBorderRightWidth( false );
         }
 
-        public int getBorderLeftWidth()
+        public int GetBorderLeftWidth()
         {
-            return bp == null ? 0 : bp.getBorderLeftWidth( false );
+            return _bp == null ? 0 : _bp.GetBorderLeftWidth( false );
         }
 
-        public int getBorderBottomWidth()
+        public int GetBorderBottomWidth()
         {
-            return bp == null ? 0 : bp.getBorderBottomWidth( false );
+            return _bp == null ? 0 : _bp.GetBorderBottomWidth( false );
         }
 
-        public int getTableCellXOffset()
+        public int GetTableCellXOffset()
         {
-            return tableCellXOffset;
+            return _tableCellXOffset;
         }
 
-        public void setTableCellXOffset( int offset )
+        public void SetTableCellXOffset( int offset )
         {
-            tableCellXOffset = offset;
+            _tableCellXOffset = offset;
         }
 
-        public int getAbsoluteHeight()
+        public int GetAbsoluteHeight()
         {
-            return absoluteYTop + getPaddingTop() + getBorderTopWidth() + currentHeight;
+            return _absoluteYTop + GetPaddingTop() + GetBorderTopWidth() + CurrentHeight;
         }
 
-        public void setAbsoluteHeight( int value )
+        public void SetAbsoluteHeight( int value )
         {
-            absoluteYTop = value;
+            _absoluteYTop = value;
         }
 
-        public void increaseHeight( int amount )
+        public void IncreaseHeight( int amount )
         {
-            currentHeight += amount;
+            CurrentHeight += amount;
         }
 
-        public void removeChild( Area area )
+        public void RemoveChild( Area area )
         {
-            currentHeight -= area.GetHeight();
-            children.Remove( area );
+            CurrentHeight -= area.GetHeight();
+            Children.Remove( area );
         }
 
-        public void removeChild( DisplaySpace spacer )
+        public void RemoveChild( DisplaySpace spacer )
         {
-            currentHeight -= spacer.getSize();
-            children.Remove( spacer );
+            CurrentHeight -= spacer.GetSize();
+            Children.Remove( spacer );
         }
 
-        public void remove()
+        public void Remove()
         {
-            parent.removeChild( this );
+            Parent.RemoveChild( this );
         }
 
-        public virtual void setPage( Page page )
+        public virtual void SetPage( Page page )
         {
-            this.page = page;
+            this.Page = page;
         }
 
-        public void setBackground( BackgroundProps bg )
+        public void SetBackground( BackgroundProps bg )
         {
-            background = bg;
+            _background = bg;
         }
 
-        public void setBorderAndPadding( BorderAndPadding bp )
+        public void SetBorderAndPadding( BorderAndPadding bp )
         {
-            this.bp = bp;
+            this._bp = bp;
         }
 
-        public virtual int spaceLeft()
+        public virtual int SpaceLeft()
         {
-            return maxHeight - currentHeight;
+            return MaxHeight - CurrentHeight;
         }
 
-        public virtual void start()
+        public virtual void Start()
         {
         }
 
         public virtual void SetHeight( int height )
         {
-            int prevHeight = currentHeight;
-            if ( height > currentHeight )
-                currentHeight = height;
+            int prevHeight = CurrentHeight;
+            if ( height > CurrentHeight )
+                CurrentHeight = height;
 
-            if ( currentHeight > getMaxHeight() )
-                currentHeight = getMaxHeight();
+            if ( CurrentHeight > GetMaxHeight() )
+                CurrentHeight = GetMaxHeight();
         }
 
-        public void setMaxHeight( int height )
+        public void SetMaxHeight( int height )
         {
-            maxHeight = height;
+            MaxHeight = height;
         }
 
-        public Area getParent()
+        public Area GetParent()
         {
-            return parent;
+            return Parent;
         }
 
-        public void setParent( Area parent )
+        public void SetParent( Area parent )
         {
-            this.parent = parent;
+            this.Parent = parent;
         }
 
-        public virtual void setIDReferences( IDReferences idReferences )
+        public virtual void SetIDReferences( IDReferences idReferences )
         {
-            this.idReferences = idReferences;
+            this._idReferences = idReferences;
         }
 
-        public virtual IDReferences getIDReferences()
+        public virtual IDReferences GetIDReferences()
         {
-            return idReferences;
+            return _idReferences;
         }
 
-        public FObj getfoCreator()
+        public FObj GetfoCreator()
         {
-            return foCreator;
+            return FoCreator;
         }
 
-        public AreaContainer getNearestAncestorAreaContainer()
+        public AreaContainer GetNearestAncestorAreaContainer()
         {
-            Area area = getParent();
+            Area area = GetParent();
             while ( area != null && !( area is AreaContainer ) )
-                area = area.getParent();
+                area = area.GetParent();
             return (AreaContainer)area;
         }
 
         public BorderAndPadding GetBorderAndPadding()
         {
-            return bp;
+            return _bp;
         }
 
-        public void addMarker( Marker marker )
+        public void AddMarker( Marker marker )
         {
-            markers.Add( marker );
+            _markers.Add( marker );
         }
 
-        public void addMarkers( ArrayList markers )
+        public void AddMarkers( ArrayList markers )
         {
             foreach ( object o in markers )
-                this.markers.Add( o );
+                this._markers.Add( o );
         }
 
-        public void addLineagePair( FObj fo, int areaPosition )
+        public void AddLineagePair( FObj fo, int areaPosition )
         {
-            returnedBy.Add( fo, areaPosition );
+            _returnedBy.Add( fo, areaPosition );
         }
 
-        public ArrayList getMarkers()
+        public ArrayList GetMarkers()
         {
-            return markers;
+            return _markers;
         }
 
-        public void setGeneratedBy( FObj generatedBy )
+        public void SetGeneratedBy( FObj generatedBy )
         {
-            this.generatedBy = generatedBy;
+            this._generatedBy = generatedBy;
         }
 
-        public FObj getGeneratedBy()
+        public FObj GetGeneratedBy()
         {
-            return generatedBy;
+            return _generatedBy;
         }
 
-        public void isFirst( bool isFirst )
+        public void IsFirst( bool isFirst )
         {
             _isFirst = isFirst;
         }
 
-        public bool isFirst()
+        public bool IsFirst()
         {
             return _isFirst;
         }
 
-        public void isLast( bool isLast )
+        public void IsLast( bool isLast )
         {
             _isLast = isLast;
         }
 
-        public bool isLast()
+        public bool IsLast()
         {
             return _isLast;
         }

@@ -40,11 +40,11 @@ namespace Fonet.Fo.Flow
             }
 
             if ( area is AreaContainer )
-                ( (AreaContainer)area ).setAreaName( regionClass );
+                ( (AreaContainer)area ).SetAreaName( regionClass );
 
-            area.setAbsoluteHeight( 0 );
+            area.SetAbsoluteHeight( 0 );
 
-            SetContentWidth( area.getContentWidth() );
+            SetContentWidth( area.GetContentWidth() );
 
             for ( var i = 0; i < numChildren; i++ )
             {

@@ -4,14 +4,14 @@ namespace Fonet.Layout
 {
     internal class AbsolutePositionProps
     {
-        public int absolutePosition = 0;
+        public int AbsolutePosition = 0;
 
-        public Length bottom = null;
+        public Length Bottom = null;
 
-        public Length left = null;
+        public Length Left = null;
 
-        public Length right = null;
+        public Length Right = null;
 
-        public Length top = null;
+        public Length Top = null;
     }
 }

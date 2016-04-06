@@ -42,20 +42,11 @@ namespace Fonet.Fo.Properties
 
         public override Property GetShorthand( PropertyList propertyList )
         {
-            Property p = null;
-            ListProperty listprop;
+            var listprop = (ListProperty)propertyList.GetExplicitProperty( "border-style" );
+            if ( listprop == null ) return null;
 
-            if ( p == null )
-            {
-                listprop = (ListProperty)propertyList.GetExplicitProperty( "border-style" );
-                if ( listprop != null )
-                {
-                    IShorthandParser shparser = new BoxPropShorthandParser( listprop );
-                    p = shparser.GetValueForProperty( PropName, this, propertyList );
-                }
-            }
-
-            return p;
+            IShorthandParser shparser = new BoxPropShorthandParser( listprop );
+            return shparser.GetValueForProperty( PropName, this, propertyList );
         }
 
         public override Property CheckEnumValues( string value )
@@ -95,9 +86,7 @@ namespace Fonet.Fo.Properties
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( _mDefaultProp == null )
-                _mDefaultProp = Make( propertyList, "none", propertyList.GetParentFObj() );
-            return _mDefaultProp;
+            return _mDefaultProp ?? ( _mDefaultProp = Make( propertyList, "none", propertyList.GetParentFObj() ) );
         }
 
         internal class Enums

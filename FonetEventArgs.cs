@@ -8,7 +8,7 @@ namespace Fonet
     /// </summary>
     public class FonetEventArgs : EventArgs
     {
-        private readonly string message;
+        private readonly string _message;
 
         /// <summary>
         ///     Initialises a new instance of the <i>FonetEventArgs</i> class.
@@ -16,7 +16,7 @@ namespace Fonet
         /// <param name="message">The text of the event message.</param>
         public FonetEventArgs( string message )
         {
-            this.message = message;
+            _message = message;
         }
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace Fonet
         /// <returns>A string which may be null.</returns>
         public string GetMessage()
         {
-            return message;
+            return _message;
         }
 
         /// <summary>

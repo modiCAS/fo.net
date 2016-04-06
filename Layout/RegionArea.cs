@@ -4,41 +4,41 @@ namespace Fonet.Layout
 {
     internal class RegionArea
     {
-        protected BackgroundProps background;
-        protected int height;
-        protected int width;
-        protected int xPosition;
-        protected int yPosition;
+        protected BackgroundProps Background;
+        protected int Height;
+        protected int Width;
+        protected int XPosition;
+        protected int YPosition;
 
         public RegionArea( int xPosition, int yPosition, int width, int height )
         {
-            this.xPosition = xPosition;
-            this.yPosition = yPosition;
-            this.width = width;
-            this.height = height;
+            this.XPosition = xPosition;
+            this.YPosition = yPosition;
+            this.Width = width;
+            this.Height = height;
         }
 
-        public AreaContainer makeAreaContainer()
+        public AreaContainer MakeAreaContainer()
         {
             var area = new AreaContainer(
-                null, xPosition, yPosition, width, height, Position.Absolute );
-            area.setBackground( getBackground() );
+                null, XPosition, YPosition, Width, Height, Position.Absolute );
+            area.SetBackground( GetBackground() );
             return area;
         }
 
-        public BackgroundProps getBackground()
+        public BackgroundProps GetBackground()
         {
-            return background;
+            return Background;
         }
 
-        public void setBackground( BackgroundProps bg )
+        public void SetBackground( BackgroundProps bg )
         {
-            background = bg;
+            Background = bg;
         }
 
         public int GetHeight()
         {
-            return height;
+            return Height;
         }
     }
 }

@@ -57,22 +57,22 @@ namespace Fonet.Fo
                 _borderAndPadding = new BorderAndPadding();
                 InitDirections();
 
-                InitBorderInfo( BorderAndPadding.TOP, _saTop );
-                InitBorderInfo( BorderAndPadding.BOTTOM, _saBottom );
-                InitBorderInfo( BorderAndPadding.LEFT, _saLeft );
-                InitBorderInfo( BorderAndPadding.RIGHT, _saRight );
+                InitBorderInfo( BorderAndPadding.Top, _saTop );
+                InitBorderInfo( BorderAndPadding.Bottom, _saBottom );
+                InitBorderInfo( BorderAndPadding.Left, _saLeft );
+                InitBorderInfo( BorderAndPadding.Right, _saRight );
             }
             return _borderAndPadding;
         }
 
         private void InitBorderInfo( int whichSide, string saSide )
         {
-            _borderAndPadding.setPadding(
+            _borderAndPadding.SetPadding(
                 whichSide, _properties.GetProperty( string.Format( MsgPaddingFmt, saSide ) ).GetCondLength() );
             int style = _properties.GetProperty( string.Format( MsgStyleFmt, saSide ) ).GetEnum();
             if ( style != Constants.None )
             {
-                _borderAndPadding.setBorder( whichSide, style,
+                _borderAndPadding.SetBorder( whichSide, style,
                     _properties.GetProperty( string.Format( MsgWidthFmt, saSide ) ).GetCondLength(),
                     _properties.GetProperty( string.Format( MsgColorFmt, saSide ) ).GetColorType() );
             }
@@ -83,15 +83,15 @@ namespace Fonet.Fo
             if ( _hyphProps == null )
             {
                 _hyphProps = new HyphenationProps();
-                _hyphProps.hyphenate = _properties.GetProperty( "hyphenate" ).GetEnum();
-                _hyphProps.hyphenationChar =
+                _hyphProps.Hyphenate = _properties.GetProperty( "hyphenate" ).GetEnum();
+                _hyphProps.HyphenationChar =
                     _properties.GetProperty( "hyphenation-character" ).GetCharacter();
-                _hyphProps.hyphenationPushCharacterCount =
+                _hyphProps.HyphenationPushCharacterCount =
                     _properties.GetProperty( "hyphenation-push-character-count" ).GetNumber().IntValue();
-                _hyphProps.hyphenationRemainCharacterCount =
+                _hyphProps.HyphenationRemainCharacterCount =
                     _properties.GetProperty( "hyphenation-remain-character-count" ).GetNumber().IntValue();
-                _hyphProps.language = _properties.GetProperty( "language" ).GetString();
-                _hyphProps.country = _properties.GetProperty( "country" ).GetString();
+                _hyphProps.Language = _properties.GetProperty( "language" ).GetString();
+                _hyphProps.Country = _properties.GetProperty( "country" ).GetString();
             }
             return _hyphProps;
         }
@@ -118,21 +118,21 @@ namespace Fonet.Fo
             switch ( _properties.GetProperty( "break-before" ).GetEnum() )
             {
             case GenericBreak.Enums.Page:
-                if ( !colArea.hasChildren() && colArea.getColumnIndex() == 1 )
+                if ( !colArea.HasChildren() && colArea.GetColumnIndex() == 1 )
                     return Status.Ok;
                 return Status.ForcePageBreak;
             case GenericBreak.Enums.OddPage:
-                if ( !colArea.hasChildren() && colArea.getColumnIndex() == 1
-                    && colArea.getPage().getNumber() % 2 != 0 )
+                if ( !colArea.HasChildren() && colArea.GetColumnIndex() == 1
+                    && colArea.GetPage().GetNumber() % 2 != 0 )
                     return Status.Ok;
                 return Status.ForcePageBreakOdd;
             case GenericBreak.Enums.EvenPage:
-                if ( !colArea.hasChildren() && colArea.getColumnIndex() == 1
-                    && colArea.getPage().getNumber() % 2 == 0 )
+                if ( !colArea.HasChildren() && colArea.GetColumnIndex() == 1
+                    && colArea.GetPage().GetNumber() % 2 == 0 )
                     return Status.Ok;
                 return Status.ForcePageBreakEven;
             case GenericBreak.Enums.Column:
-                if ( !area.hasChildren() )
+                if ( !area.HasChildren() )
                     return Status.Ok;
                 return Status.ForceColumnBreak;
             default:
@@ -161,13 +161,13 @@ namespace Fonet.Fo
         {
             var props = new MarginProps();
 
-            props.marginTop =
+            props.MarginTop =
                 _properties.GetProperty( "margin-top" ).GetLength().MValue();
-            props.marginBottom =
+            props.MarginBottom =
                 _properties.GetProperty( "margin-bottom" ).GetLength().MValue();
-            props.marginLeft =
+            props.MarginLeft =
                 _properties.GetProperty( "margin-left" ).GetLength().MValue();
-            props.marginRight =
+            props.MarginRight =
                 _properties.GetProperty( "margin-right" ).GetLength().MValue();
             return props;
         }
@@ -178,28 +178,28 @@ namespace Fonet.Fo
             {
                 _bgProps = new BackgroundProps();
 
-                _bgProps.backColor =
+                _bgProps.BackColor =
                     _properties.GetProperty( "background-color" ).GetColorType();
 
                 string src = _properties.GetProperty( "background-image" ).GetString();
                 if ( src == "none" )
-                    _bgProps.backImage = null;
+                    _bgProps.BackImage = null;
                 else if ( src == "inherit" )
-                    _bgProps.backImage = null;
+                    _bgProps.BackImage = null;
                 else
                 {
                     try
                     {
-                        _bgProps.backImage = FonetImageFactory.Make( src );
+                        _bgProps.BackImage = FonetImageFactory.Make( src );
                     }
                     catch ( FonetImageException imgex )
                     {
-                        _bgProps.backImage = null;
+                        _bgProps.BackImage = null;
                         FonetDriver.ActiveDriver.FireFonetError( imgex.Message );
                     }
                 }
 
-                _bgProps.backRepeat = _properties.GetProperty( "background-repeat" ).GetEnum();
+                _bgProps.BackRepeat = _properties.GetProperty( "background-repeat" ).GetEnum();
             }
             return _bgProps;
         }
@@ -213,13 +213,12 @@ namespace Fonet.Fo
         public AccessibilityProps GetAccessibilityProps()
         {
             var props = new AccessibilityProps();
-            string str;
-            str = _properties.GetProperty( "source-document" ).GetString();
+            string str = _properties.GetProperty( "source-document" ).GetString();
             if ( !"none".Equals( str ) )
-                props.sourceDoc = str;
+                props.SourceDoc = str;
             str = _properties.GetProperty( "role" ).GetString();
             if ( !"none".Equals( str ) )
-                props.role = str;
+                props.Role = str;
             return props;
         }
 
@@ -265,25 +264,25 @@ namespace Fonet.Fo
 
             if ( tsp != null )
             {
-                ts.setUnderlined( tsp.getUnderlined() );
-                ts.setOverlined( tsp.getOverlined() );
-                ts.setLineThrough( tsp.getLineThrough() );
+                ts.SetUnderlined( tsp.GetUnderlined() );
+                ts.SetOverlined( tsp.GetOverlined() );
+                ts.SetLineThrough( tsp.GetLineThrough() );
             }
 
             int textDecoration = _properties.GetProperty( "text-decoration" ).GetEnum();
 
             if ( textDecoration == TextDecoration.Underline )
-                ts.setUnderlined( true );
+                ts.SetUnderlined( true );
             if ( textDecoration == TextDecoration.Overline )
-                ts.setOverlined( true );
+                ts.SetOverlined( true );
             if ( textDecoration == TextDecoration.LineThrough )
-                ts.setLineThrough( true );
+                ts.SetLineThrough( true );
             if ( textDecoration == TextDecoration.NoUnderline )
-                ts.setUnderlined( false );
+                ts.SetUnderlined( false );
             if ( textDecoration == TextDecoration.NoOverline )
-                ts.setOverlined( false );
+                ts.SetOverlined( false );
             if ( textDecoration == TextDecoration.NoLineThrough )
-                ts.setLineThrough( false );
+                ts.SetLineThrough( false );
 
             return ts;
         }

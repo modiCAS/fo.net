@@ -15,7 +15,7 @@ namespace Fonet.Fo.Flow
 
         public override void SetYPosition( int value )
         {
-            AreaContainer.setYPosition( value + 2 * SpaceBefore );
+            AreaContainer.SetYPosition( value + 2 * SpaceBefore );
         }
 
         public new static FObj.Maker GetMaker()

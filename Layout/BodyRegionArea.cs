@@ -4,8 +4,8 @@ namespace Fonet.Layout
 {
     internal class BodyRegionArea : RegionArea
     {
-        private int columnCount;
-        private int columnGap;
+        private int _columnCount;
+        private int _columnGap;
 
         public BodyRegionArea(
             int xPosition, int yPosition, int width, int height )
@@ -13,33 +13,33 @@ namespace Fonet.Layout
         {
         }
 
-        public BodyAreaContainer makeBodyAreaContainer()
+        public BodyAreaContainer MakeBodyAreaContainer()
         {
             var area = new BodyAreaContainer(
-                null, xPosition, yPosition, width,
-                height, Position.Absolute, columnCount, columnGap );
-            area.setBackground( getBackground() );
+                null, XPosition, YPosition, Width,
+                Height, Position.Absolute, _columnCount, _columnGap );
+            area.SetBackground( GetBackground() );
             return area;
         }
 
-        public void setColumnCount( int columnCount )
+        public void SetColumnCount( int columnCount )
         {
-            this.columnCount = columnCount;
+            this._columnCount = columnCount;
         }
 
-        public int getColumnCount()
+        public int GetColumnCount()
         {
-            return columnCount;
+            return _columnCount;
         }
 
-        public void setColumnGap( int columnGap )
+        public void SetColumnGap( int columnGap )
         {
-            this.columnGap = columnGap;
+            this._columnGap = columnGap;
         }
 
-        public int getColumnGap()
+        public int GetColumnGap()
         {
-            return columnGap;
+            return _columnGap;
         }
     }
 }

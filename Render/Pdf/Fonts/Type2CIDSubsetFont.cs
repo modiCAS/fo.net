@@ -9,27 +9,27 @@ namespace Fonet.Render.Pdf.Fonts
     ///     A subclass of Type2CIDFont that generates a subset of a
     ///     TrueType font.
     /// </summary>
-    internal class Type2CIDSubsetFont : Type2CIDFont
+    internal class Type2CidSubsetFont : Type2CidFont
     {
         /// <summary>
         ///     Maps a glyph index to a subset index.
         /// </summary>
-        protected IndexMappings indexMappings;
+        protected IndexMappings IndexMappings;
 
         /// <summary>
         ///     Quasi-unique six character name prefix.
         /// </summary>
-        protected string namePrefix;
+        protected string NamePrefix;
 
         /// <summary>
         ///     Class constructor.
         /// </summary>
         /// <param name="properties"></param>
-        public Type2CIDSubsetFont( FontProperties properties )
+        public Type2CidSubsetFont( FontProperties properties )
             : base( properties )
         {
             InsertNotdefGlyphs();
-            namePrefix = new Random().Next( 0x100000, 0xFFFFFF ).ToString( "X" ).Substring( 0, 6 );
+            NamePrefix = new Random().Next( 0x100000, 0xFFFFFF ).ToString( "X" ).Substring( 0, 6 );
         }
 
         public override PdfWArray WArray
@@ -37,13 +37,13 @@ namespace Fonet.Render.Pdf.Fonts
             get
             {
                 // Allocate space for glyph subset
-                var subsetWidths = new int[ indexMappings.Count ];
+                var subsetWidths = new int[ IndexMappings.Count ];
 
                 // Subset indices are returned in ascending order
-                foreach ( int subsetIndex in indexMappings.SubsetIndices )
+                foreach ( int subsetIndex in IndexMappings.SubsetIndices )
                 {
-                    int glyphIndex = indexMappings.GetGlyphIndex( subsetIndex );
-                    subsetWidths[ subsetIndex ] = widths[ glyphIndex ];
+                    int glyphIndex = IndexMappings.GetGlyphIndex( subsetIndex );
+                    subsetWidths[ subsetIndex ] = WidthArray[ glyphIndex ];
                 }
 
                 var widthsArray = new PdfWArray( 0 );
@@ -55,16 +55,16 @@ namespace Fonet.Render.Pdf.Fonts
 
         public override string FontName
         {
-            get { return string.Format( "{0}+{1}", namePrefix, baseFontName ); }
+            get { return string.Format( "{0}+{1}", NamePrefix, BaseFontName ); }
         }
 
         public override byte[] FontData
         {
             get
             {
-                var input = new MemoryStream( metrics.GetFontData() );
-                var reader = new FontFileReader( input, metrics.FaceName );
-                reader.IndexMappings = indexMappings;
+                var input = new MemoryStream( Metrics.GetFontData() );
+                var reader = new FontFileReader( input, Metrics.FaceName );
+                reader.IndexMappings = IndexMappings;
                 var subset = new FontSubset( reader );
 
                 input = null;
@@ -84,34 +84,34 @@ namespace Fonet.Render.Pdf.Fonts
             // Ensure first three glyph are included.  These glyphs represent 
             // the .notdef characters which is commonly located at glyph index 0, 
             // but sometimes indices 1 or 2.
-            indexMappings = new IndexMappings();
-            indexMappings.Add( 0, 1, 2 );
+            IndexMappings = new IndexMappings();
+            IndexMappings.Add( 0, 1, 2 );
         }
 
         public override ushort MapCharacter( char c )
         {
-            return (ushort)indexMappings.GetSubsetIndex( base.MapCharacter( c ) );
+            return (ushort)IndexMappings.GetSubsetIndex( base.MapCharacter( c ) );
         }
 
         protected override void AddGlyphToCharMapping( ushort glyphIndex, char c )
         {
             int subsetIndex = -1;
-            if ( indexMappings.HasMapping( glyphIndex ) )
-                subsetIndex = indexMappings.GetSubsetIndex( glyphIndex );
+            if ( IndexMappings.HasMapping( glyphIndex ) )
+                subsetIndex = IndexMappings.GetSubsetIndex( glyphIndex );
             else
             {
                 // Generate new mapping
-                subsetIndex = indexMappings.Map( glyphIndex );
+                subsetIndex = IndexMappings.Map( glyphIndex );
             }
 
             // The usedGlyphs dictionary permits a reverse lookup (glyph index to char)
-            if ( !usedGlyphs.ContainsKey( subsetIndex ) )
-                usedGlyphs.Add( subsetIndex, c );
+            if ( !UsedGlyphs.ContainsKey( subsetIndex ) )
+                UsedGlyphs.Add( subsetIndex, c );
         }
 
         public override int GetWidth( ushort charIndex )
         {
-            int glyphIndex = indexMappings.GetGlyphIndex( charIndex );
+            int glyphIndex = IndexMappings.GetGlyphIndex( charIndex );
 
             // The widths array is keyed on character code, not glyph index
             return base.GetWidth( (ushort)glyphIndex );

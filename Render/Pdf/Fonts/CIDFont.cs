@@ -13,7 +13,7 @@ namespace Fonet.Render.Pdf.Fonts
     ///     font format.
     ///     See page 338 of the Adode PDF 1.4 specification for futher details.
     /// </remarks>
-    internal abstract class CIDFont : Font
+    internal abstract class CidFont : Font
     {
         public const int DefaultWidthConst = 1000;
 

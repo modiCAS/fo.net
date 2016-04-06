@@ -12,9 +12,9 @@ namespace Fonet.Fo.Expr
 
         public PropertyInfo( PropertyMaker maker, PropertyList plist, FObj fo )
         {
-            this._maker = maker;
-            this._plist = plist;
-            this._fo = fo;
+            _maker = maker;
+            _plist = plist;
+            _fo = fo;
         }
 
         public bool InheritsSpecified()
@@ -25,7 +25,7 @@ namespace Fonet.Fo.Expr
         public IPercentBase GetPercentBase()
         {
             IPercentBase pcbase = GetFunctionPercentBase();
-            return pcbase != null ? pcbase : _maker.GetPercentBase( _fo, _plist );
+            return pcbase ?? _maker.GetPercentBase( _fo, _plist );
         }
 
         public int CurrentFontSize()

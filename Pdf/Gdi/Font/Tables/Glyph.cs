@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace Fonet.Pdf.Gdi.Font
+namespace Fonet.Pdf.Gdi.Font.Tables
 {
     /// <summary>
     ///     Represents either a simple or composite glyph description from

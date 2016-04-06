@@ -39,7 +39,7 @@ namespace Fonet.Fo.Pagination
 
             var area = new RegionArea(
                 allocationRectangleXPosition, startY, extent, startH );
-            area.setBackground( PropMgr.GetBackgroundProps() );
+            area.SetBackground( PropMgr.GetBackgroundProps() );
 
             return area;
         }

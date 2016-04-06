@@ -1,11 +1,12 @@
 using System.Collections;
+using System.Linq;
 using Fonet.Fo.Pagination;
 using Fonet.Fo.Properties;
 using Fonet.Layout;
 
 namespace Fonet.Fo.Flow
 {
-    internal class RetrieveMarker : FObjMixed
+    internal sealed class RetrieveMarker : FObjMixed
     {
         private Marker _bestMarker;
 
@@ -14,7 +15,7 @@ namespace Fonet.Fo.Flow
 
         private readonly int _retrievePosition;
 
-        public RetrieveMarker( FObj parent, PropertyList propertyList )
+        private RetrieveMarker( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
             Name = "fo:retrieve-marker";
@@ -37,7 +38,7 @@ namespace Fonet.Fo.Flow
             if ( Marker == MarkerStart )
             {
                 Marker = 0;
-                Page containingPage = area.getPage();
+                Page containingPage = area.GetPage();
                 _bestMarker = SearchPage( containingPage );
 
                 if ( _bestMarker != null )
@@ -46,11 +47,11 @@ namespace Fonet.Fo.Flow
                     return _bestMarker.LayoutMarker( area );
                 }
 
-                AreaTree areaTree = containingPage.getAreaTree();
+                AreaTree areaTree = containingPage.GetAreaTree();
                 if ( _retrieveBoundary == RetrieveBoundary.PageSequence )
                 {
                     PageSequence pageSequence = areaTree.GetCurrentPageSequence();
-                    if ( pageSequence == containingPage.getPageSequence() )
+                    if ( pageSequence == containingPage.GetPageSequence() )
                         return LayoutBestMarker( areaTree.GetCurrentPageSequenceMarkers(), area );
                 }
                 else if ( _retrieveBoundary == RetrieveBoundary.Document )
@@ -84,61 +85,50 @@ namespace Fonet.Fo.Flow
 
         private Marker SearchPage( Page page )
         {
-            ArrayList pageMarkers = page.getMarkers();
+            ArrayList pageMarkers = page.GetMarkers();
             if ( pageMarkers.Count == 0 )
                 return null;
 
-            if ( _retrievePosition == RetrievePosition.Fic )
+            switch ( _retrievePosition )
             {
-                for ( var i = 0; i < pageMarkers.Count; i++ )
+            case RetrievePosition.Fic:
+                return pageMarkers.Cast<Marker>()
+                    .FirstOrDefault(
+                        currentMarker => currentMarker.GetMarkerClassName().Equals( _retrieveClassName ) );
+            case RetrievePosition.Fswp:
+                foreach ( Marker currentMarker in from Marker currentMarker in pageMarkers
+                    where currentMarker.GetMarkerClassName().Equals( _retrieveClassName )
+                    where currentMarker.GetRegistryArea().IsFirst()
+                    select currentMarker )
                 {
-                    var currentMarker = (Marker)pageMarkers[ i ];
-                    if ( currentMarker.GetMarkerClassName().Equals( _retrieveClassName ) )
+                    return currentMarker;
+                }
+                break;
+            case RetrievePosition.Lswp:
+                for ( int c = pageMarkers.Count - 1; c >= 0; c-- )
+                {
+                    var currentMarker = (Marker)pageMarkers[ c ];
+                    if ( !currentMarker.GetMarkerClassName().Equals( _retrieveClassName ) ) continue;
+                    if ( currentMarker.GetRegistryArea().IsFirst() )
                         return currentMarker;
                 }
-            }
-            else if ( _retrievePosition == RetrievePosition.Fswp )
-            {
-                for ( var c = 0; c < pageMarkers.Count; c++ )
-                {
-                    var currentMarker = (Marker)pageMarkers[ c ];
-                    if ( currentMarker.GetMarkerClassName().Equals( _retrieveClassName ) )
-                    {
-                        if ( currentMarker.GetRegistryArea().isFirst() )
-                            return currentMarker;
-                    }
-                }
-            }
-            else if ( _retrievePosition == RetrievePosition.Lswp )
-            {
+                break;
+            case RetrievePosition.Lewp:
                 for ( int c = pageMarkers.Count - 1; c >= 0; c-- )
                 {
                     var currentMarker = (Marker)pageMarkers[ c ];
-                    if ( currentMarker.GetMarkerClassName().Equals( _retrieveClassName ) )
-                    {
-                        if ( currentMarker.GetRegistryArea().isFirst() )
-                            return currentMarker;
-                    }
+                    if ( !currentMarker.GetMarkerClassName().Equals( _retrieveClassName ) ) continue;
+                    if ( currentMarker.GetRegistryArea().IsLast() )
+                        return currentMarker;
                 }
-            }
-            else if ( _retrievePosition == RetrievePosition.Lewp )
-            {
-                for ( int c = pageMarkers.Count - 1; c >= 0; c-- )
-                {
-                    var currentMarker = (Marker)pageMarkers[ c ];
-                    if ( currentMarker.GetMarkerClassName().Equals( _retrieveClassName ) )
-                    {
-                        if ( currentMarker.GetRegistryArea().isLast() )
-                            return currentMarker;
-                    }
-                }
-            }
-            else
+                break;
+            default:
                 throw new FonetException( "Illegal 'retrieve-position' value" );
+            }
             return null;
         }
 
-        internal new class Maker : FObj.Maker
+        private new sealed class Maker : FObj.Maker
         {
             public override FObj Make( FObj parent, PropertyList propertyList )
             {

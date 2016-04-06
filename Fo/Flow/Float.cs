@@ -1,5 +1,3 @@
-using Fonet.Layout;
-
 namespace Fonet.Fo.Flow
 {
     internal class Float : ToBeImplementedElement
@@ -13,11 +11,6 @@ namespace Fonet.Fo.Flow
         public new static FObj.Maker GetMaker()
         {
             return new Maker();
-        }
-
-        public override Status Layout( Area area )
-        {
-            return base.Layout( area );
         }
 
         internal new class Maker : FObj.Maker

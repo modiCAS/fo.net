@@ -7,7 +7,7 @@ namespace Fonet.Pdf.Security
         /// <summary>
         ///     Password that disables all security permissions
         /// </summary>
-        protected string ownerPassword;
+        private string _ownerPassword;
 
         /// <summary>
         ///     Collection of flags describing permissions granted to user who opens
@@ -17,12 +17,12 @@ namespace Fonet.Pdf.Security
         ///     The given initial value zero's out first two bits.
         ///     The PDF specification dictates that these entries must be 0.
         /// </remarks>
-        protected BitVector32 permissions = new BitVector32( -4 );
+        private BitVector32 _permissions = new BitVector32( -4 );
 
         /// <summary>
         ///     The user password
         /// </summary>
-        protected string userPassword;
+        private string _userPassword;
 
         /// <summary>
         ///     Returns the owner password as a string.
@@ -32,8 +32,8 @@ namespace Fonet.Pdf.Security
         /// </value>
         public string OwnerPassword
         {
-            get { return ownerPassword; }
-            set { ownerPassword = value; }
+            get { return _ownerPassword; }
+            set { _ownerPassword = value; }
         }
 
         /// <summary>
@@ -44,8 +44,8 @@ namespace Fonet.Pdf.Security
         /// </value>
         public string UserPassword
         {
-            get { return userPassword; }
-            set { userPassword = value; }
+            get { return _userPassword; }
+            set { _userPassword = value; }
         }
 
         /// <summary>
@@ -65,8 +65,8 @@ namespace Fonet.Pdf.Security
         /// </value>
         public int Permissions
         {
-            get { return permissions.Data; }
-            set { permissions = new BitVector32( value ); }
+            get { return _permissions.Data; }
+            set { _permissions = new BitVector32( value ); }
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace Fonet.Pdf.Security
         /// <param name="enable">If true enables printing otherwise false</param>
         public void EnablePrinting( bool enable )
         {
-            permissions[ 4 ] = enable;
+            _permissions[ 4 ] = enable;
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace Fonet.Pdf.Security
         /// <param name="enable"></param>
         public void EnableChanging( bool enable )
         {
-            permissions[ 8 ] = enable;
+            _permissions[ 8 ] = enable;
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace Fonet.Pdf.Security
         /// <param name="enable"></param>
         public void EnableCopying( bool enable )
         {
-            permissions[ 16 ] = enable;
+            _permissions[ 16 ] = enable;
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace Fonet.Pdf.Security
         /// <param name="enable"></param>
         public void EnableAdding( bool enable )
         {
-            permissions[ 32 ] = enable;
+            _permissions[ 32 ] = enable;
         }
     }
 }

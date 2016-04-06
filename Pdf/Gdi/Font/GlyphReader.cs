@@ -1,3 +1,5 @@
+using Fonet.Pdf.Gdi.Font.Tables;
+
 namespace Fonet.Pdf.Gdi.Font
 {
     internal class GlyphReader

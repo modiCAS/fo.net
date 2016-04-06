@@ -25,31 +25,15 @@ namespace Fonet.Fo.Properties
 
         public override Property GetShorthand( PropertyList propertyList )
         {
-            Property p = null;
-            ListProperty listprop;
-
-            if ( p == null )
-            {
-                listprop = (ListProperty)propertyList.GetExplicitProperty( "border-width" );
-                if ( listprop != null )
-                {
-                    IShorthandParser shparser = new BoxPropShorthandParser( listprop );
-                    p = shparser.GetValueForProperty( PropName, this, propertyList );
-                }
-            }
-
-            return p;
+            var listprop = (ListProperty)propertyList.GetExplicitProperty( "border-width" );
+            if ( listprop == null ) return null;
+            IShorthandParser shparser = new BoxPropShorthandParser( listprop );
+            return shparser.GetValueForProperty( PropName, this, propertyList );
         }
 
         private static void InitKeywords()
         {
-            _sHtKeywords = new Hashtable( 3 );
-
-            _sHtKeywords.Add( "thin", "0.5pt" );
-
-            _sHtKeywords.Add( "medium", "1pt" );
-
-            _sHtKeywords.Add( "thick", "2pt" );
+            _sHtKeywords = new Hashtable( 3 ) { { "thin", "0.5pt" }, { "medium", "1pt" }, { "thick", "2pt" } };
         }
 
         protected override string CheckValueKeywords( string keyword )
@@ -57,16 +41,12 @@ namespace Fonet.Fo.Properties
             if ( _sHtKeywords == null )
                 InitKeywords();
             var value = (string)_sHtKeywords[ keyword ];
-            if ( value == null )
-                return base.CheckValueKeywords( keyword );
-            return value;
+            return value ?? base.CheckValueKeywords( keyword );
         }
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( _mDefaultProp == null )
-                _mDefaultProp = Make( propertyList, "0pt", propertyList.GetParentFObj() );
-            return _mDefaultProp;
+            return _mDefaultProp ?? ( _mDefaultProp = Make( propertyList, "0pt", propertyList.GetParentFObj() ) );
         }
     }
 }

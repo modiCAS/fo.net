@@ -22,9 +22,7 @@ namespace Fonet.Fo.Properties
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( _mDefaultProp == null )
-                _mDefaultProp = Make( propertyList, "scroll", propertyList.GetParentFObj() );
-            return _mDefaultProp;
+            return _mDefaultProp ?? ( _mDefaultProp = Make( propertyList, "scroll", propertyList.GetParentFObj() ) );
         }
     }
 }

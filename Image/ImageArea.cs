@@ -6,66 +6,66 @@ namespace Fonet.Image
 {
     internal class ImageArea : InlineArea
     {
-        protected int align;
-        protected FonetImage image;
-        protected int valign;
-        protected int xOffset;
+        private int _align;
+        private readonly FonetImage _image;
+        private int _valign;
+        private int _xOffset;
 
-        public ImageArea( FontState fontState, FonetImage img, int AllocationWidth,
+        public ImageArea( FontState fontState, FonetImage img, int allocationWidth,
             int width, int height, int startIndent, int endIndent,
             int align )
             : base( fontState, width, 0, 0, 0 )
         {
-            currentHeight = height;
-            contentRectangleWidth = width;
-            this.height = height;
-            image = img;
-            this.align = align;
+            CurrentHeight = height;
+            ContentRectangleWidth = width;
+            Height = height;
+            _image = img;
+            _align = align;
         }
 
-        public override int getXOffset()
+        public override int GetXOffset()
         {
-            return xOffset;
+            return _xOffset;
         }
 
-        public FonetImage getImage()
+        public FonetImage GetImage()
         {
-            return image;
+            return _image;
         }
 
-        public override void render( PdfRenderer renderer )
+        public override void Render( PdfRenderer renderer )
         {
             renderer.RenderImageArea( this );
         }
 
-        public int getImageHeight()
+        public int GetImageHeight()
         {
-            return currentHeight;
+            return CurrentHeight;
         }
 
-        public void setAlign( int align )
+        public void SetAlign( int align )
         {
-            this.align = align;
+            this._align = align;
         }
 
-        public int getAlign()
+        public int GetAlign()
         {
-            return align;
+            return _align;
         }
 
-        public override void setVerticalAlign( int align )
+        public override void SetVerticalAlign( int align )
         {
-            valign = align;
+            _valign = align;
         }
 
-        public override int getVerticalAlign()
+        public override int GetVerticalAlign()
         {
-            return valign;
+            return _valign;
         }
 
-        public void setStartIndent( int startIndent )
+        public void SetStartIndent( int startIndent )
         {
-            xOffset = startIndent;
+            _xOffset = startIndent;
         }
     }
 }

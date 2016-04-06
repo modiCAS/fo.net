@@ -37,7 +37,7 @@ namespace Fonet.Fo.Flow
         public override Status Layout( Area area )
         {
             _registryArea = area;
-            area.getPage().registerMarker( this );
+            area.GetPage().RegisterMarker( this );
             return new Status( Status.Ok );
         }
 
@@ -74,18 +74,18 @@ namespace Fonet.Fo.Flow
 
         public void ReleaseRegistryArea()
         {
-            _isFirst = _registryArea.isFirst();
-            _isLast = _registryArea.isLast();
+            _isFirst = _registryArea.IsFirst();
+            _isLast = _registryArea.IsLast();
             _registryArea = null;
         }
 
-        public void resetMarker()
+        public void ResetMarkerArea()
         {
             if ( _registryArea != null )
             {
-                Page page = _registryArea.getPage();
+                Page page = _registryArea.GetPage();
                 if ( page != null )
-                    page.unregisterMarker( this );
+                    page.UnregisterMarker( this );
             }
         }
 

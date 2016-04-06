@@ -4,190 +4,190 @@ namespace Fonet.Layout.Inline
 {
     internal class ForeignObjectArea : InlineArea
     {
-        protected int aheight;
-        protected int align;
-        protected int awidth;
-        private bool chauto;
-        protected int cheight;
-        private bool cwauto;
-        protected int cwidth;
-        protected Area foreignObject;
-        private bool hauto;
-        private int overflow;
-        protected int scaling;
-        protected int valign;
-        private bool wauto;
-        protected int width;
-        protected int xOffset;
+        protected int Aheight;
+        protected int Align;
+        protected int Awidth;
+        private bool _chauto;
+        protected int Cheight;
+        private bool _cwauto;
+        protected int Cwidth;
+        protected Area ForeignObject;
+        private bool _hauto;
+        private int _overflow;
+        protected int Scaling;
+        protected int Valign;
+        private bool _wauto;
+        protected int Width;
+        protected int XOffset;
 
         public ForeignObjectArea( FontState fontState, int width )
             : base( fontState, width, 0, 0, 0 )
         {
         }
 
-        public override void render( PdfRenderer renderer )
+        public override void Render( PdfRenderer renderer )
         {
-            if ( foreignObject != null )
+            if ( ForeignObject != null )
                 renderer.RenderForeignObjectArea( this );
         }
 
-        public override int getContentWidth()
+        public override int GetContentWidth()
         {
-            return getEffectiveWidth();
+            return GetEffectiveWidth();
         }
 
         public override int GetHeight()
         {
-            return getEffectiveHeight();
+            return GetEffectiveHeight();
         }
 
-        public override int getContentHeight()
+        public override int GetContentHeight()
         {
-            return getEffectiveHeight();
+            return GetEffectiveHeight();
         }
 
-        public override int getXOffset()
+        public override int GetXOffset()
         {
-            return xOffset;
+            return XOffset;
         }
 
-        public void setStartIndent( int startIndent )
+        public void SetStartIndent( int startIndent )
         {
-            xOffset = startIndent;
+            XOffset = startIndent;
         }
 
-        public void setObject( Area fobject )
+        public void SetObject( Area fobject )
         {
-            foreignObject = fobject;
+            ForeignObject = fobject;
         }
 
-        public Area getObject()
+        public Area GetObject()
         {
-            return foreignObject;
+            return ForeignObject;
         }
 
-        public void setSizeAuto( bool wa, bool ha )
+        public void SetSizeAuto( bool wa, bool ha )
         {
-            wauto = wa;
-            hauto = ha;
+            _wauto = wa;
+            _hauto = ha;
         }
 
-        public void setContentSizeAuto( bool wa, bool ha )
+        public void SetContentSizeAuto( bool wa, bool ha )
         {
-            cwauto = wa;
-            chauto = ha;
+            _cwauto = wa;
+            _chauto = ha;
         }
 
-        public bool isContentWidthAuto()
+        public bool IsContentWidthAuto()
         {
-            return cwauto;
+            return _cwauto;
         }
 
-        public bool isContentHeightAuto()
+        public bool IsContentHeightAuto()
         {
-            return chauto;
+            return _chauto;
         }
 
-        public void setAlign( int align )
+        public void SetAlign( int align )
         {
-            this.align = align;
+            this.Align = align;
         }
 
-        public int getAlign()
+        public int GetAlign()
         {
-            return align;
+            return Align;
         }
 
-        public override void setVerticalAlign( int align )
+        public override void SetVerticalAlign( int align )
         {
-            valign = align;
+            Valign = align;
         }
 
-        public override int getVerticalAlign()
+        public override int GetVerticalAlign()
         {
-            return valign;
+            return Valign;
         }
 
-        public void setOverflow( int o )
+        public void SetOverflow( int o )
         {
-            overflow = o;
+            _overflow = o;
         }
 
-        public int getOverflow()
+        public int GetOverflow()
         {
-            return overflow;
+            return _overflow;
         }
 
         public override void SetHeight( int height )
         {
-            this.height = height;
+            this.Height = height;
         }
 
         public void SetWidth( int width )
         {
-            this.width = width;
+            this.Width = width;
         }
 
-        public void setContentHeight( int cheight )
+        public void SetContentHeight( int cheight )
         {
-            this.cheight = cheight;
+            this.Cheight = cheight;
         }
 
         public void SetContentWidth( int cwidth )
         {
-            this.cwidth = cwidth;
+            this.Cwidth = cwidth;
         }
 
-        public void setScaling( int scaling )
+        public void SetScaling( int scaling )
         {
-            this.scaling = scaling;
+            this.Scaling = scaling;
         }
 
-        public int scalingMethod()
+        public int ScalingMethod()
         {
-            return scaling;
+            return Scaling;
         }
 
-        public void setIntrinsicWidth( int w )
+        public void SetIntrinsicWidth( int w )
         {
-            awidth = w;
+            Awidth = w;
         }
 
-        public void setIntrinsicHeight( int h )
+        public void SetIntrinsicHeight( int h )
         {
-            aheight = h;
+            Aheight = h;
         }
 
-        public int getIntrinsicHeight()
+        public int GetIntrinsicHeight()
         {
-            return aheight;
+            return Aheight;
         }
 
-        public int getIntrinsicWidth()
+        public int GetIntrinsicWidth()
         {
-            return awidth;
+            return Awidth;
         }
 
-        public int getEffectiveHeight()
+        public int GetEffectiveHeight()
         {
-            if ( hauto )
+            if ( _hauto )
             {
-                if ( chauto )
-                    return aheight;
-                return cheight;
+                if ( _chauto )
+                    return Aheight;
+                return Cheight;
             }
-            return height;
+            return Height;
         }
 
-        public int getEffectiveWidth()
+        public int GetEffectiveWidth()
         {
-            if ( wauto )
+            if ( _wauto )
             {
-                if ( cwauto )
-                    return awidth;
-                return cwidth;
+                if ( _cwauto )
+                    return Awidth;
+                return Cwidth;
             }
-            return width;
+            return Width;
         }
     }
 }

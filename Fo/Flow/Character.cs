@@ -23,15 +23,13 @@ namespace Fonet.Fo.Flow
 
         public override Status Layout( Area area )
         {
-            BlockArea blockArea;
             if ( !( area is BlockArea ) )
             {
                 FonetDriver.ActiveDriver.FireFonetWarning(
                     "Currently Character can only be in a BlockArea" );
                 return new Status( Status.Ok );
             }
-            blockArea = (BlockArea)area;
-            bool textDecoration;
+            var blockArea = (BlockArea)area;
 
             AuralProps mAurProps = PropMgr.GetAuralProps();
             BorderAndPadding bap = PropMgr.GetBorderAndPadding();
@@ -49,36 +47,33 @@ namespace Fonet.Fo.Flow
             int wrapOption = Parent.Properties.GetProperty( "wrap-option" ).GetEnum();
 
             int tmp = Properties.GetProperty( "text-decoration" ).GetEnum();
-            if ( tmp == TextDecoration.Underline )
-                textDecoration = true;
-            else
-                textDecoration = false;
+            bool textDecoration = tmp == TextDecoration.Underline;
 
             char characterValue = Properties.GetProperty( "character" ).GetCharacter();
             string id = Properties.GetProperty( "id" ).GetString();
-            blockArea.getIDReferences().InitializeID( id, blockArea );
+            blockArea.GetIDReferences().InitializeID( id, blockArea );
 
-            LineArea la = blockArea.getCurrentLineArea();
+            LineArea la = blockArea.GetCurrentLineArea();
             if ( la == null )
                 return new Status( Status.AreaFullNone );
-            la.changeFont( PropMgr.GetFontState( area.getFontInfo() ) );
-            la.changeColor( red, green, blue );
-            la.changeWrapOption( wrapOption );
-            la.changeWhiteSpaceCollapse( whiteSpaceCollapse );
-            blockArea.setupLinkSet( GetLinkSet() );
-            int result = la.addCharacter( characterValue, GetLinkSet(),
+            la.ChangeFont( PropMgr.GetFontState( area.GetFontInfo() ) );
+            la.ChangeColor( red, green, blue );
+            la.ChangeWrapOption( wrapOption );
+            la.ChangeWhiteSpaceCollapse( whiteSpaceCollapse );
+            blockArea.SetupLinkSet( GetLinkSet() );
+            int result = la.AddCharacter( characterValue, GetLinkSet(),
                 textDecoration );
             if ( result == DoesnotFit )
             {
-                la = blockArea.createNextLineArea();
+                la = blockArea.CreateNextLineArea();
                 if ( la == null )
                     return new Status( Status.AreaFullNone );
-                la.changeFont( PropMgr.GetFontState( area.getFontInfo() ) );
-                la.changeColor( red, green, blue );
-                la.changeWrapOption( wrapOption );
-                la.changeWhiteSpaceCollapse( whiteSpaceCollapse );
-                blockArea.setupLinkSet( GetLinkSet() );
-                la.addCharacter( characterValue, GetLinkSet(),
+                la.ChangeFont( PropMgr.GetFontState( area.GetFontInfo() ) );
+                la.ChangeColor( red, green, blue );
+                la.ChangeWrapOption( wrapOption );
+                la.ChangeWhiteSpaceCollapse( whiteSpaceCollapse );
+                blockArea.SetupLinkSet( GetLinkSet() );
+                la.AddCharacter( characterValue, GetLinkSet(),
                     textDecoration );
             }
             return new Status( Status.Ok );

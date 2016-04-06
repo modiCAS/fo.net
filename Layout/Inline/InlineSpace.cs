@@ -4,85 +4,85 @@ namespace Fonet.Layout.Inline
 {
     internal class InlineSpace : Space
     {
-        private bool eatable;
-        protected bool lineThrough;
-        protected bool overlined;
-        private bool resizeable = true;
-        private int size;
-        protected bool underlined;
+        private bool _eatable;
+        protected bool LineThrough;
+        protected bool Overlined;
+        private bool _resizeable = true;
+        private int _size;
+        protected bool Underlined;
 
         public InlineSpace( int amount )
         {
-            size = amount;
+            _size = amount;
         }
 
         public InlineSpace( int amount, bool resizeable )
         {
-            this.resizeable = resizeable;
-            size = amount;
+            this._resizeable = resizeable;
+            _size = amount;
         }
 
-        public void setUnderlined( bool ul )
+        public void SetUnderlined( bool ul )
         {
-            underlined = ul;
+            Underlined = ul;
         }
 
-        public bool getUnderlined()
+        public bool GetUnderlined()
         {
-            return underlined;
+            return Underlined;
         }
 
-        public void setOverlined( bool ol )
+        public void SetOverlined( bool ol )
         {
-            overlined = ol;
+            Overlined = ol;
         }
 
-        public bool getOverlined()
+        public bool GetOverlined()
         {
-            return overlined;
+            return Overlined;
         }
 
-        public void setLineThrough( bool lt )
+        public void SetLineThrough( bool lt )
         {
-            lineThrough = lt;
+            LineThrough = lt;
         }
 
-        public bool getLineThrough()
+        public bool GetLineThrough()
         {
-            return lineThrough;
+            return LineThrough;
         }
 
-        public int getSize()
+        public int GetSize()
         {
-            return size;
+            return _size;
         }
 
-        public void setSize( int amount )
+        public void SetSize( int amount )
         {
-            size = amount;
+            _size = amount;
         }
 
-        public bool getResizeable()
+        public bool GetResizeable()
         {
-            return resizeable;
+            return _resizeable;
         }
 
-        public void setResizeable( bool resizeable )
+        public void SetResizeable( bool resizeable )
         {
-            this.resizeable = resizeable;
+            this._resizeable = resizeable;
         }
 
-        public void setEatable( bool eatable )
+        public void SetEatable( bool eatable )
         {
-            this.eatable = eatable;
+            this._eatable = eatable;
         }
 
-        public bool isEatable()
+        public bool IsEatable()
         {
-            return eatable;
+            return _eatable;
         }
 
-        public override void render( PdfRenderer renderer )
+        public override void Render( PdfRenderer renderer )
         {
             renderer.RenderInlineSpace( this );
         }

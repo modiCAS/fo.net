@@ -21,144 +21,144 @@ namespace Fonet.Render.Pdf
         /// <remarks>
         ///     TODO: remove use of this.
         /// </remarks>
-        private readonly StringBuilder _wordAreaPDF = new StringBuilder();
+        private readonly StringBuilder _wordAreaPdf = new StringBuilder();
 
         /// <summary>
         ///     The current annotation list to add annotations to.
         /// </summary>
-        private PdfAnnotList currentAnnotList;
+        private PdfAnnotList _currentAnnotList;
 
         /// <summary>
         ///     The horizontal position of the current area container.
         /// </summary>
-        private int currentAreaContainerXPosition;
+        private int _currentAreaContainerXPosition;
 
         /// <summary>
         ///     The current color/gradient to fill shapes with.
         /// </summary>
-        private PdfColor currentFill;
+        private PdfColor _currentFill;
 
         /// <summary>
         ///     The current (internal) font name.
         /// </summary>
-        private string currentFontName;
+        private string _currentFontName;
 
         /// <summary>
         ///     The current font size in millipoints.
         /// </summary>
-        private int currentFontSize;
+        private int _currentFontSize;
 
-        private float currentLetterSpacing = float.NaN;
+        private float _currentLetterSpacing = float.NaN;
 
         /// <summary>
         ///     The current page to add annotations to.
         /// </summary>
-        private PdfPage currentPage;
+        private PdfPage _currentPage;
 
         /// <summary>
         ///     The current stream to add PDF commands to.
         /// </summary>
-        private PdfContentStream currentStream;
+        private PdfContentStream _currentStream;
 
         /// <summary>
         ///     The current horizontal position in millipoints from left.
         /// </summary>
-        private int currentXPosition;
+        private int _currentXPosition;
 
         /// <summary>
         ///     The current vertical position in millipoints from bottom.
         /// </summary>
-        private int currentYPosition;
+        private int _currentYPosition;
 
         /// <summary>
         ///     Provides triplet to font resolution.
         /// </summary>
-        private FontInfo fontInfo;
+        private FontInfo _fontInfo;
 
         /// <summary>
         ///     Handles adding base 14 and all system fonts.
         /// </summary>
-        private FontSetup fontSetup;
+        private FontSetup _fontSetup;
 
         /// <summary>
         ///     The IDReferences for this document.
         /// </summary>
-        private IDReferences idReferences;
+        private IDReferences _idReferences;
 
         /// <summary>
         ///     User specified rendering options.
         /// </summary>
-        private PdfRendererOptions options;
+        private PdfRendererOptions _options;
 
         /// <summary>
         ///     The PDF Document being created.
         /// </summary>
-        private PdfCreator pdfDoc;
+        private PdfCreator _pdfDoc;
 
         /// <summary>
         ///     The /Resources object of the PDF document being created.
         /// </summary>
-        private PdfResources pdfResources;
+        private PdfResources _pdfResources;
 
         /// <summary>
         ///     Previous values used for text-decoration drawing.
         /// </summary>
-        private PdfColor prevLineThroughColor;
+        private PdfColor _prevLineThroughColor;
 
         /// <summary>
         ///     Previous values used for text-decoration drawing.
         /// </summary>
-        private int prevLineThroughSize;
+        private int _prevLineThroughSize;
 
         /// <summary>
         ///     Previous values used for text-decoration drawing.
         /// </summary>
-        private int prevLineThroughXEndPos;
+        private int _prevLineThroughXEndPos;
 
         /// <summary>
         ///     Previous values used for text-decoration drawing.
         /// </summary>
-        private int prevLineThroughYEndPos;
+        private int _prevLineThroughYEndPos;
 
         /// <summary>
         ///     Previous values used for text-decoration drawing.
         /// </summary>
-        private PdfColor prevOverlineColor;
+        private PdfColor _prevOverlineColor;
 
         /// <summary>
         ///     Previous values used for text-decoration drawing.
         /// </summary>
-        private int prevOverlineSize;
+        private int _prevOverlineSize;
 
         /// <summary>
         ///     Previous values used for text-decoration drawing.
         /// </summary>
-        private int prevOverlineXEndPos;
+        private int _prevOverlineXEndPos;
 
         /// <summary>
         ///     Previous values used for text-decoration drawing.
         /// </summary>
-        private int prevOverlineYEndPos;
+        private int _prevOverlineYEndPos;
 
         /// <summary>
         ///     Previous values used for text-decoration drawing.
         /// </summary>
-        private PdfColor prevUnderlineColor;
+        private PdfColor _prevUnderlineColor;
 
         /// <summary>
         ///     Previous values used for text-decoration drawing.
         /// </summary>
-        private int prevUnderlineSize;
+        private int _prevUnderlineSize;
 
         /// <summary>
         ///     Previous values used for text-decoration drawing.
         /// </summary>
-        private int prevUnderlineXEndPos;
+        private int _prevUnderlineXEndPos;
 
         /// <summary>
         ///     Previous values used for text-decoration drawing.
         /// </summary>
-        private int prevUnderlineYEndPos;
+        private int _prevUnderlineYEndPos;
 
         /// <summary>
         ///     The  width of the previous word.
@@ -166,7 +166,7 @@ namespace Fonet.Render.Pdf
         /// <remarks>
         ///     Used to calculate space between.
         /// </remarks>
-        private int prevWordWidth;
+        private int _prevWordWidth;
 
         /// <summary>
         ///     The previous X coordinate of the last word written.
@@ -174,7 +174,7 @@ namespace Fonet.Render.Pdf
         /// <remarks>
         ///     Used to calculate how much space between two words.
         /// </remarks>
-        private int prevWordX;
+        private int _prevWordX;
 
         /// <summary>
         ///     The previous Y coordinate of the last word written.
@@ -182,19 +182,19 @@ namespace Fonet.Render.Pdf
         /// <remarks>
         ///     Used to decide if we can draw the next word on the same line.
         /// </remarks>
-        private int prevWordY;
+        private int _prevWordY;
 
         /// <summary>
         ///     True if a TJ command is left to be written.
         /// </summary>
-        private bool textOpen;
+        private bool _textOpen;
 
         /// <summary>
         ///     Create the PDF renderer.
         /// </summary>
         internal PdfRenderer( Stream stream )
         {
-            pdfDoc = new PdfCreator( stream );
+            _pdfDoc = new PdfCreator( stream );
         }
 
         /// <summary>
@@ -217,36 +217,36 @@ namespace Fonet.Render.Pdf
                     throw new ArgumentException( "Options must be an instance of PdfRendererOptions" );
 
                 // Guaranteed to work because of above check
-                options = value;
+                _options = value;
             }
         }
 
         public void StartRenderer()
         {
-            if ( options != null )
-                pdfDoc.SetOptions( options );
-            pdfDoc.OutputHeader();
+            if ( _options != null )
+                _pdfDoc.SetOptions( _options );
+            _pdfDoc.OutputHeader();
         }
 
         public void StopRenderer()
         {
-            fontSetup.AddToResources( new PdfFontCreator( pdfDoc ), pdfDoc.GetResources() );
-            pdfDoc.OutputTrailer();
+            _fontSetup.AddToResources( new PdfFontCreator( _pdfDoc ), _pdfDoc.GetResources() );
+            _pdfDoc.OutputTrailer();
 
-            pdfDoc = null;
-            pdfResources = null;
-            currentStream = null;
-            currentAnnotList = null;
-            currentPage = null;
+            _pdfDoc = null;
+            _pdfResources = null;
+            _currentStream = null;
+            _currentAnnotList = null;
+            _currentPage = null;
 
-            idReferences = null;
-            currentFontName = string.Empty;
-            currentFill = null;
-            prevUnderlineColor = null;
-            prevOverlineColor = null;
-            prevLineThroughColor = null;
-            fontSetup = null;
-            fontInfo = null;
+            _idReferences = null;
+            _currentFontName = string.Empty;
+            _currentFill = null;
+            _prevUnderlineColor = null;
+            _prevOverlineColor = null;
+            _prevLineThroughColor = null;
+            _fontSetup = null;
+            _fontInfo = null;
         }
 
         /// <summary>
@@ -254,134 +254,134 @@ namespace Fonet.Render.Pdf
         /// <param name="fontInfo"></param>
         public void SetupFontInfo( FontInfo fontInfo )
         {
-            this.fontInfo = fontInfo;
-            fontSetup = new FontSetup(
-                fontInfo, options == null ? FontType.Link : options.FontType );
+            this._fontInfo = fontInfo;
+            _fontSetup = new FontSetup(
+                fontInfo, _options == null ? FontType.Link : _options.FontType );
         }
 
         public void RenderSpanArea( SpanArea area )
         {
-            foreach ( Box b in area.getChildren() )
-                b.render( this ); // column areas
+            foreach ( Box b in area.GetChildren() )
+                b.Render( this ); // column areas
         }
 
         public void RenderBodyAreaContainer( BodyAreaContainer area )
         {
-            int saveY = currentYPosition;
-            int saveX = currentAreaContainerXPosition;
+            int saveY = _currentYPosition;
+            int saveX = _currentAreaContainerXPosition;
 
-            if ( area.getPosition() == Position.Absolute )
+            if ( area.GetPosition() == Position.Absolute )
             {
                 // Y position is computed assuming positive Y axis, adjust for negative postscript one
-                currentYPosition = area.GetYPosition();
-                currentAreaContainerXPosition = area.getXPosition();
+                _currentYPosition = area.GetYPosition();
+                _currentAreaContainerXPosition = area.GetXPosition();
             }
-            else if ( area.getPosition() == Position.Relative )
+            else if ( area.GetPosition() == Position.Relative )
             {
-                currentYPosition -= area.GetYPosition();
-                currentAreaContainerXPosition += area.getXPosition();
+                _currentYPosition -= area.GetYPosition();
+                _currentAreaContainerXPosition += area.GetXPosition();
             }
 
-            currentXPosition = currentAreaContainerXPosition;
-            int rx = currentAreaContainerXPosition;
-            int ry = currentYPosition;
+            _currentXPosition = _currentAreaContainerXPosition;
+            int rx = _currentAreaContainerXPosition;
+            int ry = _currentYPosition;
 
-            int w = area.getAllocationWidth();
-            int h = area.getMaxHeight();
+            int w = area.GetAllocationWidth();
+            int h = area.GetMaxHeight();
 
             DoBackground( area, rx, ry, w, h );
 
             // floats & footnotes stuff
-            RenderAreaContainer( area.getBeforeFloatReferenceArea() );
-            RenderAreaContainer( area.getFootnoteReferenceArea() );
+            RenderAreaContainer( area.GetBeforeFloatReferenceArea() );
+            RenderAreaContainer( area.GetFootnoteReferenceArea() );
 
             // main reference area
-            foreach ( Box b in area.getMainReferenceArea().getChildren() )
-                b.render( this ); // span areas
+            foreach ( Box b in area.GetMainReferenceArea().GetChildren() )
+                b.Render( this ); // span areas
 
-            if ( area.getPosition() != Position.Static )
+            if ( area.GetPosition() != Position.Static )
             {
-                currentYPosition = saveY;
-                currentAreaContainerXPosition = saveX;
+                _currentYPosition = saveY;
+                _currentAreaContainerXPosition = saveX;
             }
             else
-                currentYPosition -= area.GetHeight();
+                _currentYPosition -= area.GetHeight();
         }
 
         public void RenderAreaContainer( AreaContainer area )
         {
-            int saveY = currentYPosition;
-            int saveX = currentAreaContainerXPosition;
+            int saveY = _currentYPosition;
+            int saveX = _currentAreaContainerXPosition;
 
-            if ( area.getPosition() == Position.Absolute )
+            if ( area.GetPosition() == Position.Absolute )
             {
                 // XPosition and YPosition give the content rectangle position
-                currentYPosition = area.GetYPosition();
-                currentAreaContainerXPosition = area.getXPosition();
+                _currentYPosition = area.GetYPosition();
+                _currentAreaContainerXPosition = area.GetXPosition();
             }
-            else if ( area.getPosition() == Position.Relative )
+            else if ( area.GetPosition() == Position.Relative )
             {
-                currentYPosition -= area.GetYPosition();
-                currentAreaContainerXPosition += area.getXPosition();
+                _currentYPosition -= area.GetYPosition();
+                _currentAreaContainerXPosition += area.GetXPosition();
             }
-            else if ( area.getPosition() == Position.Static )
+            else if ( area.GetPosition() == Position.Static )
             {
-                currentYPosition -= area.getPaddingTop()
-                    + area.getBorderTopWidth();
+                _currentYPosition -= area.GetPaddingTop()
+                    + area.GetBorderTopWidth();
             }
 
-            currentXPosition = currentAreaContainerXPosition;
+            _currentXPosition = _currentAreaContainerXPosition;
             DoFrame( area );
 
-            foreach ( Box b in area.getChildren() )
-                b.render( this );
+            foreach ( Box b in area.GetChildren() )
+                b.Render( this );
 
             // Restore previous origin
-            currentYPosition = saveY;
-            currentAreaContainerXPosition = saveX;
-            if ( area.getPosition() == Position.Static )
-                currentYPosition -= area.GetHeight();
+            _currentYPosition = saveY;
+            _currentAreaContainerXPosition = saveX;
+            if ( area.GetPosition() == Position.Static )
+                _currentYPosition -= area.GetHeight();
         }
 
         public void RenderBlockArea( BlockArea area )
         {
             // KLease: Temporary test to fix block positioning
             // Offset ypos by padding and border widths
-            currentYPosition -= area.getPaddingTop()
-                + area.getBorderTopWidth();
+            _currentYPosition -= area.GetPaddingTop()
+                + area.GetBorderTopWidth();
             DoFrame( area );
-            foreach ( Box b in area.getChildren() )
-                b.render( this );
-            currentYPosition -= area.getPaddingBottom()
-                + area.getBorderBottomWidth();
+            foreach ( Box b in area.GetChildren() )
+                b.Render( this );
+            _currentYPosition -= area.GetPaddingBottom()
+                + area.GetBorderBottomWidth();
         }
 
         public void RenderLineArea( LineArea area )
         {
-            int rx = currentAreaContainerXPosition + area.getStartIndent();
-            int ry = currentYPosition;
-            int w = area.getContentWidth();
+            int rx = _currentAreaContainerXPosition + area.GetStartIndent();
+            int ry = _currentYPosition;
+            int w = area.GetContentWidth();
             int h = area.GetHeight();
 
-            currentYPosition -= area.getPlacementOffset();
-            currentXPosition = rx;
+            _currentYPosition -= area.GetPlacementOffset();
+            _currentXPosition = rx;
 
-            int bl = currentYPosition;
+            int bl = _currentYPosition;
 
-            foreach ( Box b in area.getChildren() )
+            foreach ( Box b in area.GetChildren() )
             {
                 if ( b is InlineArea )
                 {
                     var ia = (InlineArea)b;
-                    currentYPosition = ry - ia.getYOffset();
+                    _currentYPosition = ry - ia.GetYOffset();
                 }
                 else
-                    currentYPosition = ry - area.getPlacementOffset();
-                b.render( this );
+                    _currentYPosition = ry - area.GetPlacementOffset();
+                b.Render( this );
             }
 
-            currentYPosition = ry - h;
-            currentXPosition = rx;
+            _currentYPosition = ry - h;
+            _currentXPosition = rx;
         }
 
         /**
@@ -402,10 +402,10 @@ namespace Fonet.Render.Pdf
         {
             CloseText();
 
-            currentStream.Write( "ET\nq\n" + stroke.getColorSpaceOut( false )
-                + PdfNumber.doubleOut( x1 / 1000f ) + " " + PdfNumber.doubleOut( y1 / 1000f ) + " m "
-                + PdfNumber.doubleOut( x2 / 1000f ) + " " + PdfNumber.doubleOut( y2 / 1000f ) + " l "
-                + PdfNumber.doubleOut( th / 1000f ) + " w S\n" + "Q\nBT\n" );
+            _currentStream.Write( "ET\nq\n" + stroke.GetColorSpaceOut( false )
+                + PdfNumber.DoubleOut( x1 / 1000f ) + " " + PdfNumber.DoubleOut( y1 / 1000f ) + " m "
+                + PdfNumber.DoubleOut( x2 / 1000f ) + " " + PdfNumber.DoubleOut( y2 / 1000f ) + " l "
+                + PdfNumber.DoubleOut( th / 1000f ) + " w S\n" + "Q\nBT\n" );
         }
 
         /**
@@ -426,10 +426,10 @@ namespace Fonet.Render.Pdf
             PdfColor stroke )
         {
             CloseText();
-            currentStream.Write( "ET\nq\n" + stroke.getColorSpaceOut( false )
-                + SetRuleStylePattern( rs ) + PdfNumber.doubleOut( x1 / 1000f ) + " "
-                + PdfNumber.doubleOut( y1 / 1000f ) + " m " + PdfNumber.doubleOut( x2 / 1000f ) + " "
-                + PdfNumber.doubleOut( y2 / 1000f ) + " l " + PdfNumber.doubleOut( th / 1000f ) + " w S\n"
+            _currentStream.Write( "ET\nq\n" + stroke.GetColorSpaceOut( false )
+                + SetRuleStylePattern( rs ) + PdfNumber.DoubleOut( x1 / 1000f ) + " "
+                + PdfNumber.DoubleOut( y1 / 1000f ) + " m " + PdfNumber.DoubleOut( x2 / 1000f ) + " "
+                + PdfNumber.DoubleOut( y2 / 1000f ) + " l " + PdfNumber.DoubleOut( th / 1000f ) + " w S\n"
                 + "Q\nBT\n" );
         }
 
@@ -446,9 +446,9 @@ namespace Fonet.Render.Pdf
         private void AddRect( int x, int y, int w, int h, PdfColor stroke )
         {
             CloseText();
-            currentStream.Write( "ET\nq\n" + stroke.getColorSpaceOut( false )
-                + PdfNumber.doubleOut( x / 1000f ) + " " + PdfNumber.doubleOut( y / 1000f ) + " "
-                + PdfNumber.doubleOut( w / 1000f ) + " " + PdfNumber.doubleOut( h / 1000f ) + " re s\n"
+            _currentStream.Write( "ET\nq\n" + stroke.GetColorSpaceOut( false )
+                + PdfNumber.DoubleOut( x / 1000f ) + " " + PdfNumber.DoubleOut( y / 1000f ) + " "
+                + PdfNumber.DoubleOut( w / 1000f ) + " " + PdfNumber.DoubleOut( h / 1000f ) + " re s\n"
                 + "Q\nBT\n" );
         }
 
@@ -467,10 +467,10 @@ namespace Fonet.Render.Pdf
             PdfColor fill )
         {
             CloseText();
-            currentStream.Write( "ET\nq\n" + fill.getColorSpaceOut( true )
-                + stroke.getColorSpaceOut( false ) + PdfNumber.doubleOut( x / 1000f )
-                + " " + PdfNumber.doubleOut( y / 1000f ) + " " + PdfNumber.doubleOut( w / 1000f ) + " "
-                + PdfNumber.doubleOut( h / 1000f ) + " re b\n" + "Q\nBT\n" );
+            _currentStream.Write( "ET\nq\n" + fill.GetColorSpaceOut( true )
+                + stroke.GetColorSpaceOut( false ) + PdfNumber.DoubleOut( x / 1000f )
+                + " " + PdfNumber.DoubleOut( y / 1000f ) + " " + PdfNumber.DoubleOut( w / 1000f ) + " "
+                + PdfNumber.DoubleOut( h / 1000f ) + " re b\n" + "Q\nBT\n" );
         }
 
         /**
@@ -487,9 +487,9 @@ namespace Fonet.Render.Pdf
             PdfColor fill )
         {
             CloseText();
-            currentStream.Write( "ET\nq\n" + fill.getColorSpaceOut( true )
-                + PdfNumber.doubleOut( x / 1000f ) + " " + PdfNumber.doubleOut( y / 1000f ) + " "
-                + PdfNumber.doubleOut( w / 1000f ) + " " + PdfNumber.doubleOut( h / 1000f ) + " re f\n"
+            _currentStream.Write( "ET\nq\n" + fill.GetColorSpaceOut( true )
+                + PdfNumber.DoubleOut( x / 1000f ) + " " + PdfNumber.DoubleOut( y / 1000f ) + " "
+                + PdfNumber.DoubleOut( w / 1000f ) + " " + PdfNumber.DoubleOut( h / 1000f ) + " re f\n"
                 + "Q\nBT\n" );
         }
 
@@ -501,25 +501,25 @@ namespace Fonet.Render.Pdf
 
         public void RenderImageArea( ImageArea area )
         {
-            int x = currentXPosition + area.getXOffset();
-            int y = currentYPosition;
-            int w = area.getContentWidth();
+            int x = _currentXPosition + area.GetXOffset();
+            int y = _currentYPosition;
+            int w = area.GetContentWidth();
             int h = area.GetHeight();
 
-            currentYPosition -= h;
+            _currentYPosition -= h;
 
-            FonetImage img = area.getImage();
+            FonetImage img = area.GetImage();
 
-            PdfXObject xobj = pdfDoc.AddImage( img );
+            PdfXObject xobj = _pdfDoc.AddImage( img );
             CloseText();
 
-            currentStream.Write( "ET\nq\n" + PdfNumber.doubleOut( w / 1000f ) + " 0 0 "
-                + PdfNumber.doubleOut( h / 1000f ) + " "
-                + PdfNumber.doubleOut( x / 1000f ) + " "
-                + PdfNumber.doubleOut( ( y - h ) / 1000f ) + " cm\n" + "/" + xobj.Name.Name
+            _currentStream.Write( "ET\nq\n" + PdfNumber.DoubleOut( w / 1000f ) + " 0 0 "
+                + PdfNumber.DoubleOut( h / 1000f ) + " "
+                + PdfNumber.DoubleOut( x / 1000f ) + " "
+                + PdfNumber.DoubleOut( ( y - h ) / 1000f ) + " cm\n" + "/" + xobj.Name.Name
                 + " Do\nQ\nBT\n" );
 
-            currentXPosition += area.getContentWidth();
+            _currentXPosition += area.GetContentWidth();
         }
 
         /**
@@ -529,9 +529,9 @@ namespace Fonet.Render.Pdf
         public void RenderForeignObjectArea( ForeignObjectArea area )
         {
             // if necessary need to scale and align the content
-            currentXPosition = currentXPosition + area.getXOffset();
+            _currentXPosition = _currentXPosition + area.GetXOffset();
             // TODO: why was this here? this.currentYPosition = this.currentYPosition;
-            switch ( area.getAlign() )
+            switch ( area.GetAlign() )
             {
             case TextAlign.Start:
                 break;
@@ -541,7 +541,7 @@ namespace Fonet.Render.Pdf
             case TextAlign.Justify:
                 break;
             }
-            switch ( area.getVerticalAlign() )
+            switch ( area.GetVerticalAlign() )
             {
             case VerticalAlign.Baseline:
                 break;
@@ -563,10 +563,10 @@ namespace Fonet.Render.Pdf
             CloseText();
 
             // in general the content will not be text
-            currentStream.Write( "ET\n" );
+            _currentStream.Write( "ET\n" );
             // align and scale
-            currentStream.Write( "q\n" );
-            switch ( area.scalingMethod() )
+            _currentStream.Write( "q\n" );
+            switch ( area.ScalingMethod() )
             {
             case Scaling.Uniform:
                 break;
@@ -576,7 +576,7 @@ namespace Fonet.Render.Pdf
             // if the overflow is auto (default), scroll or visible
             // then the contents should not be clipped, since this
             // is considered a printing medium.
-            switch ( area.getOverflow() )
+            switch ( area.GetOverflow() )
             {
             case Overflow.Visible:
             case Overflow.Scroll:
@@ -586,10 +586,10 @@ namespace Fonet.Render.Pdf
                 break;
             }
 
-            area.getObject().render( this );
-            currentStream.Write( "Q\n" );
-            currentStream.Write( "BT\n" );
-            currentXPosition += area.getEffectiveWidth();
+            area.GetObject().Render( this );
+            _currentStream.Write( "Q\n" );
+            _currentStream.Write( "BT\n" );
+            _currentXPosition += area.GetEffectiveWidth();
             // this.currentYPosition -= area.getEffectiveHeight();
         }
 
@@ -603,16 +603,16 @@ namespace Fonet.Render.Pdf
         {
             // TODO: I don't understand why we are locking the private member
             // _wordAreaPDF.  Maybe this string buffer was originally static? (MG)
-            lock ( _wordAreaPDF )
+            lock ( _wordAreaPdf )
             {
-                StringBuilder pdf = _wordAreaPDF;
+                StringBuilder pdf = _wordAreaPdf;
                 pdf.Length = 0;
 
                 GdiKerningPairs kerning = null;
                 var kerningAvailable = false;
 
                 // If no options are supplied, by default we do not enable kerning
-                if ( options != null && options.Kerning )
+                if ( _options != null && _options.Kerning )
                 {
                     kerning = area.GetFontState().Kerning;
                     if ( kerning != null && kerning.Count > 0 )
@@ -629,92 +629,92 @@ namespace Fonet.Render.Pdf
                 string startText = useMultiByte ? "<" : "(";
                 string endText = useMultiByte ? "> " : ") ";
 
-                if ( !name.Equals( currentFontName ) || size != currentFontSize )
+                if ( !name.Equals( _currentFontName ) || size != _currentFontSize )
                 {
                     CloseText();
 
-                    currentFontName = name;
-                    currentFontSize = size;
+                    _currentFontName = name;
+                    _currentFontSize = size;
                     pdf = pdf.Append( "/" + name + " " +
-                        PdfNumber.doubleOut( size / 1000f ) + " Tf\n" );
+                        PdfNumber.DoubleOut( size / 1000f ) + " Tf\n" );
                 }
 
                 // Do letter spacing (must be outside of [...] TJ]
                 float letterspacing = area.GetFontState().LetterSpacing / 1000f;
-                if ( letterspacing != currentLetterSpacing )
+                if ( letterspacing != _currentLetterSpacing )
                 {
-                    currentLetterSpacing = letterspacing;
+                    _currentLetterSpacing = letterspacing;
                     CloseText();
-                    pdf.Append( PdfNumber.doubleOut( letterspacing ) );
+                    pdf.Append( PdfNumber.DoubleOut( letterspacing ) );
                     pdf.Append( " Tc\n" );
                 }
 
-                PdfColor areaColor = currentFill;
+                PdfColor areaColor = _currentFill;
 
-                if ( areaColor == null || areaColor.getRed() != area.getRed()
-                    || areaColor.getGreen() != area.getGreen()
-                    || areaColor.getBlue() != area.getBlue() )
+                if ( areaColor == null || areaColor.GetRed() != area.GetRed()
+                    || areaColor.GetGreen() != area.GetGreen()
+                    || areaColor.GetBlue() != area.GetBlue() )
                 {
-                    areaColor = new PdfColor( area.getRed(),
-                        area.getGreen(),
-                        area.getBlue() );
+                    areaColor = new PdfColor( area.GetRed(),
+                        area.GetGreen(),
+                        area.GetBlue() );
 
 
                     CloseText();
-                    currentFill = areaColor;
-                    pdf.Append( currentFill.getColorSpaceOut( true ) );
+                    _currentFill = areaColor;
+                    pdf.Append( _currentFill.GetColorSpaceOut( true ) );
                 }
 
 
-                int rx = currentXPosition;
-                int bl = currentYPosition;
+                int rx = _currentXPosition;
+                int bl = _currentYPosition;
 
                 AddWordLines( area, rx, bl, size, areaColor );
 
-                if ( !textOpen || bl != prevWordY )
+                if ( !_textOpen || bl != _prevWordY )
                 {
                     CloseText();
 
-                    pdf.Append( "1 0 0 1 " + PdfNumber.doubleOut( rx / 1000f ) +
-                        " " + PdfNumber.doubleOut( bl / 1000f ) + " Tm [" + startText );
-                    prevWordY = bl;
-                    textOpen = true;
+                    pdf.Append( "1 0 0 1 " + PdfNumber.DoubleOut( rx / 1000f ) +
+                        " " + PdfNumber.DoubleOut( bl / 1000f ) + " Tm [" + startText );
+                    _prevWordY = bl;
+                    _textOpen = true;
                 }
                 else
                 {
                     // express the space between words in thousandths of an em
-                    int space = prevWordX - rx + prevWordWidth;
-                    float emDiff = space / (float)currentFontSize * 1000f;
+                    int space = _prevWordX - rx + _prevWordWidth;
+                    float emDiff = space / (float)_currentFontSize * 1000f;
                     // this prevents a problem in Acrobat Reader where large
                     // numbers cause text to disappear or default to a limit
                     if ( emDiff < -33000 )
                     {
                         CloseText();
 
-                        pdf.Append( "1 0 0 1 " + PdfNumber.doubleOut( rx / 1000f ) +
-                            " " + PdfNumber.doubleOut( bl / 1000f ) + " Tm [" + startText );
-                        textOpen = true;
+                        pdf.Append( "1 0 0 1 " + PdfNumber.DoubleOut( rx / 1000f ) +
+                            " " + PdfNumber.DoubleOut( bl / 1000f ) + " Tm [" + startText );
+                        _textOpen = true;
                     }
                     else
                     {
-                        pdf.Append( PdfNumber.doubleOut( emDiff ) );
+                        pdf.Append( PdfNumber.DoubleOut( emDiff ) );
                         pdf.Append( " " );
                         pdf.Append( startText );
                     }
                 }
-                prevWordWidth = area.getContentWidth();
-                prevWordX = rx;
+                _prevWordWidth = area.GetContentWidth();
+                _prevWordX = rx;
 
                 string s;
-                if ( area.getPageNumberID() != null )
+                if ( area.GetPageNumberID() != null )
                 {
                     // This text is a page number, so resolve it
-                    s = idReferences.GetPageNumber( area.getPageNumberID() );
+                    s = _idReferences.GetPageNumber( area.GetPageNumberID() );
                     if ( s == null )
                         s = string.Empty;
                 }
                 else
-                    s = area.getText();
+                    s = area.GetText();
 
                 int wordLength = s.Length;
                 for ( var index = 0; index < wordLength; index++ )
@@ -752,9 +752,9 @@ namespace Fonet.Render.Pdf
                 }
                 pdf.Append( endText );
 
-                currentStream.Write( pdf.ToString() );
+                _currentStream.Write( pdf.ToString() );
 
-                currentXPosition += area.getContentWidth();
+                _currentXPosition += area.GetContentWidth();
             }
         }
 
@@ -786,12 +786,12 @@ namespace Fonet.Render.Pdf
 
         private void CloseText()
         {
-            if ( textOpen )
+            if ( _textOpen )
             {
-                currentStream.Write( "] TJ\n" );
-                textOpen = false;
-                prevWordX = 0;
-                prevWordY = 0;
+                _currentStream.Write( "] TJ\n" );
+                _textOpen = false;
+                _prevWordX = 0;
+                _prevWordY = 0;
             }
         }
 
@@ -808,11 +808,11 @@ namespace Fonet.Render.Pdf
 
         public void Render( Page page )
         {
-            idReferences = page.getIDReferences();
-            pdfResources = pdfDoc.GetResources();
-            pdfDoc.SetIDReferences( idReferences );
+            _idReferences = page.GetIDReferences();
+            _pdfResources = _pdfDoc.GetResources();
+            _pdfDoc.SetIDReferences( _idReferences );
             RenderPage( page );
-            pdfDoc.Output();
+            _pdfDoc.Output();
         }
 
 
@@ -821,24 +821,20 @@ namespace Fonet.Render.Pdf
         *
         * @param page page to render
         */
-
         public void RenderPage( Page page )
         {
-            BodyAreaContainer body;
-            AreaContainer before, after, start, end;
+            _currentStream = _pdfDoc.MakeContentStream();
+            BodyAreaContainer body = page.GetBody();
+            AreaContainer before = page.GetBefore();
+            AreaContainer after = page.GetAfter();
+            AreaContainer start = page.GetStart();
+            AreaContainer end = page.GetEnd();
 
-            currentStream = pdfDoc.MakeContentStream();
-            body = page.getBody();
-            before = page.getBefore();
-            after = page.getAfter();
-            start = page.getStart();
-            end = page.getEnd();
+            _currentFontName = "";
+            _currentFontSize = 0;
+            _currentLetterSpacing = float.NaN;
 
-            currentFontName = "";
-            currentFontSize = 0;
-            currentLetterSpacing = float.NaN;
-
-            currentStream.Write( "BT\n" );
+            _currentStream.Write( "BT\n" );
 
             RenderBodyAreaContainer( body );
 
@@ -856,46 +852,46 @@ namespace Fonet.Render.Pdf
             CloseText();
 
             // Bug fix for issue 1823
-            currentLetterSpacing = float.NaN;
+            _currentLetterSpacing = float.NaN;
 
-            float w = page.getWidth();
+            float w = page.GetWidth();
             float h = page.GetHeight();
-            currentStream.Write( "ET\n" );
+            _currentStream.Write( "ET\n" );
 
-            currentPage = pdfDoc.MakePage(
-                pdfResources, currentStream,
+            _currentPage = _pdfDoc.MakePage(
+                _pdfResources, _currentStream,
                 Convert.ToInt32( Math.Round( w / 1000 ) ),
                 Convert.ToInt32( Math.Round( h / 1000 ) ), page );
 
-            if ( page.hasLinks() || currentAnnotList != null )
+            if ( page.HasLinks() || _currentAnnotList != null )
             {
-                if ( currentAnnotList == null )
-                    currentAnnotList = pdfDoc.MakeAnnotList();
-                currentPage.SetAnnotList( currentAnnotList );
+                if ( _currentAnnotList == null )
+                    _currentAnnotList = _pdfDoc.MakeAnnotList();
+                _currentPage.SetAnnotList( _currentAnnotList );
 
-                ArrayList lsets = page.getLinkSets();
+                ArrayList lsets = page.GetLinkSets();
                 foreach ( LinkSet linkSet in lsets )
                 {
-                    linkSet.align();
-                    string dest = linkSet.getDest();
-                    int linkType = linkSet.getLinkType();
-                    ArrayList rsets = linkSet.getRects();
+                    linkSet.Align();
+                    string dest = linkSet.GetDest();
+                    int linkType = linkSet.GetLinkType();
+                    ArrayList rsets = linkSet.GetRects();
                     foreach ( LinkedRectangle lrect in rsets )
                     {
-                        currentAnnotList.Add( pdfDoc.MakeLink( lrect.getRectangle(),
+                        _currentAnnotList.Add( _pdfDoc.MakeLink( lrect.GetRectangle(),
                             dest, linkType ).GetReference() );
                     }
                 }
-                currentAnnotList = null;
+                _currentAnnotList = null;
             }
             else
             {
                 // just to be on the safe side
-                currentAnnotList = null;
+                _currentAnnotList = null;
             }
 
             // ensures that color is properly reset for blocks that carry over pages
-            currentFill = null;
+            _currentFill = null;
         }
 
         /**
@@ -929,47 +925,47 @@ namespace Fonet.Render.Pdf
         private void DoFrame( Area area )
         {
             int w, h;
-            int rx = currentAreaContainerXPosition;
-            w = area.getContentWidth();
+            int rx = _currentAreaContainerXPosition;
+            w = area.GetContentWidth();
             if ( area is BlockArea )
-                rx += ( (BlockArea)area ).getStartIndent();
-            h = area.getContentHeight();
-            int ry = currentYPosition;
+                rx += ( (BlockArea)area ).GetStartIndent();
+            h = area.GetContentHeight();
+            int ry = _currentYPosition;
 
-            rx = rx - area.getPaddingLeft();
-            ry = ry + area.getPaddingTop();
-            w = w + area.getPaddingLeft() + area.getPaddingRight();
-            h = h + area.getPaddingTop() + area.getPaddingBottom();
+            rx = rx - area.GetPaddingLeft();
+            ry = ry + area.GetPaddingTop();
+            w = w + area.GetPaddingLeft() + area.GetPaddingRight();
+            h = h + area.GetPaddingTop() + area.GetPaddingBottom();
 
             DoBackground( area, rx, ry, w, h );
 
             BorderAndPadding bp = area.GetBorderAndPadding();
 
-            int left = area.getBorderLeftWidth();
-            int right = area.getBorderRightWidth();
-            int top = area.getBorderTopWidth();
-            int bottom = area.getBorderBottomWidth();
+            int left = area.GetBorderLeftWidth();
+            int right = area.GetBorderRightWidth();
+            int top = area.GetBorderTopWidth();
+            int bottom = area.GetBorderBottomWidth();
 
             // If style is solid, use filled rectangles
             if ( top != 0 )
             {
                 AddFilledRect( rx, ry, w, top,
-                    new PdfColor( bp.getBorderColor( BorderAndPadding.TOP ) ) );
+                    new PdfColor( bp.GetBorderColor( BorderAndPadding.Top ) ) );
             }
             if ( left != 0 )
             {
                 AddFilledRect( rx - left, ry - h - bottom, left, h + top + bottom,
-                    new PdfColor( bp.getBorderColor( BorderAndPadding.LEFT ) ) );
+                    new PdfColor( bp.GetBorderColor( BorderAndPadding.Left ) ) );
             }
             if ( right != 0 )
             {
                 AddFilledRect( rx + w, ry - h - bottom, right, h + top + bottom,
-                    new PdfColor( bp.getBorderColor( BorderAndPadding.RIGHT ) ) );
+                    new PdfColor( bp.GetBorderColor( BorderAndPadding.Right ) ) );
             }
             if ( bottom != 0 )
             {
                 AddFilledRect( rx, ry - h - bottom, w, bottom,
-                    new PdfColor( bp.getBorderColor( BorderAndPadding.BOTTOM ) ) );
+                    new PdfColor( bp.GetBorderColor( BorderAndPadding.Bottom ) ) );
             }
         }
 
@@ -986,17 +982,17 @@ namespace Fonet.Render.Pdf
             if ( h == 0 || w == 0 )
                 return;
 
-            BackgroundProps props = area.getBackground();
+            BackgroundProps props = area.GetBackground();
             if ( props == null )
                 return;
 
-            if ( props.backColor.Alpha == 0 )
-                AddFilledRect( x, y, w, -h, new PdfColor( props.backColor ) );
+            if ( props.BackColor.Alpha == 0 )
+                AddFilledRect( x, y, w, -h, new PdfColor( props.BackColor ) );
 
-            if ( props.backImage != null )
+            if ( props.BackImage != null )
             {
-                int imgW = props.backImage.Width * 1000;
-                int imgH = props.backImage.Height * 1000;
+                int imgW = props.BackImage.Width * 1000;
+                int imgH = props.BackImage.Height * 1000;
 
                 int dx = x;
                 int dy = y;
@@ -1007,7 +1003,7 @@ namespace Fonet.Render.Pdf
 
                 var repeatX = true;
                 var repeatY = true;
-                switch ( props.backRepeat )
+                switch ( props.BackRepeat )
                 {
                 case BackgroundRepeat.Repeat:
                     break;
@@ -1040,12 +1036,12 @@ namespace Fonet.Render.Pdf
                             if ( dy - imgH >= endY )
                             {
                                 // no x clipping, no y clipping 
-                                DrawImageScaled( dx, dy, imgW, imgH, props.backImage );
+                                DrawImageScaled( dx, dy, imgW, imgH, props.BackImage );
                             }
                             else
                             {
                                 // no x clipping, y clipping 
-                                DrawImageClipped( dx, dy, 0, 0, imgW, clipH, props.backImage );
+                                DrawImageClipped( dx, dy, 0, 0, imgW, clipH, props.BackImage );
                             }
                         }
                         else
@@ -1054,12 +1050,12 @@ namespace Fonet.Render.Pdf
                             if ( dy - imgH >= endY )
                             {
                                 // x clipping, no y clipping 
-                                DrawImageClipped( dx, dy, 0, 0, clipW, imgH, props.backImage );
+                                DrawImageClipped( dx, dy, 0, 0, clipW, imgH, props.BackImage );
                             }
                             else
                             {
                                 // x clipping, y clipping
-                                DrawImageClipped( dx, dy, 0, 0, clipW, clipH, props.backImage );
+                                DrawImageClipped( dx, dy, 0, 0, clipW, clipH, props.BackImage );
                             }
                         }
 
@@ -1108,13 +1104,13 @@ namespace Fonet.Render.Pdf
         private void DrawImageScaled(
             int x, int y, int w, int h, FonetImage image )
         {
-            PdfXObject xobj = pdfDoc.AddImage( image );
+            PdfXObject xobj = _pdfDoc.AddImage( image );
             CloseText();
 
-            currentStream.Write( "ET\nq\n" + PdfNumber.doubleOut( w / 1000f ) + " 0 0 "
-                + PdfNumber.doubleOut( h / 1000f ) + " "
-                + PdfNumber.doubleOut( x / 1000f ) + " "
-                + PdfNumber.doubleOut( ( y - h ) / 1000f ) + " cm\n" + "/" + xobj.Name.Name
+            _currentStream.Write( "ET\nq\n" + PdfNumber.DoubleOut( w / 1000f ) + " 0 0 "
+                + PdfNumber.DoubleOut( h / 1000f ) + " "
+                + PdfNumber.DoubleOut( x / 1000f ) + " "
+                + PdfNumber.DoubleOut( ( y - h ) / 1000f ) + " cm\n" + "/" + xobj.Name.Name
                 + " Do\nQ\nBT\n" );
         }
 
@@ -1144,22 +1140,22 @@ namespace Fonet.Render.Pdf
             int imgW = image.Width * 1000;
             int imgH = image.Height * 1000;
 
-            PdfXObject xobj = pdfDoc.AddImage( image );
+            PdfXObject xobj = _pdfDoc.AddImage( image );
             CloseText();
 
-            currentStream.Write( "ET\nq\n" +
+            _currentStream.Write( "ET\nq\n" +
                 // clipping
-                PdfNumber.doubleOut( cx1 ) + " " + PdfNumber.doubleOut( cy1 ) + " m\n" +
-                PdfNumber.doubleOut( cx2 ) + " " + PdfNumber.doubleOut( cy1 ) + " l\n" +
-                PdfNumber.doubleOut( cx2 ) + " " + PdfNumber.doubleOut( cy2 ) + " l\n" +
-                PdfNumber.doubleOut( cx1 ) + " " + PdfNumber.doubleOut( cy2 ) + " l\n" +
+                PdfNumber.DoubleOut( cx1 ) + " " + PdfNumber.DoubleOut( cy1 ) + " m\n" +
+                PdfNumber.DoubleOut( cx2 ) + " " + PdfNumber.DoubleOut( cy1 ) + " l\n" +
+                PdfNumber.DoubleOut( cx2 ) + " " + PdfNumber.DoubleOut( cy2 ) + " l\n" +
+                PdfNumber.DoubleOut( cx1 ) + " " + PdfNumber.DoubleOut( cy2 ) + " l\n" +
                 "W\n" +
                 "n\n" +
                 // image matrix
-                PdfNumber.doubleOut( imgW / 1000f ) + " 0 0 " +
-                PdfNumber.doubleOut( imgH / 1000f ) + " " +
-                PdfNumber.doubleOut( imgX / 1000f ) + " " +
-                PdfNumber.doubleOut( ( (float)imgY - imgH ) / 1000f ) + " cm\n" +
+                PdfNumber.DoubleOut( imgW / 1000f ) + " 0 0 " +
+                PdfNumber.DoubleOut( imgH / 1000f ) + " " +
+                PdfNumber.DoubleOut( imgX / 1000f ) + " " +
+                PdfNumber.DoubleOut( ( (float)imgY - imgH ) / 1000f ) + " cm\n" +
                 "s\n" +
                 // the image itself
                 "/" + xobj.Name.Name + " Do\nQ\nBT\n" );
@@ -1174,45 +1170,45 @@ namespace Fonet.Render.Pdf
 
         public void RenderDisplaySpace( DisplaySpace space )
         {
-            int d = space.getSize();
-            currentYPosition -= d;
+            int d = space.GetSize();
+            _currentYPosition -= d;
         }
 
         private void AddWordLines( WordArea area, int rx, int bl, int size,
             PdfColor theAreaColor )
         {
-            if ( area.getUnderlined() )
+            if ( area.GetUnderlined() )
             {
                 int yPos = bl - size / 10;
-                AddLine( rx, yPos, rx + area.getContentWidth(), yPos, size / 14,
+                AddLine( rx, yPos, rx + area.GetContentWidth(), yPos, size / 14,
                     theAreaColor );
                 // save position for underlining a following InlineSpace
-                prevUnderlineXEndPos = rx + area.getContentWidth();
-                prevUnderlineYEndPos = yPos;
-                prevUnderlineSize = size / 14;
-                prevUnderlineColor = theAreaColor;
+                _prevUnderlineXEndPos = rx + area.GetContentWidth();
+                _prevUnderlineYEndPos = yPos;
+                _prevUnderlineSize = size / 14;
+                _prevUnderlineColor = theAreaColor;
             }
 
-            if ( area.getOverlined() )
+            if ( area.GetOverlined() )
             {
                 int yPos = bl + area.GetFontState().Ascender + size / 10;
-                AddLine( rx, yPos, rx + area.getContentWidth(), yPos, size / 14,
+                AddLine( rx, yPos, rx + area.GetContentWidth(), yPos, size / 14,
                     theAreaColor );
-                prevOverlineXEndPos = rx + area.getContentWidth();
-                prevOverlineYEndPos = yPos;
-                prevOverlineSize = size / 14;
-                prevOverlineColor = theAreaColor;
+                _prevOverlineXEndPos = rx + area.GetContentWidth();
+                _prevOverlineYEndPos = yPos;
+                _prevOverlineSize = size / 14;
+                _prevOverlineColor = theAreaColor;
             }
 
-            if ( area.getLineThrough() )
+            if ( area.GetLineThrough() )
             {
                 int yPos = bl + area.GetFontState().Ascender * 3 / 8;
-                AddLine( rx, yPos, rx + area.getContentWidth(), yPos, size / 14,
+                AddLine( rx, yPos, rx + area.GetContentWidth(), yPos, size / 14,
                     theAreaColor );
-                prevLineThroughXEndPos = rx + area.getContentWidth();
-                prevLineThroughYEndPos = yPos;
-                prevLineThroughSize = size / 14;
-                prevLineThroughColor = theAreaColor;
+                _prevLineThroughXEndPos = rx + area.GetContentWidth();
+                _prevLineThroughYEndPos = yPos;
+                _prevLineThroughSize = size / 14;
+                _prevLineThroughColor = theAreaColor;
             }
         }
 
@@ -1224,39 +1220,39 @@ namespace Fonet.Render.Pdf
 
         public void RenderInlineSpace( InlineSpace space )
         {
-            currentXPosition += space.getSize();
-            if ( space.getUnderlined() )
+            _currentXPosition += space.GetSize();
+            if ( space.GetUnderlined() )
             {
-                if ( prevUnderlineColor != null )
+                if ( _prevUnderlineColor != null )
                 {
-                    AddLine( prevUnderlineXEndPos, prevUnderlineYEndPos,
-                        prevUnderlineXEndPos + space.getSize(),
-                        prevUnderlineYEndPos, prevUnderlineSize,
-                        prevUnderlineColor );
+                    AddLine( _prevUnderlineXEndPos, _prevUnderlineYEndPos,
+                        _prevUnderlineXEndPos + space.GetSize(),
+                        _prevUnderlineYEndPos, _prevUnderlineSize,
+                        _prevUnderlineColor );
                     // save position for a following InlineSpace
-                    prevUnderlineXEndPos = prevUnderlineXEndPos + space.getSize();
+                    _prevUnderlineXEndPos = _prevUnderlineXEndPos + space.GetSize();
                 }
             }
-            if ( space.getOverlined() )
+            if ( space.GetOverlined() )
             {
-                if ( prevOverlineColor != null )
+                if ( _prevOverlineColor != null )
                 {
-                    AddLine( prevOverlineXEndPos, prevOverlineYEndPos,
-                        prevOverlineXEndPos + space.getSize(),
-                        prevOverlineYEndPos, prevOverlineSize,
-                        prevOverlineColor );
-                    prevOverlineXEndPos = prevOverlineXEndPos + space.getSize();
+                    AddLine( _prevOverlineXEndPos, _prevOverlineYEndPos,
+                        _prevOverlineXEndPos + space.GetSize(),
+                        _prevOverlineYEndPos, _prevOverlineSize,
+                        _prevOverlineColor );
+                    _prevOverlineXEndPos = _prevOverlineXEndPos + space.GetSize();
                 }
             }
-            if ( space.getLineThrough() )
+            if ( space.GetLineThrough() )
             {
-                if ( prevLineThroughColor != null )
+                if ( _prevLineThroughColor != null )
                 {
-                    AddLine( prevLineThroughXEndPos, prevLineThroughYEndPos,
-                        prevLineThroughXEndPos + space.getSize(),
-                        prevLineThroughYEndPos, prevLineThroughSize,
-                        prevLineThroughColor );
-                    prevLineThroughXEndPos = prevLineThroughXEndPos + space.getSize();
+                    AddLine( _prevLineThroughXEndPos, _prevLineThroughYEndPos,
+                        _prevLineThroughXEndPos + space.GetSize(),
+                        _prevLineThroughYEndPos, _prevLineThroughSize,
+                        _prevLineThroughColor );
+                    _prevLineThroughXEndPos = _prevLineThroughXEndPos + space.GetSize();
                 }
             }
         }
@@ -1269,12 +1265,12 @@ namespace Fonet.Render.Pdf
 
         public void RenderLeaderArea( LeaderArea area )
         {
-            int rx = currentXPosition;
-            int ry = currentYPosition;
-            int w = area.getContentWidth();
+            int rx = _currentXPosition;
+            int ry = _currentYPosition;
+            int w = area.GetContentWidth();
             int h = area.GetHeight();
-            int th = area.getRuleThickness();
-            int st = area.getRuleStyle();
+            int th = area.GetRuleThickness();
+            int st = area.GetRuleStyle();
 
             // checks whether thickness is = 0, because of bug in pdf (or where?),
             // a line with thickness 0 is still displayed
@@ -1284,17 +1280,17 @@ namespace Fonet.Render.Pdf
                 {
                 case RuleStyle.Double:
                     AddLine( rx, ry, rx + w, ry, th / 3, st,
-                        new PdfColor( area.getRed(), area.getGreen(),
-                            area.getBlue() ) );
+                        new PdfColor( area.GetRed(), area.GetGreen(),
+                            area.GetBlue() ) );
                     AddLine( rx, ry + 2 * th / 3, rx + w, ry + 2 * th / 3,
                         th / 3, st,
-                        new PdfColor( area.getRed(), area.getGreen(),
-                            area.getBlue() ) );
+                        new PdfColor( area.GetRed(), area.GetGreen(),
+                            area.GetBlue() ) );
                     break;
                 case RuleStyle.Groove:
                     AddLine( rx, ry, rx + w, ry, th / 2, st,
-                        new PdfColor( area.getRed(), area.getGreen(),
-                            area.getBlue() ) );
+                        new PdfColor( area.GetRed(), area.GetGreen(),
+                            area.GetBlue() ) );
                     AddLine( rx, ry + th / 2, rx + w, ry + th / 2, th / 2, st,
                         new PdfColor( 255, 255, 255 ) );
                     break;
@@ -1302,17 +1298,17 @@ namespace Fonet.Render.Pdf
                     AddLine( rx, ry, rx + w, ry, th / 2, st,
                         new PdfColor( 255, 255, 255 ) );
                     AddLine( rx, ry + th / 2, rx + w, ry + th / 2, th / 2, st,
-                        new PdfColor( area.getRed(), area.getGreen(),
-                            area.getBlue() ) );
+                        new PdfColor( area.GetRed(), area.GetGreen(),
+                            area.GetBlue() ) );
                     break;
                 default:
                     AddLine( rx, ry, rx + w, ry, th, st,
-                        new PdfColor( area.getRed(), area.getGreen(),
-                            area.getBlue() ) );
+                        new PdfColor( area.GetRed(), area.GetGreen(),
+                            area.GetBlue() ) );
                     break;
                 }
-                currentXPosition += area.getContentWidth();
-                currentYPosition += th;
+                _currentXPosition += area.GetContentWidth();
+                _currentYPosition += th;
             }
         }
     }

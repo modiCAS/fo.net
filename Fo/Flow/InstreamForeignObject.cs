@@ -80,26 +80,26 @@ namespace Fonet.Fo.Flow
 
                 _scaling = Properties.GetProperty( "scaling" ).GetEnum();
 
-                area.getIDReferences().CreateID( id );
+                area.GetIDReferences().CreateID( id );
                 if ( _areaCurrent == null )
                 {
                     _areaCurrent =
-                        new ForeignObjectArea( PropMgr.GetFontState( area.getFontInfo() ),
-                            area.getAllocationWidth() );
+                        new ForeignObjectArea( PropMgr.GetFontState( area.GetFontInfo() ),
+                            area.GetAllocationWidth() );
 
-                    _areaCurrent.start();
+                    _areaCurrent.Start();
                     _areaCurrent.SetWidth( _width );
                     _areaCurrent.SetHeight( _height );
                     _areaCurrent.SetContentWidth( _contwidth );
-                    _areaCurrent.setContentHeight( _contheight );
-                    _areaCurrent.setScaling( _scaling );
-                    _areaCurrent.setAlign( align );
-                    _areaCurrent.setVerticalAlign( valign );
-                    _areaCurrent.setOverflow( overflow );
-                    _areaCurrent.setSizeAuto( _wauto, _hauto );
-                    _areaCurrent.setContentSizeAuto( _cwauto, _chauto );
+                    _areaCurrent.SetContentHeight( _contheight );
+                    _areaCurrent.SetScaling( _scaling );
+                    _areaCurrent.SetAlign( align );
+                    _areaCurrent.SetVerticalAlign( valign );
+                    _areaCurrent.SetOverflow( overflow );
+                    _areaCurrent.SetSizeAuto( _wauto, _hauto );
+                    _areaCurrent.SetContentSizeAuto( _cwauto, _chauto );
 
-                    _areaCurrent.setPage( area.getPage() );
+                    _areaCurrent.SetPage( area.GetPage() );
 
                     int numChildren = Children.Count;
                     if ( numChildren > 1 )
@@ -111,15 +111,15 @@ namespace Fonet.Fo.Flow
                         if ( ( status =
                             fo.Layout( _areaCurrent ) ).IsIncomplete() )
                             return status;
-                        _areaCurrent.end();
+                        _areaCurrent.End();
                     }
                 }
 
                 Marker = 0;
 
                 if ( _breakBefore == GenericBreak.Enums.Page
-                    || _spaceBefore + _areaCurrent.getEffectiveHeight()
-                        > area.spaceLeft() )
+                    || _spaceBefore + _areaCurrent.GetEffectiveHeight()
+                        > area.SpaceLeft() )
                     return new Status( Status.ForcePageBreak );
 
                 if ( _breakBefore == GenericBreak.Enums.OddPage )
@@ -135,29 +135,29 @@ namespace Fonet.Fo.Flow
             if ( area is BlockArea )
             {
                 var ba = (BlockArea)area;
-                LineArea la = ba.getCurrentLineArea();
+                LineArea la = ba.GetCurrentLineArea();
                 if ( la == null )
                     return new Status( Status.AreaFullNone );
-                la.addPending();
-                if ( _areaCurrent.getEffectiveWidth() > la.getRemainingWidth() )
+                la.AddPending();
+                if ( _areaCurrent.GetEffectiveWidth() > la.GetRemainingWidth() )
                 {
-                    la = ba.createNextLineArea();
+                    la = ba.CreateNextLineArea();
                     if ( la == null )
                         return new Status( Status.AreaFullNone );
                 }
-                la.addInlineArea( _areaCurrent, GetLinkSet() );
+                la.AddInlineArea( _areaCurrent, GetLinkSet() );
             }
             else
             {
-                area.addChild( _areaCurrent );
-                area.increaseHeight( _areaCurrent.getEffectiveHeight() );
+                area.AddChild( _areaCurrent );
+                area.IncreaseHeight( _areaCurrent.GetEffectiveHeight() );
             }
 
             if ( IsInTableCell )
                 _startIndent += ForcedStartOffset;
 
-            _areaCurrent.setStartIndent( _startIndent );
-            _areaCurrent.setPage( area.getPage() );
+            _areaCurrent.SetStartIndent( _startIndent );
+            _areaCurrent.SetPage( area.GetPage() );
 
             if ( _breakAfter == GenericBreak.Enums.Page )
             {

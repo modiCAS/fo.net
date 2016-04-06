@@ -1,6 +1,6 @@
 using System;
 
-namespace Fonet.Pdf.Gdi.Font
+namespace Fonet.Pdf.Gdi.Font.Tables
 {
     /// <summary>
     ///     Class derived by all TrueType table classes.
@@ -17,7 +17,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         /// <param name="tableName">The table name.</param>
         /// <param name="entry">Table directory entry.</param>
-        public FontTable( string tableName, DirectoryEntry entry )
+        protected FontTable( string tableName, DirectoryEntry entry )
         {
             _directoryEntry = entry;
         }

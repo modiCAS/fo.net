@@ -14,29 +14,29 @@ namespace Fonet.Render.Pdf.Fonts
         /// <summary>
         ///     Wrapper around a Win32 HDC.
         /// </summary>
-        private GdiDeviceContent dc;
+        private GdiDeviceContent _dc;
 
         /// <summary>
         ///     List of kerning pairs.
         /// </summary>
-        private GdiKerningPairs kerning;
+        private GdiKerningPairs _kerning;
 
-        private readonly CodePointMapping mapping =
+        private readonly CodePointMapping _mapping =
             CodePointMapping.GetMapping( "WinAnsiEncoding" );
 
         /// <summary>
         ///     Provides font metrics using the Win32 Api.
         /// </summary>
-        private GdiFontMetrics metrics;
+        private GdiFontMetrics _metrics;
 
         /// <summary>
         /// </summary>
-        protected FontProperties properties;
+        protected FontProperties Properties;
 
         /// <summary>
         ///     Maps a glyph index to a PDF width
         /// </summary>
-        private int[] widths;
+        private int[] _widths;
 
         /// <summary>
         ///     Class constructor
@@ -44,7 +44,7 @@ namespace Fonet.Render.Pdf.Fonts
         /// <param name="properties"></param>
         public TrueTypeFont( FontProperties properties )
         {
-            this.properties = properties;
+            this.Properties = properties;
             ObtainFontMetrics();
         }
 
@@ -64,16 +64,16 @@ namespace Fonet.Render.Pdf.Fonts
         /// </summary>
         private void ObtainFontMetrics()
         {
-            dc = new GdiDeviceContent();
+            _dc = new GdiDeviceContent();
             GdiFont font = GdiFont.CreateDesignFont(
-                properties.FaceName, properties.IsBold, properties.IsItalic, dc );
-            metrics = font.GetMetrics( dc );
+                Properties.FaceName, Properties.IsBold, Properties.IsItalic, _dc );
+            _metrics = font.GetMetrics( _dc );
         }
 
         private void EnsureWidthsArray()
         {
-            if ( widths == null )
-                widths = metrics.GetAnsiWidths();
+            if ( _widths == null )
+                _widths = _metrics.GetAnsiWidths();
         }
 
         #region Implementation of Font members
@@ -91,13 +91,13 @@ namespace Fonet.Render.Pdf.Fonts
             get
             {
                 // See section 5.5.2 "TrueType fonts" for more details
-                if ( properties.IsBoldItalic )
-                    return string.Format( "{0},BoldItalic", properties.FaceName );
-                if ( properties.IsBold )
-                    return string.Format( "{0},Bold", properties.FaceName );
-                if ( properties.IsItalic )
-                    return string.Format( "{0},Italic", properties.FaceName );
-                return properties.FaceName;
+                if ( Properties.IsBoldItalic )
+                    return string.Format( "{0},BoldItalic", Properties.FaceName );
+                if ( Properties.IsBold )
+                    return string.Format( "{0},Bold", Properties.FaceName );
+                if ( Properties.IsItalic )
+                    return string.Format( "{0},Italic", Properties.FaceName );
+                return Properties.FaceName;
             }
         }
 
@@ -127,22 +127,22 @@ namespace Fonet.Render.Pdf.Fonts
             if ( c > byte.MaxValue )
                 return (ushort)FirstChar;
 
-            return mapping.MapCharacter( c );
+            return _mapping.MapCharacter( c );
         }
 
         public override int Ascender
         {
-            get { return metrics.Ascent; }
+            get { return _metrics.Ascent; }
         }
 
         public override int Descender
         {
-            get { return metrics.Descent; }
+            get { return _metrics.Descent; }
         }
 
         public override int CapHeight
         {
-            get { return metrics.CapHeight; }
+            get { return _metrics.CapHeight; }
         }
 
         public override int FirstChar
@@ -169,7 +169,7 @@ namespace Fonet.Render.Pdf.Fonts
             EnsureWidthsArray();
 
             // The widths array is keyed on WinAnsiEncoding codepoint
-            return widths[ charIndex ];
+            return _widths[ charIndex ];
         }
 
         public override int[] Widths
@@ -177,7 +177,7 @@ namespace Fonet.Render.Pdf.Fonts
             get
             {
                 EnsureWidthsArray();
-                return widths;
+                return _widths;
             }
         }
 
@@ -187,31 +187,31 @@ namespace Fonet.Render.Pdf.Fonts
 
         public int Flags
         {
-            get { return metrics.Flags; }
+            get { return _metrics.Flags; }
         }
 
         public int[] FontBBox
         {
-            get { return metrics.BoundingBox; }
+            get { return _metrics.BoundingBox; }
         }
 
         public int ItalicAngle
         {
-            get { return metrics.ItalicAngle; }
+            get { return _metrics.ItalicAngle; }
         }
 
         public int StemV
         {
-            get { return metrics.StemV; }
+            get { return _metrics.StemV; }
         }
 
         public bool HasKerningInfo
         {
             get
             {
-                if ( kerning == null )
-                    kerning = metrics.AnsiKerningPairs;
-                return kerning.Count != 0;
+                if ( _kerning == null )
+                    _kerning = _metrics.AnsiKerningPairs;
+                return _kerning.Count != 0;
             }
         }
 
@@ -227,16 +227,16 @@ namespace Fonet.Render.Pdf.Fonts
 
         public byte[] FontData
         {
-            get { return metrics.GetFontData(); }
+            get { return _metrics.GetFontData(); }
         }
 
         public GdiKerningPairs KerningInfo
         {
             get
             {
-                if ( kerning == null )
-                    kerning = metrics.AnsiKerningPairs;
-                return kerning;
+                if ( _kerning == null )
+                    _kerning = _metrics.AnsiKerningPairs;
+                return _kerning;
             }
         }
 

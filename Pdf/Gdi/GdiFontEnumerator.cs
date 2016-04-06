@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Fonet.Pdf.Gdi.Structures;
 
 namespace Fonet.Pdf.Gdi
 {

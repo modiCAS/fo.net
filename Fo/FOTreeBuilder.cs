@@ -65,8 +65,7 @@ namespace Fonet.Fo
         /// </summary>
         internal void AddPropertyMapping( string namespaceUri, Hashtable list )
         {
-            PropertyListBuilder plb;
-            plb = (PropertyListBuilder)_propertylistTable[ namespaceUri ];
+            var plb = (PropertyListBuilder)_propertylistTable[ namespaceUri ];
             if ( plb == null )
             {
                 plb = new PropertyListBuilder();
@@ -90,8 +89,6 @@ namespace Fonet.Fo
             string localName,
             Attributes attlist )
         {
-            FObj fobj;
-
             FObj.Maker fobjMaker = GetFObjMaker( uri, localName );
 
             var currentListBuilder =
@@ -115,7 +112,7 @@ namespace Fonet.Fo
                 }
             }
 
-            PropertyList list = null;
+            PropertyList list;
             if ( currentListBuilder != null )
                 list = currentListBuilder.MakeList( uri, localName, attlist, _currentFObj );
             else if ( foreignXml )
@@ -126,7 +123,8 @@ namespace Fonet.Fo
                     throw new FonetException( "Invalid XML or missing namespace" );
                 list = _currentFObj.Properties;
             }
-            fobj = fobjMaker.Make( _currentFObj, list );
+
+            FObj fobj = fobjMaker.Make( _currentFObj, list );
 
             if ( _rootFObj == null )
             {
@@ -142,24 +140,21 @@ namespace Fonet.Fo
 
         private void EndElement()
         {
-            if ( _currentFObj != null )
-            {
-                _currentFObj.End();
+            if ( _currentFObj == null ) return;
 
-                // If it is a page-sequence, then we can finally render it.
-                // This is the biggest performance problem we have, we need
-                // to be able to render prior to this point.
-                if ( _currentFObj is PageSequence )
-                    _streamRenderer.Render( (PageSequence)_currentFObj );
+            _currentFObj.End();
 
-                _currentFObj = _currentFObj.GetParent();
-            }
+            // If it is a page-sequence, then we can finally render it.
+            // This is the biggest performance problem we have, we need
+            // to be able to render prior to this point.
+            var sequence = _currentFObj as PageSequence;
+            if ( sequence != null ) _streamRenderer.Render( sequence );
+
+            _currentFObj = _currentFObj.GetParent();
         }
 
         internal void Parse( XmlReader reader )
         {
-            var buflen = 500;
-            var buffer = new char[ buflen ];
             try
             {
                 object nsuri = reader.NameTable.Add( "http://www.w3.org/2000/xmlns/" );
@@ -175,14 +170,15 @@ namespace Fonet.Fo
                         var atts = new Attributes();
                         while ( reader.MoveToNextAttribute() )
                         {
-                            if ( !reader.NamespaceURI.Equals( nsuri ) )
+                            if ( reader.NamespaceURI.Equals( nsuri ) ) continue;
+
+                            var newAtt = new SaxAttribute
                             {
-                                var newAtt = new SaxAttribute();
-                                newAtt.Name = reader.Name;
-                                newAtt.NamespaceUri = reader.NamespaceURI;
-                                newAtt.Value = reader.Value;
-                                atts.AttArray.Add( newAtt );
-                            }
+                                Name = reader.Name,
+                                NamespaceUri = reader.NamespaceURI,
+                                Value = reader.Value
+                            };
+                            atts.AttArray.Add( newAtt );
                         }
                         reader.MoveToElement();
                         StartElement( reader.NamespaceURI, reader.LocalName, atts.TrimArray() );
@@ -200,8 +196,6 @@ namespace Fonet.Fo
                             goto case XmlNodeType.Element;
                         if ( reader.NodeType == XmlNodeType.EndElement )
                             goto case XmlNodeType.EndElement;
-                        break;
-                    default:
                         break;
                     }
                 }
@@ -238,14 +232,14 @@ namespace Fonet.Fo
         }
 
         // called by property list builder
-        internal string getValue( int index )
+        internal string GetValue( int index )
         {
             var saxAtt = (SaxAttribute)AttArray[ index ];
             return saxAtt.Value;
         }
 
         // called by property list builder
-        internal string getValue( string name )
+        internal string GetValue( string name )
         {
             foreach ( SaxAttribute att in AttArray )
             {

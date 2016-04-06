@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace Fonet.Fo.Flow
 {
     internal class RowSpanMgr
@@ -33,19 +35,14 @@ namespace Fonet.Fo.Flow
 
         public bool HasUnfinishedSpans()
         {
-            for ( var i = 0; i < _spanInfo.Length; i++ )
-            {
-                if ( _spanInfo[ i ] != null )
-                    return true;
-            }
-            return false;
+            return _spanInfo.Any( t => t != null );
         }
 
         public void FinishRow( int rowHeight )
         {
             for ( var i = 0; i < _spanInfo.Length; i++ )
             {
-                if ( _spanInfo[ i ] != null && _spanInfo[ i ].finishRow( rowHeight ) )
+                if ( _spanInfo[ i ] != null && _spanInfo[ i ].FinishRow( rowHeight ) )
                     _spanInfo[ i ] = null;
             }
         }
@@ -60,7 +57,7 @@ namespace Fonet.Fo.Flow
         public bool IsInLastRow( int colNum )
         {
             if ( _spanInfo[ colNum - 1 ] != null )
-                return _spanInfo[ colNum - 1 ].isInLastRow();
+                return _spanInfo[ colNum - 1 ].IsInLastRow();
             return false;
         }
 
@@ -74,42 +71,38 @@ namespace Fonet.Fo.Flow
             return _ignoreKeeps;
         }
 
-        public class SpanInfo
+        private sealed class SpanInfo
         {
-            public TableCell Cell;
-            public int CellHeight;
-            public int RowsRemaining;
-            public int TotalRowHeight;
+            public readonly TableCell Cell;
+            private readonly int _cellHeight;
+            private int _rowsRemaining;
+            private int _totalRowHeight;
 
             public SpanInfo( TableCell cell, int cellHeight, int rowsSpanned )
             {
-                this.Cell = cell;
-                this.CellHeight = cellHeight;
-                TotalRowHeight = 0;
-                RowsRemaining = rowsSpanned;
+                Cell = cell;
+                _cellHeight = cellHeight;
+                _totalRowHeight = 0;
+                _rowsRemaining = rowsSpanned;
             }
 
             public int HeightRemaining()
             {
-                int hl = CellHeight - TotalRowHeight;
+                int hl = _cellHeight - _totalRowHeight;
                 return hl > 0 ? hl : 0;
             }
 
-            public bool isInLastRow()
+            public bool IsInLastRow()
             {
-                return RowsRemaining == 1;
+                return _rowsRemaining == 1;
             }
 
-            public bool finishRow( int rowHeight )
+            public bool FinishRow( int rowHeight )
             {
-                TotalRowHeight += rowHeight;
-                if ( --RowsRemaining == 0 )
-                {
-                    if ( Cell != null )
-                        Cell.SetRowHeight( TotalRowHeight );
-                    return true;
-                }
-                return false;
+                _totalRowHeight += rowHeight;
+                if ( --_rowsRemaining != 0 ) return false;
+                if ( Cell != null ) Cell.SetRowHeight( _totalRowHeight );
+                return true;
             }
         }
     }

@@ -20,14 +20,14 @@ namespace Fonet.Render.Pdf.Fonts
     /// </remarks>
     internal sealed class FontDescriptorFlags
     {
-        private BitVector32 flags;
+        private BitVector32 _flags;
 
         /// <summary>
         ///     Default class constructor.
         /// </summary>
         public FontDescriptorFlags()
         {
-            flags = new BitVector32( 0 );
+            _flags = new BitVector32( 0 );
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace Fonet.Render.Pdf.Fonts
         /// </summary>
         public FontDescriptorFlags( int flags )
         {
-            this.flags = new BitVector32( flags );
+            this._flags = new BitVector32( flags );
         }
 
         /// <summary>
@@ -44,52 +44,52 @@ namespace Fonet.Render.Pdf.Fonts
         /// </summary>
         public int Flags
         {
-            get { return flags.Data; }
+            get { return _flags.Data; }
         }
 
         public bool IsFixedPitch
         {
-            get { return flags[ (int)FontDescriptorFlagsEnum.FixedPitch ]; }
+            get { return _flags[ (int)FontDescriptorFlagsEnum.FixedPitch ]; }
         }
 
         public bool IsSerif
         {
-            get { return flags[ (int)FontDescriptorFlagsEnum.Serif ]; }
+            get { return _flags[ (int)FontDescriptorFlagsEnum.Serif ]; }
         }
 
         public bool IsSymbolic
         {
-            get { return flags[ (int)FontDescriptorFlagsEnum.Symbolic ]; }
+            get { return _flags[ (int)FontDescriptorFlagsEnum.Symbolic ]; }
         }
 
         public bool IsScript
         {
-            get { return flags[ (int)FontDescriptorFlagsEnum.Script ]; }
+            get { return _flags[ (int)FontDescriptorFlagsEnum.Script ]; }
         }
 
         public bool IsNonSymbolic
         {
-            get { return flags[ (int)FontDescriptorFlagsEnum.Nonsymbolic ]; }
+            get { return _flags[ (int)FontDescriptorFlagsEnum.Nonsymbolic ]; }
         }
 
         public bool IsItalic
         {
-            get { return flags[ (int)FontDescriptorFlagsEnum.Italic ]; }
+            get { return _flags[ (int)FontDescriptorFlagsEnum.Italic ]; }
         }
 
         public bool IsAllCap
         {
-            get { return flags[ (int)FontDescriptorFlagsEnum.AllCap ]; }
+            get { return _flags[ (int)FontDescriptorFlagsEnum.AllCap ]; }
         }
 
         public bool IsSmallCap
         {
-            get { return flags[ (int)FontDescriptorFlagsEnum.SmallCap ]; }
+            get { return _flags[ (int)FontDescriptorFlagsEnum.SmallCap ]; }
         }
 
         public bool IsForceBold
         {
-            get { return flags[ (int)FontDescriptorFlagsEnum.ForceBold ]; }
+            get { return _flags[ (int)FontDescriptorFlagsEnum.ForceBold ]; }
         }
 
         /// <summary>

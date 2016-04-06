@@ -67,7 +67,7 @@ namespace Fonet.Fo.Pagination
 
             var okOnOddOrEven = true;
             int ooe = GetOddOrEven();
-            bool isOddPage = currentPageNumber % 2 == 1 ? true : false;
+            bool isOddPage = currentPageNumber % 2 == 1;
             if ( OddOrEven.Odd == ooe && !isOddPage )
                 okOnOddOrEven = false;
             if ( OddOrEven.Even == ooe && isOddPage )

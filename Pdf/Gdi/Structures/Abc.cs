@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace Fonet.Pdf.Gdi
+namespace Fonet.Pdf.Gdi.Structures
 {
     /// <summary>
     ///     The ABC structure contains the width of a character in a TrueType font.
@@ -8,8 +8,8 @@ namespace Fonet.Pdf.Gdi
     [StructLayout( LayoutKind.Sequential )]
     internal struct Abc
     {
-        public int abcA;
-        public uint abcB;
-        public int abcC;
+        public int AbcA;
+        public uint AbcB;
+        public int AbcC;
     }
 }

@@ -73,40 +73,40 @@ namespace Fonet
         ///     The active driver.
         /// </summary>
         [ThreadStatic]
-        private static FonetDriver activeDriver;
+        private static FonetDriver _activeDriver;
 
         /// <summary>
         ///     The directory that external resources such as images are loaded
         ///     from when using relative path references.
         /// </summary>
-        private DirectoryInfo baseDirectory;
+        private DirectoryInfo _baseDirectory;
 
         /// <summary>
         ///     Determines if the output stream passed to Render() should
         ///     be closed upon completion or if a fatal exception occurs.
         /// </summary>
-        private bool closeOnExit = true;
+        private bool _closeOnExit = true;
 
         /// <summary>
         ///     Maps a set of credentials to an internet resource
         /// </summary>
-        private CredentialCache credentials;
+        private CredentialCache _credentials;
 
         /// <summary>
         ///     An optional image handler that can be registered to load image
         ///     data for external graphic formatting objects.
         /// </summary>
-        private FonetImageHandler imageHandler;
+        private FonetImageHandler _imageHandler;
 
         /// <summary>
         ///     Options to supply to the renderer.
         /// </summary>
-        private PdfRendererOptions renderOptions;
+        private PdfRendererOptions _renderOptions;
 
         /// <summary>
         ///     The timeout used when accessing external resources via a URL.
         /// </summary>
-        private int timeout;
+        private int _timeout;
 
         /// <summary>
         ///     Sets the the 'baseDir' property in the Configuration class using
@@ -126,8 +126,8 @@ namespace Fonet
         /// </summary>
         public bool CloseOnExit
         {
-            get { return closeOnExit; }
-            set { closeOnExit = value; }
+            get { return _closeOnExit; }
+            set { _closeOnExit = value; }
         }
 
         /// <summary>
@@ -139,8 +139,8 @@ namespace Fonet
         /// </value>
         public static FonetDriver ActiveDriver
         {
-            get { return activeDriver; }
-            set { activeDriver = value; }
+            get { return _activeDriver; }
+            set { _activeDriver = value; }
         }
 
         /// <summary>
@@ -152,8 +152,8 @@ namespace Fonet
         /// </value>
         public DirectoryInfo BaseDirectory
         {
-            get { return baseDirectory; }
-            set { baseDirectory = value; }
+            get { return _baseDirectory; }
+            set { _baseDirectory = value; }
         }
 
         /// <summary>
@@ -166,8 +166,8 @@ namespace Fonet
         /// </remarks>
         public FonetImageHandler ImageHandler
         {
-            get { return imageHandler; }
-            set { imageHandler = value; }
+            get { return _imageHandler; }
+            set { _imageHandler = value; }
         }
 
         /// <summary>
@@ -182,8 +182,8 @@ namespace Fonet
         /// </value>
         public int Timeout
         {
-            get { return timeout; }
-            set { timeout = value; }
+            get { return _timeout; }
+            set { _timeout = value; }
         }
 
         /// <summary>
@@ -207,10 +207,10 @@ namespace Fonet
         {
             get
             {
-                if ( credentials == null )
-                    credentials = new CredentialCache();
+                if ( _credentials == null )
+                    _credentials = new CredentialCache();
 
-                return credentials;
+                return _credentials;
             }
         }
 
@@ -219,8 +219,8 @@ namespace Fonet
         /// </summary>
         public PdfRendererOptions Options
         {
-            get { return renderOptions; }
-            set { renderOptions = value; }
+            get { return _renderOptions; }
+            set { _renderOptions = value; }
         }
 
         /// <summary>
@@ -403,8 +403,8 @@ namespace Fonet
                 // Constructs an area tree renderer and supplies the renderer options
                 var renderer = new PdfRenderer( outputStream );
 
-                if ( renderOptions != null )
-                    renderer.Options = renderOptions;
+                if ( _renderOptions != null )
+                    renderer.Options = _renderOptions;
 
                 // Create the stream-renderer.
                 var sr = new StreamRenderer( renderer );

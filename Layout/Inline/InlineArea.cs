@@ -2,117 +2,117 @@ namespace Fonet.Layout.Inline
 {
     internal abstract class InlineArea : Area
     {
-        protected int height;
-        protected bool lineThrough;
-        protected bool overlined;
-        protected string pageNumberId = null;
-        private readonly float red;
-        private readonly float green;
-        private readonly float blue;
-        protected bool underlined;
-        private int verticalAlign;
-        private int xOffset;
-        private int yOffset;
+        protected int Height;
+        private bool _lineThrough;
+        private bool _overlined;
+        protected string PageNumberId = null;
+        private readonly float _red;
+        private readonly float _green;
+        private readonly float _blue;
+        private bool _underlined;
+        private int _verticalAlign;
+        private int _xOffset;
+        private int _yOffset;
 
-        public InlineArea(
+        protected InlineArea(
             FontState fontState, int width, float red,
             float green, float blue )
             : base( fontState )
         {
-            contentRectangleWidth = width;
-            this.red = red;
-            this.green = green;
-            this.blue = blue;
+            ContentRectangleWidth = width;
+            _red = red;
+            _green = green;
+            _blue = blue;
         }
 
-        public float getBlue()
+        public float GetBlue()
         {
-            return blue;
+            return _blue;
         }
 
-        public float getGreen()
+        public float GetGreen()
         {
-            return green;
+            return _green;
         }
 
-        public float getRed()
+        public float GetRed()
         {
-            return red;
+            return _red;
         }
 
         public override void SetHeight( int height )
         {
-            this.height = height;
+            Height = height;
         }
 
         public override int GetHeight()
         {
-            return height;
+            return Height;
         }
 
-        public virtual void setVerticalAlign( int align )
+        public virtual void SetVerticalAlign( int align )
         {
-            verticalAlign = align;
+            _verticalAlign = align;
         }
 
-        public virtual int getVerticalAlign()
+        public virtual int GetVerticalAlign()
         {
-            return verticalAlign;
+            return _verticalAlign;
         }
 
-        public void setYOffset( int yOffset )
+        public void SetYOffset( int yOffset )
         {
-            this.yOffset = yOffset;
+            _yOffset = yOffset;
         }
 
-        public int getYOffset()
+        public int GetYOffset()
         {
-            return yOffset;
+            return _yOffset;
         }
 
-        public void setXOffset( int xOffset )
+        public void SetXOffset( int xOffset )
         {
-            this.xOffset = xOffset;
+            _xOffset = xOffset;
         }
 
-        public virtual int getXOffset()
+        public virtual int GetXOffset()
         {
-            return xOffset;
+            return _xOffset;
         }
 
-        public string getPageNumberID()
+        public string GetPageNumberID()
         {
-            return pageNumberId;
+            return PageNumberId;
         }
 
-        public void setUnderlined( bool ul )
+        public void SetUnderlined( bool ul )
         {
-            underlined = ul;
+            _underlined = ul;
         }
 
-        public bool getUnderlined()
+        public bool GetUnderlined()
         {
-            return underlined;
+            return _underlined;
         }
 
-        public void setOverlined( bool ol )
+        public void SetOverlined( bool ol )
         {
-            overlined = ol;
+            _overlined = ol;
         }
 
-        public bool getOverlined()
+        public bool GetOverlined()
         {
-            return overlined;
+            return _overlined;
         }
 
-        public void setLineThrough( bool lt )
+        public void SetLineThrough( bool lt )
         {
-            lineThrough = lt;
+            _lineThrough = lt;
         }
 
-        public bool getLineThrough()
+        public bool GetLineThrough()
         {
-            return lineThrough;
+            return _lineThrough;
         }
     }
 }

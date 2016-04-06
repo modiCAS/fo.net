@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 using System.Text;
 using Fonet.DataTypes;
@@ -6,57 +7,52 @@ namespace Fonet.Render.Pdf
 {
     internal sealed class PdfColor
     {
-        private readonly double blue = -1.0;
-        private readonly double green = -1.0;
-        private readonly double red = -1.0;
+        private readonly double _blue;
+        private readonly double _green;
+        private readonly double _red;
 
         public PdfColor( ColorType color )
         {
-            red = color.Red;
-            green = color.Green;
-            blue = color.Blue;
+            _red = color.Red;
+            _green = color.Green;
+            _blue = color.Blue;
         }
 
         public PdfColor( double red, double green, double blue )
         {
-            this.red = red;
-            this.green = green;
-            this.blue = blue;
+            _red = red;
+            _green = green;
+            _blue = blue;
         }
 
         // components from 0 to 255
-        public PdfColor( int red, int green, int blue ) : this(
-            red / 255d,
-            green / 255d,
-            blue / 255d
-            )
+        public PdfColor( int red, int green, int blue )
+            : this( red / 255d, green / 255d, blue / 255d )
         {
         }
 
-        public double getRed()
+        public double GetRed()
         {
-            return red;
+            return _red;
         }
 
-        public double getGreen()
+        public double GetGreen()
         {
-            return green;
+            return _green;
         }
 
-        public double getBlue()
+        public double GetBlue()
         {
-            return blue;
+            return _blue;
         }
 
-        public string getColorSpaceOut( bool fillNotStroke )
+        public string GetColorSpaceOut( bool fillNotStroke )
         {
             var p = new StringBuilder();
 
             // according to pdfspec 12.1 p.399
             // if the colors are the same then just use the g or G operator
-            var same = false;
-            if ( red == green && red == blue )
-                same = true;
+            bool same = Math.Abs( _red - _green ) < 0.01f && Math.Abs( _red - _blue ) < 0.01f;
 
             // output RGB
             if ( fillNotStroke )
@@ -66,14 +62,14 @@ namespace Fonet.Render.Pdf
                     p.AppendFormat(
                         CultureInfo.InvariantCulture,
                         "{0:0.0####} g\n",
-                        red );
+                        _red );
                 }
                 else
                 {
                     p.AppendFormat(
                         CultureInfo.InvariantCulture,
                         "{0:0.0####} {1:0.0####} {2:0.0####} rg\n",
-                        red, green, blue );
+                        _red, _green, _blue );
                 }
             }
             else
@@ -83,14 +79,14 @@ namespace Fonet.Render.Pdf
                     p.AppendFormat(
                         CultureInfo.InvariantCulture,
                         "{0:0.0####} G\n",
-                        red );
+                        _red );
                 }
                 else
                 {
                     p.AppendFormat(
                         CultureInfo.InvariantCulture,
                         "{0:0.0####} {1:0.0####} {2:0.0####} RG\n",
-                        red, green, blue );
+                        _red, _green, _blue );
                 }
             }
 

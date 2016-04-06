@@ -6,13 +6,9 @@ namespace Fonet.DataTypes
     {
         private readonly double _factor;
 
-        public PercentLength( double factor ) : this( factor, null )
+        public PercentLength( double factor, IPercentBase lbase = null )
         {
-        }
-
-        public PercentLength( double factor, IPercentBase lbase )
-        {
-            this._factor = factor;
+            _factor = factor;
             BaseLength = lbase;
         }
 

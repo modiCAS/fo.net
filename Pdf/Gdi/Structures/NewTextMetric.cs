@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace Fonet.Pdf.Gdi
+namespace Fonet.Pdf.Gdi.Structures
 {
     [StructLayout( LayoutKind.Sequential, CharSet = CharSet.Auto )]
     internal struct NewTextMetric

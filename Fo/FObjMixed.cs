@@ -24,9 +24,9 @@ namespace Fonet.Fo
         protected internal override void AddCharacters( char[] data, int start, int length )
         {
             var ft = new FoText( data, start, length, this );
-            ft.SetUnderlined( Ts.getUnderlined() );
-            ft.SetOverlined( Ts.getOverlined() );
-            ft.SetLineThrough( Ts.getLineThrough() );
+            ft.SetUnderlined( Ts.GetUnderlined() );
+            ft.SetOverlined( Ts.GetOverlined() );
+            ft.SetLineThrough( Ts.GetLineThrough() );
             AddChild( ft );
         }
 
@@ -41,15 +41,15 @@ namespace Fonet.Fo
 
                     if ( Marker == MarkerStart )
                     {
-                        if ( area.getIDReferences() != null )
-                            area.getIDReferences().CreateID( id );
+                        if ( area.GetIDReferences() != null )
+                            area.GetIDReferences().CreateID( id );
                         Marker = 0;
                     }
 
                     if ( Marker == 0 )
                     {
-                        if ( area.getIDReferences() != null )
-                            area.getIDReferences().ConfigureID( id, area );
+                        if ( area.GetIDReferences() != null )
+                            area.GetIDReferences().ConfigureID( id, area );
                     }
                 }
             }

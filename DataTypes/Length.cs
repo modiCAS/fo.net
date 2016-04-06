@@ -4,29 +4,24 @@ namespace Fonet.DataTypes
 {
     internal class Length
     {
-        protected bool BIsComputed;
-        protected int Millipoints;
+        private bool _bIsComputed;
+        private int _millipoints;
 
         public int MValue()
         {
-            if ( !BIsComputed )
+            if ( !_bIsComputed )
                 ComputeValue();
-            return Millipoints;
+            return _millipoints;
         }
 
         public virtual void ComputeValue()
         {
         }
 
-        protected void SetComputedValue( int millipoints )
+        protected void SetComputedValue( int millipoints, bool bSetComputed = true )
         {
-            SetComputedValue( millipoints, true );
-        }
-
-        protected void SetComputedValue( int millipoints, bool bSetComputed )
-        {
-            this.Millipoints = millipoints;
-            BIsComputed = bSetComputed;
+            _millipoints = millipoints;
+            _bIsComputed = bSetComputed;
         }
 
         public virtual bool IsAuto()
@@ -36,7 +31,7 @@ namespace Fonet.DataTypes
 
         public bool IsComputed()
         {
-            return BIsComputed;
+            return _bIsComputed;
         }
 
         public virtual double GetTableUnits()
@@ -55,7 +50,7 @@ namespace Fonet.DataTypes
 
         public override string ToString()
         {
-            return Millipoints + "mpt";
+            return _millipoints + "mpt";
         }
     }
 }

@@ -5,26 +5,26 @@ namespace Fonet.Layout
 {
     internal class FontInfo
     {
-        private readonly Hashtable fonts;
-        private readonly Hashtable triplets;
-        private readonly Hashtable usedFonts;
+        private readonly Hashtable _fonts;
+        private readonly Hashtable _triplets;
+        private readonly Hashtable _usedFonts;
 
         public FontInfo()
         {
-            triplets = new Hashtable();
-            fonts = new Hashtable();
-            usedFonts = new Hashtable();
+            _triplets = new Hashtable();
+            _fonts = new Hashtable();
+            _usedFonts = new Hashtable();
         }
 
         public void AddFontProperties( string name, string family, string style, string weight )
         {
             string key = CreateFontKey( family, style, weight );
-            triplets.Add( key, name );
+            _triplets.Add( key, name );
         }
 
         public void AddMetrics( string name, IFontMetric metrics )
         {
-            fonts.Add( name, metrics );
+            _fonts.Add( name, metrics );
         }
 
         public string FontLookup( string family, string style, string weight )
@@ -34,15 +34,15 @@ namespace Fonet.Layout
 
         private string FontLookup( string key )
         {
-            var f = (string)triplets[ key ];
+            var f = (string)_triplets[ key ];
             if ( f == null )
             {
                 int i = key.IndexOf( ',' );
                 string s = "any" + key.Substring( i );
-                f = (string)triplets[ s ];
+                f = (string)_triplets[ s ];
                 if ( f == null )
                 {
-                    f = (string)triplets[ "any,normal,normal" ];
+                    f = (string)_triplets[ "any,normal,normal" ];
                     if ( f == null )
                         throw new FonetException( "no default font defined by OutputConverter" );
                     FonetDriver.ActiveDriver.FireFonetInfo(
@@ -52,14 +52,14 @@ namespace Fonet.Layout
                     "Unknown font " + key + " so defaulted font to any" );
             }
 
-            usedFonts[ f ] = fonts[ f ];
+            _usedFonts[ f ] = _fonts[ f ];
             return f;
         }
 
         private bool HasFont( string family, string style, string weight )
         {
             string key = CreateFontKey( family, style, weight );
-            return triplets.ContainsKey( key );
+            return _triplets.ContainsKey( key );
         }
 
         public static string CreateFontKey( string family, string style, string weight )
@@ -67,7 +67,7 @@ namespace Fonet.Layout
             int i;
             try
             {
-                if ( weight != null && weight.Length > 0 && char.IsNumber( weight, 0 ) )
+                if ( !string.IsNullOrEmpty( weight ) && char.IsNumber( weight, 0 ) )
                     i = int.Parse( weight );
                 else
                     i = 0;
@@ -87,23 +87,23 @@ namespace Fonet.Layout
 
         public IDictionary GetFonts()
         {
-            return fonts;
+            return _fonts;
         }
 
         public IFontMetric GetFontByName( string fontName )
         {
-            return (IFontMetric)fonts[ fontName ];
+            return (IFontMetric)_fonts[ fontName ];
         }
 
         public Hashtable GetUsedFonts()
         {
-            return usedFonts;
+            return _usedFonts;
         }
 
         public IFontMetric GetMetricsFor( string fontName )
         {
-            usedFonts[ fontName ] = fonts[ fontName ];
-            return (IFontMetric)fonts[ fontName ];
+            _usedFonts[ fontName ] = _fonts[ fontName ];
+            return (IFontMetric)_fonts[ fontName ];
         }
     }
 }

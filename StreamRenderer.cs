@@ -18,68 +18,68 @@ namespace Fonet
     /// </summary>
     internal class StreamRenderer
     {
-        private PageSequence currentPageSequence;
+        private PageSequence _currentPageSequence;
 
-        private ArrayList currentPageSequenceMarkers;
+        private ArrayList _currentPageSequenceMarkers;
 
         /// <summary>
         ///     The list of markers.
         /// </summary>
-        private ArrayList documentMarkers;
+        private ArrayList _documentMarkers;
 
         /// <summary>
         ///     The FontInfo for this renderer.
         /// </summary>
-        private readonly FontInfo fontInfo = new FontInfo();
+        private readonly FontInfo _fontInfo = new FontInfo();
 
         /// <summary>
         ///     The current set of IDReferences, passed to the areatrees
         ///     and pages. This is used by the AreaTree as a single map of
         ///     all IDs.
         /// </summary>
-        private readonly IDReferences idReferences = new IDReferences();
-
-        /// <summary>
-        ///     Keep track of the number of pages rendered.
-        /// </summary>
-        private int pageCount;
+        private readonly IDReferences _idReferences = new IDReferences();
 
         /// <summary>
         ///     The renderer being used.
         /// </summary>
-        private readonly PdfRenderer renderer;
+        private readonly PdfRenderer _renderer;
 
         /// <summary>
         ///     The list of pages waiting to be renderered.
         /// </summary>
-        private readonly ArrayList renderQueue = new ArrayList();
+        private readonly ArrayList _renderQueue = new ArrayList();
 
         /// <summary>
         ///     The formatting results to be handed back to the caller.
         /// </summary>
-        private readonly FormattingResults results = new FormattingResults();
+        private readonly FormattingResults _results = new FormattingResults();
 
         public StreamRenderer( PdfRenderer renderer )
         {
-            this.renderer = renderer;
+            this._renderer = renderer;
         }
+
+        /// <summary>
+        ///     Keep track of the number of pages rendered.
+        /// </summary>
+        public int PageCount { get; private set; }
 
         public IDReferences GetIDReferences()
         {
-            return idReferences;
+            return _idReferences;
         }
 
-        public FormattingResults getResults()
+        public FormattingResults GetResults()
         {
-            return results;
+            return _results;
         }
 
         public void StartRenderer()
         {
-            pageCount = 0;
+            PageCount = 0;
 
-            renderer.SetupFontInfo( fontInfo );
-            renderer.StartRenderer();
+            _renderer.SetupFontInfo( _fontInfo );
+            _renderer.StartRenderer();
         }
 
         public void StopRenderer()
@@ -87,7 +87,7 @@ namespace Fonet
             // Force the processing of any more queue elements, even if they 
             // are not resolved.
             ProcessQueue( true );
-            renderer.StopRenderer();
+            _renderer.StopRenderer();
         }
 
         /// <summary>
@@ -102,11 +102,11 @@ namespace Fonet
         public void Render( PageSequence pageSequence )
         {
             var a = new AreaTree( this );
-            a.setFontInfo( fontInfo );
+            a.SetFontInfo( _fontInfo );
 
             pageSequence.Format( a );
 
-            results.HaveFormattedPageSequence( pageSequence );
+            _results.HaveFormattedPageSequence( pageSequence );
 
             FonetDriver.ActiveDriver.FireFonetInfo(
                 "Last page-sequence produced " + pageSequence.PageCount + " page(s)." );
@@ -115,25 +115,25 @@ namespace Fonet
         public void QueuePage( Page page )
         {
             // Process markers
-            PageSequence pageSequence = page.getPageSequence();
-            if ( pageSequence != currentPageSequence )
+            PageSequence pageSequence = page.GetPageSequence();
+            if ( pageSequence != _currentPageSequence )
             {
-                currentPageSequence = pageSequence;
-                currentPageSequenceMarkers = null;
+                _currentPageSequence = pageSequence;
+                _currentPageSequenceMarkers = null;
             }
-            ArrayList markers = page.getMarkers();
+            ArrayList markers = page.GetMarkers();
             if ( markers != null )
             {
-                if ( documentMarkers == null )
-                    documentMarkers = new ArrayList();
-                if ( currentPageSequenceMarkers == null )
-                    currentPageSequenceMarkers = new ArrayList();
+                if ( _documentMarkers == null )
+                    _documentMarkers = new ArrayList();
+                if ( _currentPageSequenceMarkers == null )
+                    _currentPageSequenceMarkers = new ArrayList();
                 for ( var i = 0; i < markers.Count; i++ )
                 {
                     var marker = (Marker)markers[ i ];
                     marker.ReleaseRegistryArea();
-                    currentPageSequenceMarkers.Add( marker );
-                    documentMarkers.Add( marker );
+                    _currentPageSequenceMarkers.Add( marker );
+                    _documentMarkers.Add( marker );
                 }
             }
 
@@ -141,18 +141,18 @@ namespace Fonet
             // Try to optimise on the common case that there are no pages pending 
             // and that all ID references are valid on the current pages. This 
             // short-cuts the pipeline and renders the area immediately.
-            if ( renderQueue.Count == 0 && idReferences.IsEveryIdValid() )
-                renderer.Render( page );
+            if ( _renderQueue.Count == 0 && _idReferences.IsEveryIdValid() )
+                _renderer.Render( page );
             else
                 AddToRenderQueue( page );
 
-            pageCount++;
+            PageCount++;
         }
 
         private void AddToRenderQueue( Page page )
         {
             var entry = new RenderQueueEntry( this, page );
-            renderQueue.Add( entry );
+            _renderQueue.Add( entry );
 
             // The just-added entry could (possibly) resolve the waiting entries, 
             // so we try to process the queue now to see.
@@ -167,14 +167,14 @@ namespace Fonet
         /// <param name="force"></param>
         private void ProcessQueue( bool force )
         {
-            while ( renderQueue.Count > 0 )
+            while ( _renderQueue.Count > 0 )
             {
-                var entry = (RenderQueueEntry)renderQueue[ 0 ];
-                if ( !force && !entry.isResolved() )
+                var entry = (RenderQueueEntry)_renderQueue[ 0 ];
+                if ( !force && !entry.IsResolved() )
                     break;
 
-                renderer.Render( entry.getPage() );
-                renderQueue.RemoveAt( 0 );
+                _renderer.Render( entry.GetPage() );
+                _renderQueue.RemoveAt( 0 );
             }
         }
 
@@ -184,7 +184,7 @@ namespace Fonet
         /// <returns></returns>
         public ArrayList GetDocumentMarkers()
         {
-            return documentMarkers;
+            return _documentMarkers;
         }
 
         /// <summary>
@@ -193,7 +193,7 @@ namespace Fonet
         /// <returns></returns>
         public PageSequence GetCurrentPageSequence()
         {
-            return currentPageSequence;
+            return _currentPageSequence;
         }
 
         /// <summary>
@@ -202,7 +202,7 @@ namespace Fonet
         /// <returns></returns>
         public ArrayList GetCurrentPageSequenceMarkers()
         {
-            return currentPageSequenceMarkers;
+            return _currentPageSequenceMarkers;
         }
 
         /// <summary>
@@ -212,30 +212,30 @@ namespace Fonet
         /// </summary>
         private class RenderQueueEntry
         {
-            private readonly StreamRenderer outer;
+            private readonly StreamRenderer _outer;
 
             /// <summary>
             ///     The Page that has outstanding ID references.
             /// </summary>
-            private readonly Page page;
+            private readonly Page _page;
 
             /// <summary>
             ///     A list of ID references (names).
             /// </summary>
-            private readonly ArrayList unresolvedIdReferences = new ArrayList();
+            private readonly ArrayList _unresolvedIdReferences = new ArrayList();
 
             public RenderQueueEntry( StreamRenderer outer, Page page )
             {
-                this.outer = outer;
-                this.page = page;
+                this._outer = outer;
+                this._page = page;
 
-                foreach ( object o in outer.idReferences.GetInvalidElements() )
-                    unresolvedIdReferences.Add( o );
+                foreach ( object o in outer._idReferences.GetInvalidElements() )
+                    _unresolvedIdReferences.Add( o );
             }
 
-            public Page getPage()
+            public Page GetPage()
             {
-                return page;
+                return _page;
             }
 
             /// <summary>
@@ -243,19 +243,19 @@ namespace Fonet
             ///     copy of IDReferences.
             /// </summary>
             /// <returns></returns>
-            public bool isResolved()
+            public bool IsResolved()
             {
-                if ( unresolvedIdReferences.Count == 0 || outer.idReferences.IsEveryIdValid() )
+                if ( _unresolvedIdReferences.Count == 0 || _outer._idReferences.IsEveryIdValid() )
                     return true;
 
                 // See if any of the unresolved references are still unresolved.
-                foreach ( string s in unresolvedIdReferences )
+                foreach ( string s in _unresolvedIdReferences )
                 {
-                    if ( !outer.idReferences.DoesIDExist( s ) )
+                    if ( !_outer._idReferences.DoesIDExist( s ) )
                         return false;
                 }
 
-                unresolvedIdReferences.RemoveRange( 0, unresolvedIdReferences.Count );
+                _unresolvedIdReferences.RemoveRange( 0, _unresolvedIdReferences.Count );
                 return true;
             }
         }

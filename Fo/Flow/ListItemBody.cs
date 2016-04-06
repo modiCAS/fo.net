@@ -22,7 +22,7 @@ namespace Fonet.Fo.Flow
                 AccessibilityProps mAccProps = PropMgr.GetAccessibilityProps();
                 Marker = 0;
                 string id = Properties.GetProperty( "id" ).GetString();
-                area.getIDReferences().InitializeID( id, area );
+                area.GetIDReferences().InitializeID( id, area );
             }
 
             int numChildren = Children.Count;

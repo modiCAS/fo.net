@@ -4,8 +4,6 @@ namespace Fonet.Fo.Pagination
 {
     internal class PageSequenceMaster : FObj
     {
-        private readonly LayoutMasterSet _layoutMasterSet;
-
         private readonly ArrayList _subSequenceSpecifiers;
 
         protected PageSequenceMaster( FObj parent, PropertyList propertyList )
@@ -17,7 +15,7 @@ namespace Fonet.Fo.Pagination
 
             if ( parent.GetName().Equals( "fo:layout-master-set" ) )
             {
-                _layoutMasterSet = (LayoutMasterSet)parent;
+                var layoutMasterSet = (LayoutMasterSet)parent;
                 string pm = Properties.GetProperty( "master-name" ).GetString();
                 if ( pm == null )
                 {
@@ -25,7 +23,7 @@ namespace Fonet.Fo.Pagination
                         "page-sequence-master does not have a page-master-name and so is being ignored" );
                 }
                 else
-                    _layoutMasterSet.AddPageSequenceMaster( pm, this );
+                    layoutMasterSet.AddPageSequenceMaster( pm, this );
             }
             else
             {

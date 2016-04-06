@@ -5,20 +5,20 @@ namespace Fonet.Util
 {
     internal class StringTokenizer : IEnumerator
     {
-        private int currentPosition;
-        private readonly string delimiters;
+        private int _currentPosition;
+        private readonly string _delimiters;
 
         /// <summary>
         ///     maxDelimChar stores the value of the delimiter character with
         ///     the highest value. It is used to optimize the detection of
         ///     delimiter characters.
         /// </summary>
-        private char maxDelimChar;
+        private char _maxDelimChar;
 
-        private readonly int maxPosition;
-        private int newPosition;
-        private readonly bool retDelims;
-        private readonly string str;
+        private readonly int _maxPosition;
+        private int _newPosition;
+        private readonly bool _retDelims;
+        private readonly string _str;
 
         /// <summary>
         ///     Constructs a string tokenizer for the specified string. All
@@ -35,12 +35,12 @@ namespace Fonet.Util
         /// <param name="returnDelims"></param>
         public StringTokenizer( string str, string delim, bool returnDelims )
         {
-            currentPosition = 0;
-            newPosition = -1;
-            this.str = str;
-            maxPosition = str.Length;
-            delimiters = delim;
-            retDelims = returnDelims;
+            _currentPosition = 0;
+            _newPosition = -1;
+            this._str = str;
+            _maxPosition = str.Length;
+            _delimiters = delim;
+            _retDelims = returnDelims;
             SetMaxDelimChar();
         }
 
@@ -84,8 +84,8 @@ namespace Fonet.Util
              * nextToken() method only if the delimiters have'nt been changed in
              * that nextToken() invocation.
              */
-            newPosition = SkipDelimiters( currentPosition );
-            return newPosition < maxPosition;
+            _newPosition = SkipDelimiters( _currentPosition );
+            return _newPosition < _maxPosition;
         }
 
         /// <summary>
@@ -108,20 +108,20 @@ namespace Fonet.Util
         /// </summary>
         private void SetMaxDelimChar()
         {
-            if ( delimiters == null )
+            if ( _delimiters == null )
             {
-                maxDelimChar = (char)0;
+                _maxDelimChar = (char)0;
                 return;
             }
 
             var m = (char)0;
-            for ( var i = 0; i < delimiters.Length; i++ )
+            for ( var i = 0; i < _delimiters.Length; i++ )
             {
-                char c = delimiters[ i ];
+                char c = _delimiters[ i ];
                 if ( m < c )
                     m = c;
             }
-            maxDelimChar = m;
+            _maxDelimChar = m;
         }
 
         /// <summary>
@@ -134,14 +134,14 @@ namespace Fonet.Util
         /// <returns></returns>
         private int SkipDelimiters( int startPos )
         {
-            if ( delimiters == null )
+            if ( _delimiters == null )
                 throw new NullReferenceException();
 
             int position = startPos;
-            while ( !retDelims && position < maxPosition )
+            while ( !_retDelims && position < _maxPosition )
             {
-                char c = str[ position ];
-                if ( c > maxDelimChar || delimiters.IndexOf( c ) < 0 )
+                char c = _str[ position ];
+                if ( c > _maxDelimChar || _delimiters.IndexOf( c ) < 0 )
                     break;
                 position++;
             }
@@ -158,17 +158,17 @@ namespace Fonet.Util
         private int ScanToken( int startPos )
         {
             int position = startPos;
-            while ( position < maxPosition )
+            while ( position < _maxPosition )
             {
-                char c = str[ position ];
-                if ( c <= maxDelimChar && delimiters.IndexOf( c ) >= 0 )
+                char c = _str[ position ];
+                if ( c <= _maxDelimChar && _delimiters.IndexOf( c ) >= 0 )
                     break;
                 position++;
             }
-            if ( retDelims && startPos == position )
+            if ( _retDelims && startPos == position )
             {
-                char c = str[ position ];
-                if ( c <= maxDelimChar && delimiters.IndexOf( c ) >= 0 )
+                char c = _str[ position ];
+                if ( c <= _maxDelimChar && _delimiters.IndexOf( c ) >= 0 )
                     position++;
             }
             return position;
@@ -185,17 +185,17 @@ namespace Fonet.Util
              * delimiters have changed between the computation and this invocation,
              * then use the computed value.
              */
-            currentPosition = newPosition >= 0
-                ? newPosition
-                : SkipDelimiters( currentPosition );
+            _currentPosition = _newPosition >= 0
+                ? _newPosition
+                : SkipDelimiters( _currentPosition );
 
-            newPosition = -1;
+            _newPosition = -1;
 
-            if ( currentPosition >= maxPosition )
+            if ( _currentPosition >= _maxPosition )
                 throw new InvalidOperationException();
-            int start = currentPosition;
-            currentPosition = ScanToken( currentPosition );
-            return str.Substring( start, currentPosition - start );
+            int start = _currentPosition;
+            _currentPosition = ScanToken( _currentPosition );
+            return _str.Substring( start, _currentPosition - start );
         }
 
         /// <summary>
@@ -215,8 +215,8 @@ namespace Fonet.Util
              * NextToken() method only if the delimiters have'nt been changed in
              * that NextToken() invocation.
              */
-            newPosition = SkipDelimiters( currentPosition );
-            return newPosition < maxPosition;
+            _newPosition = SkipDelimiters( _currentPosition );
+            return _newPosition < _maxPosition;
         }
 
         /// <summary>
@@ -231,11 +231,11 @@ namespace Fonet.Util
         public virtual int CountTokens()
         {
             var count = 0;
-            int currpos = currentPosition;
-            while ( currpos < maxPosition )
+            int currpos = _currentPosition;
+            while ( currpos < _maxPosition )
             {
                 currpos = SkipDelimiters( currpos );
-                if ( currpos >= maxPosition )
+                if ( currpos >= _maxPosition )
                     break;
                 currpos = ScanToken( currpos );
                 count++;

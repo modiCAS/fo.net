@@ -4,19 +4,19 @@ namespace Fonet.Layout
 {
     internal class DisplaySpace : Space
     {
-        private readonly int size;
+        private readonly int _size;
 
         public DisplaySpace( int size )
         {
-            this.size = size;
+            _size = size;
         }
 
-        public int getSize()
+        public int GetSize()
         {
-            return size;
+            return _size;
         }
 
-        public override void render( PdfRenderer renderer )
+        public override void Render( PdfRenderer renderer )
         {
             renderer.RenderDisplaySpace( this );
         }

@@ -2,68 +2,68 @@ namespace Fonet.Layout
 {
     internal class PageMaster
     {
-        private RegionArea after;
-        private RegionArea before;
-        private BodyRegionArea body;
-        private RegionArea end;
-        private readonly int height;
-        private RegionArea start;
-        private readonly int width;
+        private RegionArea _after;
+        private RegionArea _before;
+        private BodyRegionArea _body;
+        private RegionArea _end;
+        private readonly int _height;
+        private RegionArea _start;
+        private readonly int _width;
 
         public PageMaster( int pageWidth, int pageHeight )
         {
-            width = pageWidth;
-            height = pageHeight;
+            _width = pageWidth;
+            _height = pageHeight;
         }
 
-        public void addAfter( RegionArea region )
+        public void AddAfter( RegionArea region )
         {
-            after = region;
+            _after = region;
         }
 
-        public void addBefore( RegionArea region )
+        public void AddBefore( RegionArea region )
         {
-            before = region;
+            _before = region;
         }
 
-        public void addBody( BodyRegionArea region )
+        public void AddBody( BodyRegionArea region )
         {
-            body = region;
+            _body = region;
         }
 
-        public void addEnd( RegionArea region )
+        public void AddEnd( RegionArea region )
         {
-            end = region;
+            _end = region;
         }
 
-        public void addStart( RegionArea region )
+        public void AddStart( RegionArea region )
         {
-            start = region;
+            _start = region;
         }
 
         public int GetHeight()
         {
-            return height;
+            return _height;
         }
 
-        public int getWidth()
+        public int GetWidth()
         {
-            return width;
+            return _width;
         }
 
-        public Page makePage( AreaTree areaTree )
+        public Page MakePage( AreaTree areaTree )
         {
-            var p = new Page( areaTree, height, width );
-            if ( body != null )
-                p.addBody( body.makeBodyAreaContainer() );
-            if ( before != null )
-                p.addBefore( before.makeAreaContainer() );
-            if ( after != null )
-                p.addAfter( after.makeAreaContainer() );
-            if ( start != null )
-                p.addStart( start.makeAreaContainer() );
-            if ( end != null )
-                p.addEnd( end.makeAreaContainer() );
+            var p = new Page( areaTree, _height, _width );
+            if ( _body != null )
+                p.AddBody( _body.MakeBodyAreaContainer() );
+            if ( _before != null )
+                p.AddBefore( _before.MakeAreaContainer() );
+            if ( _after != null )
+                p.AddAfter( _after.MakeAreaContainer() );
+            if ( _start != null )
+                p.AddStart( _start.MakeAreaContainer() );
+            if ( _end != null )
+                p.AddEnd( _end.MakeAreaContainer() );
 
             return p;
         }

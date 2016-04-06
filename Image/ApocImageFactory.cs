@@ -40,19 +40,19 @@ namespace Fonet.Image
                     return new FonetImage( href, data );
             }
 
-            Uri absoluteURL = null;
+            Uri absoluteUrl = null;
             var up = new UriSpecificationParser( href );
             string path = up.Uri;
 
             try
             {
-                absoluteURL = new Uri( path );
+                absoluteUrl = new Uri( path );
             }
             catch
             {
                 // If the href contains only a path then file is assumed
                 if ( File.Exists( path ) )
-                    absoluteURL = new Uri( "file://" + Path.Combine( Directory.GetCurrentDirectory(), path ) );
+                    absoluteUrl = new Uri( "file://" + Path.Combine( Directory.GetCurrentDirectory(), path ) );
                 else
                 {
                     // Examine base directory which is specified by the user via the 
@@ -61,15 +61,15 @@ namespace Fonet.Image
 
                     string baseDirPath = Path.Combine( baseDir, path );
                     if ( File.Exists( baseDirPath ) )
-                        absoluteURL = new Uri( "file://" + Path.Combine( Directory.GetCurrentDirectory(), baseDirPath ) );
+                        absoluteUrl = new Uri( "file://" + Path.Combine( Directory.GetCurrentDirectory(), baseDirPath ) );
                     else
                         throw new FonetImageException( "Unable to retrieve graphic from " + path );
                 }
             }
 
             return new FonetImage(
-                absoluteURL.AbsoluteUri,
-                ExtractImageData( absoluteURL ) );
+                absoluteUrl.AbsoluteUri,
+                ExtractImageData( absoluteUrl ) );
         }
 
         private static Stream GetImageStream( Uri uri )
@@ -110,10 +110,10 @@ namespace Fonet.Image
             }
         }
 
-        private static byte[] ExtractImageData( Uri absoluteURL )
+        private static byte[] ExtractImageData( Uri absoluteUrl )
         {
             // Otherwise load the image data using a WebRequest.
-            Stream imageStream = GetImageStream( absoluteURL );
+            Stream imageStream = GetImageStream( absoluteUrl );
 
             // Read the data stream into a byte array.
             try

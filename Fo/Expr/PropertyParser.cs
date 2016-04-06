@@ -195,13 +195,9 @@ namespace Fonet.Fo.Expr
                 int numLen = CurrentTokenValue.Length - CurrentUnitLength;
                 string unitPart = CurrentTokenValue.Substring( numLen );
                 double numPart = ParseDouble( CurrentTokenValue.Substring( 0, numLen ) );
-                Length length = null;
-                if ( unitPart.Equals( Relunit ) )
-                    length = new FixedLength( numPart, _propInfo.CurrentFontSize() );
-                else
-                    length = new FixedLength( numPart, unitPart );
-                if ( length == null )
-                    throw new PropertyException( "unrecognized unit name: " + CurrentTokenValue );
+                Length length = unitPart.Equals( Relunit )
+                    ? new FixedLength( numPart, _propInfo.CurrentFontSize() )
+                    : new FixedLength( numPart, unitPart );
                 prop = new LengthProperty( length );
                 break;
 
@@ -234,7 +230,6 @@ namespace Fonet.Fo.Expr
         private Property[] ParseArgs( int nbArgs )
         {
             var args = new Property[ nbArgs ];
-            Property prop;
             var i = 0;
             if ( CurrentToken == TokRpar )
                 Next();
@@ -242,7 +237,7 @@ namespace Fonet.Fo.Expr
             {
                 while ( true )
                 {
-                    prop = ParseAdditiveExpr();
+                    Property prop = ParseAdditiveExpr();
                     if ( i < nbArgs )
                         args[ i++ ] = prop;
                     if ( CurrentToken != TokComma )

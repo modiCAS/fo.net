@@ -161,9 +161,8 @@ namespace Fonet.Fo
         {
             try
             {
-                Property pret = null;
                 string pvalue = value;
-                pret = CheckEnumValues( value );
+                Property pret = CheckEnumValues( value );
                 if ( pret == null )
                 {
                     pvalue = CheckValueKeywords( value );

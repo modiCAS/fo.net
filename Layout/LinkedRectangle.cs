@@ -5,93 +5,93 @@ namespace Fonet.Layout
 {
     internal class LinkedRectangle
     {
-        protected InlineArea inlineArea;
-        protected LineArea lineArea;
-        protected Rectangle link;
+        protected InlineArea InlineArea;
+        protected LineArea LineArea;
+        protected Rectangle Link;
 
         public LinkedRectangle( Rectangle link, LineArea lineArea,
             InlineArea inlineArea )
         {
-            this.link = link;
-            this.lineArea = lineArea;
-            this.inlineArea = inlineArea;
+            this.Link = link;
+            this.LineArea = lineArea;
+            this.InlineArea = inlineArea;
         }
 
         public LinkedRectangle( LinkedRectangle lr )
         {
-            link = lr.getRectangle();
-            lineArea = lr.getLineArea();
-            inlineArea = lr.getInlineArea();
+            Link = lr.GetRectangle();
+            LineArea = lr.GetLineArea();
+            InlineArea = lr.GetInlineArea();
         }
 
-        public void setRectangle( Rectangle link )
+        public void SetRectangle( Rectangle link )
         {
-            this.link = link;
+            this.Link = link;
         }
 
-        public Rectangle getRectangle()
+        public Rectangle GetRectangle()
         {
-            return link;
+            return Link;
         }
 
-        public LineArea getLineArea()
+        public LineArea GetLineArea()
         {
-            return lineArea;
+            return LineArea;
         }
 
-        public void setLineArea( LineArea lineArea )
+        public void SetLineArea( LineArea lineArea )
         {
-            this.lineArea = lineArea;
+            this.LineArea = lineArea;
         }
 
-        public InlineArea getInlineArea()
+        public InlineArea GetInlineArea()
         {
-            return inlineArea;
+            return InlineArea;
         }
 
-        public void setLineArea( InlineArea inlineArea )
+        public void SetLineArea( InlineArea inlineArea )
         {
-            this.inlineArea = inlineArea;
+            this.InlineArea = inlineArea;
         }
 
-        public void setX( int x )
+        public void SetX( int x )
         {
-            link.X = x;
+            Link.X = x;
         }
 
-        public void setY( int y )
+        public void SetY( int y )
         {
-            link.Y = y;
+            Link.Y = y;
         }
 
         public void SetWidth( int width )
         {
-            link.Width = width;
+            Link.Width = width;
         }
 
         public void SetHeight( int height )
         {
-            link.Height = height;
+            Link.Height = height;
         }
 
-        public int getX()
+        public int GetX()
         {
-            return link.X;
+            return Link.X;
         }
 
-        public int getY()
+        public int GetY()
         {
-            return link.Y;
+            return Link.Y;
         }
 
-        public int getWidth()
+        public int GetWidth()
         {
-            return link.Width;
+            return Link.Width;
         }
 
         public int GetHeight()
         {
-            return link.Height;
+            return Link.Height;
         }
     }
 }

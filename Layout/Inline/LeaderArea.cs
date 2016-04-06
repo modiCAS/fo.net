@@ -5,10 +5,10 @@ namespace Fonet.Layout.Inline
 {
     internal class LeaderArea : InlineArea
     {
-        private int leaderLengthOptimum;
-        private readonly int leaderPattern;
-        private readonly int ruleStyle;
-        private readonly int ruleThickness;
+        private int _leaderLengthOptimum;
+        private readonly int _leaderPattern;
+        private readonly int _ruleStyle;
+        private readonly int _ruleThickness;
 
         public LeaderArea(
             FontState fontState, float red, float green,
@@ -16,37 +16,37 @@ namespace Fonet.Layout.Inline
             int leaderPattern, int ruleThickness, int ruleStyle )
             : base( fontState, leaderLengthOptimum, red, green, blue )
         {
-            this.leaderPattern = leaderPattern;
-            this.leaderLengthOptimum = leaderLengthOptimum;
-            this.ruleStyle = ruleStyle;
+            this._leaderPattern = leaderPattern;
+            this._leaderLengthOptimum = leaderLengthOptimum;
+            this._ruleStyle = ruleStyle;
             if ( ruleStyle == RuleStyle.None )
                 ruleThickness = 0;
-            this.ruleThickness = ruleThickness;
+            this._ruleThickness = ruleThickness;
         }
 
-        public override void render( PdfRenderer renderer )
+        public override void Render( PdfRenderer renderer )
         {
             renderer.RenderLeaderArea( this );
         }
 
-        public int getRuleThickness()
+        public int GetRuleThickness()
         {
-            return ruleThickness;
+            return _ruleThickness;
         }
 
-        public int getRuleStyle()
+        public int GetRuleStyle()
         {
-            return ruleStyle;
+            return _ruleStyle;
         }
 
-        public int getLeaderPattern()
+        public int GetLeaderPattern()
         {
-            return leaderPattern;
+            return _leaderPattern;
         }
 
-        public int getLeaderLength()
+        public int GetLeaderLength()
         {
-            return contentRectangleWidth;
+            return ContentRectangleWidth;
         }
     }
 }

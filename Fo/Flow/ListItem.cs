@@ -44,34 +44,34 @@ namespace Fonet.Fo.Flow
                     Properties.GetProperty( "space-after.optimum" ).GetLength().MValue();
                 _id = Properties.GetProperty( "id" ).GetString();
 
-                area.getIDReferences().CreateID( _id );
+                area.GetIDReferences().CreateID( _id );
 
                 Marker = 0;
             }
 
             if ( area is BlockArea )
-                area.end();
+                area.End();
 
             if ( _spaceBefore != 0 )
-                area.addDisplaySpace( _spaceBefore );
+                area.AddDisplaySpace( _spaceBefore );
 
             _blockArea =
-                new BlockArea( PropMgr.GetFontState( area.getFontInfo() ),
-                    area.getAllocationWidth(), area.spaceLeft(), 0, 0,
+                new BlockArea( PropMgr.GetFontState( area.GetFontInfo() ),
+                    area.GetAllocationWidth(), area.SpaceLeft(), 0, 0,
                     0, _align, _alignLast, _lineHeight );
-            _blockArea.setTableCellXOffset( area.getTableCellXOffset() );
-            _blockArea.setGeneratedBy( this );
+            _blockArea.SetTableCellXOffset( area.GetTableCellXOffset() );
+            _blockArea.SetGeneratedBy( this );
             AreasGenerated++;
             if ( AreasGenerated == 1 )
-                _blockArea.isFirst( true );
-            _blockArea.addLineagePair( this, AreasGenerated );
+                _blockArea.IsFirst( true );
+            _blockArea.AddLineagePair( this, AreasGenerated );
 
-            _blockArea.setParent( area );
-            _blockArea.setPage( area.getPage() );
-            _blockArea.start();
+            _blockArea.SetParent( area );
+            _blockArea.SetPage( area.GetPage() );
+            _blockArea.Start();
 
-            _blockArea.setAbsoluteHeight( area.getAbsoluteHeight() );
-            _blockArea.setIDReferences( area.getIDReferences() );
+            _blockArea.SetAbsoluteHeight( area.GetAbsoluteHeight() );
+            _blockArea.SetIDReferences( area.GetIDReferences() );
 
             int numChildren = Children.Count;
             if ( numChildren != 2 )
@@ -83,7 +83,7 @@ namespace Fonet.Fo.Flow
 
             if ( Marker == 0 )
             {
-                area.getIDReferences().ConfigureID( _id, area );
+                area.GetIDReferences().ConfigureID( _id, area );
 
                 status = label.Layout( _blockArea );
                 if ( status.IsIncomplete() )
@@ -93,30 +93,30 @@ namespace Fonet.Fo.Flow
             status = body.Layout( _blockArea );
             if ( status.IsIncomplete() )
             {
-                _blockArea.end();
-                area.addChild( _blockArea );
-                area.increaseHeight( _blockArea.GetHeight() );
+                _blockArea.End();
+                area.AddChild( _blockArea );
+                area.IncreaseHeight( _blockArea.GetHeight() );
                 Marker = 1;
                 return status;
             }
 
-            _blockArea.end();
-            area.addChild( _blockArea );
-            area.increaseHeight( _blockArea.GetHeight() );
+            _blockArea.End();
+            area.AddChild( _blockArea );
+            area.IncreaseHeight( _blockArea.GetHeight() );
 
             if ( _spaceAfter != 0 )
-                area.addDisplaySpace( _spaceAfter );
+                area.AddDisplaySpace( _spaceAfter );
 
             if ( area is BlockArea )
-                area.start();
-            _blockArea.isLast( true );
+                area.Start();
+            _blockArea.IsLast( true );
             return new Status( Status.Ok );
         }
 
         public override int GetContentWidth()
         {
             if ( _blockArea != null )
-                return _blockArea.getContentWidth();
+                return _blockArea.GetContentWidth();
             return 0;
         }
 

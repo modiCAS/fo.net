@@ -54,12 +54,12 @@ namespace Fonet.Fo.Flow
                 Marker = 0;
 
                 string id = Properties.GetProperty( "id" ).GetString();
-                area.getIDReferences().InitializeID( id, area );
+                area.GetIDReferences().InitializeID( id, area );
             }
 
-            string p = area.getPage().getFormattedNumber();
+            string p = area.GetPage().GetFormattedNumber();
             Marker = FoText.AddText( (BlockArea)area,
-                PropMgr.GetFontState( area.getFontInfo() ),
+                PropMgr.GetFontState( area.GetFontInfo() ),
                 _red, _green, _blue, _wrapOption, null,
                 _whiteSpaceCollapse, p.ToCharArray(), 0,
                 p.Length, _ts, VerticalAlign.Baseline );

@@ -11,15 +11,14 @@ namespace Fonet.Fo.Flow
         private int _contentWidth;
         private ArrayList _markerSnapshot;
 
-        private readonly PageSequence _pageSequence;
-
         protected Flow( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
+            PageSequence pageSequence;
             Name = GetElementName();
 
             if ( parent.GetName().Equals( "fo:page-sequence" ) )
-                _pageSequence = (PageSequence)parent;
+                pageSequence = (PageSequence)parent;
             else
             {
                 throw new FonetException( "flow must be child of "
@@ -28,7 +27,7 @@ namespace Fonet.Fo.Flow
             }
             SetFlowName( GetProperty( "flow-name" ).GetString() );
 
-            if ( _pageSequence.IsFlowSet )
+            if ( pageSequence.IsFlowSet )
             {
                 if ( Name.Equals( "fo:flow" ) )
                 {
@@ -38,7 +37,7 @@ namespace Fonet.Fo.Flow
                 throw new FonetException( Name
                     + " not allowed after fo:flow" );
             }
-            _pageSequence.AddFlow( this );
+            pageSequence.AddFlow( this );
         }
 
         public new static FObj.Maker GetMaker()
@@ -85,22 +84,22 @@ namespace Fonet.Fo.Flow
             {
                 var fo = (FObj)Children[ i ];
 
-                if ( bac.isBalancingRequired( fo ) )
+                if ( bac.IsBalancingRequired( fo ) )
                 {
-                    bac.resetSpanArea();
+                    bac.ResetSpanArea();
 
                     Rollback( _markerSnapshot );
                     i = Marker - 1;
                     continue;
                 }
-                Area currentArea = bac.getNextArea( fo );
-                currentArea.setIDReferences( bac.getIDReferences() );
-                if ( bac.isNewSpanArea() )
+                Area currentArea = bac.GetNextArea( fo );
+                currentArea.SetIDReferences( bac.GetIDReferences() );
+                if ( bac.IsNewSpanArea() )
                 {
                     Marker = i;
                     _markerSnapshot = GetMarkerSnapshot( new ArrayList() );
                 }
-                SetContentWidth( currentArea.getContentWidth() );
+                SetContentWidth( currentArea.GetContentWidth() );
 
                 _status = fo.Layout( currentArea );
 
@@ -112,11 +111,11 @@ namespace Fonet.Fo.Flow
                         var prevChild = (FObj)Children[ Marker ];
                         prevChild.RemoveAreas();
                         prevChild.ResetMarker();
-                        prevChild.RemoveID( area.getIDReferences() );
+                        prevChild.RemoveID( area.GetIDReferences() );
                         _status = new Status( Status.AreaFullSome );
                         return _status;
                     }
-                    if ( bac.isLastColumn() )
+                    if ( bac.IsLastColumn() )
                     {
                         if ( _status.GetCode() == Status.ForceColumnBreak )
                         {
@@ -133,13 +132,10 @@ namespace Fonet.Fo.Flow
                         Marker = i;
                         return _status;
                     }
-                    ( (ColumnArea)currentArea ).incrementSpanIndex();
+                    ( (ColumnArea)currentArea ).IncrementSpanIndex();
                     i--;
                 }
-                if ( _status.GetCode() == Status.KeepWithNext )
-                    prevChildMustKeepWithNext = true;
-                else
-                    prevChildMustKeepWithNext = false;
+                prevChildMustKeepWithNext = _status.GetCode() == Status.KeepWithNext;
             }
             return _status;
         }

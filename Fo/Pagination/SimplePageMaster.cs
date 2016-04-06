@@ -11,7 +11,6 @@ namespace Fonet.Fo.Pagination
         private int _beforeHeight;
         private bool _beforePrecedence;
 
-        private readonly LayoutMasterSet _layoutMasterSet;
         private readonly string _masterName;
         private PageMaster _pageMaster;
 
@@ -22,7 +21,7 @@ namespace Fonet.Fo.Pagination
 
             if ( parent.GetName().Equals( "fo:layout-master-set" ) )
             {
-                _layoutMasterSet = (LayoutMasterSet)parent;
+                var layoutMasterSet = (LayoutMasterSet)parent;
                 _masterName = Properties.GetProperty( "master-name" ).GetString();
                 if ( _masterName == null )
                 {
@@ -30,7 +29,7 @@ namespace Fonet.Fo.Pagination
                         "simple-page-master does not have a master-name and so is being ignored" );
                 }
                 else
-                    _layoutMasterSet.AddSimplePageMaster( this );
+                    layoutMasterSet.AddSimplePageMaster( this );
             }
             else
             {
@@ -54,12 +53,12 @@ namespace Fonet.Fo.Pagination
                 Properties.GetProperty( "page-height" ).GetLength().MValue();
             MarginProps mProps = PropMgr.GetMarginProps();
 
-            int contentRectangleXPosition = mProps.marginLeft;
-            int contentRectangleYPosition = pageHeight - mProps.marginTop;
-            int contentRectangleWidth = pageWidth - mProps.marginLeft
-                - mProps.marginRight;
-            int contentRectangleHeight = pageHeight - mProps.marginTop
-                - mProps.marginBottom;
+            int contentRectangleXPosition = mProps.MarginLeft;
+            int contentRectangleYPosition = pageHeight - mProps.MarginTop;
+            int contentRectangleWidth = pageWidth - mProps.MarginLeft
+                - mProps.MarginRight;
+            int contentRectangleHeight = pageHeight - mProps.MarginTop
+                - mProps.MarginBottom;
 
             _pageMaster = new PageMaster( pageWidth, pageHeight );
             if ( GetRegion( RegionBody.RegionClass ) != null )
@@ -69,7 +68,7 @@ namespace Fonet.Fo.Pagination
                         contentRectangleYPosition,
                         contentRectangleWidth,
                         contentRectangleHeight );
-                _pageMaster.addBody( body );
+                _pageMaster.AddBody( body );
             }
             else
             {
@@ -84,7 +83,7 @@ namespace Fonet.Fo.Pagination
                     GetRegion( RegionBefore.RegionClass ).MakeRegionArea( contentRectangleXPosition,
                         contentRectangleYPosition, contentRectangleWidth,
                         contentRectangleHeight );
-                _pageMaster.addBefore( before );
+                _pageMaster.AddBefore( before );
                 _beforePrecedence =
                     ( (RegionBefore)GetRegion( RegionBefore.RegionClass ) ).GetPrecedence();
                 _beforeHeight = before.GetHeight();
@@ -98,7 +97,7 @@ namespace Fonet.Fo.Pagination
                     GetRegion( RegionAfter.RegionClass ).MakeRegionArea( contentRectangleXPosition,
                         contentRectangleYPosition, contentRectangleWidth,
                         contentRectangleHeight );
-                _pageMaster.addAfter( after );
+                _pageMaster.AddAfter( after );
                 _afterPrecedence =
                     ( (RegionAfter)GetRegion( RegionAfter.RegionClass ) ).GetPrecedence();
                 _afterHeight = after.GetHeight();
@@ -113,7 +112,7 @@ namespace Fonet.Fo.Pagination
                         contentRectangleYPosition, contentRectangleWidth,
                         contentRectangleHeight, _beforePrecedence,
                         _afterPrecedence, _beforeHeight, _afterHeight );
-                _pageMaster.addStart( start );
+                _pageMaster.AddStart( start );
             }
 
             if ( GetRegion( RegionEnd.RegionClass ) != null )
@@ -123,7 +122,7 @@ namespace Fonet.Fo.Pagination
                         contentRectangleYPosition, contentRectangleWidth,
                         contentRectangleHeight, _beforePrecedence,
                         _afterPrecedence, _beforeHeight, _afterHeight );
-                _pageMaster.addEnd( end );
+                _pageMaster.AddEnd( end );
             }
         }
 

@@ -14,22 +14,22 @@ namespace Fonet.Render.Pdf.Fonts
         /// <summary>
         ///     Flag that indicates whether the underlying font has been loaded.
         /// </summary>
-        private bool fontLoaded;
+        private bool _fontLoaded;
 
         /// <summary>
         ///     Determines what type of "real" font to instantiate.
         /// </summary>
-        private readonly FontType fontType;
+        private readonly FontType _fontType;
 
         /// <summary>
         ///     Font details such as face name, bold and italic flags
         /// </summary>
-        private readonly FontProperties properties;
+        private readonly FontProperties _properties;
 
         /// <summary>
         ///     The font that does all the work.
         /// </summary>
-        private Font realFont;
+        private Font _realFont;
 
         /// <summary>
         ///     Class constructor.
@@ -38,8 +38,8 @@ namespace Fonet.Render.Pdf.Fonts
         /// <param name="fontType"></param>
         public ProxyFont( FontProperties properties, FontType fontType )
         {
-            this.properties = properties;
-            this.fontType = fontType;
+            this._properties = properties;
+            this._fontType = fontType;
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace Fonet.Render.Pdf.Fonts
             get
             {
                 LoadIfNecessary();
-                return realFont;
+                return _realFont;
             }
         }
 
@@ -59,33 +59,33 @@ namespace Fonet.Render.Pdf.Fonts
         /// </summary>
         private void LoadIfNecessary()
         {
-            if ( !fontLoaded )
+            if ( !_fontLoaded )
             {
-                switch ( fontType )
+                switch ( _fontType )
                 {
                 case FontType.Link:
-                    realFont = new TrueTypeFont( properties );
+                    _realFont = new TrueTypeFont( _properties );
                     break;
                 case FontType.Embed:
                 case FontType.Subset:
-                    realFont = LoadCIDFont();
+                    _realFont = LoadCidFont();
                     break;
                 default:
-                    throw new Exception( "Unknown font type: " + fontType );
+                    throw new Exception( "Unknown font type: " + _fontType );
                 }
-                fontLoaded = true;
+                _fontLoaded = true;
             }
         }
 
-        private Font LoadCIDFont()
+        private Font LoadCidFont()
         {
-            switch ( fontType )
+            switch ( _fontType )
             {
             case FontType.Embed:
-                realFont = new Type2CIDFont( properties );
+                _realFont = new Type2CidFont( _properties );
                 break;
             case FontType.Subset:
-                realFont = new Type2CIDSubsetFont( properties );
+                _realFont = new Type2CidSubsetFont( _properties );
                 break;
             }
 
@@ -93,41 +93,41 @@ namespace Fonet.Render.Pdf.Fonts
             // base 14 font due to a license violation
             var replaceFont = false;
 
-            IFontDescriptor descriptor = realFont.Descriptor;
+            IFontDescriptor descriptor = _realFont.Descriptor;
             if ( !descriptor.IsEmbeddable )
             {
                 FonetDriver.ActiveDriver.FireFonetWarning(
                     string.Format(
                         "Unable to embed font '{0}' because the license states embedding is not allowed.  Will default to Helvetica.",
-                        realFont.FontName ) );
+                        _realFont.FontName ) );
 
                 replaceFont = true;
             }
 
             // TODO: Do not permit subsetting if license does not allow it
-            if ( realFont is Type2CIDSubsetFont && !descriptor.IsSubsettable )
+            if ( _realFont is Type2CidSubsetFont && !descriptor.IsSubsettable )
             {
                 FonetDriver.ActiveDriver.FireFonetWarning(
                     string.Format(
                         "Unable to subset font '{0}' because the license states subsetting is not allowed..  Will default to Helvetica.",
-                        realFont.FontName ) );
+                        _realFont.FontName ) );
 
                 replaceFont = true;
             }
 
             if ( replaceFont )
             {
-                if ( properties.IsBoldItalic )
-                    realFont = Base14Font.HelveticaBoldItalic;
-                else if ( properties.IsBold )
-                    realFont = Base14Font.HelveticaBold;
-                else if ( properties.IsItalic )
-                    realFont = Base14Font.HelveticaItalic;
+                if ( _properties.IsBoldItalic )
+                    _realFont = Base14Font.HelveticaBoldItalic;
+                else if ( _properties.IsBold )
+                    _realFont = Base14Font.HelveticaBold;
+                else if ( _properties.IsItalic )
+                    _realFont = Base14Font.HelveticaItalic;
                 else
-                    realFont = Base14Font.Helvetica;
+                    _realFont = Base14Font.Helvetica;
             }
 
-            return realFont;
+            return _realFont;
         }
 
         #region Implementation of Font members
@@ -137,7 +137,7 @@ namespace Fonet.Render.Pdf.Fonts
             get
             {
                 LoadIfNecessary();
-                return realFont.SubType;
+                return _realFont.SubType;
             }
         }
 
@@ -146,7 +146,7 @@ namespace Fonet.Render.Pdf.Fonts
             get
             {
                 LoadIfNecessary();
-                return realFont.FontName;
+                return _realFont.FontName;
             }
         }
 
@@ -155,7 +155,7 @@ namespace Fonet.Render.Pdf.Fonts
             get
             {
                 LoadIfNecessary();
-                return realFont.Type;
+                return _realFont.Type;
             }
         }
 
@@ -164,7 +164,7 @@ namespace Fonet.Render.Pdf.Fonts
             get
             {
                 LoadIfNecessary();
-                return realFont.Encoding;
+                return _realFont.Encoding;
             }
         }
 
@@ -173,7 +173,7 @@ namespace Fonet.Render.Pdf.Fonts
             get
             {
                 LoadIfNecessary();
-                return realFont.Descriptor;
+                return _realFont.Descriptor;
             }
         }
 
@@ -182,14 +182,14 @@ namespace Fonet.Render.Pdf.Fonts
             get
             {
                 LoadIfNecessary();
-                return realFont.MultiByteFont;
+                return _realFont.MultiByteFont;
             }
         }
 
         public override ushort MapCharacter( char c )
         {
             LoadIfNecessary();
-            return realFont.MapCharacter( c );
+            return _realFont.MapCharacter( c );
         }
 
         public override int Ascender
@@ -197,7 +197,7 @@ namespace Fonet.Render.Pdf.Fonts
             get
             {
                 LoadIfNecessary();
-                return realFont.Ascender;
+                return _realFont.Ascender;
             }
         }
 
@@ -206,7 +206,7 @@ namespace Fonet.Render.Pdf.Fonts
             get
             {
                 LoadIfNecessary();
-                return realFont.Descender;
+                return _realFont.Descender;
             }
         }
 
@@ -215,7 +215,7 @@ namespace Fonet.Render.Pdf.Fonts
             get
             {
                 LoadIfNecessary();
-                return realFont.CapHeight;
+                return _realFont.CapHeight;
             }
         }
 
@@ -224,7 +224,7 @@ namespace Fonet.Render.Pdf.Fonts
             get
             {
                 LoadIfNecessary();
-                return realFont.FirstChar;
+                return _realFont.FirstChar;
             }
         }
 
@@ -233,14 +233,14 @@ namespace Fonet.Render.Pdf.Fonts
             get
             {
                 LoadIfNecessary();
-                return realFont.LastChar;
+                return _realFont.LastChar;
             }
         }
 
         public override int GetWidth( ushort charIndex )
         {
             LoadIfNecessary();
-            return realFont.GetWidth( charIndex );
+            return _realFont.GetWidth( charIndex );
         }
 
         public override int[] Widths
@@ -248,7 +248,7 @@ namespace Fonet.Render.Pdf.Fonts
             get
             {
                 LoadIfNecessary();
-                return realFont.Widths;
+                return _realFont.Widths;
             }
         }
 
@@ -261,7 +261,7 @@ namespace Fonet.Render.Pdf.Fonts
             get
             {
                 LoadIfNecessary();
-                return realFont.Descriptor.Flags;
+                return _realFont.Descriptor.Flags;
             }
         }
 
@@ -270,7 +270,7 @@ namespace Fonet.Render.Pdf.Fonts
             get
             {
                 LoadIfNecessary();
-                return realFont.Descriptor.FontBBox;
+                return _realFont.Descriptor.FontBBox;
             }
         }
 
@@ -279,7 +279,7 @@ namespace Fonet.Render.Pdf.Fonts
             get
             {
                 LoadIfNecessary();
-                return realFont.Descriptor.ItalicAngle;
+                return _realFont.Descriptor.ItalicAngle;
             }
         }
 
@@ -288,7 +288,7 @@ namespace Fonet.Render.Pdf.Fonts
             get
             {
                 LoadIfNecessary();
-                return realFont.Descriptor.StemV;
+                return _realFont.Descriptor.StemV;
             }
         }
 
@@ -297,7 +297,7 @@ namespace Fonet.Render.Pdf.Fonts
             get
             {
                 LoadIfNecessary();
-                return realFont.Descriptor.HasKerningInfo;
+                return _realFont.Descriptor.HasKerningInfo;
             }
         }
 
@@ -306,7 +306,7 @@ namespace Fonet.Render.Pdf.Fonts
             get
             {
                 LoadIfNecessary();
-                return realFont.Descriptor.IsEmbeddable;
+                return _realFont.Descriptor.IsEmbeddable;
             }
         }
 
@@ -315,7 +315,7 @@ namespace Fonet.Render.Pdf.Fonts
             get
             {
                 LoadIfNecessary();
-                return realFont.Descriptor.IsSubsettable;
+                return _realFont.Descriptor.IsSubsettable;
             }
         }
 
@@ -324,7 +324,7 @@ namespace Fonet.Render.Pdf.Fonts
             get
             {
                 LoadIfNecessary();
-                return realFont.Descriptor.FontData;
+                return _realFont.Descriptor.FontData;
             }
         }
 
@@ -333,7 +333,7 @@ namespace Fonet.Render.Pdf.Fonts
             get
             {
                 LoadIfNecessary();
-                return realFont.Descriptor.KerningInfo;
+                return _realFont.Descriptor.KerningInfo;
             }
         }
 

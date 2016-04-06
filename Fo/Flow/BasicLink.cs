@@ -29,27 +29,27 @@ namespace Fonet.Fo.Flow
 
             if ( !( destination =
                 Properties.GetProperty( "internal-destination" ).GetString() ).Equals( "" ) )
-                linkType = LinkSet.INTERNAL;
+                linkType = LinkSet.Internal;
             else if ( !( destination =
                 Properties.GetProperty( "external-destination" ).GetString() ).Equals( "" ) )
-                linkType = LinkSet.EXTERNAL;
+                linkType = LinkSet.External;
             else
                 throw new FonetException( "internal-destination or external-destination must be specified in basic-link" );
 
             if ( Marker == MarkerStart )
             {
                 string id = Properties.GetProperty( "id" ).GetString();
-                area.getIDReferences().InitializeID( id, area );
+                area.GetIDReferences().InitializeID( id, area );
                 Marker = 0;
             }
 
             var ls = new LinkSet( destination, area, linkType );
 
-            AreaContainer ac = area.getNearestAncestorAreaContainer();
-            while ( ac != null && ac.getPosition() != Position.Absolute )
-                ac = ac.getNearestAncestorAreaContainer();
+            AreaContainer ac = area.GetNearestAncestorAreaContainer();
+            while ( ac != null && ac.GetPosition() != Position.Absolute )
+                ac = ac.GetNearestAncestorAreaContainer();
             if ( ac == null )
-                ac = area.getPage().getBody().getCurrentColumnArea();
+                ac = area.GetPage().GetBody().GetCurrentColumnArea();
 
             int numChildren = Children.Count;
             for ( int i = Marker; i < numChildren; i++ )
@@ -65,8 +65,8 @@ namespace Fonet.Fo.Flow
                 }
             }
 
-            ls.applyAreaContainerOffsets( ac, area );
-            area.getPage().addLinkSet( ls );
+            ls.ApplyAreaContainerOffsets( ac, area );
+            area.GetPage().AddLinkSet( ls );
 
             return new Status( Status.Ok );
         }

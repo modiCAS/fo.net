@@ -20,7 +20,7 @@ namespace Fonet.Fo.Flow
             : base( parent, propertyList )
         {
             Name = "fo:footnote-body";
-            AreaClass = Fonet.Layout.AreaClass.setAreaClass( Fonet.Layout.AreaClass.XSL_FOOTNOTE );
+            AreaClass = Fonet.Layout.AreaClass.SetAreaClass( Fonet.Layout.AreaClass.XslFootnote );
         }
 
         public new static FObj.Maker GetMaker()
@@ -33,20 +33,20 @@ namespace Fonet.Fo.Flow
             if ( Marker == MarkerStart )
                 Marker = 0;
             var blockArea =
-                new BlockArea( PropMgr.GetFontState( area.getFontInfo() ),
-                    area.getAllocationWidth(), area.spaceLeft(),
+                new BlockArea( PropMgr.GetFontState( area.GetFontInfo() ),
+                    area.GetAllocationWidth(), area.SpaceLeft(),
                     _startIndent, _endIndent, _textIndent, _align,
                     _alignLast, _lineHeight );
-            blockArea.setGeneratedBy( this );
-            blockArea.isFirst( true );
-            blockArea.setParent( area );
-            blockArea.setPage( area.getPage() );
-            blockArea.start();
+            blockArea.SetGeneratedBy( this );
+            blockArea.IsFirst( true );
+            blockArea.SetParent( area );
+            blockArea.SetPage( area.GetPage() );
+            blockArea.Start();
 
-            blockArea.setAbsoluteHeight( area.getAbsoluteHeight() );
-            blockArea.setIDReferences( area.getIDReferences() );
+            blockArea.SetAbsoluteHeight( area.GetAbsoluteHeight() );
+            blockArea.SetIDReferences( area.GetIDReferences() );
 
-            blockArea.setTableCellXOffset( area.getTableCellXOffset() );
+            blockArea.SetTableCellXOffset( area.GetTableCellXOffset() );
 
             int numChildren = Children.Count;
             for ( int i = Marker; i < numChildren; i++ )
@@ -59,10 +59,10 @@ namespace Fonet.Fo.Flow
                     return status;
                 }
             }
-            blockArea.end();
-            area.addChild( blockArea );
-            area.increaseHeight( blockArea.GetHeight() );
-            blockArea.isLast( true );
+            blockArea.End();
+            area.AddChild( blockArea );
+            area.IncreaseHeight( blockArea.GetHeight() );
+            blockArea.IsLast( true );
             return new Status( Status.Ok );
         }
 

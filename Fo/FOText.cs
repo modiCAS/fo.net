@@ -1,52 +1,54 @@
+using System.Collections.Generic;
+using System.Linq;
 using Fonet.DataTypes;
 using Fonet.Fo.Properties;
 using Fonet.Layout;
 
 namespace Fonet.Fo
 {
-    internal class FoText : FoNode
+    internal sealed class FoText : FoNode
     {
         private float _blue;
-        protected char[] Ca;
+        private readonly char[] _ca;
 
         private FontState _fs;
         private float _green;
-        protected int Length;
-        protected bool LineThrough;
-        protected bool Overlined;
+        private readonly int _length;
+        private bool _lineThrough;
+        private bool _overlined;
         private float _red;
-        protected int Start;
+        private readonly int _start;
 
         private TextState _ts;
 
-        protected bool Underlined;
+        private bool _underlined;
         private int _verticalAlign;
         private int _whiteSpaceCollapse;
         private int _wrapOption;
 
-        public FoText( char[] chars, int s, int e, FObj parent )
+        public FoText( IReadOnlyList<char> chars, int s, int e, FObj parent )
             : base( parent )
         {
-            Start = 0;
-            Ca = new char[ e - s ];
+            _start = 0;
+            _ca = new char[ e - s ];
             for ( int i = s; i < e; i++ )
-                Ca[ i - s ] = chars[ i ];
-            Length = e - s;
+                _ca[ i - s ] = chars[ i ];
+            _length = e - s;
         }
 
         public void SetUnderlined( bool ul )
         {
-            Underlined = ul;
+            _underlined = ul;
         }
 
         public void SetOverlined( bool ol )
         {
-            Overlined = ol;
+            _overlined = ol;
         }
 
         public void SetLineThrough( bool lt )
         {
-            LineThrough = lt;
+            _lineThrough = lt;
         }
 
         public bool WillCreateArea()
@@ -54,12 +56,12 @@ namespace Fonet.Fo
             _whiteSpaceCollapse =
                 Parent.Properties.GetProperty( "white-space-collapse" ).GetEnum();
             if ( _whiteSpaceCollapse == GenericBoolean.Enums.False
-                && Length > 0 )
+                && _length > 0 )
                 return true;
 
-            for ( int i = Start; i < Start + Length; i++ )
+            for ( int i = _start; i < _start + _length; i++ )
             {
-                char ch = Ca[ i ];
+                char ch = _ca[ i ];
                 if ( !( ch == ' ' || ch == '\n' || ch == '\r'
                     || ch == '\t' ) )
                     return true;
@@ -69,13 +71,7 @@ namespace Fonet.Fo
 
         public override bool MayPrecedeMarker()
         {
-            for ( var i = 0; i < Ca.Length; i++ )
-            {
-                char ch = Ca[ i ];
-                if ( ch != ' ' || ch != '\n' || ch != '\r' || ch != '\t' )
-                    return true;
-            }
-            return false;
+            return _ca.Any( ch => ch != ' ' || ch != '\n' || ch != '\r' || ch != '\t' );
         }
 
         public override Status Layout( Area area )
@@ -83,7 +79,7 @@ namespace Fonet.Fo
             if ( !( area is BlockArea ) )
             {
                 FonetDriver.ActiveDriver.FireFonetError(
-                    "Text outside block area" + new string( Ca, Start, Length ) );
+                    "Text outside block area" + new string( _ca, _start, _length ) );
                 return new Status( Status.Ok );
             }
             if ( Marker == MarkerStart )
@@ -101,7 +97,7 @@ namespace Fonet.Fo
 
                 int letterSpacing =
                     Parent.Properties.GetProperty( "letter-spacing" ).GetLength().MValue();
-                _fs = new FontState( area.getFontInfo(), fontFamily,
+                _fs = new FontState( area.GetFontInfo(), fontFamily,
                     fontStyle, fontWeight, fontSize,
                     fontVariant, letterSpacing );
 
@@ -118,16 +114,16 @@ namespace Fonet.Fo
                 _whiteSpaceCollapse =
                     Parent.Properties.GetProperty( "white-space-collapse" ).GetEnum();
                 _ts = new TextState();
-                _ts.setUnderlined( Underlined );
-                _ts.setOverlined( Overlined );
-                _ts.setLineThrough( LineThrough );
+                _ts.SetUnderlined( _underlined );
+                _ts.SetOverlined( _overlined );
+                _ts.SetLineThrough( _lineThrough );
 
-                Marker = Start;
+                Marker = _start;
             }
             int origStart = Marker;
             Marker = AddText( (BlockArea)area, _fs, _red, _green, _blue,
                 _wrapOption, GetLinkSet(),
-                _whiteSpaceCollapse, Ca, Marker, Length,
+                _whiteSpaceCollapse, _ca, Marker, _length,
                 _ts, _verticalAlign );
             if ( Marker == -1 )
                 return new Status( Status.Ok );
@@ -163,15 +159,11 @@ namespace Fonet.Fo
                         "Error creating small-caps FontState: " + ex.Message );
                 }
 
-                char c;
-                bool isLowerCase;
-                int caseStart;
-                FontState fontStateToUse;
                 for ( int i = start; i < end; )
                 {
-                    caseStart = i;
-                    c = data[ i ];
-                    isLowerCase = char.IsLetter( c ) && char.IsLower( c );
+                    int caseStart = i;
+                    char c = data[ i ];
+                    bool isLowerCase = char.IsLetter( c ) && char.IsLower( c );
                     while ( isLowerCase == ( char.IsLetter( c ) && char.IsLower( c ) ) )
                     {
                         if ( isLowerCase )
@@ -181,10 +173,7 @@ namespace Fonet.Fo
                             break;
                         c = data[ i ];
                     }
-                    if ( isLowerCase )
-                        fontStateToUse = smallCapsFontState;
-                    else
-                        fontStateToUse = fontState;
+                    FontState fontStateToUse = isLowerCase ? smallCapsFontState : fontState;
                     int index = AddRealText( ba, fontStateToUse, red, green, blue,
                         wrapOption, ls, whiteSpaceCollapse,
                         data, caseStart, i, textState,
@@ -201,45 +190,42 @@ namespace Fonet.Fo
                 vAlign );
         }
 
-        protected static int AddRealText( BlockArea ba, FontState fontState,
+        private static int AddRealText( BlockArea ba, FontState fontState,
             float red, float green, float blue,
             int wrapOption, LinkSet ls,
             int whiteSpaceCollapse, char[] data,
             int start, int end, TextState textState,
             int vAlign )
         {
-            int ts, te;
-            char[] ca;
+            int ts = start;
+            int te = end;
+            char[] ca = data;
 
-            ts = start;
-            te = end;
-            ca = data;
-
-            LineArea la = ba.getCurrentLineArea();
+            LineArea la = ba.GetCurrentLineArea();
             if ( la == null )
                 return start;
 
-            la.changeFont( fontState );
-            la.changeColor( red, green, blue );
-            la.changeWrapOption( wrapOption );
-            la.changeWhiteSpaceCollapse( whiteSpaceCollapse );
-            la.changeVerticalAlign( vAlign );
-            ba.setupLinkSet( ls );
+            la.ChangeFont( fontState );
+            la.ChangeColor( red, green, blue );
+            la.ChangeWrapOption( wrapOption );
+            la.ChangeWhiteSpaceCollapse( whiteSpaceCollapse );
+            la.ChangeVerticalAlign( vAlign );
+            ba.SetupLinkSet( ls );
 
-            ts = la.addText( ca, ts, te, ls, textState );
+            ts = la.AddText( ca, ts, te, ls, textState );
 
             while ( ts != -1 )
             {
-                la = ba.createNextLineArea();
+                la = ba.CreateNextLineArea();
                 if ( la == null )
                     return ts;
-                la.changeFont( fontState );
-                la.changeColor( red, green, blue );
-                la.changeWrapOption( wrapOption );
-                la.changeWhiteSpaceCollapse( whiteSpaceCollapse );
-                ba.setupLinkSet( ls );
+                la.ChangeFont( fontState );
+                la.ChangeColor( red, green, blue );
+                la.ChangeWrapOption( wrapOption );
+                la.ChangeWhiteSpaceCollapse( whiteSpaceCollapse );
+                ba.SetupLinkSet( ls );
 
-                ts = la.addText( ca, ts, te, ls, textState );
+                ts = la.AddText( ca, ts, te, ls, textState );
             }
             return -1;
         }

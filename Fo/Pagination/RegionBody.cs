@@ -27,17 +27,17 @@ namespace Fonet.Fo.Pagination
             BackgroundProps bProps = PropMgr.GetBackgroundProps();
             MarginProps mProps = PropMgr.GetMarginProps();
             var body = new BodyRegionArea( allocationRectangleXPosition
-                + mProps.marginLeft,
+                + mProps.MarginLeft,
                 allocationRectangleYPosition
-                    - mProps.marginTop,
+                    - mProps.MarginTop,
                 allocationRectangleWidth
-                    - mProps.marginLeft
-                    - mProps.marginRight,
+                    - mProps.MarginLeft
+                    - mProps.MarginRight,
                 allocationRectangleHeight
-                    - mProps.marginTop
-                    - mProps.marginBottom );
+                    - mProps.MarginTop
+                    - mProps.MarginBottom );
 
-            body.setBackground( PropMgr.GetBackgroundProps() );
+            body.SetBackground( PropMgr.GetBackgroundProps() );
 
             int overflow = Properties.GetProperty( "overflow" ).GetEnum();
             string columnCountAsString =
@@ -59,11 +59,11 @@ namespace Fonet.Fo.Pagination
                     "Setting 'column-count' to 1 because 'overflow' is set to 'scroll'" );
                 columnCount = 1;
             }
-            body.setColumnCount( columnCount );
+            body.SetColumnCount( columnCount );
 
             int columnGap =
                 Properties.GetProperty( "column-gap" ).GetLength().MValue();
-            body.setColumnGap( columnGap );
+            body.SetColumnGap( columnGap );
 
             return body;
         }

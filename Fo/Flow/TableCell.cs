@@ -107,39 +107,38 @@ namespace Fonet.Fo.Flow
 
         public override Status Layout( Area area )
         {
-            int originalAbsoluteHeight = area.getAbsoluteHeight();
+            int originalAbsoluteHeight = area.GetAbsoluteHeight();
             if ( Marker == MarkerBreakAfter )
                 return new Status( Status.Ok );
 
             if ( Marker == MarkerStart )
             {
-                area.getIDReferences().CreateID( _id );
+                area.GetIDReferences().CreateID( _id );
 
                 Marker = 0;
                 _bDone = false;
             }
 
             if ( Marker == 0 )
-                area.getIDReferences().ConfigureID( _id, area );
+                area.GetIDReferences().ConfigureID( _id, area );
 
-            int spaceLeft = area.spaceLeft() - _mBorderSeparation;
+            int spaceLeft = area.SpaceLeft() - _mBorderSeparation;
             _cellArea =
-                new AreaContainer( PropMgr.GetFontState( area.getFontInfo() ),
+                new AreaContainer( PropMgr.GetFontState( area.GetFontInfo() ),
                     StartOffset + StartAdjust, BeforeOffset,
                     Width - WidthAdjust, spaceLeft,
-                    Position.Relative );
+                    Position.Relative ) { FoCreator = this };
 
-            _cellArea.foCreator = this;
-            _cellArea.setPage( area.getPage() );
-            _cellArea.setParent( area );
-            _cellArea.setBorderAndPadding(
+            _cellArea.SetPage( area.GetPage() );
+            _cellArea.SetParent( area );
+            _cellArea.SetBorderAndPadding(
                 (BorderAndPadding)PropMgr.GetBorderAndPadding().Clone() );
-            _cellArea.setBackground( PropMgr.GetBackgroundProps() );
-            _cellArea.start();
+            _cellArea.SetBackground( PropMgr.GetBackgroundProps() );
+            _cellArea.Start();
 
-            _cellArea.setAbsoluteHeight( area.getAbsoluteHeight() );
-            _cellArea.setIDReferences( area.getIDReferences() );
-            _cellArea.setTableCellXOffset( StartOffset + StartAdjust );
+            _cellArea.SetAbsoluteHeight( area.GetAbsoluteHeight() );
+            _cellArea.SetIDReferences( area.GetIDReferences() );
+            _cellArea.SetTableCellXOffset( StartOffset + StartAdjust );
 
             int numChildren = Children.Count;
             for ( int i = Marker; _bDone == false && i < numChildren; i++ )
@@ -155,18 +154,18 @@ namespace Fonet.Fo.Flow
                 {
                     if ( i == 0 && status.GetCode() == Status.AreaFullNone )
                         return new Status( Status.AreaFullNone );
-                    area.addChild( _cellArea );
+                    area.AddChild( _cellArea );
                     return new Status( Status.AreaFullSome );
                 }
 
-                area.setMaxHeight( area.getMaxHeight() - spaceLeft
-                    + _cellArea.getMaxHeight() );
+                area.SetMaxHeight( area.GetMaxHeight() - spaceLeft
+                    + _cellArea.GetMaxHeight() );
             }
             _bDone = true;
-            _cellArea.end();
-            area.addChild( _cellArea );
+            _cellArea.End();
+            area.AddChild( _cellArea );
 
-            if ( MinCellHeight > _cellArea.getContentHeight() )
+            if ( MinCellHeight > _cellArea.GetContentHeight() )
                 _cellArea.SetHeight( MinCellHeight );
 
             Height = _cellArea.GetHeight();
@@ -184,32 +183,30 @@ namespace Fonet.Fo.Flow
         {
             int delta = h - GetHeight();
             if ( BRelativeAlign )
-                _cellArea.increaseHeight( delta );
+                _cellArea.IncreaseHeight( delta );
             else if ( delta > 0 )
             {
                 BorderAndPadding cellBp = _cellArea.GetBorderAndPadding();
                 switch ( VerticalAlign )
                 {
                 case DisplayAlign.Center:
-                    _cellArea.shiftYPosition( delta / 2 );
-                    cellBp.setPaddingLength( BorderAndPadding.TOP,
-                        cellBp.getPaddingTop( false )
+                    _cellArea.ShiftYPosition( delta / 2 );
+                    cellBp.SetPaddingLength( BorderAndPadding.Top,
+                        cellBp.GetPaddingTop( false )
                             + delta / 2 );
-                    cellBp.setPaddingLength( BorderAndPadding.BOTTOM,
-                        cellBp.getPaddingBottom( false )
+                    cellBp.SetPaddingLength( BorderAndPadding.Bottom,
+                        cellBp.GetPaddingBottom( false )
                             + delta - delta / 2 );
                     break;
                 case DisplayAlign.After:
-                    cellBp.setPaddingLength( BorderAndPadding.TOP,
-                        cellBp.getPaddingTop( false ) + delta );
-                    _cellArea.shiftYPosition( delta );
+                    cellBp.SetPaddingLength( BorderAndPadding.Top,
+                        cellBp.GetPaddingTop( false ) + delta );
+                    _cellArea.ShiftYPosition( delta );
                     break;
                 case DisplayAlign.Before:
-                    cellBp.setPaddingLength( BorderAndPadding.BOTTOM,
-                        cellBp.getPaddingBottom( false )
+                    cellBp.SetPaddingLength( BorderAndPadding.Bottom,
+                        cellBp.GetPaddingBottom( false )
                             + delta );
-                    break;
-                default:
                     break;
                 }
             }
@@ -221,29 +218,29 @@ namespace Fonet.Fo.Flow
             {
                 int iSep =
                     Properties.GetProperty( "border-separation.inline-progression-direction" ).GetLength().MValue();
-                StartAdjust = iSep / 2 + bp.getBorderLeftWidth( false )
-                    + bp.getPaddingLeft( false );
+                StartAdjust = iSep / 2 + bp.GetBorderLeftWidth( false )
+                    + bp.GetPaddingLeft( false );
                 WidthAdjust = StartAdjust + iSep - iSep / 2
-                    + bp.getBorderRightWidth( false )
-                    + bp.getPaddingRight( false );
+                    + bp.GetBorderRightWidth( false )
+                    + bp.GetPaddingRight( false );
                 _mBorderSeparation =
                     Properties.GetProperty( "border-separation.block-progression-direction" ).GetLength().MValue();
                 BeforeOffset = _mBorderSeparation / 2
-                    + bp.getBorderTopWidth( false )
-                    + bp.getPaddingTop( false );
+                    + bp.GetBorderTopWidth( false )
+                    + bp.GetPaddingTop( false );
             }
             else
             {
-                int borderStart = bp.getBorderLeftWidth( false );
-                int borderEnd = bp.getBorderRightWidth( false );
-                int borderBefore = bp.getBorderTopWidth( false );
-                int borderAfter = bp.getBorderBottomWidth( false );
+                int borderStart = bp.GetBorderLeftWidth( false );
+                int borderEnd = bp.GetBorderRightWidth( false );
+                int borderBefore = bp.GetBorderTopWidth( false );
+                int borderAfter = bp.GetBorderBottomWidth( false );
 
-                StartAdjust = borderStart / 2 + bp.getPaddingLeft( false );
+                StartAdjust = borderStart / 2 + bp.GetPaddingLeft( false );
 
                 WidthAdjust = StartAdjust + borderEnd / 2
-                    + bp.getPaddingRight( false );
-                BeforeOffset = borderBefore / 2 + bp.getPaddingTop( false );
+                    + bp.GetPaddingRight( false );
+                BeforeOffset = borderBefore / 2 + bp.GetPaddingTop( false );
                 BorderHeight = ( borderBefore + borderAfter ) / 2;
             }
         }

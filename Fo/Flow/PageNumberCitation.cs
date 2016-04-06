@@ -38,7 +38,7 @@ namespace Fonet.Fo.Flow
                 return new Status( Status.Ok );
             }
 
-            IDReferences idReferences = area.getIDReferences();
+            IDReferences idReferences = area.GetIDReferences();
             this._area = area;
             if ( Marker == MarkerStart )
             {
@@ -80,7 +80,7 @@ namespace Fonet.Fo.Flow
             {
                 Marker =
                     FoText.AddText( (BlockArea)area,
-                        PropMgr.GetFontState( area.getFontInfo() ), _red,
+                        PropMgr.GetFontState( area.GetFontInfo() ), _red,
                         _green, _blue, _wrapOption, null,
                         _whiteSpaceCollapse, _pageNumber.ToCharArray(),
                         0, _pageNumber.Length, _ts,
@@ -89,14 +89,14 @@ namespace Fonet.Fo.Flow
             else
             {
                 var blockArea = (BlockArea)area;
-                LineArea la = blockArea.getCurrentLineArea();
+                LineArea la = blockArea.GetCurrentLineArea();
                 if ( la == null )
                     return new Status( Status.AreaFullNone );
-                la.changeFont( PropMgr.GetFontState( area.getFontInfo() ) );
-                la.changeColor( _red, _green, _blue );
-                la.changeWrapOption( _wrapOption );
-                la.changeWhiteSpaceCollapse( _whiteSpaceCollapse );
-                la.addPageNumberCitation( _refId, null );
+                la.ChangeFont( PropMgr.GetFontState( area.GetFontInfo() ) );
+                la.ChangeColor( _red, _green, _blue );
+                la.ChangeWrapOption( _wrapOption );
+                la.ChangeWhiteSpaceCollapse( _whiteSpaceCollapse );
+                la.AddPageNumberCitation( _refId, null );
                 Marker = -1;
             }
 

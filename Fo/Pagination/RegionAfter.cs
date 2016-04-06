@@ -34,7 +34,7 @@ namespace Fonet.Fo.Pagination
                 allocationRectangleYPosition - allocationRectangleHeight + extent,
                 allocationRectangleWidth,
                 extent );
-            area.setBackground( bProps );
+            area.SetBackground( bProps );
 
             return area;
         }
@@ -57,7 +57,7 @@ namespace Fonet.Fo.Pagination
 
         public bool GetPrecedence()
         {
-            return _precedence == Precedence.True ? true : false;
+            return _precedence == Precedence.True;
         }
 
         internal new class Maker : FObj.Maker

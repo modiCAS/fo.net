@@ -4,7 +4,7 @@ namespace Fonet.Render.Pdf.Fonts
     {
         private static readonly int[] DefaultWidths;
 
-        private static readonly CodePointMapping mapping
+        private static readonly CodePointMapping Mapping
             = CodePointMapping.GetMapping( "WinAnsiEncoding" );
 
         static CourierBold()
@@ -235,7 +235,7 @@ namespace Fonet.Render.Pdf.Fonts
         }
 
         public CourierBold()
-            : base( "Courier-Bold", "WinAnsiEncoding", 562, 626, -142, 32, 255, DefaultWidths, mapping )
+            : base( "Courier-Bold", "WinAnsiEncoding", 562, 626, -142, 32, 255, DefaultWidths, Mapping )
         {
         }
     }

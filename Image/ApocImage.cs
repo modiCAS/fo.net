@@ -12,13 +12,13 @@ namespace Fonet.Image
     /// </summary>
     internal sealed unsafe class FonetImage
     {
-        public const int DEFAULT_BITPLANES = 8;
-        private BitmapData bitmapData;
+        public const int DefaultBitplanes = 8;
+        private BitmapData _bitmapData;
 
         /// <summary>
         ///     Filter that will be applied to image data
         /// </summary>
-        private IFilter filter;
+        private IFilter _filter;
 
         // image height
 
@@ -29,11 +29,11 @@ namespace Fonet.Image
         // Image color space 
 
         // Image URL
-        private readonly string m_href;
-        private byte* pBase = null;
+        private readonly string _mHref;
+        private byte* _pBase = null;
 
         // Variables used by unsafe code
-        private int scanWidth;
+        private int _scanWidth;
 
         // image width
 
@@ -48,10 +48,10 @@ namespace Fonet.Image
         /// <param name="imageData">The image data</param>
         public FonetImage( string href, byte[] imageData )
         {
-            m_href = href;
+            _mHref = href;
 
             ColorSpace = new ColorSpace( ColorSpace.DeviceRgb );
-            BitsPerPixel = DEFAULT_BITPLANES; // 8
+            BitsPerPixel = DefaultBitplanes; // 8
 
             // Bitmap does not seem to be thread-safe.  The only situation
             // Where this causes a problem is when the evaluation image is
@@ -72,7 +72,7 @@ namespace Fonet.Image
         /// <returns>the image URL (as a string)</returns>
         public string Uri
         {
-            get { return m_href; }
+            get { return _mHref; }
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace Fonet.Image
         /// </summary>
         public IFilter Filter
         {
-            get { return filter; }
+            get { return _filter; }
         }
 
         private Point GetPixelSize( Bitmap bitmap )
@@ -152,14 +152,14 @@ namespace Fonet.Image
                 Height = info.Height;
 
                 // A "no-op" filter since the JPEG data is already compressed
-                filter = new DctFilter();
+                _filter = new DctFilter();
             }
             else
             {
                 ExtractOtherImageBits( bitmap );
 
                 // Performs zip compression
-                filter = new FlateFilter();
+                _filter = new FlateFilter();
             }
         }
 
@@ -184,9 +184,9 @@ namespace Fonet.Image
                     PixelData* pPixel = PixelAt( 0, y );
                     for ( var x = 0; x < size.X; x++ )
                     {
-                        Bitmaps[ 3 * ( y * Width + x ) ] = pPixel->red;
-                        Bitmaps[ 3 * ( y * Width + x ) + 1 ] = pPixel->green;
-                        Bitmaps[ 3 * ( y * Width + x ) + 2 ] = pPixel->blue;
+                        Bitmaps[ 3 * ( y * Width + x ) ] = pPixel->Red;
+                        Bitmaps[ 3 * ( y * Width + x ) + 1 ] = pPixel->Green;
+                        Bitmaps[ 3 * ( y * Width + x ) + 2 ] = pPixel->Blue;
                         pPixel++;
                     }
                 }
@@ -215,33 +215,33 @@ namespace Fonet.Image
             // This is rounded up to be a multiple of 4
             // bytes, since a scan line in an image must always be a multiple of 4 bytes
             // in length. 
-            scanWidth = (int)boundsF.Width * sizeof( PixelData );
-            if ( scanWidth % 4 != 0 )
-                scanWidth = 4 * ( scanWidth / 4 + 1 );
+            _scanWidth = (int)boundsF.Width * sizeof( PixelData );
+            if ( _scanWidth % 4 != 0 )
+                _scanWidth = 4 * ( _scanWidth / 4 + 1 );
 
-            bitmapData =
+            _bitmapData =
                 bitmap.LockBits( bounds, ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb );
 
-            pBase = (byte*)bitmapData.Scan0.ToPointer();
+            _pBase = (byte*)_bitmapData.Scan0.ToPointer();
         }
 
         private PixelData* PixelAt( int x, int y )
         {
-            return (PixelData*)( pBase + y * scanWidth + x * sizeof( PixelData ) );
+            return (PixelData*)( _pBase + y * _scanWidth + x * sizeof( PixelData ) );
         }
 
         private void UnlockBitmap( Bitmap bitmap )
         {
-            bitmap.UnlockBits( bitmapData );
-            bitmapData = null;
-            pBase = null;
+            bitmap.UnlockBits( _bitmapData );
+            _bitmapData = null;
+            _pBase = null;
         }
     }
 
     public struct PixelData
     {
-        public byte blue;
-        public byte green;
-        public byte red;
+        public byte Blue;
+        public byte Green;
+        public byte Red;
     }
 }

@@ -10,7 +10,7 @@ namespace Fonet.Render.Pdf
         {
         }
 
-        internal static string doubleOut( double doubleDown )
+        internal static string DoubleOut( double doubleDown )
         {
             var p = new StringBuilder();
             if ( doubleDown < 0 )
@@ -43,7 +43,7 @@ namespace Fonet.Render.Pdf
             return p.ToString();
         }
 
-        internal static string doubleOut( double doubleDown, int dec )
+        internal static string DoubleOut( double doubleDown, int dec )
         {
             var p = new StringBuilder();
             if ( doubleDown < 0 )

@@ -8,19 +8,19 @@ namespace Fonet.Fo
 {
     internal abstract class XmlObj : FObj
     {
-        protected const string Ns = "http://www.codeplex.com/fonet";
+        private const string Ns = "http://www.codeplex.com/fonet";
 
         protected static Hashtable NsTable = new Hashtable();
 
         protected XmlDocument Doc;
 
-        protected XmlNode Element;
-        protected string TagName = "";
+        private XmlNode _element;
+        private string _tagName;
 
-        public XmlObj( FObj parent, PropertyList propertyList, string tag )
+        protected XmlObj( FObj parent, PropertyList propertyList, string tag )
             : base( parent, propertyList )
         {
-            TagName = tag;
+            _tagName = tag;
         }
 
         public abstract string GetNameSpace();
@@ -40,8 +40,8 @@ namespace Fonet.Fo
             {
                 Doc = new XmlDocument();
                 Doc.AppendChild( Doc.CreateElement( "graph", Ns ) );
-                Element = Doc.DocumentElement;
-                BuildTopLevel( Doc, Element );
+                _element = Doc.DocumentElement;
+                BuildTopLevel( Doc, _element );
             }
             catch ( Exception e )
             {
@@ -52,8 +52,8 @@ namespace Fonet.Fo
 
         protected internal override void AddChild( FoNode child )
         {
-            if ( child is XmlObj )
-                ( (XmlObj)child ).AddGraphic( Doc, Element );
+            var xmlChild = child as XmlObj;
+            if ( xmlChild != null ) xmlChild.AddGraphic( Doc, _element );
         }
 
         protected internal override void AddCharacters( char[] data, int start, int length )

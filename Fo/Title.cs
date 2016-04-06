@@ -22,11 +22,10 @@ namespace Fonet.Fo
             AuralProps mAurProps = PropMgr.GetAuralProps();
             BorderAndPadding bap = PropMgr.GetBorderAndPadding();
             BackgroundProps bProps = PropMgr.GetBackgroundProps();
-            FontState fontState = PropMgr.GetFontState( area.getFontInfo() );
+            FontState fontState = PropMgr.GetFontState( area.GetFontInfo() );
             MarginInlineProps mProps = PropMgr.GetMarginInlineProps();
 
-            Property prop;
-            prop = Properties.GetProperty( "baseline-shift" );
+            Property prop = Properties.GetProperty( "baseline-shift" );
             if ( prop is LengthProperty )
             {
                 Length bShift = prop.GetLength();

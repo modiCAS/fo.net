@@ -4,11 +4,11 @@ namespace Fonet.Pdf
 {
     public abstract class PdfObject
     {
-        public PdfObject()
+        protected PdfObject()
         {
         }
 
-        public PdfObject( PdfObjectId objectId )
+        protected PdfObject( PdfObjectId objectId )
         {
             ObjectId = objectId;
         }

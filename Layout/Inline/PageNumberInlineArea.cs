@@ -7,7 +7,7 @@ namespace Fonet.Layout.Inline
             float blue, string refid, int width )
             : base( fontState, red, green, blue, "?", width )
         {
-            pageNumberId = refid;
+            PageNumberId = refid;
         }
     }
 }

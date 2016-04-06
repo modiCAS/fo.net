@@ -67,34 +67,28 @@ namespace Fonet.Fo.Flow
             _columnWidth = _columnWidthPropVal.MValue();
 
             string id = Properties.GetProperty( "id" ).GetString();
-            area.getIDReferences().InitializeID( id, area );
+            area.GetIDReferences().InitializeID( id, area );
 
             _setup = true;
         }
 
         public override Status Layout( Area area )
         {
-            if ( Marker == MarkerBreakAfter )
-                return new Status( Status.Ok );
+            if ( Marker == MarkerBreakAfter ) return new Status( Status.Ok );
 
-            if ( Marker == MarkerStart )
-            {
-                if ( !_setup )
-                    DoSetup( area );
-            }
-            if ( _columnWidth > 0 )
-            {
-                _areaContainer =
-                    new AreaContainer( PropMgr.GetFontState( area.getFontInfo() ),
-                        _columnOffset, 0, _columnWidth,
-                        area.getContentHeight(), Position.Relative );
-                _areaContainer.foCreator = this;
-                _areaContainer.setPage( area.getPage() );
-                _areaContainer.setBorderAndPadding( PropMgr.GetBorderAndPadding() );
-                _areaContainer.setBackground( PropMgr.GetBackgroundProps() );
-                _areaContainer.SetHeight( area.GetHeight() );
-                area.addChild( _areaContainer );
-            }
+            if ( Marker == MarkerStart ) if ( !_setup ) DoSetup( area );
+
+            if ( _columnWidth <= 0 ) return new Status( Status.Ok );
+
+            _areaContainer =
+                new AreaContainer( PropMgr.GetFontState( area.GetFontInfo() ),
+                    _columnOffset, 0, _columnWidth,
+                    area.GetContentHeight(), Position.Relative ) { FoCreator = this };
+            _areaContainer.SetPage( area.GetPage() );
+            _areaContainer.SetBorderAndPadding( PropMgr.GetBorderAndPadding() );
+            _areaContainer.SetBackground( PropMgr.GetBackgroundProps() );
+            _areaContainer.SetHeight( area.GetHeight() );
+            area.AddChild( _areaContainer );
             return new Status( Status.Ok );
         }
 
@@ -107,7 +101,7 @@ namespace Fonet.Fo.Flow
         {
             if ( _areaContainer != null )
             {
-                _areaContainer.setMaxHeight( height );
+                _areaContainer.SetMaxHeight( height );
                 _areaContainer.SetHeight( height );
             }
         }

@@ -79,12 +79,12 @@ namespace Fonet.DataTypes
             if ( id != null && !id.Equals( "" ) )
             {
                 SetPosition( id,
-                    area.getPage().getBody().getXPosition()
-                        + area.getTableCellXOffset() - IDPadding,
-                    area.getPage().getBody().GetYPosition()
-                        - area.getAbsoluteHeight() + IDPadding );
-                SetPageNumber( id, area.getPage().getNumber() );
-                area.getPage().addToIDList( id );
+                    area.GetPage().GetBody().GetXPosition()
+                        + area.GetTableCellXOffset() - IDPadding,
+                    area.GetPage().GetBody().GetYPosition()
+                        - area.GetAbsoluteHeight() + IDPadding );
+                SetPageNumber( id, area.GetPage().GetNumber() );
+                area.GetPage().AddToIDList( id );
             }
         }
 

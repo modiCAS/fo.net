@@ -53,7 +53,7 @@ namespace Fonet.Fo.Flow
                 _src = Properties.GetProperty( "src" ).GetString();
                 _id = Properties.GetProperty( "id" ).GetString();
 
-                area.getIDReferences().CreateID( _id );
+                area.GetIDReferences().CreateID( _id );
                 Marker = 0;
             }
 
@@ -92,8 +92,8 @@ namespace Fonet.Fo.Flow
                     _width = (int)( ratio * _height );
                 }
 
-                int areaWidth = area.getAllocationWidth() - _startIndent - _endIndent;
-                int pageHeight = area.getPage().getBody().getMaxHeight() - _spaceBefore;
+                int areaWidth = area.GetAllocationWidth() - _startIndent - _endIndent;
+                int pageHeight = area.GetPage().GetBody().GetMaxHeight() - _spaceBefore;
 
                 if ( _height > pageHeight )
                 {
@@ -106,28 +106,28 @@ namespace Fonet.Fo.Flow
                     _height = (int)( _width / ratio );
                 }
 
-                if ( area.spaceLeft() < _height + _spaceBefore )
+                if ( area.SpaceLeft() < _height + _spaceBefore )
                     return new Status( Status.AreaFullNone );
 
                 _imageArea =
-                    new ImageArea( PropMgr.GetFontState( area.getFontInfo() ), img,
-                        area.getAllocationWidth(), _width, _height,
+                    new ImageArea( PropMgr.GetFontState( area.GetFontInfo() ), img,
+                        area.GetAllocationWidth(), _width, _height,
                         _startIndent, _endIndent, _align );
 
                 if ( _spaceBefore != 0 && Marker == 0 )
-                    area.addDisplaySpace( _spaceBefore );
+                    area.AddDisplaySpace( _spaceBefore );
 
                 if ( Marker == 0 )
-                    area.getIDReferences().ConfigureID( _id, area );
+                    area.GetIDReferences().ConfigureID( _id, area );
 
-                _imageArea.start();
-                _imageArea.end();
+                _imageArea.Start();
+                _imageArea.End();
 
                 if ( _spaceAfter != 0 )
-                    area.addDisplaySpace( _spaceAfter );
+                    area.AddDisplaySpace( _spaceAfter );
                 if ( _breakBefore == GenericBreak.Enums.Page
                     || _spaceBefore + _imageArea.GetHeight()
-                        > area.spaceLeft() )
+                        > area.SpaceLeft() )
                     return new Status( Status.ForcePageBreak );
 
                 if ( _breakBefore == GenericBreak.Enums.OddPage )
@@ -139,24 +139,24 @@ namespace Fonet.Fo.Flow
                 if ( area is BlockArea )
                 {
                     var ba = (BlockArea)area;
-                    LineArea la = ba.getCurrentLineArea();
+                    LineArea la = ba.GetCurrentLineArea();
                     if ( la == null )
                         return new Status( Status.AreaFullNone );
-                    la.addPending();
-                    if ( _imageArea.getContentWidth() > la.getRemainingWidth() )
+                    la.AddPending();
+                    if ( _imageArea.GetContentWidth() > la.GetRemainingWidth() )
                     {
-                        la = ba.createNextLineArea();
+                        la = ba.CreateNextLineArea();
                         if ( la == null )
                             return new Status( Status.AreaFullNone );
                     }
-                    la.addInlineArea( _imageArea, GetLinkSet() );
+                    la.AddInlineArea( _imageArea, GetLinkSet() );
                 }
                 else
                 {
-                    area.addChild( _imageArea );
-                    area.increaseHeight( _imageArea.getContentHeight() );
+                    area.AddChild( _imageArea );
+                    area.IncreaseHeight( _imageArea.GetContentHeight() );
                 }
-                _imageArea.setPage( area.getPage() );
+                _imageArea.SetPage( area.GetPage() );
 
                 if ( _breakAfter == GenericBreak.Enums.Page )
                 {

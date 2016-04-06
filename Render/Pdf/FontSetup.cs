@@ -18,16 +18,16 @@ namespace Fonet.Render.Pdf
         /// <summary>
         ///     Handles mapping font triplets to a IFontMetric implementor
         /// </summary>
-        private readonly FontInfo fontInfo;
+        private readonly FontInfo _fontInfo;
 
         /// <summary>
         ///     First 16 indices are used by base 14 and generic fonts
         /// </summary>
-        private int startIndex = 17;
+        private int _startIndex = 17;
 
         public FontSetup( FontInfo fontInfo, FontType proxyFontType )
         {
-            this.fontInfo = fontInfo;
+            this._fontInfo = fontInfo;
 
             // Add the base 14 fonts
             AddBase14Fonts();
@@ -58,31 +58,31 @@ namespace Fonet.Render.Pdf
                     FontStyles styles = enumerator.GetStyles( familyName );
 
                     string name = GetNextAvailableName();
-                    fontInfo.AddMetrics( name, new ProxyFont( new FontProperties( familyName, false, false ), fontType ) );
-                    fontInfo.AddFontProperties( name, familyName, "normal", "normal" );
+                    _fontInfo.AddMetrics( name, new ProxyFont( new FontProperties( familyName, false, false ), fontType ) );
+                    _fontInfo.AddFontProperties( name, familyName, "normal", "normal" );
 
                     name = GetNextAvailableName();
-                    fontInfo.AddMetrics( name, new ProxyFont( new FontProperties( familyName, true, false ), fontType ) );
-                    fontInfo.AddFontProperties( name, familyName, "normal", "bold" );
+                    _fontInfo.AddMetrics( name, new ProxyFont( new FontProperties( familyName, true, false ), fontType ) );
+                    _fontInfo.AddFontProperties( name, familyName, "normal", "bold" );
 
                     name = GetNextAvailableName();
-                    fontInfo.AddMetrics( name, new ProxyFont( new FontProperties( familyName, false, true ), fontType ) );
-                    fontInfo.AddFontProperties( name, familyName, "italic", "normal" );
+                    _fontInfo.AddMetrics( name, new ProxyFont( new FontProperties( familyName, false, true ), fontType ) );
+                    _fontInfo.AddFontProperties( name, familyName, "italic", "normal" );
 
                     name = GetNextAvailableName();
-                    fontInfo.AddMetrics( name, new ProxyFont( new FontProperties( familyName, true, true ), fontType ) );
-                    fontInfo.AddFontProperties( name, familyName, "italic", "bold" );
+                    _fontInfo.AddMetrics( name, new ProxyFont( new FontProperties( familyName, true, true ), fontType ) );
+                    _fontInfo.AddFontProperties( name, familyName, "italic", "bold" );
                 }
             }
 
             // Cursive - Monotype Corsiva
-            fontInfo.AddMetrics( "F15",
+            _fontInfo.AddMetrics( "F15",
                 new ProxyFont( new FontProperties( "Monotype Corsiva", false, false ), fontType ) );
-            fontInfo.AddFontProperties( "F15", "cursive", "normal", "normal" );
+            _fontInfo.AddFontProperties( "F15", "cursive", "normal", "normal" );
 
             // Fantasy - Zapf Dingbats
-            fontInfo.AddMetrics( "F16", Base14Font.ZapfDingbats );
-            fontInfo.AddFontProperties( "F16", "fantasy", "normal", "normal" );
+            _fontInfo.AddMetrics( "F16", Base14Font.ZapfDingbats );
+            _fontInfo.AddFontProperties( "F16", "fantasy", "normal", "normal" );
         }
 
         /// <summary>
@@ -117,72 +117,72 @@ namespace Fonet.Render.Pdf
         /// <returns></returns>
         private string GetNextAvailableName()
         {
-            return string.Format( "F{0}", startIndex++ );
+            return string.Format( "F{0}", _startIndex++ );
         }
 
         private void AddBase14Fonts()
         {
-            fontInfo.AddMetrics( "F1", Base14Font.Helvetica );
-            fontInfo.AddMetrics( "F2", Base14Font.HelveticaItalic );
-            fontInfo.AddMetrics( "F3", Base14Font.HelveticaBold );
-            fontInfo.AddMetrics( "F4", Base14Font.HelveticaBoldItalic );
-            fontInfo.AddMetrics( "F5", Base14Font.Times );
-            fontInfo.AddMetrics( "F6", Base14Font.TimesItalic );
-            fontInfo.AddMetrics( "F7", Base14Font.TimesBold );
-            fontInfo.AddMetrics( "F8", Base14Font.TimesBoldItalic );
-            fontInfo.AddMetrics( "F9", Base14Font.Courier );
-            fontInfo.AddMetrics( "F10", Base14Font.CourierItalic );
-            fontInfo.AddMetrics( "F11", Base14Font.CourierBold );
-            fontInfo.AddMetrics( "F12", Base14Font.CourierBoldItalic );
-            fontInfo.AddMetrics( "F13", Base14Font.Symbol );
-            fontInfo.AddMetrics( "F14", Base14Font.ZapfDingbats );
+            _fontInfo.AddMetrics( "F1", Base14Font.Helvetica );
+            _fontInfo.AddMetrics( "F2", Base14Font.HelveticaItalic );
+            _fontInfo.AddMetrics( "F3", Base14Font.HelveticaBold );
+            _fontInfo.AddMetrics( "F4", Base14Font.HelveticaBoldItalic );
+            _fontInfo.AddMetrics( "F5", Base14Font.Times );
+            _fontInfo.AddMetrics( "F6", Base14Font.TimesItalic );
+            _fontInfo.AddMetrics( "F7", Base14Font.TimesBold );
+            _fontInfo.AddMetrics( "F8", Base14Font.TimesBoldItalic );
+            _fontInfo.AddMetrics( "F9", Base14Font.Courier );
+            _fontInfo.AddMetrics( "F10", Base14Font.CourierItalic );
+            _fontInfo.AddMetrics( "F11", Base14Font.CourierBold );
+            _fontInfo.AddMetrics( "F12", Base14Font.CourierBoldItalic );
+            _fontInfo.AddMetrics( "F13", Base14Font.Symbol );
+            _fontInfo.AddMetrics( "F14", Base14Font.ZapfDingbats );
 
-            fontInfo.AddFontProperties( "F5", "any", "normal", "normal" );
-            fontInfo.AddFontProperties( "F6", "any", "italic", "normal" );
-            fontInfo.AddFontProperties( "F6", "any", "oblique", "normal" );
-            fontInfo.AddFontProperties( "F7", "any", "normal", "bold" );
-            fontInfo.AddFontProperties( "F8", "any", "italic", "bold" );
-            fontInfo.AddFontProperties( "F8", "any", "oblique", "bold" );
+            _fontInfo.AddFontProperties( "F5", "any", "normal", "normal" );
+            _fontInfo.AddFontProperties( "F6", "any", "italic", "normal" );
+            _fontInfo.AddFontProperties( "F6", "any", "oblique", "normal" );
+            _fontInfo.AddFontProperties( "F7", "any", "normal", "bold" );
+            _fontInfo.AddFontProperties( "F8", "any", "italic", "bold" );
+            _fontInfo.AddFontProperties( "F8", "any", "oblique", "bold" );
 
-            fontInfo.AddFontProperties( "F1", "sans-serif", "normal", "normal" );
-            fontInfo.AddFontProperties( "F2", "sans-serif", "oblique", "normal" );
-            fontInfo.AddFontProperties( "F2", "sans-serif", "italic", "normal" );
-            fontInfo.AddFontProperties( "F3", "sans-serif", "normal", "bold" );
-            fontInfo.AddFontProperties( "F4", "sans-serif", "oblique", "bold" );
-            fontInfo.AddFontProperties( "F4", "sans-serif", "italic", "bold" );
-            fontInfo.AddFontProperties( "F5", "serif", "normal", "normal" );
-            fontInfo.AddFontProperties( "F6", "serif", "oblique", "normal" );
-            fontInfo.AddFontProperties( "F6", "serif", "italic", "normal" );
-            fontInfo.AddFontProperties( "F7", "serif", "normal", "bold" );
-            fontInfo.AddFontProperties( "F8", "serif", "oblique", "bold" );
-            fontInfo.AddFontProperties( "F8", "serif", "italic", "bold" );
-            fontInfo.AddFontProperties( "F9", "monospace", "normal", "normal" );
-            fontInfo.AddFontProperties( "F10", "monospace", "oblique", "normal" );
-            fontInfo.AddFontProperties( "F10", "monospace", "italic", "normal" );
-            fontInfo.AddFontProperties( "F11", "monospace", "normal", "bold" );
-            fontInfo.AddFontProperties( "F12", "monospace", "oblique", "bold" );
-            fontInfo.AddFontProperties( "F12", "monospace", "italic", "bold" );
+            _fontInfo.AddFontProperties( "F1", "sans-serif", "normal", "normal" );
+            _fontInfo.AddFontProperties( "F2", "sans-serif", "oblique", "normal" );
+            _fontInfo.AddFontProperties( "F2", "sans-serif", "italic", "normal" );
+            _fontInfo.AddFontProperties( "F3", "sans-serif", "normal", "bold" );
+            _fontInfo.AddFontProperties( "F4", "sans-serif", "oblique", "bold" );
+            _fontInfo.AddFontProperties( "F4", "sans-serif", "italic", "bold" );
+            _fontInfo.AddFontProperties( "F5", "serif", "normal", "normal" );
+            _fontInfo.AddFontProperties( "F6", "serif", "oblique", "normal" );
+            _fontInfo.AddFontProperties( "F6", "serif", "italic", "normal" );
+            _fontInfo.AddFontProperties( "F7", "serif", "normal", "bold" );
+            _fontInfo.AddFontProperties( "F8", "serif", "oblique", "bold" );
+            _fontInfo.AddFontProperties( "F8", "serif", "italic", "bold" );
+            _fontInfo.AddFontProperties( "F9", "monospace", "normal", "normal" );
+            _fontInfo.AddFontProperties( "F10", "monospace", "oblique", "normal" );
+            _fontInfo.AddFontProperties( "F10", "monospace", "italic", "normal" );
+            _fontInfo.AddFontProperties( "F11", "monospace", "normal", "bold" );
+            _fontInfo.AddFontProperties( "F12", "monospace", "oblique", "bold" );
+            _fontInfo.AddFontProperties( "F12", "monospace", "italic", "bold" );
 
-            fontInfo.AddFontProperties( "F1", "Helvetica", "normal", "normal" );
-            fontInfo.AddFontProperties( "F2", "Helvetica", "oblique", "normal" );
-            fontInfo.AddFontProperties( "F2", "Helvetica", "italic", "normal" );
-            fontInfo.AddFontProperties( "F3", "Helvetica", "normal", "bold" );
-            fontInfo.AddFontProperties( "F4", "Helvetica", "oblique", "bold" );
-            fontInfo.AddFontProperties( "F4", "Helvetica", "italic", "bold" );
-            fontInfo.AddFontProperties( "F5", "Times", "normal", "normal" );
-            fontInfo.AddFontProperties( "F6", "Times", "oblique", "normal" );
-            fontInfo.AddFontProperties( "F6", "Times", "italic", "normal" );
-            fontInfo.AddFontProperties( "F7", "Times", "normal", "bold" );
-            fontInfo.AddFontProperties( "F8", "Times", "oblique", "bold" );
-            fontInfo.AddFontProperties( "F8", "Times", "italic", "bold" );
-            fontInfo.AddFontProperties( "F9", "Courier", "normal", "normal" );
-            fontInfo.AddFontProperties( "F10", "Courier", "oblique", "normal" );
-            fontInfo.AddFontProperties( "F10", "Courier", "italic", "normal" );
-            fontInfo.AddFontProperties( "F11", "Courier", "normal", "bold" );
-            fontInfo.AddFontProperties( "F12", "Courier", "oblique", "bold" );
-            fontInfo.AddFontProperties( "F12", "Courier", "italic", "bold" );
-            fontInfo.AddFontProperties( "F13", "Symbol", "normal", "normal" );
-            fontInfo.AddFontProperties( "F14", "ZapfDingbats", "normal", "normal" );
+            _fontInfo.AddFontProperties( "F1", "Helvetica", "normal", "normal" );
+            _fontInfo.AddFontProperties( "F2", "Helvetica", "oblique", "normal" );
+            _fontInfo.AddFontProperties( "F2", "Helvetica", "italic", "normal" );
+            _fontInfo.AddFontProperties( "F3", "Helvetica", "normal", "bold" );
+            _fontInfo.AddFontProperties( "F4", "Helvetica", "oblique", "bold" );
+            _fontInfo.AddFontProperties( "F4", "Helvetica", "italic", "bold" );
+            _fontInfo.AddFontProperties( "F5", "Times", "normal", "normal" );
+            _fontInfo.AddFontProperties( "F6", "Times", "oblique", "normal" );
+            _fontInfo.AddFontProperties( "F6", "Times", "italic", "normal" );
+            _fontInfo.AddFontProperties( "F7", "Times", "normal", "bold" );
+            _fontInfo.AddFontProperties( "F8", "Times", "oblique", "bold" );
+            _fontInfo.AddFontProperties( "F8", "Times", "italic", "bold" );
+            _fontInfo.AddFontProperties( "F9", "Courier", "normal", "normal" );
+            _fontInfo.AddFontProperties( "F10", "Courier", "oblique", "normal" );
+            _fontInfo.AddFontProperties( "F10", "Courier", "italic", "normal" );
+            _fontInfo.AddFontProperties( "F11", "Courier", "normal", "bold" );
+            _fontInfo.AddFontProperties( "F12", "Courier", "oblique", "bold" );
+            _fontInfo.AddFontProperties( "F12", "Courier", "italic", "bold" );
+            _fontInfo.AddFontProperties( "F13", "Symbol", "normal", "normal" );
+            _fontInfo.AddFontProperties( "F14", "ZapfDingbats", "normal", "normal" );
         }
 
         /// <summary>
@@ -192,7 +192,7 @@ namespace Fonet.Render.Pdf
         /// <param name="resources">Resources object to add fonts too.</param>
         internal void AddToResources( PdfFontCreator fontCreator, PdfResources resources )
         {
-            Hashtable fonts = fontInfo.GetUsedFonts();
+            Hashtable fonts = _fontInfo.GetUsedFonts();
             foreach ( string fontName in fonts.Keys )
             {
                 var font = (Font)fonts[ fontName ];

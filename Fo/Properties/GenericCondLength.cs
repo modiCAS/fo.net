@@ -62,17 +62,14 @@ namespace Fonet.Fo.Properties
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( _mDefaultProp == null )
-                _mDefaultProp = MakeCompound( propertyList, propertyList.GetParentFObj() );
-            return _mDefaultProp;
+            return _mDefaultProp ?? ( _mDefaultProp = MakeCompound( propertyList, propertyList.GetParentFObj() ) );
         }
 
         protected override Property MakeCompound( PropertyList pList, FObj fo )
         {
             var p = new CondLength();
-            Property subProp;
 
-            subProp = GetSubpropMaker( "length" ).Make( pList,
+            Property subProp = GetSubpropMaker( "length" ).Make( pList,
                 GetDefaultForLength(), fo );
             p.SetComponent( "length", subProp, true );
 

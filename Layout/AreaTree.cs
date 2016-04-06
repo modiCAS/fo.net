@@ -7,30 +7,30 @@ namespace Fonet.Layout
 {
     internal class AreaTree
     {
-        private FontInfo fontInfo;
+        private FontInfo _fontInfo;
 
-        private readonly StreamRenderer streamRenderer;
+        private readonly StreamRenderer _streamRenderer;
 
         public AreaTree( StreamRenderer streamRenderer )
         {
-            this.streamRenderer = streamRenderer;
+            _streamRenderer = streamRenderer;
         }
 
-        public void setFontInfo( FontInfo fontInfo )
+        public void SetFontInfo( FontInfo fontInfo )
         {
-            this.fontInfo = fontInfo;
+            _fontInfo = fontInfo;
         }
 
-        public FontInfo getFontInfo()
+        public FontInfo GetFontInfo()
         {
-            return fontInfo;
+            return _fontInfo;
         }
 
-        public void addPage( Page page )
+        public void AddPage( Page page )
         {
             try
             {
-                streamRenderer.QueuePage( page );
+                _streamRenderer.QueuePage( page );
             }
             catch ( IOException e )
             {
@@ -38,24 +38,24 @@ namespace Fonet.Layout
             }
         }
 
-        public IDReferences getIDReferences()
+        public IDReferences GetIDReferences()
         {
-            return streamRenderer.GetIDReferences();
+            return _streamRenderer.GetIDReferences();
         }
 
         public ArrayList GetDocumentMarkers()
         {
-            return streamRenderer.GetDocumentMarkers();
+            return _streamRenderer.GetDocumentMarkers();
         }
 
         public PageSequence GetCurrentPageSequence()
         {
-            return streamRenderer.GetCurrentPageSequence();
+            return _streamRenderer.GetCurrentPageSequence();
         }
 
         public ArrayList GetCurrentPageSequenceMarkers()
         {
-            return streamRenderer.GetCurrentPageSequenceMarkers();
+            return _streamRenderer.GetCurrentPageSequenceMarkers();
         }
     }
 }

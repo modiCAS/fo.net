@@ -2,15 +2,15 @@ namespace Fonet.Layout
 {
     internal class HyphenationProps
     {
-        public string country;
-        public int hyphenate;
+        public string Country;
+        public int Hyphenate;
 
-        public char hyphenationChar;
+        public char HyphenationChar;
 
-        public int hyphenationPushCharacterCount;
+        public int HyphenationPushCharacterCount;
 
-        public int hyphenationRemainCharacterCount;
+        public int HyphenationRemainCharacterCount;
 
-        public string language;
+        public string Language;
     }
 }

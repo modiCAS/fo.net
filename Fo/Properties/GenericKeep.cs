@@ -69,18 +69,15 @@ namespace Fonet.Fo.Properties
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( _mDefaultProp == null )
-                _mDefaultProp = MakeCompound( propertyList, propertyList.GetParentFObj() );
-            return _mDefaultProp;
+            return _mDefaultProp ?? ( _mDefaultProp = MakeCompound( propertyList, propertyList.GetParentFObj() ) );
         }
 
 
         protected override Property MakeCompound( PropertyList pList, FObj fo )
         {
             var p = new Keep();
-            Property subProp;
 
-            subProp = GetSubpropMaker( "within-page" ).Make( pList,
+            Property subProp = GetSubpropMaker( "within-page" ).Make( pList,
                 GetDefaultForWithinPage(), fo );
             p.SetComponent( "within-page", subProp, true );
 

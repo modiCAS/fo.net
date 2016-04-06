@@ -7,8 +7,6 @@ namespace Fonet.Fo.Pagination
         private readonly Hashtable _allRegions;
         private readonly Hashtable _pageSequenceMasters;
 
-        private readonly Root _root;
-
         private readonly Hashtable _simplePageMasters;
 
         protected internal LayoutMasterSet( FObj parent, PropertyList propertyList )
@@ -20,8 +18,8 @@ namespace Fonet.Fo.Pagination
 
             if ( parent.GetName().Equals( "fo:root" ) )
             {
-                _root = (Root)parent;
-                _root.SetLayoutMasterSet( this );
+                var root = (Root)parent;
+                root.SetLayoutMasterSet( this );
             }
             else
             {

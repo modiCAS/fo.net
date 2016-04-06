@@ -31,9 +31,9 @@ namespace Fonet.Fo.Flow
         protected internal override void AddCharacters( char[] data, int start, int length )
         {
             var ft = new FoText( data, start, length, this );
-            ft.SetUnderlined( Ts.getUnderlined() );
-            ft.SetOverlined( Ts.getOverlined() );
-            ft.SetLineThrough( Ts.getLineThrough() );
+            ft.SetUnderlined( Ts.GetUnderlined() );
+            ft.SetOverlined( Ts.GetOverlined() );
+            ft.SetLineThrough( Ts.GetLineThrough() );
             Children.Add( ft );
         }
 

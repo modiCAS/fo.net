@@ -50,7 +50,7 @@ namespace Fonet.Pdf.Gdi
         /// <returns></returns>
         public bool HasPair( ushort left, ushort right )
         {
-            return _pairs == null ? false : _pairs.HasKerning( left, right );
+            return _pairs != null && _pairs.HasKerning( left, right );
         }
     }
 }

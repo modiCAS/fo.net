@@ -5,167 +5,166 @@ namespace Fonet.Layout
 {
     internal class BorderAndPadding : ICloneable
     {
-        public const int TOP = 0;
-        public const int RIGHT = 1;
-        public const int BOTTOM = 2;
-        public const int LEFT = 3;
+        public const int Top = 0;
+        public const int Right = 1;
+        public const int Bottom = 2;
+        public const int Left = 3;
 
-        private BorderInfo[] borderInfo = new BorderInfo[ 4 ];
-        private ResolvedCondLength[] padding = new ResolvedCondLength[ 4 ];
+        private BorderInfo[] _borderInfo = new BorderInfo[ 4 ];
+        private ResolvedCondLength[] _padding = new ResolvedCondLength[ 4 ];
 
         public object Clone()
         {
-            var bp = new BorderAndPadding();
-            bp.padding = (ResolvedCondLength[])padding.Clone();
-            bp.borderInfo = (BorderInfo[])borderInfo.Clone();
-            for ( var i = 0; i < padding.Length; i++ )
+            var bp = new BorderAndPadding
             {
-                if ( padding[ i ] != null )
-                    bp.padding[ i ] = (ResolvedCondLength)padding[ i ].Clone();
-                if ( borderInfo[ i ] != null )
-                    bp.borderInfo[ i ] = (BorderInfo)borderInfo[ i ].Clone();
+                _padding = (ResolvedCondLength[])_padding.Clone(),
+                _borderInfo = (BorderInfo[])_borderInfo.Clone()
+            };
+
+            for ( var i = 0; i < _padding.Length; i++ )
+            {
+                if ( _padding[ i ] != null )
+                    bp._padding[ i ] = (ResolvedCondLength)_padding[ i ].Clone();
+                if ( _borderInfo[ i ] != null )
+                    bp._borderInfo[ i ] = (BorderInfo)_borderInfo[ i ].Clone();
             }
             return bp;
         }
 
-        public void setBorder( int side, int style, CondLength width,
+        public void SetBorder( int side, int style, CondLength width,
             ColorType color )
         {
-            borderInfo[ side ] = new BorderInfo( style, width, color );
+            _borderInfo[ side ] = new BorderInfo( style, width, color );
         }
 
-        public void setPadding( int side, CondLength width )
+        public void SetPadding( int side, CondLength width )
         {
-            padding[ side ] = new ResolvedCondLength( width );
+            _padding[ side ] = new ResolvedCondLength( width );
         }
 
-        public void setPaddingLength( int side, int iLength )
+        public void SetPaddingLength( int side, int iLength )
         {
-            padding[ side ].iLength = iLength;
+            _padding[ side ].Length = iLength;
         }
 
-        public void setBorderLength( int side, int iLength )
+        public void SetBorderLength( int side, int iLength )
         {
-            borderInfo[ side ].mWidth.iLength = iLength;
+            _borderInfo[ side ].MWidth.Length = iLength;
         }
 
-        public int getBorderLeftWidth( bool bDiscard )
+        public int GetBorderLeftWidth( bool bDiscard )
         {
-            return getBorderWidth( LEFT, bDiscard );
+            return GetBorderWidth( Left, bDiscard );
         }
 
-        public int getBorderRightWidth( bool bDiscard )
+        public int GetBorderRightWidth( bool bDiscard )
         {
-            return getBorderWidth( RIGHT, bDiscard );
+            return GetBorderWidth( Right, bDiscard );
         }
 
-        public int getBorderTopWidth( bool bDiscard )
+        public int GetBorderTopWidth( bool bDiscard )
         {
-            return getBorderWidth( TOP, bDiscard );
+            return GetBorderWidth( Top, bDiscard );
         }
 
-        public int getBorderBottomWidth( bool bDiscard )
+        public int GetBorderBottomWidth( bool bDiscard )
         {
-            return getBorderWidth( BOTTOM, bDiscard );
+            return GetBorderWidth( Bottom, bDiscard );
         }
 
-        public int getPaddingLeft( bool bDiscard )
+        public int GetPaddingLeft( bool bDiscard )
         {
-            return getPadding( LEFT, bDiscard );
+            return GetPadding( Left, bDiscard );
         }
 
-        public int getPaddingRight( bool bDiscard )
+        public int GetPaddingRight( bool bDiscard )
         {
-            return getPadding( RIGHT, bDiscard );
+            return GetPadding( Right, bDiscard );
         }
 
-        public int getPaddingBottom( bool bDiscard )
+        public int GetPaddingBottom( bool bDiscard )
         {
-            return getPadding( BOTTOM, bDiscard );
+            return GetPadding( Bottom, bDiscard );
         }
 
-        public int getPaddingTop( bool bDiscard )
+        public int GetPaddingTop( bool bDiscard )
         {
-            return getPadding( TOP, bDiscard );
+            return GetPadding( Top, bDiscard );
         }
 
 
-        private int getBorderWidth( int side, bool bDiscard )
+        private int GetBorderWidth( int side, bool bDiscard )
         {
-            if ( borderInfo[ side ] == null
-                || bDiscard && borderInfo[ side ].mWidth.bDiscard )
+            if ( _borderInfo[ side ] == null
+                || bDiscard && _borderInfo[ side ].MWidth.BDiscard )
                 return 0;
-            return borderInfo[ side ].mWidth.iLength;
+            return _borderInfo[ side ].MWidth.Length;
         }
 
-        public ColorType getBorderColor( int side )
+        public ColorType GetBorderColor( int side )
         {
-            if ( borderInfo[ side ] != null )
-                return borderInfo[ side ].mColor;
-            return null;
+            return _borderInfo[ side ] != null ? _borderInfo[ side ].MColor : null;
         }
 
-        public int getBorderStyle( int side )
+        public int GetBorderStyle( int side )
         {
-            if ( borderInfo[ side ] != null )
-                return borderInfo[ side ].mStyle;
-            return 0;
+            return _borderInfo[ side ] != null ? _borderInfo[ side ].MStyle : 0;
         }
 
-        private int getPadding( int side, bool bDiscard )
+        private int GetPadding( int side, bool bDiscard )
         {
-            if ( padding[ side ] == null || bDiscard && padding[ side ].bDiscard )
+            if ( _padding[ side ] == null || bDiscard && _padding[ side ].BDiscard )
                 return 0;
-            return padding[ side ].iLength;
+            return _padding[ side ].Length;
         }
 
-        internal class ResolvedCondLength : ICloneable
+        private sealed class ResolvedCondLength : ICloneable
         {
-            internal bool bDiscard;
-            internal int iLength;
+            internal readonly bool BDiscard;
+            internal int Length;
 
             private ResolvedCondLength( int iLength, bool bDiscard )
             {
-                this.iLength = iLength;
-                this.bDiscard = bDiscard;
+                this.Length = iLength;
+                this.BDiscard = bDiscard;
             }
 
             internal ResolvedCondLength( CondLength length )
             {
-                bDiscard = length.IsDiscard();
-                iLength = length.MValue();
+                BDiscard = length.IsDiscard();
+                Length = length.MValue();
             }
 
             public object Clone()
             {
-                return new ResolvedCondLength( iLength, bDiscard );
+                return new ResolvedCondLength( Length, BDiscard );
             }
         }
 
-        internal class BorderInfo : ICloneable
+        private sealed class BorderInfo : ICloneable
         {
-            internal ColorType mColor;
-            internal int mStyle;
-            internal ResolvedCondLength mWidth;
+            internal readonly ColorType MColor;
+            internal readonly int MStyle;
+            internal readonly ResolvedCondLength MWidth;
 
             internal BorderInfo( int style, CondLength width, ColorType color )
             {
-                mStyle = style;
-                mWidth = new ResolvedCondLength( width );
-                mColor = color;
+                MStyle = style;
+                MWidth = new ResolvedCondLength( width );
+                MColor = color;
             }
 
             private BorderInfo( int style, ResolvedCondLength width, ColorType color )
             {
-                mStyle = style;
-                mWidth = width;
-                mColor = color;
+                MStyle = style;
+                MWidth = width;
+                MColor = color;
             }
 
             public object Clone()
             {
                 return new BorderInfo(
-                    mStyle, (ResolvedCondLength)mWidth.Clone(), (ColorType)mColor.Clone() );
+                    MStyle, (ResolvedCondLength)MWidth.Clone(), (ColorType)MColor.Clone() );
             }
         }
     }

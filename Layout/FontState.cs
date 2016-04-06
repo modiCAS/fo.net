@@ -6,7 +6,7 @@ namespace Fonet.Layout
 {
     internal class FontState
     {
-        private readonly IFontMetric metric;
+        private readonly IFontMetric _metric;
 
         public FontState( FontInfo fontInfo, string fontFamily, string fontStyle,
             string fontWeight, int fontSize, int fontVariant )
@@ -17,7 +17,7 @@ namespace Fonet.Layout
             FontWeight = fontWeight;
             FontSize = fontSize;
             FontName = fontInfo.FontLookup( fontFamily, fontStyle, fontWeight );
-            metric = fontInfo.GetMetricsFor( FontName );
+            _metric = fontInfo.GetMetricsFor( FontName );
             FontVariant = fontVariant;
             LetterSpacing = 0;
         }
@@ -31,19 +31,19 @@ namespace Fonet.Layout
 
         public int Ascender
         {
-            get { return metric.Ascender * FontSize / 1000; }
+            get { return _metric.Ascender * FontSize / 1000; }
         }
 
         public int LetterSpacing { get; private set; }
 
         public int CapHeight
         {
-            get { return metric.CapHeight * FontSize / 1000; }
+            get { return _metric.CapHeight * FontSize / 1000; }
         }
 
         public int Descender
         {
-            get { return metric.Descender * FontSize / 1000; }
+            get { return _metric.Descender * FontSize / 1000; }
         }
 
         public string FontName { get; private set; }
@@ -64,7 +64,7 @@ namespace Fonet.Layout
         {
             get
             {
-                IFontDescriptor descriptor = metric.Descriptor;
+                IFontDescriptor descriptor = _metric.Descriptor;
                 if ( descriptor != null )
                 {
                     if ( descriptor.HasKerningInfo )
@@ -76,13 +76,13 @@ namespace Fonet.Layout
 
         public int GetWidth( ushort charId )
         {
-            return LetterSpacing + metric.GetWidth( charId ) * FontSize / 1000;
+            return LetterSpacing + _metric.GetWidth( charId ) * FontSize / 1000;
         }
 
         public ushort MapCharacter( char c )
         {
-            if ( metric is Font )
-                return ( (Font)metric ).MapCharacter( c );
+            if ( _metric is Font )
+                return ( (Font)_metric ).MapCharacter( c );
 
             ushort charIndex = CodePointMapping.GetMapping( "WinAnsiEncoding" ).MapCharacter( c );
             if ( charIndex != 0 )

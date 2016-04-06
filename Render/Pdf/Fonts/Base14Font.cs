@@ -26,21 +26,21 @@ namespace Fonet.Render.Pdf.Fonts
 
         public static readonly Font Symbol = new Symbol();
         public static readonly Font ZapfDingbats = new ZapfDingbats();
-        private readonly int ascender;
-        private readonly int capHeight;
-        private readonly int descender;
-        private string encoding;
-        private readonly int firstChar;
+        private readonly int _ascender;
+        private readonly int _capHeight;
+        private readonly int _descender;
+        private string _encoding;
+        private readonly int _firstChar;
 
-        private readonly string fontName;
-        private readonly int lastChar;
-        private readonly CodePointMapping mapping;
-        private readonly int[] widths;
+        private readonly string _fontName;
+        private readonly int _lastChar;
+        private readonly CodePointMapping _mapping;
+        private readonly int[] _widths;
 
         /// <summary>
         ///     Class constructor.
         /// </summary>
-        public Base14Font(
+        protected Base14Font(
             string fontName,
             string encoding,
             int capHeight,
@@ -51,25 +51,25 @@ namespace Fonet.Render.Pdf.Fonts
             int[] widths,
             CodePointMapping mapping )
         {
-            this.fontName = fontName;
-            this.encoding = encoding;
-            this.capHeight = capHeight;
-            this.ascender = ascender;
-            this.descender = descender;
-            this.firstChar = firstChar;
-            this.lastChar = lastChar;
-            this.widths = widths;
-            this.mapping = mapping;
+            this._fontName = fontName;
+            this._encoding = encoding;
+            this._capHeight = capHeight;
+            this._ascender = ascender;
+            this._descender = descender;
+            this._firstChar = firstChar;
+            this._lastChar = lastChar;
+            this._widths = widths;
+            this._mapping = mapping;
         }
 
         public override string Encoding
         {
-            get { return mapping.Name; }
+            get { return _mapping.Name; }
         }
 
         public override string FontName
         {
-            get { return fontName; }
+            get { return _fontName; }
         }
 
         public override PdfFontTypeEnum Type
@@ -102,27 +102,27 @@ namespace Fonet.Render.Pdf.Fonts
 
         public override int Ascender
         {
-            get { return ascender; }
+            get { return _ascender; }
         }
 
         public override int Descender
         {
-            get { return descender; }
+            get { return _descender; }
         }
 
         public override int CapHeight
         {
-            get { return capHeight; }
+            get { return _capHeight; }
         }
 
         public override int FirstChar
         {
-            get { return firstChar; }
+            get { return _firstChar; }
         }
 
         public override int LastChar
         {
-            get { return lastChar; }
+            get { return _lastChar; }
         }
 
         public override int[] Widths
@@ -130,7 +130,7 @@ namespace Fonet.Render.Pdf.Fonts
             get
             {
                 var arr = new int[ LastChar - FirstChar + 1 ];
-                Array.Copy( widths, FirstChar, arr, 0, LastChar - FirstChar + 1 );
+                Array.Copy( _widths, FirstChar, arr, 0, LastChar - FirstChar + 1 );
 
                 return arr;
             }
@@ -138,12 +138,12 @@ namespace Fonet.Render.Pdf.Fonts
 
         public override int GetWidth( ushort charIndex )
         {
-            return widths[ charIndex ];
+            return _widths[ charIndex ];
         }
 
         public override ushort MapCharacter( char c )
         {
-            ushort charIndex = mapping.MapCharacter( c );
+            ushort charIndex = _mapping.MapCharacter( c );
             if ( charIndex != 0 )
                 return charIndex;
             return Convert.ToUInt16( '#' );

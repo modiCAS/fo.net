@@ -66,18 +66,15 @@ namespace Fonet.Fo.Properties
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( _mDefaultProp == null )
-                _mDefaultProp = MakeCompound( propertyList, propertyList.GetParentFObj() );
-            return _mDefaultProp;
+            return _mDefaultProp ?? ( _mDefaultProp = MakeCompound( propertyList, propertyList.GetParentFObj() ) );
         }
 
 
         protected override Property MakeCompound( PropertyList pList, FObj fo )
         {
             var p = new CondLength();
-            Property subProp;
 
-            subProp = GetSubpropMaker( "length" ).Make( pList,
+            Property subProp = GetSubpropMaker( "length" ).Make( pList,
                 GetDefaultForLength(), fo );
             p.SetComponent( "length", subProp, true );
 
@@ -137,9 +134,7 @@ namespace Fonet.Fo.Properties
             if ( _sHtKeywords == null )
                 InitKeywords();
             var value = (string)_sHtKeywords[ keyword ];
-            if ( value == null )
-                return base.CheckValueKeywords( keyword );
-            return value;
+            return value ?? base.CheckValueKeywords( keyword );
         }
 
         internal class Enums
@@ -160,48 +155,35 @@ namespace Fonet.Fo.Properties
             {
             }
 
-            private static void InitKeywords()
+            private static void InitMarkerKeywords()
             {
-                _sHtKeywords = new Hashtable( 3 );
-
-                _sHtKeywords.Add( "thin", "0.5pt" );
-
-                _sHtKeywords.Add( "medium", "1pt" );
-
-                _sHtKeywords.Add( "thick", "2pt" );
+                _sHtKeywords = new Hashtable( 3 ) { { "thin", "0.5pt" }, { "medium", "1pt" }, { "thick", "2pt" } };
             }
 
             protected override string CheckValueKeywords( string keyword )
             {
-                if ( _sHtKeywords == null )
-                    InitKeywords();
+                if ( _sHtKeywords == null ) InitMarkerKeywords();
                 var value = (string)_sHtKeywords[ keyword ];
-                if ( value == null )
-                    return base.CheckValueKeywords( keyword );
-                return value;
+                return value ?? base.CheckValueKeywords( keyword );
             }
         }
 
-        private class SpConditionalityMaker : EnumProperty.Maker
+        private sealed class SpConditionalityMaker : EnumProperty.Maker
         {
-            protected internal static readonly EnumProperty SPropDiscard =
+            private static readonly EnumProperty SPropDiscard =
                 new EnumProperty( Enums.Conditionality.Discard );
 
-            protected internal static readonly EnumProperty SPropRetain = new EnumProperty( Enums.Conditionality.Retain );
+            private static readonly EnumProperty SPropRetain = new EnumProperty( Enums.Conditionality.Retain );
 
-            protected internal SpConditionalityMaker( string sPropName ) : base( sPropName )
+            internal SpConditionalityMaker( string sPropName ) : base( sPropName )
             {
             }
 
             public override Property CheckEnumValues( string value )
             {
-                if ( value.Equals( "discard" ) )
-                    return SPropDiscard;
+                if ( value.Equals( "discard" ) ) return SPropDiscard;
 
-                if ( value.Equals( "retain" ) )
-                    return SPropRetain;
-
-                return base.CheckEnumValues( value );
+                return value.Equals( "retain" ) ? SPropRetain : base.CheckEnumValues( value );
             }
         }
     }

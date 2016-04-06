@@ -38,7 +38,7 @@ namespace Fonet.Fo
 
             var propsDone = new StringCollection();
 
-            string fontsizeval = attributes.getValue( Fontsizeattr );
+            string fontsizeval = attributes.GetValue( Fontsizeattr );
             if ( fontsizeval != null )
             {
                 PropertyMaker propertyMaker = FindMaker( Fontsizeattr );
@@ -62,7 +62,6 @@ namespace Fonet.Fo
                 int sepchar = attributeName.IndexOf( '.' );
                 string propName = attributeName;
                 string subpropName = null;
-                Property propVal = null;
                 if ( sepchar > -1 )
                 {
                     propName = attributeName.Substring( 0, sepchar );
@@ -77,12 +76,13 @@ namespace Fonet.Fo
                 {
                     try
                     {
+                        Property propVal;
                         if ( subpropName != null )
                         {
                             Property baseProp = p.GetExplicitBaseProperty( propName );
                             if ( baseProp == null )
                             {
-                                string baseValue = attributes.getValue( propName );
+                                string baseValue = attributes.GetValue( propName );
                                 if ( baseValue != null )
                                 {
                                     baseProp = propertyMaker.Make( p, baseValue, parentFo );
@@ -91,13 +91,13 @@ namespace Fonet.Fo
                             }
                             propVal = propertyMaker.Make( baseProp, subpropName,
                                 p,
-                                attributes.getValue( i ),
+                                attributes.GetValue( i ),
                                 parentFo );
                         }
                         else
                         {
                             propVal = propertyMaker.Make( p,
-                                attributes.getValue( i ),
+                                attributes.GetValue( i ),
                                 parentFo );
                         }
                         if ( propVal != null )
