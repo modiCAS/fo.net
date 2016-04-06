@@ -17,7 +17,7 @@ namespace Fonet.Fo.Properties
             return false;
         }
 
-        protected override string getDefaultForLength()
+        protected override string GetDefaultForLength()
         {
             return "0pt";
         }

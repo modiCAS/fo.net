@@ -2,16 +2,16 @@ namespace Fonet.Pdf
 {
     public class PdfInternalLink : IPdfAction
     {
-        private readonly PdfObjectReference goToReference;
+        private readonly PdfObjectReference _goToReference;
 
         public PdfInternalLink( PdfObjectReference goToReference )
         {
-            this.goToReference = goToReference;
+            this._goToReference = goToReference;
         }
 
         public PdfObject GetAction()
         {
-            return goToReference;
+            return _goToReference;
         }
     }
 }

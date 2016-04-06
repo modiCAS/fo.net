@@ -4,26 +4,26 @@ namespace Fonet.Fo
 {
     internal class SpaceProperty : Property
     {
-        private readonly Space space;
+        private readonly Space _space;
 
         public SpaceProperty( Space space )
         {
-            this.space = space;
+            this._space = space;
         }
 
         public override Space GetSpace()
         {
-            return space;
+            return _space;
         }
 
         public override LengthRange GetLengthRange()
         {
-            return space;
+            return _space;
         }
 
         public override object GetObject()
         {
-            return space;
+            return _space;
         }
 
         internal class Maker : LengthRangeProperty.Maker

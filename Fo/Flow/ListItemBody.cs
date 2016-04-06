@@ -7,7 +7,7 @@ namespace Fonet.Fo.Flow
         public ListItemBody( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:list-item-body";
+            Name = "fo:list-item-body";
         }
 
         public new static FObj.Maker GetMaker()
@@ -17,29 +17,29 @@ namespace Fonet.Fo.Flow
 
         public override Status Layout( Area area )
         {
-            if ( marker == MarkerStart )
+            if ( Marker == MarkerStart )
             {
-                AccessibilityProps mAccProps = propMgr.GetAccessibilityProps();
-                marker = 0;
-                string id = properties.GetProperty( "id" ).GetString();
+                AccessibilityProps mAccProps = PropMgr.GetAccessibilityProps();
+                Marker = 0;
+                string id = Properties.GetProperty( "id" ).GetString();
                 area.getIDReferences().InitializeID( id, area );
             }
 
-            int numChildren = children.Count;
-            for ( int i = marker; i < numChildren; i++ )
+            int numChildren = Children.Count;
+            for ( int i = Marker; i < numChildren; i++ )
             {
-                var fo = (FObj)children[ i ];
+                var fo = (FObj)Children[ i ];
 
                 Status status;
-                if ( ( status = fo.Layout( area ) ).isIncomplete() )
+                if ( ( status = fo.Layout( area ) ).IsIncomplete() )
                 {
-                    marker = i;
-                    if ( i == 0 && status.getCode() == Status.AREA_FULL_NONE )
-                        return new Status( Status.AREA_FULL_NONE );
-                    return new Status( Status.AREA_FULL_SOME );
+                    Marker = i;
+                    if ( i == 0 && status.GetCode() == Status.AreaFullNone )
+                        return new Status( Status.AreaFullNone );
+                    return new Status( Status.AreaFullSome );
                 }
             }
-            return new Status( Status.OK );
+            return new Status( Status.Ok );
         }
 
         internal new class Maker : FObj.Maker

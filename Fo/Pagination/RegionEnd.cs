@@ -4,7 +4,7 @@ namespace Fonet.Fo.Pagination
 {
     internal class RegionEnd : Region
     {
-        public const string REGION_CLASS = "end";
+        public const string RegionClass = "end";
 
         protected RegionEnd( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
@@ -25,7 +25,7 @@ namespace Fonet.Fo.Pagination
             bool afterPrecedence, int beforeHeight,
             int afterHeight )
         {
-            int extent = properties.GetProperty( "extent" ).GetLength().MValue();
+            int extent = Properties.GetProperty( "extent" ).GetLength().MValue();
 
             int startY = allocationRectangleYPosition;
             int startH = allocationRectangleHeight;
@@ -43,7 +43,7 @@ namespace Fonet.Fo.Pagination
                 startY,
                 extent,
                 startH );
-            area.setBackground( propMgr.GetBackgroundProps() );
+            area.setBackground( PropMgr.GetBackgroundProps() );
 
             return area;
         }
@@ -53,9 +53,9 @@ namespace Fonet.Fo.Pagination
             int allocationRectangleWidth,
             int allocationRectangleHeight )
         {
-            BorderAndPadding bap = propMgr.GetBorderAndPadding();
-            BackgroundProps bProps = propMgr.GetBackgroundProps();
-            int extent = properties.GetProperty( "extent" ).GetLength().MValue();
+            BorderAndPadding bap = PropMgr.GetBorderAndPadding();
+            BackgroundProps bProps = PropMgr.GetBackgroundProps();
+            int extent = Properties.GetProperty( "extent" ).GetLength().MValue();
             return MakeRegionArea( allocationRectangleXPosition,
                 allocationRectangleYPosition,
                 allocationRectangleWidth, extent, false, false,
@@ -74,7 +74,7 @@ namespace Fonet.Fo.Pagination
 
         public override string GetRegionClass()
         {
-            return REGION_CLASS;
+            return RegionClass;
         }
 
         internal new class Maker : FObj.Maker

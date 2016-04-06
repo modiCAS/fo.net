@@ -4,23 +4,23 @@ namespace Fonet.Fo.Flow
 {
     internal class FootnoteBody : FObj
     {
-        private readonly int align = 0;
+        private readonly int _align = 0;
 
-        private readonly int alignLast = 0;
+        private readonly int _alignLast = 0;
 
-        private readonly int endIndent = 0;
+        private readonly int _endIndent = 0;
 
-        private readonly int lineHeight = 0;
+        private readonly int _lineHeight = 0;
 
-        private readonly int startIndent = 0;
+        private readonly int _startIndent = 0;
 
-        private readonly int textIndent = 0;
+        private readonly int _textIndent = 0;
 
         public FootnoteBody( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:footnote-body";
-            areaClass = AreaClass.setAreaClass( AreaClass.XSL_FOOTNOTE );
+            Name = "fo:footnote-body";
+            AreaClass = Fonet.Layout.AreaClass.setAreaClass( Fonet.Layout.AreaClass.XSL_FOOTNOTE );
         }
 
         public new static FObj.Maker GetMaker()
@@ -30,13 +30,13 @@ namespace Fonet.Fo.Flow
 
         public override Status Layout( Area area )
         {
-            if ( marker == MarkerStart )
-                marker = 0;
+            if ( Marker == MarkerStart )
+                Marker = 0;
             var blockArea =
-                new BlockArea( propMgr.GetFontState( area.getFontInfo() ),
+                new BlockArea( PropMgr.GetFontState( area.getFontInfo() ),
                     area.getAllocationWidth(), area.spaceLeft(),
-                    startIndent, endIndent, textIndent, align,
-                    alignLast, lineHeight );
+                    _startIndent, _endIndent, _textIndent, _align,
+                    _alignLast, _lineHeight );
             blockArea.setGeneratedBy( this );
             blockArea.isFirst( true );
             blockArea.setParent( area );
@@ -48,12 +48,12 @@ namespace Fonet.Fo.Flow
 
             blockArea.setTableCellXOffset( area.getTableCellXOffset() );
 
-            int numChildren = children.Count;
-            for ( int i = marker; i < numChildren; i++ )
+            int numChildren = Children.Count;
+            for ( int i = Marker; i < numChildren; i++ )
             {
-                var fo = (FONode)children[ i ];
+                var fo = (FoNode)Children[ i ];
                 Status status;
-                if ( ( status = fo.Layout( blockArea ) ).isIncomplete() )
+                if ( ( status = fo.Layout( blockArea ) ).IsIncomplete() )
                 {
                     ResetMarker();
                     return status;
@@ -63,7 +63,7 @@ namespace Fonet.Fo.Flow
             area.addChild( blockArea );
             area.increaseHeight( blockArea.GetHeight() );
             blockArea.isLast( true );
-            return new Status( Status.OK );
+            return new Status( Status.Ok );
         }
 
         internal new class Maker : FObj.Maker

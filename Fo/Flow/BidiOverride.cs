@@ -7,7 +7,7 @@ namespace Fonet.Fo.Flow
         protected BidiOverride( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:bidi-override";
+            Name = "fo:bidi-override";
         }
 
         public new static FObj.Maker GetMaker()
@@ -17,8 +17,8 @@ namespace Fonet.Fo.Flow
 
         public override Status Layout( Area area )
         {
-            AuralProps mAurProps = propMgr.GetAuralProps();
-            RelativePositionProps mProps = propMgr.GetRelativePositionProps();
+            AuralProps mAurProps = PropMgr.GetAuralProps();
+            RelativePositionProps mProps = PropMgr.GetRelativePositionProps();
             return base.Layout( area );
         }
 

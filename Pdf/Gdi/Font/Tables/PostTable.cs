@@ -14,47 +14,47 @@ namespace Fonet.Pdf.Gdi.Font
         ///     Set to 0 if the font is proportionally spaced, non-zero if the
         ///     font is not proportionally spaced (i.e. monospaced).
         /// </summary>
-        private uint fixedPitch;
+        private uint _fixedPitch;
 
         /// <summary>
         ///     Italic angle in counter-clockwise degrees from the vertical.
         ///     Zero for upright text, negative for text that leans to the
         ///     right (forward).
         /// </summary>
-        private float italicAngle;
+        private float _italicAngle;
 
         /// <summary>
         ///     Maximum memory usage when an OpenType font is downloaded
         ///     as a Type 1 font.
         /// </summary>
-        private uint maxMemType1;
+        private uint _maxMemType1;
 
         /// <summary>
         ///     Maximum memory usage when an OpenType font is downloaded.
         /// </summary>
-        private uint maxMemType42;
+        private uint _maxMemType42;
 
         /// <summary>
         ///     Minimum memory usage when an OpenType font is downloaded
         ///     as a Type 1 font.
         /// </summary>
-        private uint minMemType1;
+        private uint _minMemType1;
 
         /// <summary>
         ///     Minimum memory usage when an OpenType font is downloaded.
         /// </summary>
-        private uint minMemType42;
+        private uint _minMemType42;
 
         /// <summary>
         ///     This is the suggested distance of the top of the underline from
         ///     the baseline (negative values indicate below baseline).
         /// </summary>
-        private short underlinePosition;
+        private short _underlinePosition;
 
         /// <summary>
         ///     Suggested values for the underline thickness.
         /// </summary>
-        private short underlineThickness;
+        private short _underlineThickness;
 
         /// <summary>
         ///     0x00010000 for version 1.0
@@ -62,7 +62,7 @@ namespace Fonet.Pdf.Gdi.Font
         ///     0x00025000 for version 2.5 (deprecated)
         ///     0x00030000 for version 3.0
         /// </summary>
-        private int version;
+        private int _version;
 
         /// <summary>
         ///     Class constructor.
@@ -78,12 +78,12 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public bool IsFixedPitch
         {
-            get { return fixedPitch == 1; }
+            get { return _fixedPitch == 1; }
         }
 
         public float ItalicAngle
         {
-            get { return italicAngle; }
+            get { return _italicAngle; }
         }
 
         /// <summary>
@@ -94,18 +94,18 @@ namespace Fonet.Pdf.Gdi.Font
         protected internal override void Read( FontFileReader reader )
         {
             FontFileStream stream = reader.Stream;
-            version = stream.ReadFixed();
+            _version = stream.ReadFixed();
 
             // The italic angle is stored in the stupid fixed field format.
-            italicAngle = stream.ReadFixed() / 65536.0f;
+            _italicAngle = stream.ReadFixed() / 65536.0f;
 
-            underlinePosition = stream.ReadFWord();
-            underlineThickness = stream.ReadFWord();
-            fixedPitch = stream.ReadULong();
-            minMemType42 = stream.ReadULong();
-            maxMemType42 = stream.ReadULong();
-            minMemType1 = stream.ReadULong();
-            maxMemType1 = stream.ReadULong();
+            _underlinePosition = stream.ReadFWord();
+            _underlineThickness = stream.ReadFWord();
+            _fixedPitch = stream.ReadULong();
+            _minMemType42 = stream.ReadULong();
+            _maxMemType42 = stream.ReadULong();
+            _minMemType1 = stream.ReadULong();
+            _maxMemType1 = stream.ReadULong();
         }
 
         protected internal override void Write( FontFileWriter writer )

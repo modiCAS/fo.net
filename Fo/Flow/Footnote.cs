@@ -8,7 +8,7 @@ namespace Fonet.Fo.Flow
         public Footnote( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:footnote";
+            Name = "fo:footnote";
         }
 
         public new static FObj.Maker GetMaker()
@@ -18,19 +18,19 @@ namespace Fonet.Fo.Flow
 
         public override Status Layout( Area area )
         {
-            FONode inline = null;
-            FONode fbody = null;
-            if ( marker == MarkerStart )
-                marker = 0;
-            int numChildren = children.Count;
-            for ( int i = marker; i < numChildren; i++ )
+            FoNode inline = null;
+            FoNode fbody = null;
+            if ( Marker == MarkerStart )
+                Marker = 0;
+            int numChildren = Children.Count;
+            for ( int i = Marker; i < numChildren; i++ )
             {
-                var fo = (FONode)children[ i ];
+                var fo = (FoNode)Children[ i ];
                 if ( fo is Inline )
                 {
                     inline = fo;
                     Status status = fo.Layout( area );
-                    if ( status.isIncomplete() )
+                    if ( status.IsIncomplete() )
                         return status;
                 }
                 else if ( inline != null && fo is FootnoteBody )
@@ -53,7 +53,7 @@ namespace Fonet.Fo.Flow
             if ( area is BlockArea )
             {
             }
-            return new Status( Status.OK );
+            return new Status( Status.Ok );
         }
 
         public static bool LayoutFootnote( Page p, FootnoteBody fb, Area area )
@@ -77,7 +77,7 @@ namespace Fonet.Fo.Flow
                         + footArea.GetHeight() );
                 }
                 Status status = fb.Layout( footArea );
-                if ( status.isIncomplete() )
+                if ( status.IsIncomplete() )
                     return false;
                 if ( area != null )
                 {

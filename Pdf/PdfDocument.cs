@@ -11,11 +11,11 @@ namespace Fonet.Pdf
     /// </remarks>
     public class PdfDocument
     {
-        private FileIdentifier fileId = new FileIdentifier();
+        private FileIdentifier _fileId = new FileIdentifier();
 
-        private uint nextObjectNumber = 1;
+        private uint _nextObjectNumber = 1;
 
-        private PdfVersion version = PdfVersion.V14;
+        private PdfVersion _version = PdfVersion.V14;
 
         public PdfDocument( Stream stream ) : this( new PdfWriter( stream ) )
         {
@@ -31,19 +31,19 @@ namespace Fonet.Pdf
 
         public PdfVersion Version
         {
-            get { return version; }
-            set { version = value; }
+            get { return _version; }
+            set { _version = value; }
         }
 
         public FileIdentifier FileIdentifier
         {
-            get { return fileId; }
-            set { fileId = value; }
+            get { return _fileId; }
+            set { _fileId = value; }
         }
 
         public SecurityOptions SecurityOptions
         {
-            set { Writer.SecurityManager = new SecurityManager( value, fileId ); }
+            set { Writer.SecurityManager = new SecurityManager( value, _fileId ); }
         }
 
         public PdfCatalog Catalog { get; private set; }
@@ -52,19 +52,19 @@ namespace Fonet.Pdf
 
         public uint ObjectCount
         {
-            get { return nextObjectNumber - 1; }
+            get { return _nextObjectNumber - 1; }
         }
 
         public PdfWriter Writer { get; private set; }
 
         public PdfObjectId NextObjectId()
         {
-            return new PdfObjectId( nextObjectNumber++, 0 );
+            return new PdfObjectId( _nextObjectNumber++, 0 );
         }
 
         public void WriteHeader()
         {
-            Writer.WriteHeader( version );
+            Writer.WriteHeader( _version );
             Writer.WriteBinaryComment();
         }
     }

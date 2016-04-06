@@ -4,7 +4,7 @@ namespace Fonet.Fo
 {
     internal class FObjMixed : FObj
     {
-        protected TextState ts;
+        protected TextState Ts;
 
         protected FObjMixed( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
@@ -16,37 +16,37 @@ namespace Fonet.Fo
             return new Maker();
         }
 
-        public TextState getTextState()
+        public TextState GetTextState()
         {
-            return ts;
+            return Ts;
         }
 
         protected internal override void AddCharacters( char[] data, int start, int length )
         {
-            var ft = new FOText( data, start, length, this );
-            ft.setUnderlined( ts.getUnderlined() );
-            ft.setOverlined( ts.getOverlined() );
-            ft.setLineThrough( ts.getLineThrough() );
+            var ft = new FoText( data, start, length, this );
+            ft.SetUnderlined( Ts.getUnderlined() );
+            ft.SetOverlined( Ts.getOverlined() );
+            ft.SetLineThrough( Ts.getLineThrough() );
             AddChild( ft );
         }
 
         public override Status Layout( Area area )
         {
-            if ( properties != null )
+            if ( Properties != null )
             {
-                Property prop = properties.GetProperty( "id" );
+                Property prop = Properties.GetProperty( "id" );
                 if ( prop != null )
                 {
                     string id = prop.GetString();
 
-                    if ( marker == MarkerStart )
+                    if ( Marker == MarkerStart )
                     {
                         if ( area.getIDReferences() != null )
                             area.getIDReferences().CreateID( id );
-                        marker = 0;
+                        Marker = 0;
                     }
 
-                    if ( marker == 0 )
+                    if ( Marker == 0 )
                     {
                         if ( area.getIDReferences() != null )
                             area.getIDReferences().ConfigureID( id, area );
@@ -54,18 +54,18 @@ namespace Fonet.Fo
                 }
             }
 
-            int numChildren = children.Count;
-            for ( int i = marker; i < numChildren; i++ )
+            int numChildren = Children.Count;
+            for ( int i = Marker; i < numChildren; i++ )
             {
-                var fo = (FONode)children[ i ];
+                var fo = (FoNode)Children[ i ];
                 Status status;
-                if ( ( status = fo.Layout( area ) ).isIncomplete() )
+                if ( ( status = fo.Layout( area ) ).IsIncomplete() )
                 {
-                    marker = i;
+                    Marker = i;
                     return status;
                 }
             }
-            return new Status( Status.OK );
+            return new Status( Status.Ok );
         }
 
         internal new class Maker : FObj.Maker

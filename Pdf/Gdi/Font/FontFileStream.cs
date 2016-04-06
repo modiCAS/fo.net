@@ -41,8 +41,8 @@ namespace Fonet.Pdf.Gdi.Font
     /// </remarks>
     internal class FontFileStream
     {
-        private readonly Stack markers = new Stack();
-        private readonly Stream stream;
+        private readonly Stack _markers = new Stack();
+        private readonly Stream _stream;
 
         /// <summary>
         ///     Initialises a new instance of the <see cref="FontFileStream" />
@@ -62,7 +62,7 @@ namespace Fonet.Pdf.Gdi.Font
             if ( data.Length == 0 )
                 throw new ArgumentException( "data array is empty.", "data" );
 
-            stream = new MemoryStream( data );
+            _stream = new MemoryStream( data );
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace Fonet.Pdf.Gdi.Font
         {
             if ( stream == null )
                 throw new ArgumentNullException( "stream", "stream parameter cannot be null" );
-            this.stream = stream;
+            this._stream = stream;
         }
 
         /// <summary>
@@ -85,8 +85,8 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public long Position
         {
-            get { return stream.Position; }
-            set { stream.Position = value; }
+            get { return _stream.Position; }
+            set { _stream.Position = value; }
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public long Length
         {
-            get { return stream.Length; }
+            get { return _stream.Length; }
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// <returns></returns>
         public byte ReadByte()
         {
-            return (byte)stream.ReadByte();
+            return (byte)_stream.ReadByte();
         }
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// <returns></returns>
         public void WriteByte( byte value )
         {
-            stream.WriteByte( value );
+            _stream.WriteByte( value );
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// <returns></returns>
         public sbyte ReadChar()
         {
-            return (sbyte)stream.ReadByte();
+            return (sbyte)_stream.ReadByte();
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// <returns></returns>
         public void WriteChar( sbyte value )
         {
-            stream.WriteByte( (byte)( value & 0xFF ) );
+            _stream.WriteByte( (byte)( value & 0xFF ) );
         }
 
         /// <summary>
@@ -148,8 +148,8 @@ namespace Fonet.Pdf.Gdi.Font
         /// <returns></returns>
         public void WriteShort( int value )
         {
-            stream.WriteByte( (byte)( ( value >> 8 ) & 0xFF ) );
-            stream.WriteByte( (byte)( value & 0xFF ) );
+            _stream.WriteByte( (byte)( ( value >> 8 ) & 0xFF ) );
+            _stream.WriteByte( (byte)( value & 0xFF ) );
         }
 
         /// <summary>
@@ -185,15 +185,15 @@ namespace Fonet.Pdf.Gdi.Font
         /// <returns></returns>
         public void WriteUShort( int value )
         {
-            stream.WriteByte( (byte)( ( value >> 8 ) & 0xFF ) );
-            stream.WriteByte( (byte)( value & 0xFF ) );
+            _stream.WriteByte( (byte)( ( value >> 8 ) & 0xFF ) );
+            _stream.WriteByte( (byte)( value & 0xFF ) );
         }
 
         /// <summary>
         ///     Reads a ushort (16-bit unsigned integer) from the font file.
         /// </summary>
         /// <returns></returns>
-        public ushort ReadUFWord()
+        public ushort ReadUfWord()
         {
             return ReadUShort();
         }
@@ -202,7 +202,7 @@ namespace Fonet.Pdf.Gdi.Font
         ///     Writes a ushort (16-bit unsigned integer) to the font file.
         /// </summary>
         /// <returns></returns>
-        public void WriteUFWord( int value )
+        public void WriteUfWord( int value )
         {
             WriteUShort( value );
         }
@@ -227,10 +227,10 @@ namespace Fonet.Pdf.Gdi.Font
         /// <returns></returns>
         public void WriteLong( int value )
         {
-            stream.WriteByte( (byte)( ( value >> 24 ) & 0xFF ) );
-            stream.WriteByte( (byte)( ( value >> 16 ) & 0xFF ) );
-            stream.WriteByte( (byte)( ( value >> 8 ) & 0xFF ) );
-            stream.WriteByte( (byte)( value & 0xFF ) );
+            _stream.WriteByte( (byte)( ( value >> 24 ) & 0xFF ) );
+            _stream.WriteByte( (byte)( ( value >> 16 ) & 0xFF ) );
+            _stream.WriteByte( (byte)( ( value >> 8 ) & 0xFF ) );
+            _stream.WriteByte( (byte)( value & 0xFF ) );
         }
 
         /// <summary>
@@ -253,10 +253,10 @@ namespace Fonet.Pdf.Gdi.Font
         /// <returns></returns>
         public void WriteULong( uint value )
         {
-            stream.WriteByte( (byte)( ( value >> 24 ) & 0xFF ) );
-            stream.WriteByte( (byte)( ( value >> 16 ) & 0xFF ) );
-            stream.WriteByte( (byte)( ( value >> 8 ) & 0xFF ) );
-            stream.WriteByte( (byte)( (int)value & 0xFF ) );
+            _stream.WriteByte( (byte)( ( value >> 24 ) & 0xFF ) );
+            _stream.WriteByte( (byte)( ( value >> 16 ) & 0xFF ) );
+            _stream.WriteByte( (byte)( ( value >> 8 ) & 0xFF ) );
+            _stream.WriteByte( (byte)( (int)value & 0xFF ) );
         }
 
         /// <summary>
@@ -301,14 +301,14 @@ namespace Fonet.Pdf.Gdi.Font
         /// <returns></returns>
         public void WriteDateTime( long value )
         {
-            stream.WriteByte( (byte)( ( value >> 56 ) & 0xFF ) );
-            stream.WriteByte( (byte)( ( value >> 48 ) & 0xFF ) );
-            stream.WriteByte( (byte)( ( value >> 40 ) & 0xFF ) );
-            stream.WriteByte( (byte)( ( value >> 32 ) & 0xFF ) );
-            stream.WriteByte( (byte)( ( value >> 24 ) & 0xFF ) );
-            stream.WriteByte( (byte)( ( value >> 16 ) & 0xFF ) );
-            stream.WriteByte( (byte)( ( value >> 8 ) & 0xFF ) );
-            stream.WriteByte( (byte)( (int)value & 0xFF ) );
+            _stream.WriteByte( (byte)( ( value >> 56 ) & 0xFF ) );
+            _stream.WriteByte( (byte)( ( value >> 48 ) & 0xFF ) );
+            _stream.WriteByte( (byte)( ( value >> 40 ) & 0xFF ) );
+            _stream.WriteByte( (byte)( ( value >> 32 ) & 0xFF ) );
+            _stream.WriteByte( (byte)( ( value >> 24 ) & 0xFF ) );
+            _stream.WriteByte( (byte)( ( value >> 16 ) & 0xFF ) );
+            _stream.WriteByte( (byte)( ( value >> 8 ) & 0xFF ) );
+            _stream.WriteByte( (byte)( (int)value & 0xFF ) );
         }
 
         /// <summary>
@@ -332,10 +332,10 @@ namespace Fonet.Pdf.Gdi.Font
         /// <returns></returns>
         public void WriteTag( byte[] value )
         {
-            stream.WriteByte( value[ 0 ] );
-            stream.WriteByte( value[ 1 ] );
-            stream.WriteByte( value[ 2 ] );
-            stream.WriteByte( value[ 3 ] );
+            _stream.WriteByte( value[ 0 ] );
+            _stream.WriteByte( value[ 1 ] );
+            _stream.WriteByte( value[ 2 ] );
+            _stream.WriteByte( value[ 3 ] );
         }
 
         /// <summary>
@@ -349,9 +349,9 @@ namespace Fonet.Pdf.Gdi.Font
         /// </returns>
         public int Pad()
         {
-            var remainder = (int)( stream.Position % 4 );
+            var remainder = (int)( _stream.Position % 4 );
             for ( var i = 0; i < remainder; i++ )
-                stream.WriteByte( 0 );
+                _stream.WriteByte( 0 );
 
             return remainder;
         }
@@ -364,7 +364,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// <param name="count"></param>
         public void Write( byte[] buffer, int offset, int count )
         {
-            stream.Write( buffer, offset, count );
+            _stream.Write( buffer, offset, count );
         }
 
         /// <summary>
@@ -376,7 +376,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// <param name="count">Number of bytes to read.</param>
         public int Read( byte[] buffer, int offset, int count )
         {
-            return stream.Read( buffer, offset, count );
+            return _stream.Read( buffer, offset, count );
         }
 
         /// <summary>
@@ -385,7 +385,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// <param name="offset"></param>
         public void Skip( long offset )
         {
-            stream.Seek( offset, SeekOrigin.Current );
+            _stream.Seek( offset, SeekOrigin.Current );
         }
 
         /// <summary>
@@ -396,7 +396,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </returns>
         public long SetRestorePoint()
         {
-            markers.Push( Position );
+            _markers.Push( Position );
 
             return Position;
         }
@@ -413,12 +413,12 @@ namespace Fonet.Pdf.Gdi.Font
         /// </exception>
         public long Restore()
         {
-            if ( markers.Count == 0 )
+            if ( _markers.Count == 0 )
                 throw new InvalidOperationException( "There are no stream markers." );
 
             // Restore original stream position
             long oldPosition = Position;
-            Position = Convert.ToInt64( markers.Pop() );
+            Position = Convert.ToInt64( _markers.Pop() );
 
             return oldPosition;
         }

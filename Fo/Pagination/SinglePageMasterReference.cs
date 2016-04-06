@@ -1,27 +1,27 @@
 namespace Fonet.Fo.Pagination
 {
-    internal class SinglePageMasterReference : PageMasterReference, SubSequenceSpecifier
+    internal class SinglePageMasterReference : PageMasterReference, ISubSequenceSpecifier
     {
-        private const int FIRST = 0;
+        private const int First = 0;
 
-        private const int DONE = 1;
+        private const int Done = 1;
 
-        private int state;
+        private int _state;
 
         public SinglePageMasterReference(
             FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            state = FIRST;
+            _state = First;
         }
 
         public override string GetNextPageMaster( int currentPageNumber,
             bool thisIsFirstPage,
             bool isEmptyPage )
         {
-            if ( state == FIRST )
+            if ( _state == First )
             {
-                state = DONE;
+                _state = Done;
                 return MasterName;
             }
             return null;
@@ -29,7 +29,7 @@ namespace Fonet.Fo.Pagination
 
         public override void Reset()
         {
-            state = FIRST;
+            _state = First;
         }
 
         public new static FObj.Maker GetMaker()

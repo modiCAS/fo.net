@@ -6,7 +6,7 @@ namespace Fonet.DataTypes
 {
     internal class ColorType : ICloneable
     {
-        private static readonly string[] names =
+        private static readonly string[] Names =
         {
             "aliceblue", "antiquewhite", "aqua", "aquamarine", "azure", "beige",
             "bisque", "black", "blanchedalmond", "blue", "blueviolet", "brown",
@@ -40,7 +40,7 @@ namespace Fonet.DataTypes
             "whitesmoke", "yellow", "yellowgreen"
         };
 
-        private static readonly int[ , ] vals =
+        private static readonly int[ , ] Vals =
         {
             { 240, 248, 255 },
             { 250, 235, 215 },
@@ -321,13 +321,13 @@ namespace Fonet.DataTypes
                 else
                 {
                     var found = false;
-                    for ( var count = 0; count < names.Length; count++ )
+                    for ( var count = 0; count < Names.Length; count++ )
                     {
-                        if ( colorValue.Equals( names[ count ] ) )
+                        if ( colorValue.Equals( Names[ count ] ) )
                         {
-                            Red = vals[ count, 0 ] / 255f;
-                            Green = vals[ count, 1 ] / 255f;
-                            Blue = vals[ count, 2 ] / 255f;
+                            Red = Vals[ count, 0 ] / 255f;
+                            Green = Vals[ count, 1 ] / 255f;
+                            Blue = Vals[ count, 2 ] / 255f;
                             found = true;
                             break;
                         }

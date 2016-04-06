@@ -13,22 +13,22 @@ namespace Fonet.Pdf.Gdi
     /// </example>
     public class GdiFontMetrics
     {
-        public const long GDI_ERROR = 0xFFFFFFFFL;
-        private readonly PdfUnitConverter converter;
-        private GdiFont currentFont;
+        public const long GdiError = 0xFFFFFFFFL;
+        private readonly PdfUnitConverter _converter;
+        private GdiFont _currentFont;
 
-        private byte[] data;
-        private readonly GdiDeviceContent dc;
+        private byte[] _data;
+        private readonly GdiDeviceContent _dc;
 
-        private HeaderTable head;
-        private HorizontalHeaderTable hhea;
-        private HorizontalMetricsTable hmtx;
-        private KerningTable kern;
-        private OS2Table os2;
-        private PostTable post;
-        private readonly GdiUnicodeRanges ranges;
+        private HeaderTable _head;
+        private HorizontalHeaderTable _hhea;
+        private HorizontalMetricsTable _hmtx;
+        private KerningTable _kern;
+        private Os2Table _os2;
+        private PostTable _post;
+        private readonly GdiUnicodeRanges _ranges;
 
-        private readonly FontFileReader reader;
+        private readonly FontFileReader _reader;
 
         internal GdiFontMetrics( GdiDeviceContent dc, GdiFont currentFont )
         {
@@ -36,8 +36,8 @@ namespace Fonet.Pdf.Gdi
                 throw new ArgumentNullException( "dc", "Handle to device context cannot be null" );
             if ( dc.GetCurrentObject( GdiDcObject.Font ) == IntPtr.Zero )
                 throw new ArgumentException( "dc", "No font selected into supplied device context" );
-            this.dc = dc;
-            this.currentFont = currentFont;
+            this._dc = dc;
+            this._currentFont = currentFont;
 
             // FontFileReader requires the font facename because the font may exist in 
             // a TrueType collection.
@@ -45,9 +45,9 @@ namespace Fonet.Pdf.Gdi
             LibWrapper.GetTextFace( dc.Handle, builder.Capacity, builder );
             FaceName = builder.ToString();
 
-            ranges = new GdiUnicodeRanges( dc );
-            reader = new FontFileReader( new MemoryStream( GetFontData() ), FaceName );
-            converter = new PdfUnitConverter( EmSquare );
+            _ranges = new GdiUnicodeRanges( dc );
+            _reader = new FontFileReader( new MemoryStream( GetFontData() ), FaceName );
+            _converter = new PdfUnitConverter( EmSquare );
 
             // After we have cached the font data, we can safely delete the resource
             currentFont.Dispose();
@@ -72,7 +72,7 @@ namespace Fonet.Pdf.Gdi
             get
             {
                 EnsureHeadTable();
-                return head.unitsPermEm;
+                return _head.UnitsPermEm;
             }
         }
 
@@ -90,7 +90,7 @@ namespace Fonet.Pdf.Gdi
             {
                 EnsurePostTable();
                 // TODO: Is the italic angle always a whole number?
-                return converter.ToPdfUnits( (int)post.ItalicAngle );
+                return _converter.ToPdfUnits( (int)_post.ItalicAngle );
             }
         }
 
@@ -103,7 +103,7 @@ namespace Fonet.Pdf.Gdi
             get
             {
                 EnsureHheaTable();
-                return converter.ToPdfUnits( hhea.ascender );
+                return _converter.ToPdfUnits( _hhea.Ascender );
             }
         }
 
@@ -116,7 +116,7 @@ namespace Fonet.Pdf.Gdi
             get
             {
                 EnsureHheaTable();
-                return converter.ToPdfUnits( hhea.decender );
+                return _converter.ToPdfUnits( _hhea.Decender );
             }
         }
 
@@ -128,8 +128,8 @@ namespace Fonet.Pdf.Gdi
         {
             get
             {
-                EnsureOS2Table();
-                return converter.ToPdfUnits( os2.CapHeight );
+                EnsureOs2Table();
+                return _converter.ToPdfUnits( _os2.CapHeight );
             }
         }
 
@@ -141,8 +141,8 @@ namespace Fonet.Pdf.Gdi
         {
             get
             {
-                EnsureOS2Table();
-                return converter.ToPdfUnits( os2.XHeight );
+                EnsureOs2Table();
+                return _converter.ToPdfUnits( _os2.XHeight );
             }
         }
 
@@ -155,7 +155,7 @@ namespace Fonet.Pdf.Gdi
             get
             {
                 // TODO: Must be calculated somehow.
-                return converter.ToPdfUnits( 0 );
+                return _converter.ToPdfUnits( 0 );
             }
         }
 
@@ -166,8 +166,8 @@ namespace Fonet.Pdf.Gdi
         {
             get
             {
-                EnsureOS2Table();
-                return os2.FirstChar;
+                EnsureOs2Table();
+                return _os2.FirstChar;
             }
         }
 
@@ -178,8 +178,8 @@ namespace Fonet.Pdf.Gdi
         {
             get
             {
-                EnsureOS2Table();
-                return os2.LastChar;
+                EnsureOs2Table();
+                return _os2.LastChar;
             }
         }
 
@@ -215,8 +215,8 @@ namespace Fonet.Pdf.Gdi
         {
             get
             {
-                EnsureOS2Table();
-                return os2.IsEmbeddable;
+                EnsureOs2Table();
+                return _os2.IsEmbeddable;
             }
         }
 
@@ -227,8 +227,8 @@ namespace Fonet.Pdf.Gdi
         {
             get
             {
-                EnsureOS2Table();
-                return os2.IsSubsettable;
+                EnsureOs2Table();
+                return _os2.IsSubsettable;
             }
         }
 
@@ -247,10 +247,10 @@ namespace Fonet.Pdf.Gdi
                 EnsureHeadTable();
                 return new[]
                 {
-                    converter.ToPdfUnits( head.xMin ),
-                    converter.ToPdfUnits( head.yMin ),
-                    converter.ToPdfUnits( head.xMax ),
-                    converter.ToPdfUnits( head.yMax )
+                    _converter.ToPdfUnits( _head.XMin ),
+                    _converter.ToPdfUnits( _head.YMin ),
+                    _converter.ToPdfUnits( _head.XMax ),
+                    _converter.ToPdfUnits( _head.YMax )
                 };
             }
         }
@@ -263,16 +263,16 @@ namespace Fonet.Pdf.Gdi
         {
             get
             {
-                EnsureOS2Table();
+                EnsureOs2Table();
 
                 var flags = new BitVector32( 0 );
-                flags[ 1 ] = os2.IsMonospaced;
-                flags[ 2 ] = os2.IsSerif;
-                flags[ 8 ] = os2.IsScript;
-                flags[ 64 ] = os2.IsItalic;
+                flags[ 1 ] = _os2.IsMonospaced;
+                flags[ 2 ] = _os2.IsSerif;
+                flags[ 8 ] = _os2.IsScript;
+                flags[ 64 ] = _os2.IsItalic;
 
                 // Symbolic and NonSymbolic are mutually exclusive
-                if ( os2.IsSymbolic )
+                if ( _os2.IsSymbolic )
                     flags[ 4 ] = true;
                 else
                     flags[ 32 ] = true;
@@ -294,10 +294,10 @@ namespace Fonet.Pdf.Gdi
         {
             get
             {
-                if ( reader.ContainsTable( TableNames.Kern ) )
+                if ( _reader.ContainsTable( TableNames.Kern ) )
                 {
-                    kern = (KerningTable)reader.GetTable( TableNames.Kern );
-                    return new GdiKerningPairs( kern.KerningPairs, converter );
+                    _kern = (KerningTable)_reader.GetTable( TableNames.Kern );
+                    return new GdiKerningPairs( _kern.KerningPairs, _converter );
                 }
                 return GdiKerningPairs.Empty;
             }
@@ -312,14 +312,14 @@ namespace Fonet.Pdf.Gdi
         {
             get
             {
-                if ( reader.ContainsTable( TableNames.Kern ) )
+                if ( _reader.ContainsTable( TableNames.Kern ) )
                 {
-                    kern = (KerningTable)reader.GetTable( TableNames.Kern );
+                    _kern = (KerningTable)_reader.GetTable( TableNames.Kern );
 
                     // The kerning pairs obtained from the TrueType font are keyed 
                     // on glyph index, whereas the ansi kerning pairs should be keyed 
                     // on codepoint value from the WinAnsiEncoding scheme.
-                    KerningPairs oldPairs = kern.KerningPairs;
+                    KerningPairs oldPairs = _kern.KerningPairs;
                     var newPairs = new KerningPairs();
 
                     // Maps a unicode character to a codepoint value
@@ -329,11 +329,11 @@ namespace Fonet.Pdf.Gdi
                     for ( var i = 0; i < 256; i++ )
                     {
                         // Glyph index of character i
-                        ushort leftIndex = ranges.MapCharacter( (char)i );
+                        ushort leftIndex = _ranges.MapCharacter( (char)i );
                         for ( var j = 0; j < 256; j++ )
                         {
                             // Glyph index of character j
-                            ushort rightIndex = ranges.MapCharacter( (char)j );
+                            ushort rightIndex = _ranges.MapCharacter( (char)j );
                             if ( oldPairs.HasKerning( leftIndex, rightIndex ) )
                             {
                                 // Create new kerning pair mapping codepoint pair 
@@ -345,7 +345,7 @@ namespace Fonet.Pdf.Gdi
                             }
                         }
                     }
-                    return new GdiKerningPairs( newPairs, converter );
+                    return new GdiKerningPairs( newPairs, _converter );
                 }
                 return GdiKerningPairs.Empty;
             }
@@ -357,18 +357,18 @@ namespace Fonet.Pdf.Gdi
         /// <returns></returns>
         public byte[] GetFontData()
         {
-            if ( data == null )
+            if ( _data == null )
             {
                 try
                 {
                     // Check if this is a TrueType font collection
                     uint ttcfTag = TableNames.ToUint( TableNames.Ttcf );
-                    uint ttcfSize = LibWrapper.GetFontData( dc.Handle, ttcfTag, 0, null, 0 );
+                    uint ttcfSize = LibWrapper.GetFontData( _dc.Handle, ttcfTag, 0, null, 0 );
 
                     if ( ttcfSize != 0 && ttcfSize != 0xFFFFFFFF )
-                        data = ReadFontFromCollection();
+                        _data = ReadFontFromCollection();
                     else
-                        data = ReadFont();
+                        _data = ReadFont();
                 }
                 catch ( Exception e )
                 {
@@ -377,25 +377,25 @@ namespace Fonet.Pdf.Gdi
                 }
             }
 
-            return data;
+            return _data;
         }
 
         private byte[] ReadFontFromCollection()
         {
-            var creator = new GdiFontCreator( dc );
+            var creator = new GdiFontCreator( _dc );
             return creator.Build();
         }
 
         private byte[] ReadFont()
         {
-            uint bufferSize = LibWrapper.GetFontData( dc.Handle, 0, 0, null, 0 );
+            uint bufferSize = LibWrapper.GetFontData( _dc.Handle, 0, 0, null, 0 );
 
             if ( bufferSize == 0xFFFFFFFF )
                 throw new InvalidOperationException( "No font selected into device context" );
 
             var buffer = new byte[ bufferSize ];
-            uint rv = LibWrapper.GetFontData( dc.Handle, 0, 0, buffer, bufferSize );
-            if ( rv == GDI_ERROR )
+            uint rv = LibWrapper.GetFontData( _dc.Handle, 0, 0, buffer, bufferSize );
+            if ( rv == GdiError )
                 throw new Exception( "Failed to retrieve table data for font " + FaceName );
 
             return buffer;
@@ -415,11 +415,11 @@ namespace Fonet.Pdf.Gdi
         {
             EnsureHmtxTable();
 
-            var widths = new int[ hmtx.Count ];
+            var widths = new int[ _hmtx.Count ];
 
             // Convert each width to PDF units
-            for ( var i = 0; i < hmtx.Count; i++ )
-                widths[ i ] = converter.ToPdfUnits( hmtx[ i ].AdvanceWidth );
+            for ( var i = 0; i < _hmtx.Count; i++ )
+                widths[ i ] = _converter.ToPdfUnits( _hmtx[ i ].AdvanceWidth );
 
             return widths;
         }
@@ -437,7 +437,7 @@ namespace Fonet.Pdf.Gdi
             var widths = new int[ 256 ];
 
             // The glyph at position 0 always represents the .notdef glyph
-            int missingWidth = converter.ToPdfUnits( hmtx[ 0 ].AdvanceWidth );
+            int missingWidth = _converter.ToPdfUnits( _hmtx[ 0 ].AdvanceWidth );
             for ( var c = 0; c < 256; c++ )
                 widths[ c ] = missingWidth;
 
@@ -449,7 +449,7 @@ namespace Fonet.Pdf.Gdi
             {
                 ushort glyphIndex = MapCharacter( (char)c );
                 ushort codepoint = mapping.MapCharacter( (char)c );
-                widths[ codepoint ] = converter.ToPdfUnits( hmtx[ glyphIndex ].AdvanceWidth );
+                widths[ codepoint ] = _converter.ToPdfUnits( _hmtx[ glyphIndex ].AdvanceWidth );
             }
 
             return widths;
@@ -463,44 +463,44 @@ namespace Fonet.Pdf.Gdi
         /// <returns></returns>
         public ushort MapCharacter( char c )
         {
-            return ranges.MapCharacter( c );
+            return _ranges.MapCharacter( c );
         }
 
         private void EnsureHmtxTable()
         {
-            if ( hmtx == null )
-                hmtx = (HorizontalMetricsTable)GetTable( TableNames.Hmtx );
+            if ( _hmtx == null )
+                _hmtx = (HorizontalMetricsTable)GetTable( TableNames.Hmtx );
         }
 
         private void EnsureHheaTable()
         {
-            if ( hhea == null )
-                hhea = (HorizontalHeaderTable)GetTable( TableNames.Hhea );
+            if ( _hhea == null )
+                _hhea = (HorizontalHeaderTable)GetTable( TableNames.Hhea );
         }
 
         private void EnsurePostTable()
         {
-            if ( post == null )
-                post = (PostTable)GetTable( TableNames.Post );
+            if ( _post == null )
+                _post = (PostTable)GetTable( TableNames.Post );
         }
 
         private void EnsureHeadTable()
         {
-            if ( head == null )
-                head = (HeaderTable)GetTable( TableNames.Head );
+            if ( _head == null )
+                _head = (HeaderTable)GetTable( TableNames.Head );
         }
 
-        private void EnsureOS2Table()
+        private void EnsureOs2Table()
         {
-            if ( os2 == null )
-                os2 = (OS2Table)GetTable( TableNames.Os2 );
+            if ( _os2 == null )
+                _os2 = (Os2Table)GetTable( TableNames.Os2 );
         }
 
         private FontTable GetTable( string name )
         {
             try
             {
-                return reader.GetTable( name );
+                return _reader.GetTable( name );
             }
             catch
             {

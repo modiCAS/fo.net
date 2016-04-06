@@ -6,9 +6,9 @@ namespace Fonet.Pdf.Security
     /// </summary>
     internal class Arc4
     {
-        private readonly byte[] state = new byte[ 256 ];
-        private int x;
-        private int y;
+        private readonly byte[] _state = new byte[ 256 ];
+        private int _x;
+        private int _y;
 
         internal Arc4()
         {
@@ -38,16 +38,16 @@ namespace Fonet.Pdf.Security
         internal void Initialise( byte[] key )
         {
             for ( var i = 0; i < 256; i++ )
-                state[ i ] = (byte)i;
+                _state[ i ] = (byte)i;
             for ( int i = 0, j = 0; i < 256; i++ )
             {
-                j = ( j + state[ i ] + key[ i % key.Length ] ) % 256;
-                byte t = state[ i ];
-                state[ i ] = state[ j ];
-                state[ j ] = t;
+                j = ( j + _state[ i ] + key[ i % key.Length ] ) % 256;
+                byte t = _state[ i ];
+                _state[ i ] = _state[ j ];
+                _state[ j ] = t;
             }
-            x = 0;
-            y = 0;
+            _x = 0;
+            _y = 0;
         }
 
         /// <summary>
@@ -73,12 +73,12 @@ namespace Fonet.Pdf.Security
         /// </summary>
         private byte Arc4Byte()
         {
-            x = ( x + 1 ) % 256;
-            y = ( y + state[ x ] ) % 256;
-            byte temp = state[ x ];
-            state[ x ] = state[ y ];
-            state[ y ] = temp;
-            return state[ ( state[ x ] + state[ y ] ) % 256 ];
+            _x = ( _x + 1 ) % 256;
+            _y = ( _y + _state[ _x ] ) % 256;
+            byte temp = _state[ _x ];
+            _state[ _x ] = _state[ _y ];
+            _state[ _y ] = temp;
+            return _state[ ( _state[ _x ] + _state[ _y ] ) % 256 ];
         }
     }
 }

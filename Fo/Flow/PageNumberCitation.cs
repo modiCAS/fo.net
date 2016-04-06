@@ -6,22 +6,22 @@ namespace Fonet.Fo.Flow
 {
     internal class PageNumberCitation : FObj
     {
-        private Area area;
-        private float blue;
-        private float green;
-        private string id;
-        private string pageNumber;
+        private Area _area;
+        private float _blue;
+        private float _green;
+        private string _id;
+        private string _pageNumber;
 
-        private float red;
-        private string refId;
-        private TextState ts;
-        private int whiteSpaceCollapse;
-        private int wrapOption;
+        private float _red;
+        private string _refId;
+        private TextState _ts;
+        private int _whiteSpaceCollapse;
+        private int _wrapOption;
 
         public PageNumberCitation( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:page-number-citation";
+            Name = "fo:page-number-citation";
         }
 
         public new static FObj.Maker GetMaker()
@@ -35,74 +35,74 @@ namespace Fonet.Fo.Flow
             {
                 FonetDriver.ActiveDriver.FireFonetWarning(
                     "Page-number-citation outside block area" );
-                return new Status( Status.OK );
+                return new Status( Status.Ok );
             }
 
             IDReferences idReferences = area.getIDReferences();
-            this.area = area;
-            if ( marker == MarkerStart )
+            this._area = area;
+            if ( Marker == MarkerStart )
             {
-                AccessibilityProps mAccProps = propMgr.GetAccessibilityProps();
-                AuralProps mAurProps = propMgr.GetAuralProps();
-                BorderAndPadding bap = propMgr.GetBorderAndPadding();
-                BackgroundProps bProps = propMgr.GetBackgroundProps();
-                MarginInlineProps mProps = propMgr.GetMarginInlineProps();
-                RelativePositionProps mRelProps = propMgr.GetRelativePositionProps();
+                AccessibilityProps mAccProps = PropMgr.GetAccessibilityProps();
+                AuralProps mAurProps = PropMgr.GetAuralProps();
+                BorderAndPadding bap = PropMgr.GetBorderAndPadding();
+                BackgroundProps bProps = PropMgr.GetBackgroundProps();
+                MarginInlineProps mProps = PropMgr.GetMarginInlineProps();
+                RelativePositionProps mRelProps = PropMgr.GetRelativePositionProps();
 
-                ColorType c = properties.GetProperty( "color" ).GetColorType();
-                red = c.Red;
-                green = c.Green;
-                blue = c.Blue;
+                ColorType c = Properties.GetProperty( "color" ).GetColorType();
+                _red = c.Red;
+                _green = c.Green;
+                _blue = c.Blue;
 
-                wrapOption = properties.GetProperty( "wrap-option" ).GetEnum();
-                whiteSpaceCollapse =
-                    properties.GetProperty( "white-space-collapse" ).GetEnum();
+                _wrapOption = Properties.GetProperty( "wrap-option" ).GetEnum();
+                _whiteSpaceCollapse =
+                    Properties.GetProperty( "white-space-collapse" ).GetEnum();
 
-                refId = properties.GetProperty( "ref-id" ).GetString();
+                _refId = Properties.GetProperty( "ref-id" ).GetString();
 
-                if ( refId.Equals( "" ) )
+                if ( _refId.Equals( "" ) )
                     throw new FonetException( "page-number-citation must contain \"ref-id\"" );
 
-                id = properties.GetProperty( "id" ).GetString();
-                idReferences.CreateID( id );
-                ts = new TextState();
+                _id = Properties.GetProperty( "id" ).GetString();
+                idReferences.CreateID( _id );
+                _ts = new TextState();
 
-                marker = 0;
+                Marker = 0;
             }
 
-            if ( marker == 0 )
-                idReferences.ConfigureID( id, area );
+            if ( Marker == 0 )
+                idReferences.ConfigureID( _id, area );
 
 
-            pageNumber = idReferences.getPageNumber( refId );
+            _pageNumber = idReferences.GetPageNumber( _refId );
 
-            if ( pageNumber != null )
+            if ( _pageNumber != null )
             {
-                marker =
-                    FOText.addText( (BlockArea)area,
-                        propMgr.GetFontState( area.getFontInfo() ), red,
-                        green, blue, wrapOption, null,
-                        whiteSpaceCollapse, pageNumber.ToCharArray(),
-                        0, pageNumber.Length, ts,
-                        VerticalAlign.BASELINE );
+                Marker =
+                    FoText.AddText( (BlockArea)area,
+                        PropMgr.GetFontState( area.getFontInfo() ), _red,
+                        _green, _blue, _wrapOption, null,
+                        _whiteSpaceCollapse, _pageNumber.ToCharArray(),
+                        0, _pageNumber.Length, _ts,
+                        VerticalAlign.Baseline );
             }
             else
             {
                 var blockArea = (BlockArea)area;
                 LineArea la = blockArea.getCurrentLineArea();
                 if ( la == null )
-                    return new Status( Status.AREA_FULL_NONE );
-                la.changeFont( propMgr.GetFontState( area.getFontInfo() ) );
-                la.changeColor( red, green, blue );
-                la.changeWrapOption( wrapOption );
-                la.changeWhiteSpaceCollapse( whiteSpaceCollapse );
-                la.addPageNumberCitation( refId, null );
-                marker = -1;
+                    return new Status( Status.AreaFullNone );
+                la.changeFont( PropMgr.GetFontState( area.getFontInfo() ) );
+                la.changeColor( _red, _green, _blue );
+                la.changeWrapOption( _wrapOption );
+                la.changeWhiteSpaceCollapse( _whiteSpaceCollapse );
+                la.addPageNumberCitation( _refId, null );
+                Marker = -1;
             }
 
-            if ( marker == -1 )
-                return new Status( Status.OK );
-            return new Status( Status.AREA_FULL_NONE );
+            if ( Marker == -1 )
+                return new Status( Status.Ok );
+            return new Status( Status.AreaFullNone );
         }
 
         internal new class Maker : FObj.Maker

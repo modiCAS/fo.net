@@ -4,7 +4,7 @@ namespace Fonet.Fo.Properties
 {
     internal class WidthMaker : LengthProperty.Maker
     {
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected WidthMaker( string name ) : base( name )
         {
@@ -27,14 +27,14 @@ namespace Fonet.Fo.Properties
 
         public override IPercentBase GetPercentBase( FObj fo, PropertyList propertyList )
         {
-            return new LengthBase( fo, propertyList, LengthBase.CONTAINING_BOX );
+            return new LengthBase( fo, propertyList, LengthBase.ContainingBox );
         }
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "auto", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "auto", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

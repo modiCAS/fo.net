@@ -4,20 +4,20 @@ namespace Fonet.DataTypes
 {
     internal class LengthBase : IPercentBase
     {
-        public const int CUSTOM_BASE = 0;
-        public const int FONTSIZE = 1;
-        public const int INH_FONTSIZE = 2;
-        public const int CONTAINING_BOX = 3;
-        public const int CONTAINING_REFAREA = 4;
-        private readonly int iBaseType;
-        protected FObj parentFO;
-        private readonly PropertyList propertyList;
+        public const int CustomBase = 0;
+        public const int Fontsize = 1;
+        public const int InhFontsize = 2;
+        public const int ContainingBox = 3;
+        public const int ContainingRefarea = 4;
+        private readonly int _iBaseType;
+        protected FObj ParentFo;
+        private readonly PropertyList _propertyList;
 
-        public LengthBase( FObj parentFO, PropertyList plist, int iBaseType )
+        public LengthBase( FObj parentFo, PropertyList plist, int iBaseType )
         {
-            this.parentFO = parentFO;
-            propertyList = plist;
-            this.iBaseType = iBaseType;
+            this.ParentFo = parentFo;
+            _propertyList = plist;
+            this._iBaseType = iBaseType;
         }
 
         public int GetDimension()
@@ -32,24 +32,24 @@ namespace Fonet.DataTypes
 
         public int GetBaseLength()
         {
-            switch ( iBaseType )
+            switch ( _iBaseType )
             {
-            case FONTSIZE:
-                return propertyList.GetProperty( "font-size" ).GetLength().MValue();
-            case INH_FONTSIZE:
-                return propertyList.GetInheritedProperty( "font-size" ).GetLength().MValue();
-            case CONTAINING_BOX:
-                return parentFO.GetContentWidth();
-            case CONTAINING_REFAREA:
+            case Fontsize:
+                return _propertyList.GetProperty( "font-size" ).GetLength().MValue();
+            case InhFontsize:
+                return _propertyList.GetInheritedProperty( "font-size" ).GetLength().MValue();
+            case ContainingBox:
+                return ParentFo.GetContentWidth();
+            case ContainingRefarea:
                 {
                 FObj fo;
-                for ( fo = parentFO;
+                for ( fo = ParentFo;
                     fo != null && !fo.GeneratesReferenceAreas();
-                    fo = fo.getParent() )
+                    fo = fo.GetParent() )
                     ;
                 return fo != null ? fo.GetContentWidth() : 0;
                 }
-            case CUSTOM_BASE:
+            case CustomBase:
                 FonetDriver.ActiveDriver.FireFonetError(
                     "LengthBase.getBaseLength() called on CUSTOM_BASE type" );
                 return 0;
@@ -60,14 +60,14 @@ namespace Fonet.DataTypes
             }
         }
 
-        protected FObj GetParentFO()
+        protected FObj GetParentFo()
         {
-            return parentFO;
+            return ParentFo;
         }
 
-        protected PropertyList getPropertyList()
+        protected PropertyList GetPropertyList()
         {
-            return propertyList;
+            return _propertyList;
         }
     }
 }

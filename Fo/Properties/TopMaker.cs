@@ -2,7 +2,7 @@ namespace Fonet.Fo.Properties
 {
     internal class TopMaker : LengthProperty.Maker
     {
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected TopMaker( string name ) : base( name )
         {
@@ -25,9 +25,9 @@ namespace Fonet.Fo.Properties
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "auto", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "auto", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

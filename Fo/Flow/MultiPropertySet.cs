@@ -7,7 +7,7 @@ namespace Fonet.Fo.Flow
         protected MultiPropertySet( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:multi-property-set";
+            Name = "fo:multi-property-set";
         }
 
         public new static FObj.Maker GetMaker()

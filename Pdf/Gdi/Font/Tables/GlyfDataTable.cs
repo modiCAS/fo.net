@@ -13,7 +13,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// <summary>
         ///     Maps a glyph index to a <see cref="Glyph" /> object.
         /// </summary>
-        private readonly IDictionary glyphDescriptions;
+        private readonly IDictionary _glyphDescriptions;
 
         /// <summary>
         ///     Creates an instance of the <see cref="GlyfDataTable" /> class.
@@ -21,7 +21,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// <param name="entry"></param>
         public GlyfDataTable( DirectoryEntry entry ) : base( TableNames.Glyf, entry )
         {
-            glyphDescriptions = new SortedList();
+            _glyphDescriptions = new SortedList();
         }
 
         /// <summary>
@@ -29,8 +29,8 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public Glyph this[ int glyphIndex ]
         {
-            get { return (Glyph)glyphDescriptions[ glyphIndex ]; }
-            set { glyphDescriptions[ glyphIndex ] = value; }
+            get { return (Glyph)_glyphDescriptions[ glyphIndex ]; }
+            set { _glyphDescriptions[ glyphIndex ] = value; }
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public int Count
         {
-            get { return glyphDescriptions.Count; }
+            get { return _glyphDescriptions.Count; }
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace Fonet.Pdf.Gdi.Font
             foreach ( int index in reader.IndexMappings.GlyphIndices )
             {
                 Glyph glyph = builder.ReadGlyph( index );
-                glyphDescriptions[ glyph.Index ] = glyph;
+                _glyphDescriptions[ glyph.Index ] = glyph;
 
                 // Parse child glyphs
                 if ( glyph.IsComposite )
@@ -77,7 +77,7 @@ namespace Fonet.Pdf.Gdi.Font
         protected internal override void Write( FontFileWriter writer )
         {
             FontFileStream stream = writer.Stream;
-            foreach ( int subsetIndex in glyphDescriptions.Keys )
+            foreach ( int subsetIndex in _glyphDescriptions.Keys )
                 this[ subsetIndex ].Write( stream );
         }
     }

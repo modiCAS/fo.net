@@ -12,7 +12,7 @@ namespace Fonet.Fo.Expr
             string propName = args[ 0 ].GetString();
             if ( propName == null )
                 throw new PropertyException( "Incorrect parameter to from-nearest-specified-value function" );
-            return pInfo.getPropertyList().GetNearestSpecifiedProperty( propName );
+            return pInfo.GetPropertyList().GetNearestSpecifiedProperty( propName );
         }
     }
 }

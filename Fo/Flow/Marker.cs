@@ -4,25 +4,25 @@ namespace Fonet.Fo.Flow
 {
     internal class Marker : FObjMixed
     {
-        private bool isFirst;
+        private bool _isFirst;
 
-        private bool isLast;
-        private readonly string markerClassName;
+        private bool _isLast;
+        private readonly string _markerClassName;
 
-        private Area registryArea;
+        private Area _registryArea;
 
         public Marker( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:marker";
+            Name = "fo:marker";
 
-            markerClassName =
-                properties.GetProperty( "marker-class-name" ).GetString();
-            ts = propMgr.getTextDecoration( parent );
+            _markerClassName =
+                Properties.GetProperty( "marker-class-name" ).GetString();
+            Ts = PropMgr.GetTextDecoration( parent );
 
             try
             {
-                parent.AddMarker( markerClassName );
+                parent.AddMarker( _markerClassName );
             }
             catch ( FonetException )
             {
@@ -36,60 +36,60 @@ namespace Fonet.Fo.Flow
 
         public override Status Layout( Area area )
         {
-            registryArea = area;
+            _registryArea = area;
             area.getPage().registerMarker( this );
-            return new Status( Status.OK );
+            return new Status( Status.Ok );
         }
 
         public Status LayoutMarker( Area area )
         {
-            if ( marker == MarkerStart )
-                marker = 0;
+            if ( Marker == MarkerStart )
+                Marker = 0;
 
-            int numChildren = children.Count;
-            for ( int i = marker; i < numChildren; i++ )
+            int numChildren = Children.Count;
+            for ( int i = Marker; i < numChildren; i++ )
             {
-                var fo = (FONode)children[ i ];
+                var fo = (FoNode)Children[ i ];
 
                 Status status;
-                if ( ( status = fo.Layout( area ) ).isIncomplete() )
+                if ( ( status = fo.Layout( area ) ).IsIncomplete() )
                 {
-                    marker = i;
+                    Marker = i;
                     return status;
                 }
             }
 
-            return new Status( Status.OK );
+            return new Status( Status.Ok );
         }
 
         public string GetMarkerClassName()
         {
-            return markerClassName;
+            return _markerClassName;
         }
 
         public Area GetRegistryArea()
         {
-            return registryArea;
+            return _registryArea;
         }
 
-        public void releaseRegistryArea()
+        public void ReleaseRegistryArea()
         {
-            isFirst = registryArea.isFirst();
-            isLast = registryArea.isLast();
-            registryArea = null;
+            _isFirst = _registryArea.isFirst();
+            _isLast = _registryArea.isLast();
+            _registryArea = null;
         }
 
         public void resetMarker()
         {
-            if ( registryArea != null )
+            if ( _registryArea != null )
             {
-                Page page = registryArea.getPage();
+                Page page = _registryArea.getPage();
                 if ( page != null )
                     page.unregisterMarker( this );
             }
         }
 
-        public void resetMarkerContent()
+        public void ResetMarkerContent()
         {
             ResetMarker();
         }

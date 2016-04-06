@@ -5,7 +5,7 @@ namespace Fonet.Fo
         protected ColorProfile( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:color-profile";
+            Name = "fo:color-profile";
         }
 
         public new static FObj.Maker GetMaker()

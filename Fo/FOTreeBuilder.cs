@@ -8,70 +8,70 @@ namespace Fonet.Fo
     /// <summary>
     ///     Builds the formatting object tree.
     /// </summary>
-    internal sealed class FOTreeBuilder
+    internal sealed class FoTreeBuilder
     {
         /// <summary>
         ///     Current formatting object being handled.
         /// </summary>
-        private FObj currentFObj;
+        private FObj _currentFObj;
 
         /// <summary>
         ///     Table mapping element names to the makers of objects
         ///     representing formatting objects.
         /// </summary>
-        private readonly Hashtable fobjTable = new Hashtable();
+        private readonly Hashtable _fobjTable = new Hashtable();
 
-        private readonly ArrayList namespaces = new ArrayList();
+        private readonly ArrayList _namespaces = new ArrayList();
 
         /// <summary>
         ///     Class that builds a property list for each formatting object.
         /// </summary>
-        private readonly Hashtable propertylistTable = new Hashtable();
+        private readonly Hashtable _propertylistTable = new Hashtable();
 
         /// <summary>
         ///     The root of the formatting object tree.
         /// </summary>
-        private FObj rootFObj;
+        private FObj _rootFObj;
 
         /// <summary>
         ///     The class that handles formatting and rendering to a stream.
         /// </summary>
-        private StreamRenderer streamRenderer;
+        private StreamRenderer _streamRenderer;
 
         /// <summary>
         ///     Set of names of formatting objects encountered but unknown.
         /// </summary>
-        private readonly Hashtable unknownFOs = new Hashtable();
+        private readonly Hashtable _unknownFOs = new Hashtable();
 
         /// <summary>
         ///     Sets the stream renderer that will be used as output.
         /// </summary>
         internal void SetStreamRenderer( StreamRenderer streamRenderer )
         {
-            this.streamRenderer = streamRenderer;
+            this._streamRenderer = streamRenderer;
         }
 
         /// <summary>
         ///     Add a mapping from element name to maker.
         /// </summary>
-        internal void AddElementMapping( string namespaceURI, Hashtable table )
+        internal void AddElementMapping( string namespaceUri, Hashtable table )
         {
-            fobjTable.Add( namespaceURI, table );
-            namespaces.Add( string.Intern( namespaceURI ) );
+            _fobjTable.Add( namespaceUri, table );
+            _namespaces.Add( string.Intern( namespaceUri ) );
         }
 
         /// <summary>
         ///     Add a mapping from property name to maker.
         /// </summary>
-        internal void AddPropertyMapping( string namespaceURI, Hashtable list )
+        internal void AddPropertyMapping( string namespaceUri, Hashtable list )
         {
             PropertyListBuilder plb;
-            plb = (PropertyListBuilder)propertylistTable[ namespaceURI ];
+            plb = (PropertyListBuilder)_propertylistTable[ namespaceUri ];
             if ( plb == null )
             {
                 plb = new PropertyListBuilder();
                 plb.AddList( list );
-                propertylistTable.Add( namespaceURI, plb );
+                _propertylistTable.Add( namespaceUri, plb );
             }
             else
                 plb.AddList( list );
@@ -79,7 +79,7 @@ namespace Fonet.Fo
 
         private FObj.Maker GetFObjMaker( string uri, string localName )
         {
-            var table = (Hashtable)fobjTable[ uri ];
+            var table = (Hashtable)_fobjTable[ uri ];
             if ( table != null )
                 return (FObj.Maker)table[ localName ];
             return null;
@@ -95,64 +95,64 @@ namespace Fonet.Fo
             FObj.Maker fobjMaker = GetFObjMaker( uri, localName );
 
             var currentListBuilder =
-                (PropertyListBuilder)propertylistTable[ uri ];
+                (PropertyListBuilder)_propertylistTable[ uri ];
 
-            var foreignXML = false;
+            var foreignXml = false;
             if ( fobjMaker == null )
             {
                 string fullName = uri + "^" + localName;
-                if ( !unknownFOs.ContainsKey( fullName ) )
+                if ( !_unknownFOs.ContainsKey( fullName ) )
                 {
-                    unknownFOs.Add( fullName, "" );
+                    _unknownFOs.Add( fullName, "" );
                     FonetDriver.ActiveDriver.FireFonetError( "Unknown formatting object " + fullName );
                 }
-                if ( namespaces.Contains( string.Intern( uri ) ) )
+                if ( _namespaces.Contains( string.Intern( uri ) ) )
                     fobjMaker = new Unknown.Maker();
                 else
                 {
-                    fobjMaker = new UnknownXMLObj.Maker( uri, localName );
-                    foreignXML = true;
+                    fobjMaker = new UnknownXmlObj.Maker( uri, localName );
+                    foreignXml = true;
                 }
             }
 
             PropertyList list = null;
             if ( currentListBuilder != null )
-                list = currentListBuilder.MakeList( uri, localName, attlist, currentFObj );
-            else if ( foreignXML )
+                list = currentListBuilder.MakeList( uri, localName, attlist, _currentFObj );
+            else if ( foreignXml )
                 list = null;
             else
             {
-                if ( currentFObj == null )
+                if ( _currentFObj == null )
                     throw new FonetException( "Invalid XML or missing namespace" );
-                list = currentFObj.properties;
+                list = _currentFObj.Properties;
             }
-            fobj = fobjMaker.Make( currentFObj, list );
+            fobj = fobjMaker.Make( _currentFObj, list );
 
-            if ( rootFObj == null )
+            if ( _rootFObj == null )
             {
-                rootFObj = fobj;
+                _rootFObj = fobj;
                 if ( !fobj.GetName().Equals( "fo:root" ) )
                     throw new FonetException( "Root element must" + " be root, not " + fobj.GetName() );
             }
             else if ( !( fobj is PageSequence ) )
-                currentFObj.AddChild( fobj );
+                _currentFObj.AddChild( fobj );
 
-            currentFObj = fobj;
+            _currentFObj = fobj;
         }
 
         private void EndElement()
         {
-            if ( currentFObj != null )
+            if ( _currentFObj != null )
             {
-                currentFObj.End();
+                _currentFObj.End();
 
                 // If it is a page-sequence, then we can finally render it.
                 // This is the biggest performance problem we have, we need
                 // to be able to render prior to this point.
-                if ( currentFObj is PageSequence )
-                    streamRenderer.Render( (PageSequence)currentFObj );
+                if ( _currentFObj is PageSequence )
+                    _streamRenderer.Render( (PageSequence)_currentFObj );
 
-                currentFObj = currentFObj.getParent();
+                _currentFObj = _currentFObj.GetParent();
             }
         }
 
@@ -165,7 +165,7 @@ namespace Fonet.Fo
                 object nsuri = reader.NameTable.Add( "http://www.w3.org/2000/xmlns/" );
 
                 FonetDriver.ActiveDriver.FireFonetInfo( "Building formatting object tree" );
-                streamRenderer.StartRenderer();
+                _streamRenderer.StartRenderer();
 
                 while ( reader.Read() )
                 {
@@ -179,9 +179,9 @@ namespace Fonet.Fo
                             {
                                 var newAtt = new SaxAttribute();
                                 newAtt.Name = reader.Name;
-                                newAtt.NamespaceURI = reader.NamespaceURI;
+                                newAtt.NamespaceUri = reader.NamespaceURI;
                                 newAtt.Value = reader.Value;
-                                atts.attArray.Add( newAtt );
+                                atts.AttArray.Add( newAtt );
                             }
                         }
                         reader.MoveToElement();
@@ -194,8 +194,8 @@ namespace Fonet.Fo
                         break;
                     case XmlNodeType.Text:
                         char[] chars = reader.ReadString().ToCharArray();
-                        if ( currentFObj != null )
-                            currentFObj.AddCharacters( chars, 0, chars.Length );
+                        if ( _currentFObj != null )
+                            _currentFObj.AddCharacters( chars, 0, chars.Length );
                         if ( reader.NodeType == XmlNodeType.Element )
                             goto case XmlNodeType.Element;
                         if ( reader.NodeType == XmlNodeType.EndElement )
@@ -206,7 +206,7 @@ namespace Fonet.Fo
                     }
                 }
                 FonetDriver.ActiveDriver.FireFonetInfo( "Parsing of document complete, stopping renderer" );
-                streamRenderer.StopRenderer();
+                _streamRenderer.StopRenderer();
             }
             catch ( Exception exception )
             {
@@ -222,32 +222,32 @@ namespace Fonet.Fo
 
     internal class Attributes
     {
-        internal ArrayList attArray = new ArrayList( 3 );
+        internal ArrayList AttArray = new ArrayList( 3 );
 
         // called by property list builder
-        internal int getLength()
+        internal int GetLength()
         {
-            return attArray.Count;
+            return AttArray.Count;
         }
 
         // called by property list builder
-        internal string getQName( int index )
+        internal string GetQName( int index )
         {
-            var saxAtt = (SaxAttribute)attArray[ index ];
+            var saxAtt = (SaxAttribute)AttArray[ index ];
             return saxAtt.Name;
         }
 
         // called by property list builder
         internal string getValue( int index )
         {
-            var saxAtt = (SaxAttribute)attArray[ index ];
+            var saxAtt = (SaxAttribute)AttArray[ index ];
             return saxAtt.Value;
         }
 
         // called by property list builder
         internal string getValue( string name )
         {
-            foreach ( SaxAttribute att in attArray )
+            foreach ( SaxAttribute att in AttArray )
             {
                 if ( att.Name.Equals( name ) )
                     return att.Value;
@@ -258,7 +258,7 @@ namespace Fonet.Fo
         // only called above
         internal Attributes TrimArray()
         {
-            attArray.TrimToSize();
+            AttArray.TrimToSize();
             return this;
         }
     }
@@ -267,7 +267,7 @@ namespace Fonet.Fo
     internal struct SaxAttribute
     {
         public string Name;
-        public string NamespaceURI;
+        public string NamespaceUri;
         public string Value;
     }
 }

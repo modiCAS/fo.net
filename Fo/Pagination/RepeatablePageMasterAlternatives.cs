@@ -3,29 +3,29 @@ using System.Collections;
 
 namespace Fonet.Fo.Pagination
 {
-    internal class RepeatablePageMasterAlternatives : FObj, SubSequenceSpecifier
+    internal class RepeatablePageMasterAlternatives : FObj, ISubSequenceSpecifier
     {
-        private const int INFINITE = -1;
+        private const int Infinite = -1;
 
-        private readonly ArrayList conditionalPageMasterRefs;
+        private readonly ArrayList _conditionalPageMasterRefs;
 
-        private int maximumRepeats;
+        private int _maximumRepeats;
 
-        private int numberConsumed;
+        private int _numberConsumed;
 
-        private readonly PageSequenceMaster pageSequenceMaster;
+        private readonly PageSequenceMaster _pageSequenceMaster;
 
         public RepeatablePageMasterAlternatives( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:repeatable-page-master-alternatives";
+            Name = "fo:repeatable-page-master-alternatives";
 
-            conditionalPageMasterRefs = new ArrayList();
+            _conditionalPageMasterRefs = new ArrayList();
 
             if ( parent.GetName().Equals( "fo:page-sequence-master" ) )
             {
-                pageSequenceMaster = (PageSequenceMaster)parent;
-                pageSequenceMaster.AddSubsequenceSpecifier( this );
+                _pageSequenceMaster = (PageSequenceMaster)parent;
+                _pageSequenceMaster.AddSubsequenceSpecifier( this );
             }
             else
             {
@@ -36,12 +36,12 @@ namespace Fonet.Fo.Pagination
 
             string mr = GetProperty( "maximum-repeats" ).GetString();
             if ( mr.Equals( "no-limit" ) )
-                setMaximumRepeats( INFINITE );
+                SetMaximumRepeats( Infinite );
             else
             {
                 try
                 {
-                    setMaximumRepeats( int.Parse( mr ) );
+                    SetMaximumRepeats( int.Parse( mr ) );
                 }
                 catch ( FormatException )
                 {
@@ -54,17 +54,17 @@ namespace Fonet.Fo.Pagination
             int currentPageNumber, bool thisIsFirstPage, bool isEmptyPage )
         {
             string pm = null;
-            if ( getMaximumRepeats() != INFINITE )
+            if ( GetMaximumRepeats() != Infinite )
             {
-                if ( numberConsumed < getMaximumRepeats() )
-                    numberConsumed++;
+                if ( _numberConsumed < GetMaximumRepeats() )
+                    _numberConsumed++;
                 else
                     return null;
             }
 
-            foreach ( ConditionalPageMasterReference cpmr in conditionalPageMasterRefs )
+            foreach ( ConditionalPageMasterReference cpmr in _conditionalPageMasterRefs )
             {
-                if ( cpmr.isValid( currentPageNumber + 1, thisIsFirstPage, isEmptyPage ) )
+                if ( cpmr.IsValid( currentPageNumber + 1, thisIsFirstPage, isEmptyPage ) )
                 {
                     pm = cpmr.GetMasterName();
                     break;
@@ -75,7 +75,7 @@ namespace Fonet.Fo.Pagination
 
         public void Reset()
         {
-            numberConsumed = 0;
+            _numberConsumed = 0;
         }
 
         public new static FObj.Maker GetMaker()
@@ -83,27 +83,27 @@ namespace Fonet.Fo.Pagination
             return new Maker();
         }
 
-        private void setMaximumRepeats( int maximumRepeats )
+        private void SetMaximumRepeats( int maximumRepeats )
         {
-            if ( maximumRepeats == INFINITE )
-                this.maximumRepeats = maximumRepeats;
+            if ( maximumRepeats == Infinite )
+                this._maximumRepeats = maximumRepeats;
             else
-                this.maximumRepeats = maximumRepeats < 0 ? 0 : maximumRepeats;
+                this._maximumRepeats = maximumRepeats < 0 ? 0 : maximumRepeats;
         }
 
-        private int getMaximumRepeats()
+        private int GetMaximumRepeats()
         {
-            return maximumRepeats;
+            return _maximumRepeats;
         }
 
-        public void addConditionalPageMasterReference( ConditionalPageMasterReference cpmr )
+        public void AddConditionalPageMasterReference( ConditionalPageMasterReference cpmr )
         {
-            conditionalPageMasterRefs.Add( cpmr );
+            _conditionalPageMasterRefs.Add( cpmr );
         }
 
-        protected PageSequenceMaster getPageSequenceMaster()
+        protected PageSequenceMaster GetPageSequenceMaster()
         {
-            return pageSequenceMaster;
+            return _pageSequenceMaster;
         }
 
         internal new class Maker : FObj.Maker

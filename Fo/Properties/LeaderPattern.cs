@@ -2,12 +2,12 @@ namespace Fonet.Fo.Properties
 {
     internal class LeaderPattern
     {
-        public const int SPACE = Constants.SPACE;
+        public const int Space = Constants.Space;
 
-        public const int RULE = Constants.RULE;
+        public const int Rule = Constants.Rule;
 
-        public const int DOTS = Constants.DOTS;
+        public const int Dots = Constants.Dots;
 
-        public const int USECONTENT = Constants.USECONTENT;
+        public const int Usecontent = Constants.Usecontent;
     }
 }

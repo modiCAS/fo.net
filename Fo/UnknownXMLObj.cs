@@ -2,18 +2,18 @@ using Fonet.Layout;
 
 namespace Fonet.Fo
 {
-    internal class UnknownXMLObj : XMLObj
+    internal class UnknownXmlObj : XmlObj
     {
-        private readonly string nmspace;
+        private readonly string _nmspace;
 
-        protected UnknownXMLObj( FObj parent, PropertyList propertyList, string space, string tag )
+        protected UnknownXmlObj( FObj parent, PropertyList propertyList, string space, string tag )
             : base( parent, propertyList, tag )
         {
-            nmspace = space;
+            _nmspace = space;
             if ( !"".Equals( space ) )
-                name = nmspace + ":" + tag;
+                Name = _nmspace + ":" + tag;
             else
-                name = "(none):" + tag;
+                Name = "(none):" + tag;
         }
 
         public static FObj.Maker GetMaker( string space, string tag )
@@ -23,43 +23,43 @@ namespace Fonet.Fo
 
         public override string GetNameSpace()
         {
-            return nmspace;
+            return _nmspace;
         }
 
-        protected internal override void AddChild( FONode child )
+        protected internal override void AddChild( FoNode child )
         {
-            if ( doc == null )
+            if ( Doc == null )
                 CreateBasicDocument();
             base.AddChild( child );
         }
 
         protected internal override void AddCharacters( char[] data, int start, int length )
         {
-            if ( doc == null )
+            if ( Doc == null )
                 CreateBasicDocument();
             base.AddCharacters( data, start, length );
         }
 
         public override Status Layout( Area area )
         {
-            return new Status( Status.OK );
+            return new Status( Status.Ok );
         }
 
         internal new class Maker : FObj.Maker
         {
-            private readonly string space;
-            private readonly string tag;
+            private readonly string _space;
+            private readonly string _tag;
 
             internal Maker( string sp, string t )
             {
-                space = sp;
-                tag = t;
+                _space = sp;
+                _tag = t;
             }
 
             public override FObj Make( FObj parent,
                 PropertyList propertyList )
             {
-                return new UnknownXMLObj( parent, propertyList, space, tag );
+                return new UnknownXmlObj( parent, propertyList, _space, _tag );
             }
         }
     }

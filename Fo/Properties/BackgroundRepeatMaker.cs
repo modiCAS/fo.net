@@ -2,17 +2,17 @@ namespace Fonet.Fo.Properties
 {
     internal class BackgroundRepeatMaker : EnumProperty.Maker
     {
-        protected static readonly EnumProperty s_propREPEAT = new EnumProperty( BackgroundRepeat.REPEAT );
+        protected static readonly EnumProperty SPropRepeat = new EnumProperty( BackgroundRepeat.Repeat );
 
-        protected static readonly EnumProperty s_propREPEAT_X = new EnumProperty( BackgroundRepeat.REPEAT_X );
+        protected static readonly EnumProperty SPropRepeatX = new EnumProperty( BackgroundRepeat.RepeatX );
 
-        protected static readonly EnumProperty s_propREPEAT_Y = new EnumProperty( BackgroundRepeat.REPEAT_Y );
+        protected static readonly EnumProperty SPropRepeatY = new EnumProperty( BackgroundRepeat.RepeatY );
 
-        protected static readonly EnumProperty s_propNO_REPEAT = new EnumProperty( BackgroundRepeat.NO_REPEAT );
+        protected static readonly EnumProperty SPropNoRepeat = new EnumProperty( BackgroundRepeat.NoRepeat );
 
-        protected static readonly EnumProperty s_propINHERIT = new EnumProperty( BackgroundRepeat.INHERIT );
+        protected static readonly EnumProperty SPropInherit = new EnumProperty( BackgroundRepeat.Inherit );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected BackgroundRepeatMaker( string name ) : base( name )
         {
@@ -31,28 +31,28 @@ namespace Fonet.Fo.Properties
         public override Property CheckEnumValues( string value )
         {
             if ( value.Equals( "repeat" ) )
-                return s_propREPEAT;
+                return SPropRepeat;
 
             if ( value.Equals( "repeat-x" ) )
-                return s_propREPEAT_X;
+                return SPropRepeatX;
 
             if ( value.Equals( "repeat-y" ) )
-                return s_propREPEAT_Y;
+                return SPropRepeatY;
 
             if ( value.Equals( "no-repeat" ) )
-                return s_propNO_REPEAT;
+                return SPropNoRepeat;
 
             if ( value.Equals( "inherit" ) )
-                return s_propINHERIT;
+                return SPropInherit;
 
             return base.CheckEnumValues( value );
         }
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "repeat", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "repeat", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

@@ -2,11 +2,11 @@ namespace Fonet.Fo.Properties
 {
     internal class FontVariantMaker : EnumProperty.Maker
     {
-        protected static readonly EnumProperty s_propNORMAL = new EnumProperty( Constants.NORMAL );
+        protected static readonly EnumProperty SPropNormal = new EnumProperty( Constants.Normal );
 
-        protected static readonly EnumProperty s_propSMALL_CAPS = new EnumProperty( Constants.SMALL_CAPS );
+        protected static readonly EnumProperty SPropSmallCaps = new EnumProperty( Constants.SmallCaps );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected FontVariantMaker( string name ) : base( name )
         {
@@ -27,19 +27,19 @@ namespace Fonet.Fo.Properties
         public override Property CheckEnumValues( string value )
         {
             if ( value.Equals( "normal" ) )
-                return s_propNORMAL;
+                return SPropNormal;
 
             if ( value.Equals( "small-caps" ) )
-                return s_propSMALL_CAPS;
+                return SPropSmallCaps;
 
             return base.CheckEnumValues( value );
         }
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "normal", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "normal", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

@@ -2,13 +2,13 @@ namespace Fonet.Fo.Properties
 {
     internal class RetrieveBoundaryMaker : EnumProperty.Maker
     {
-        protected static readonly EnumProperty s_propPAGE = new EnumProperty( Constants.PAGE );
+        protected static readonly EnumProperty SPropPage = new EnumProperty( Constants.Page );
 
-        protected static readonly EnumProperty s_propPAGE_SEQUENCE = new EnumProperty( Constants.PAGE_SEQUENCE );
+        protected static readonly EnumProperty SPropPageSequence = new EnumProperty( Constants.PageSequence );
 
-        protected static readonly EnumProperty s_propDOCUMENT = new EnumProperty( Constants.DOCUMENT );
+        protected static readonly EnumProperty SPropDocument = new EnumProperty( Constants.Document );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected RetrieveBoundaryMaker( string name ) : base( name )
         {
@@ -29,22 +29,22 @@ namespace Fonet.Fo.Properties
         public override Property CheckEnumValues( string value )
         {
             if ( value.Equals( "page" ) )
-                return s_propPAGE;
+                return SPropPage;
 
             if ( value.Equals( "page-sequence" ) )
-                return s_propPAGE_SEQUENCE;
+                return SPropPageSequence;
 
             if ( value.Equals( "document" ) )
-                return s_propDOCUMENT;
+                return SPropDocument;
 
             return base.CheckEnumValues( value );
         }
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "page-sequence", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "page-sequence", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Fonet.Fo.Flow
         protected MultiCase( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:multi-case";
+            Name = "fo:multi-case";
         }
 
         public new static FObj.Maker GetMaker()
@@ -17,7 +17,7 @@ namespace Fonet.Fo.Flow
 
         public override Status Layout( Area area )
         {
-            AccessibilityProps mAccProps = propMgr.GetAccessibilityProps();
+            AccessibilityProps mAccProps = PropMgr.GetAccessibilityProps();
             return base.Layout( area );
         }
 

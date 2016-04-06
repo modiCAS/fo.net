@@ -2,15 +2,15 @@ namespace Fonet.Fo.Properties
 {
     internal class LeaderPatternMaker : EnumProperty.Maker
     {
-        protected static readonly EnumProperty s_propSPACE = new EnumProperty( Constants.SPACE );
+        protected static readonly EnumProperty SPropSpace = new EnumProperty( Constants.Space );
 
-        protected static readonly EnumProperty s_propRULE = new EnumProperty( Constants.RULE );
+        protected static readonly EnumProperty SPropRule = new EnumProperty( Constants.Rule );
 
-        protected static readonly EnumProperty s_propDOTS = new EnumProperty( Constants.DOTS );
+        protected static readonly EnumProperty SPropDots = new EnumProperty( Constants.Dots );
 
-        protected static readonly EnumProperty s_propUSECONTENT = new EnumProperty( Constants.USECONTENT );
+        protected static readonly EnumProperty SPropUsecontent = new EnumProperty( Constants.Usecontent );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected LeaderPatternMaker( string name ) : base( name )
         {
@@ -31,25 +31,25 @@ namespace Fonet.Fo.Properties
         public override Property CheckEnumValues( string value )
         {
             if ( value.Equals( "space" ) )
-                return s_propSPACE;
+                return SPropSpace;
 
             if ( value.Equals( "rule" ) )
-                return s_propRULE;
+                return SPropRule;
 
             if ( value.Equals( "dots" ) )
-                return s_propDOTS;
+                return SPropDots;
 
             if ( value.Equals( "use-content" ) )
-                return s_propUSECONTENT;
+                return SPropUsecontent;
 
             return base.CheckEnumValues( value );
         }
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "space", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "space", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

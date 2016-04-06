@@ -12,14 +12,14 @@ namespace Fonet.Pdf
         /// <summary>
         ///     Right now we only support a single section.
         /// </summary>
-        private readonly XRefSection section = new XRefSection();
+        private readonly XRefSection _section = new XRefSection();
 
         /// <summary>
         ///     Adds an entry to the table.
         /// </summary>
         public void Add( PdfObjectId objectId, long offset )
         {
-            section.Add( objectId, offset );
+            _section.Add( objectId, offset );
         }
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace Fonet.Pdf
         /// </summary>
         public void Write( PdfWriter writer )
         {
-            section.Write( writer );
+            _section.Write( writer );
         }
     }
 }

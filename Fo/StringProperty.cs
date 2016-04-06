@@ -4,21 +4,21 @@ namespace Fonet.Fo
 {
     internal class StringProperty : Property
     {
-        private readonly string str;
+        private readonly string _str;
 
         public StringProperty( string str )
         {
-            this.str = str;
+            this._str = str;
         }
 
         public override object GetObject()
         {
-            return str;
+            return _str;
         }
 
         public override string GetString()
         {
-            return str;
+            return _str;
         }
 
         internal class Maker : PropertyMaker

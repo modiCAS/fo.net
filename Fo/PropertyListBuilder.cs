@@ -6,21 +6,21 @@ namespace Fonet.Fo
 {
     internal sealed class PropertyListBuilder
     {
-        private const string FONTSIZEATTR = "font-size";
+        private const string Fontsizeattr = "font-size";
 
-        private readonly Hashtable propertyListTable = new Hashtable();
+        private readonly Hashtable _propertyListTable = new Hashtable();
 
         internal void AddList( Hashtable list )
         {
             foreach ( object o in list.Keys )
-                propertyListTable.Add( o, list[ o ] );
+                _propertyListTable.Add( o, list[ o ] );
         }
 
         internal PropertyList MakeList(
             string ns,
             string elementName,
             Attributes attributes,
-            FObj parentFO )
+            FObj parentFo )
         {
             Debug.Assert( ns != null, "Namespace should never be null." );
 
@@ -28,7 +28,7 @@ namespace Fonet.Fo
             if ( ns != null )
                 space = ns;
 
-            PropertyList parentPropertyList = parentFO != null ? parentFO.properties : null;
+            PropertyList parentPropertyList = parentFo != null ? parentFo.Properties : null;
             PropertyList par = null;
             if ( parentPropertyList != null && space.Equals( parentPropertyList.GetNameSpace() ) )
                 par = parentPropertyList;
@@ -38,27 +38,27 @@ namespace Fonet.Fo
 
             var propsDone = new StringCollection();
 
-            string fontsizeval = attributes.getValue( FONTSIZEATTR );
+            string fontsizeval = attributes.getValue( Fontsizeattr );
             if ( fontsizeval != null )
             {
-                PropertyMaker propertyMaker = FindMaker( FONTSIZEATTR );
+                PropertyMaker propertyMaker = FindMaker( Fontsizeattr );
                 if ( propertyMaker != null )
                 {
                     try
                     {
-                        p.Add( FONTSIZEATTR,
-                            propertyMaker.Make( p, fontsizeval, parentFO ) );
+                        p.Add( Fontsizeattr,
+                            propertyMaker.Make( p, fontsizeval, parentFo ) );
                     }
                     catch ( FonetException )
                     {
                     }
                 }
-                propsDone.Add( FONTSIZEATTR );
+                propsDone.Add( Fontsizeattr );
             }
 
-            for ( var i = 0; i < attributes.getLength(); i++ )
+            for ( var i = 0; i < attributes.GetLength(); i++ )
             {
-                string attributeName = attributes.getQName( i );
+                string attributeName = attributes.GetQName( i );
                 int sepchar = attributeName.IndexOf( '.' );
                 string propName = attributeName;
                 string subpropName = null;
@@ -85,20 +85,20 @@ namespace Fonet.Fo
                                 string baseValue = attributes.getValue( propName );
                                 if ( baseValue != null )
                                 {
-                                    baseProp = propertyMaker.Make( p, baseValue, parentFO );
+                                    baseProp = propertyMaker.Make( p, baseValue, parentFo );
                                     propsDone.Add( propName );
                                 }
                             }
                             propVal = propertyMaker.Make( baseProp, subpropName,
                                 p,
                                 attributes.getValue( i ),
-                                parentFO );
+                                parentFo );
                         }
                         else
                         {
                             propVal = propertyMaker.Make( p,
                                 attributes.getValue( i ),
-                                parentFO );
+                                parentFo );
                         }
                         if ( propVal != null )
                             p[ propName ] = propVal;
@@ -152,7 +152,7 @@ namespace Fonet.Fo
 
         internal PropertyMaker FindMaker( string propertyName )
         {
-            return (PropertyMaker)propertyListTable[ propertyName ];
+            return (PropertyMaker)_propertyListTable[ propertyName ];
         }
     }
 }

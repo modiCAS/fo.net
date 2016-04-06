@@ -5,71 +5,71 @@ namespace Fonet.Fo
 {
     internal class PropertyList : Hashtable
     {
-        public const int LEFT = 0;
+        public const int Left = 0;
 
-        public const int RIGHT = 1;
+        public const int Right = 1;
 
-        public const int TOP = 2;
+        public const int Top = 2;
 
-        public const int BOTTOM = 3;
+        public const int Bottom = 3;
 
-        public const int HEIGHT = 4;
+        public const int Height = 4;
 
-        public const int WIDTH = 5;
+        public const int Width = 5;
 
-        public const int START = 0;
+        public const int Start = 0;
 
-        public const int END = 1;
+        public const int End = 1;
 
-        public const int BEFORE = 2;
+        public const int Before = 2;
 
-        public const int AFTER = 3;
+        public const int After = 3;
 
-        public const int BLOCKPROGDIM = 4;
+        public const int Blockprogdim = 4;
 
-        public const int INLINEPROGDIM = 5;
+        public const int Inlineprogdim = 5;
 
-        private static readonly string[] sAbsNames =
+        private static readonly string[] SAbsNames =
         {
             "left", "right", "top", "bottom", "height", "width"
         };
 
-        private static readonly string[] sRelNames =
+        private static readonly string[] SRelNames =
         {
             "start", "end", "before", "after", "block-progression-dimension",
             "inline-progression-dimension"
         };
 
-        private static readonly Hashtable wmtables = new Hashtable( 4 );
+        private static readonly Hashtable Wmtables = new Hashtable( 4 );
 
-        private PropertyListBuilder builder;
+        private PropertyListBuilder _builder;
 
-        private readonly string element = "";
+        private readonly string _element = "";
 
-        private readonly string nmspace = "";
+        private readonly string _nmspace = "";
 
-        private readonly PropertyList parentPropertyList;
-        private byte[] wmtable;
+        private readonly PropertyList _parentPropertyList;
+        private byte[] _wmtable;
 
         static PropertyList()
         {
-            wmtables.Add(
-                WritingMode.LR_TB, /* lr-tb */
+            Wmtables.Add(
+                WritingMode.LrTb, /* lr-tb */
                 new byte[]
                 {
-                    START, END, BEFORE, AFTER, BLOCKPROGDIM, INLINEPROGDIM
+                    Start, End, Before, After, Blockprogdim, Inlineprogdim
                 } );
-            wmtables.Add(
-                WritingMode.RL_TB, /* rl-tb */
+            Wmtables.Add(
+                WritingMode.RlTb, /* rl-tb */
                 new byte[]
                 {
-                    END, START, BEFORE, AFTER, BLOCKPROGDIM, INLINEPROGDIM
+                    End, Start, Before, After, Blockprogdim, Inlineprogdim
                 } );
-            wmtables.Add(
-                WritingMode.TB_RL, /* tb-rl */
+            Wmtables.Add(
+                WritingMode.TbRl, /* tb-rl */
                 new byte[]
                 {
-                    AFTER, BEFORE, START, END, INLINEPROGDIM, BLOCKPROGDIM
+                    After, Before, Start, End, Inlineprogdim, Blockprogdim
                 } );
         }
 
@@ -77,17 +77,17 @@ namespace Fonet.Fo
             PropertyList parentPropertyList, string space, string el )
         {
             FObj = null;
-            this.parentPropertyList = parentPropertyList;
-            nmspace = space;
-            element = el;
+            this._parentPropertyList = parentPropertyList;
+            _nmspace = space;
+            _element = el;
         }
 
         public FObj FObj { get; set; }
 
-        public FObj getParentFObj()
+        public FObj GetParentFObj()
         {
-            if ( parentPropertyList != null )
-                return parentPropertyList.FObj;
+            if ( _parentPropertyList != null )
+                return _parentPropertyList.FObj;
             return null;
         }
 
@@ -101,10 +101,10 @@ namespace Fonet.Fo
                 baseName = propertyName;
             Property p = GetExplicitBaseProperty( baseName );
             if ( p == null )
-                p = builder.GetShorthand( this, baseName );
+                p = _builder.GetShorthand( this, baseName );
             if ( p != null && sepchar > -1 )
             {
-                return builder.GetSubpropValue( baseName, p,
+                return _builder.GetSubpropValue( baseName, p,
                     propertyName.Substring( sepchar
                         + 1 ) );
             }
@@ -120,7 +120,7 @@ namespace Fonet.Fo
                 Property p = GetExplicitBaseProperty( baseName );
                 if ( p != null )
                 {
-                    return builder.GetSubpropValue(
+                    return _builder.GetSubpropValue(
                         baseName, p,
                         propertyName.Substring( sepchar
                             + 1 ) );
@@ -137,13 +137,13 @@ namespace Fonet.Fo
 
         public Property GetInheritedProperty( string propertyName )
         {
-            if ( builder != null )
+            if ( _builder != null )
             {
-                if ( parentPropertyList != null && IsInherited( propertyName ) )
-                    return parentPropertyList.GetProperty( propertyName );
+                if ( _parentPropertyList != null && IsInherited( propertyName ) )
+                    return _parentPropertyList.GetProperty( propertyName );
                 try
                 {
-                    return builder.MakeProperty( this, propertyName );
+                    return _builder.MakeProperty( this, propertyName );
                 }
                 catch ( FonetException e )
                 {
@@ -156,7 +156,7 @@ namespace Fonet.Fo
 
         private bool IsInherited( string propertyName )
         {
-            PropertyMaker propertyMaker = builder.FindMaker( propertyName );
+            PropertyMaker propertyMaker = _builder.FindMaker( propertyName );
             if ( propertyMaker != null )
                 return propertyMaker.IsInherited();
             FonetDriver.ActiveDriver.FireFonetError( "Unknown property : " + propertyName );
@@ -165,7 +165,7 @@ namespace Fonet.Fo
 
         private Property FindProperty( string propertyName, bool bTryInherit )
         {
-            PropertyMaker maker = builder.FindMaker( propertyName );
+            PropertyMaker maker = _builder.FindMaker( propertyName );
 
             Property p = null;
             if ( maker.IsCorrespondingForced( this ) )
@@ -182,8 +182,8 @@ namespace Fonet.Fo
 
                 if ( p == null && bTryInherit )
                 {
-                    if ( parentPropertyList != null && maker.IsInherited() )
-                        p = parentPropertyList.FindProperty( propertyName, true );
+                    if ( _parentPropertyList != null && maker.IsInherited() )
+                        p = _parentPropertyList.FindProperty( propertyName, true );
                 }
             }
             return p;
@@ -217,7 +217,7 @@ namespace Fonet.Fo
 
         private Property GetProperty( string propertyName, bool bTryInherit, bool bTryDefault )
         {
-            if ( builder == null )
+            if ( _builder == null )
                 FonetDriver.ActiveDriver.FireFonetError( "builder not set in PropertyList" );
 
             int sepchar = propertyName.IndexOf( '.' );
@@ -233,7 +233,7 @@ namespace Fonet.Fo
             {
                 try
                 {
-                    p = builder.MakeProperty( this, propertyName );
+                    p = _builder.MakeProperty( this, propertyName );
                 }
                 catch ( FonetException e )
                 {
@@ -242,23 +242,23 @@ namespace Fonet.Fo
             }
 
             if ( subpropName != null && p != null )
-                return builder.GetSubpropValue( propertyName, p, subpropName );
+                return _builder.GetSubpropValue( propertyName, p, subpropName );
             return p;
         }
 
         public void SetBuilder( PropertyListBuilder builder )
         {
-            this.builder = builder;
+            this._builder = builder;
         }
 
         public string GetNameSpace()
         {
-            return nmspace;
+            return _nmspace;
         }
 
         public string GetElement()
         {
-            return element;
+            return _element;
         }
 
         public Property GetNearestSpecifiedProperty( string propertyName )
@@ -266,13 +266,13 @@ namespace Fonet.Fo
             Property p = null;
             for ( PropertyList plist = this;
                 p == null && plist != null;
-                plist = plist.parentPropertyList )
+                plist = plist._parentPropertyList )
                 p = plist.GetExplicitProperty( propertyName );
             if ( p == null )
             {
                 try
                 {
-                    p = builder.MakeProperty( this, propertyName );
+                    p = _builder.MakeProperty( this, propertyName );
                 }
                 catch ( FonetException e )
                 {
@@ -285,13 +285,13 @@ namespace Fonet.Fo
 
         public Property GetFromParentProperty( string propertyName )
         {
-            if ( parentPropertyList != null )
-                return parentPropertyList.GetProperty( propertyName );
-            if ( builder != null )
+            if ( _parentPropertyList != null )
+                return _parentPropertyList.GetProperty( propertyName );
+            if ( _builder != null )
             {
                 try
                 {
-                    return builder.MakeProperty( this, propertyName );
+                    return _builder.MakeProperty( this, propertyName );
                 }
                 catch ( FonetException e )
                 {
@@ -302,21 +302,21 @@ namespace Fonet.Fo
             return null;
         }
 
-        public string wmAbsToRel( int absdir )
+        public string WmAbsToRel( int absdir )
         {
-            if ( wmtable != null )
-                return sRelNames[ wmtable[ absdir ] ];
+            if ( _wmtable != null )
+                return SRelNames[ _wmtable[ absdir ] ];
             return string.Empty;
         }
 
-        public string wmRelToAbs( int reldir )
+        public string WmRelToAbs( int reldir )
         {
-            if ( wmtable != null )
+            if ( _wmtable != null )
             {
-                for ( var i = 0; i < wmtable.Length; i++ )
+                for ( var i = 0; i < _wmtable.Length; i++ )
                 {
-                    if ( wmtable[ i ] == reldir )
-                        return sAbsNames[ i ];
+                    if ( _wmtable[ i ] == reldir )
+                        return SAbsNames[ i ];
                 }
             }
             return string.Empty;
@@ -324,7 +324,7 @@ namespace Fonet.Fo
 
         public void SetWritingMode( int writingMode )
         {
-            wmtable = (byte[])wmtables[ writingMode ];
+            _wmtable = (byte[])Wmtables[ writingMode ];
         }
     }
 }

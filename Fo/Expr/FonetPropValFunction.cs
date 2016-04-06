@@ -12,7 +12,7 @@ namespace Fonet.Fo.Expr
             string propName = args[ 0 ].GetString();
             if ( propName == null )
                 throw new PropertyException( "Missing property name." );
-            return pInfo.getPropertyList().GetProperty( propName );
+            return pInfo.GetPropertyList().GetProperty( propName );
         }
     }
 }

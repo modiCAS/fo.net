@@ -4,21 +4,21 @@ namespace Fonet.Fo
 {
     internal class ColorTypeProperty : Property
     {
-        private readonly ColorType colorType;
+        private readonly ColorType _colorType;
 
         public ColorTypeProperty( ColorType colorType )
         {
-            this.colorType = colorType;
+            this._colorType = colorType;
         }
 
         public override ColorType GetColorType()
         {
-            return colorType;
+            return _colorType;
         }
 
         public override object GetObject()
         {
-            return colorType;
+            return _colorType;
         }
 
         internal class Maker : PropertyMaker

@@ -4,27 +4,27 @@ namespace Fonet.Fo
 {
     internal class ListProperty : Property
     {
-        protected ArrayList list;
+        protected ArrayList List;
 
         public ListProperty( Property prop )
         {
-            list = new ArrayList();
-            list.Add( prop );
+            List = new ArrayList();
+            List.Add( prop );
         }
 
-        public void addProperty( Property prop )
+        public void AddProperty( Property prop )
         {
-            list.Add( prop );
+            List.Add( prop );
         }
 
         public override ArrayList GetList()
         {
-            return list;
+            return List;
         }
 
         public override object GetObject()
         {
-            return list;
+            return List;
         }
 
         internal class Maker : PropertyMaker

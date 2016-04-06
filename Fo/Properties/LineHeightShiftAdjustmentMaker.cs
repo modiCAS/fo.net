@@ -4,7 +4,7 @@ namespace Fonet.Fo.Properties
 {
     internal class LineHeightShiftAdjustmentMaker : ToBeImplementedProperty.Maker
     {
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected LineHeightShiftAdjustmentMaker( string name ) : base( name )
         {
@@ -23,9 +23,9 @@ namespace Fonet.Fo.Properties
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "consider-shifts", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "consider-shifts", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

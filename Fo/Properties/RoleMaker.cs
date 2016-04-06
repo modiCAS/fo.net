@@ -2,7 +2,7 @@ namespace Fonet.Fo.Properties
 {
     internal class RoleMaker : StringProperty.Maker
     {
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected RoleMaker( string name ) : base( name )
         {
@@ -21,9 +21,9 @@ namespace Fonet.Fo.Properties
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "none", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "none", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

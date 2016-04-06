@@ -2,13 +2,13 @@ namespace Fonet.Fo.Properties
 {
     internal class LeaderAlignmentMaker : EnumProperty.Maker
     {
-        protected static readonly EnumProperty s_propNONE = new EnumProperty( Constants.NONE );
+        protected static readonly EnumProperty SPropNone = new EnumProperty( Constants.None );
 
-        protected static readonly EnumProperty s_propREFERENCE_AREA = new EnumProperty( Constants.REFERENCE_AREA );
+        protected static readonly EnumProperty SPropReferenceArea = new EnumProperty( Constants.ReferenceArea );
 
-        protected static readonly EnumProperty s_propPAGE = new EnumProperty( Constants.PAGE );
+        protected static readonly EnumProperty SPropPage = new EnumProperty( Constants.Page );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected LeaderAlignmentMaker( string name ) : base( name )
         {
@@ -29,22 +29,22 @@ namespace Fonet.Fo.Properties
         public override Property CheckEnumValues( string value )
         {
             if ( value.Equals( "none" ) )
-                return s_propNONE;
+                return SPropNone;
 
             if ( value.Equals( "reference-area" ) )
-                return s_propREFERENCE_AREA;
+                return SPropReferenceArea;
 
             if ( value.Equals( "page" ) )
-                return s_propPAGE;
+                return SPropPage;
 
             return base.CheckEnumValues( value );
         }
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "none", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "none", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

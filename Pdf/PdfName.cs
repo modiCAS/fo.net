@@ -12,7 +12,7 @@ namespace Fonet.Pdf
             0x38, 0x39, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66
         };
 
-        private byte[] bytes;
+        private byte[] _bytes;
 
         public PdfName( string name )
         {
@@ -35,7 +35,7 @@ namespace Fonet.Pdf
         {
             get
             {
-                if ( bytes == null )
+                if ( _bytes == null )
                 {
                     // Create a memory stream to hold the results.
                     // We guess the size, based on the most likely outcome
@@ -64,9 +64,9 @@ namespace Fonet.Pdf
                             ms.WriteByte( b );
                     }
                     ms.Close();
-                    bytes = ms.ToArray();
+                    _bytes = ms.ToArray();
                 }
-                return bytes;
+                return _bytes;
             }
         }
 
@@ -148,7 +148,7 @@ namespace Fonet.Pdf
             public static readonly PdfName GoToR = new PdfName( "GoToR" );
             public static readonly PdfName D = new PdfName( "D" );
             public static readonly PdfName XYZ = new PdfName( "XYZ" );
-            public static readonly PdfName URI = new PdfName( "URI" );
+            public static readonly PdfName Uri = new PdfName( "URI" );
 
             public static readonly PdfName Font = new PdfName( "Font" );
             public static readonly PdfName FontName = new PdfName( "FontName" );
@@ -170,7 +170,7 @@ namespace Fonet.Pdf
             public static readonly PdfName FontFile2 = new PdfName( "FontFile2" );
             public static readonly PdfName FontFile3 = new PdfName( "FontFile3" );
             public static readonly PdfName CharSet = new PdfName( "CharSet" );
-            public static readonly PdfName CIDToGIDMap = new PdfName( "CIDToGIDMap" );
+            public static readonly PdfName CidtoGidMap = new PdfName( "CIDToGIDMap" );
             public static readonly PdfName Identity = new PdfName( "Identity" );
 
             public static readonly PdfName Length1 = new PdfName( "Length1" );
@@ -189,16 +189,16 @@ namespace Fonet.Pdf
             public static readonly PdfName BaseFont = new PdfName( "BaseFont" );
             public static readonly PdfName XObject = new PdfName( "XObject" );
 
-            public static readonly PdfName CIDFontType0 = new PdfName( "CIDFontType0" );
-            public static readonly PdfName CIDFontType2 = new PdfName( "CIDFontType2" );
-            public static readonly PdfName CIDSystemInfo = new PdfName( "CIDSystemInfo" );
+            public static readonly PdfName CidFontType0 = new PdfName( "CIDFontType0" );
+            public static readonly PdfName CidFontType2 = new PdfName( "CIDFontType2" );
+            public static readonly PdfName CidSystemInfo = new PdfName( "CIDSystemInfo" );
             public static readonly PdfName DescendantFonts = new PdfName( "DescendantFonts" );
 
             public static readonly PdfName Registry = new PdfName( "Registry" );
             public static readonly PdfName Ordering = new PdfName( "Ordering" );
             public static readonly PdfName Supplement = new PdfName( "Supplement" );
 
-            public static readonly PdfName DW = new PdfName( "DW" );
+            public static readonly PdfName Dw = new PdfName( "DW" );
             public static readonly PdfName W = new PdfName( "W" );
 
             public static readonly PdfName Page = new PdfName( "Page" );
@@ -217,7 +217,7 @@ namespace Fonet.Pdf
             public static readonly PdfName ColorSpace = new PdfName( "ColorSpace" );
 
             public static readonly PdfName ProcSet = new PdfName( "ProcSet" );
-            public static readonly PdfName PDF = new PdfName( "PDF" );
+            public static readonly PdfName Pdf = new PdfName( "PDF" );
             public static readonly PdfName Text = new PdfName( "Text" );
             public static readonly PdfName ImageB = new PdfName( "ImageB" );
             public static readonly PdfName ImageC = new PdfName( "ImageC" );
@@ -227,13 +227,13 @@ namespace Fonet.Pdf
             public static readonly PdfName Filter = new PdfName( "Filter" );
             public static readonly PdfName DecodeParams = new PdfName( "DecodeParams" );
 
-            public static readonly PdfName ASCII85Decode = new PdfName( "ASCII85Decode" );
-            public static readonly PdfName ASCIIHexDecode = new PdfName( "ASCIIHexDecode" );
-            public static readonly PdfName CCITTFaxDecode = new PdfName( "CCITTFaxDecode" );
-            public static readonly PdfName DCTDecode = new PdfName( "DCTDecode" );
+            public static readonly PdfName Ascii85Decode = new PdfName( "ASCII85Decode" );
+            public static readonly PdfName AsciiHexDecode = new PdfName( "ASCIIHexDecode" );
+            public static readonly PdfName CcittFaxDecode = new PdfName( "CCITTFaxDecode" );
+            public static readonly PdfName DctDecode = new PdfName( "DCTDecode" );
             public static readonly PdfName FlateDecode = new PdfName( "FlateDecode" );
-            public static readonly PdfName JBIG2Decode = new PdfName( "JBIG2Decode" );
-            public static readonly PdfName LZWDecode = new PdfName( "LZWDecode" );
+            public static readonly PdfName Jbig2Decode = new PdfName( "JBIG2Decode" );
+            public static readonly PdfName LzwDecode = new PdfName( "LZWDecode" );
             public static readonly PdfName RunLengthDecode = new PdfName( "RunLengthDecode" );
 
             public static readonly PdfName Standard = new PdfName( "Standard" );
@@ -252,7 +252,7 @@ namespace Fonet.Pdf
             public static readonly PdfName Next = new PdfName( "Next" );
 
             public static readonly PdfName Alternate = new PdfName( "Alternate" );
-            public static readonly PdfName ICCBased = new PdfName( "ICCBased" );
+            public static readonly PdfName IccBased = new PdfName( "ICCBased" );
             public static readonly PdfName N = new PdfName( "N" );
         }
     }

@@ -2,18 +2,18 @@ namespace Fonet.Fo.Properties
 {
     internal class RuleStyle
     {
-        public const int NONE = Constants.NONE;
+        public const int None = Constants.None;
 
-        public const int DOTTED = Constants.DOTTED;
+        public const int Dotted = Constants.Dotted;
 
-        public const int DASHED = Constants.DASHED;
+        public const int Dashed = Constants.Dashed;
 
-        public const int SOLID = Constants.SOLID;
+        public const int Solid = Constants.Solid;
 
-        public const int DOUBLE = Constants.DOUBLE;
+        public const int Double = Constants.Double;
 
-        public const int GROOVE = Constants.GROOVE;
+        public const int Groove = Constants.Groove;
 
-        public const int RIDGE = Constants.RIDGE;
+        public const int Ridge = Constants.Ridge;
     }
 }

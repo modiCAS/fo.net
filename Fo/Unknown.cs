@@ -7,7 +7,7 @@ namespace Fonet.Fo
         protected Unknown( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "unknown";
+            Name = "unknown";
         }
 
         public new static FObj.Maker GetMaker()
@@ -17,7 +17,7 @@ namespace Fonet.Fo
 
         public override Status Layout( Area area )
         {
-            return new Status( Status.OK );
+            return new Status( Status.Ok );
         }
 
         internal new class Maker : FObj.Maker

@@ -6,31 +6,31 @@ using Fonet.Layout;
 
 namespace Fonet.Fo
 {
-    internal abstract class XMLObj : FObj
+    internal abstract class XmlObj : FObj
     {
         protected const string Ns = "http://www.codeplex.com/fonet";
 
         protected static Hashtable NsTable = new Hashtable();
 
-        protected XmlDocument doc;
+        protected XmlDocument Doc;
 
-        protected XmlNode element;
-        protected string tagName = "";
+        protected XmlNode Element;
+        protected string TagName = "";
 
-        public XMLObj( FObj parent, PropertyList propertyList, string tag )
+        public XmlObj( FObj parent, PropertyList propertyList, string tag )
             : base( parent, propertyList )
         {
-            tagName = tag;
+            TagName = tag;
         }
 
         public abstract string GetNameSpace();
 
-        public void addGraphic( XmlDocument doc, XmlNode parent )
+        public void AddGraphic( XmlDocument doc, XmlNode parent )
         {
-            this.doc = doc;
+            this.Doc = doc;
         }
 
-        public void buildTopLevel( XmlDocument doc, XmlNode svgRoot )
+        public void BuildTopLevel( XmlDocument doc, XmlNode svgRoot )
         {
         }
 
@@ -38,36 +38,36 @@ namespace Fonet.Fo
         {
             try
             {
-                doc = new XmlDocument();
-                doc.AppendChild( doc.CreateElement( "graph", Ns ) );
-                element = doc.DocumentElement;
-                buildTopLevel( doc, element );
+                Doc = new XmlDocument();
+                Doc.AppendChild( Doc.CreateElement( "graph", Ns ) );
+                Element = Doc.DocumentElement;
+                BuildTopLevel( Doc, Element );
             }
             catch ( Exception e )
             {
                 FonetDriver.ActiveDriver.FireFonetError( e.ToString() );
             }
-            return doc;
+            return Doc;
         }
 
-        protected internal override void AddChild( FONode child )
+        protected internal override void AddChild( FoNode child )
         {
-            if ( child is XMLObj )
-                ( (XMLObj)child ).addGraphic( doc, element );
+            if ( child is XmlObj )
+                ( (XmlObj)child ).AddGraphic( Doc, Element );
         }
 
         protected internal override void AddCharacters( char[] data, int start, int length )
         {
             var str = new string( data, start, length - start );
-            doc.DocumentElement.AppendChild( doc.CreateTextNode( str ) );
+            Doc.DocumentElement.AppendChild( Doc.CreateTextNode( str ) );
         }
 
         public override Status Layout( Area area )
         {
             FonetDriver.ActiveDriver.FireFonetError(
-                name + " outside foreign xml" );
+                Name + " outside foreign xml" );
 
-            return new Status( Status.OK );
+            return new Status( Status.Ok );
         }
 
         public override void RemoveID( IDReferences idReferences )
@@ -94,7 +94,7 @@ namespace Fonet.Fo
         {
         }
 
-        public override ArrayList getMarkerSnapshot( ArrayList snapshot )
+        public override ArrayList GetMarkerSnapshot( ArrayList snapshot )
         {
             return snapshot;
         }

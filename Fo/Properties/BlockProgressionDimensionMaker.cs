@@ -5,23 +5,23 @@ namespace Fonet.Fo.Properties
 {
     internal class BlockProgressionDimensionMaker : LengthRangeProperty.Maker
     {
-        private static readonly PropertyMaker s_MinimumMaker =
-            new SP_MinimumMaker( "block-progression-dimension.minimum" );
+        private static readonly PropertyMaker SMinimumMaker =
+            new SpMinimumMaker( "block-progression-dimension.minimum" );
 
-        private static readonly PropertyMaker s_OptimumMaker =
-            new SP_OptimumMaker( "block-progression-dimension.optimum" );
+        private static readonly PropertyMaker SOptimumMaker =
+            new SpOptimumMaker( "block-progression-dimension.optimum" );
 
-        private static readonly PropertyMaker s_MaximumMaker =
-            new SP_MaximumMaker( "block-progression-dimension.maximum" );
+        private static readonly PropertyMaker SMaximumMaker =
+            new SpMaximumMaker( "block-progression-dimension.maximum" );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
-        private readonly PropertyMaker m_shorthandMaker;
+        private readonly PropertyMaker _mShorthandMaker;
 
         protected BlockProgressionDimensionMaker( string name )
             : base( name )
         {
-            m_shorthandMaker = GetSubpropMaker( "minimum" );
+            _mShorthandMaker = GetSubpropMaker( "minimum" );
         }
 
 
@@ -32,7 +32,7 @@ namespace Fonet.Fo.Properties
 
         public override Property CheckEnumValues( string value )
         {
-            return m_shorthandMaker.CheckEnumValues( value );
+            return _mShorthandMaker.CheckEnumValues( value );
         }
 
         protected override bool IsCompoundMaker()
@@ -43,13 +43,13 @@ namespace Fonet.Fo.Properties
         protected override PropertyMaker GetSubpropMaker( string subprop )
         {
             if ( subprop.Equals( "minimum" ) )
-                return s_MinimumMaker;
+                return SMinimumMaker;
 
             if ( subprop.Equals( "optimum" ) )
-                return s_OptimumMaker;
+                return SOptimumMaker;
 
             if ( subprop.Equals( "maximum" ) )
-                return s_MaximumMaker;
+                return SMaximumMaker;
 
             return base.GetSubpropMaker( subprop );
         }
@@ -69,9 +69,9 @@ namespace Fonet.Fo.Properties
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = MakeCompound( propertyList, propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = MakeCompound( propertyList, propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
 
 
@@ -116,7 +116,7 @@ namespace Fonet.Fo.Properties
             if ( p is LengthRangeProperty )
                 return p;
             if ( !( p is EnumProperty ) )
-                p = m_shorthandMaker.ConvertProperty( p, pList, fo );
+                p = _mShorthandMaker.ConvertProperty( p, pList, fo );
             if ( p != null )
             {
                 Property prop = MakeCompound( pList, fo );
@@ -141,21 +141,21 @@ namespace Fonet.Fo.Properties
 
             sbExpr.Length = 0;
 
-            sbExpr.Append( propertyList.wmRelToAbs( PropertyList.BLOCKPROGDIM ) );
+            sbExpr.Append( propertyList.WmRelToAbs( PropertyList.Blockprogdim ) );
 
             if ( propertyList.GetExplicitProperty( sbExpr.ToString() ) != null )
                 return true;
 
             sbExpr.Length = 0;
             sbExpr.Append( "min-" );
-            sbExpr.Append( propertyList.wmRelToAbs( PropertyList.BLOCKPROGDIM ) );
+            sbExpr.Append( propertyList.WmRelToAbs( PropertyList.Blockprogdim ) );
 
             if ( propertyList.GetExplicitProperty( sbExpr.ToString() ) != null )
                 return true;
 
             sbExpr.Length = 0;
             sbExpr.Append( "max-" );
-            sbExpr.Append( propertyList.wmRelToAbs( PropertyList.BLOCKPROGDIM ) );
+            sbExpr.Append( propertyList.WmRelToAbs( PropertyList.Blockprogdim ) );
 
             if ( propertyList.GetExplicitProperty( sbExpr.ToString() ) != null )
                 return true;
@@ -165,25 +165,25 @@ namespace Fonet.Fo.Properties
 
         public override Property Compute( PropertyList propertyList )
         {
-            FObj parentFO = propertyList.getParentFObj();
+            FObj parentFo = propertyList.GetParentFObj();
             var sbExpr = new StringBuilder();
             Property p = null;
 
-            sbExpr.Append( propertyList.wmRelToAbs( PropertyList.BLOCKPROGDIM ) );
+            sbExpr.Append( propertyList.WmRelToAbs( PropertyList.Blockprogdim ) );
 
             p = propertyList.GetExplicitOrShorthandProperty( sbExpr.ToString() );
 
             if ( p != null )
-                p = ConvertProperty( p, propertyList, parentFO );
+                p = ConvertProperty( p, propertyList, parentFo );
 
             else
-                p = MakeCompound( propertyList, parentFO );
+                p = MakeCompound( propertyList, parentFo );
 
             Property subprop;
 
             sbExpr.Length = 0;
             sbExpr.Append( "min-" );
-            sbExpr.Append( propertyList.wmRelToAbs( PropertyList.BLOCKPROGDIM ) );
+            sbExpr.Append( propertyList.WmRelToAbs( PropertyList.Blockprogdim ) );
 
             subprop = propertyList.GetExplicitOrShorthandProperty( sbExpr.ToString() );
 
@@ -192,7 +192,7 @@ namespace Fonet.Fo.Properties
 
             sbExpr.Length = 0;
             sbExpr.Append( "max-" );
-            sbExpr.Append( propertyList.wmRelToAbs( PropertyList.BLOCKPROGDIM ) );
+            sbExpr.Append( propertyList.WmRelToAbs( PropertyList.Blockprogdim ) );
 
             subprop = propertyList.GetExplicitOrShorthandProperty( sbExpr.ToString() );
 
@@ -202,9 +202,9 @@ namespace Fonet.Fo.Properties
             return p;
         }
 
-        private class SP_MinimumMaker : LengthProperty.Maker
+        private class SpMinimumMaker : LengthProperty.Maker
         {
-            protected internal SP_MinimumMaker( string sPropName ) : base( sPropName )
+            protected internal SpMinimumMaker( string sPropName ) : base( sPropName )
             {
             }
 
@@ -215,13 +215,13 @@ namespace Fonet.Fo.Properties
 
             public override IPercentBase GetPercentBase( FObj fo, PropertyList propertyList )
             {
-                return new LengthBase( fo, propertyList, LengthBase.CONTAINING_BOX );
+                return new LengthBase( fo, propertyList, LengthBase.ContainingBox );
             }
         }
 
-        private class SP_OptimumMaker : LengthProperty.Maker
+        private class SpOptimumMaker : LengthProperty.Maker
         {
-            protected internal SP_OptimumMaker( string sPropName ) : base( sPropName )
+            protected internal SpOptimumMaker( string sPropName ) : base( sPropName )
             {
             }
 
@@ -232,13 +232,13 @@ namespace Fonet.Fo.Properties
 
             public override IPercentBase GetPercentBase( FObj fo, PropertyList propertyList )
             {
-                return new LengthBase( fo, propertyList, LengthBase.CONTAINING_BOX );
+                return new LengthBase( fo, propertyList, LengthBase.ContainingBox );
             }
         }
 
-        private class SP_MaximumMaker : LengthProperty.Maker
+        private class SpMaximumMaker : LengthProperty.Maker
         {
-            protected internal SP_MaximumMaker( string sPropName ) : base( sPropName )
+            protected internal SpMaximumMaker( string sPropName ) : base( sPropName )
             {
             }
 
@@ -249,7 +249,7 @@ namespace Fonet.Fo.Properties
 
             public override IPercentBase GetPercentBase( FObj fo, PropertyList propertyList )
             {
-                return new LengthBase( fo, propertyList, LengthBase.CONTAINING_BOX );
+                return new LengthBase( fo, propertyList, LengthBase.ContainingBox );
             }
         }
     }

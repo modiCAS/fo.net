@@ -7,12 +7,12 @@ namespace Fonet.Fo.Flow
         protected InlineContainer( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:inline-container";
+            Name = "fo:inline-container";
 
-            BorderAndPadding bap = propMgr.GetBorderAndPadding();
-            BackgroundProps bProps = propMgr.GetBackgroundProps();
-            MarginInlineProps mProps = propMgr.GetMarginInlineProps();
-            RelativePositionProps mRelProps = propMgr.GetRelativePositionProps();
+            BorderAndPadding bap = PropMgr.GetBorderAndPadding();
+            BackgroundProps bProps = PropMgr.GetBackgroundProps();
+            MarginInlineProps mProps = PropMgr.GetMarginInlineProps();
+            RelativePositionProps mRelProps = PropMgr.GetRelativePositionProps();
         }
 
         public new static FObj.Maker GetMaker()

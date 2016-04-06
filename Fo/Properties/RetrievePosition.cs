@@ -2,12 +2,12 @@ namespace Fonet.Fo.Properties
 {
     internal class RetrievePosition
     {
-        public const int FSWP = Constants.FSWP;
+        public const int Fswp = Constants.Fswp;
 
-        public const int FIC = Constants.FIC;
+        public const int Fic = Constants.Fic;
 
-        public const int LSWP = Constants.LSWP;
+        public const int Lswp = Constants.Lswp;
 
-        public const int LEWP = Constants.LEWP;
+        public const int Lewp = Constants.Lewp;
     }
 }

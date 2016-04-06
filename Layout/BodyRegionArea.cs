@@ -17,7 +17,7 @@ namespace Fonet.Layout
         {
             var area = new BodyAreaContainer(
                 null, xPosition, yPosition, width,
-                height, Position.ABSOLUTE, columnCount, columnGap );
+                height, Position.Absolute, columnCount, columnGap );
             area.setBackground( getBackground() );
             return area;
         }

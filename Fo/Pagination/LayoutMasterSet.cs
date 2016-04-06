@@ -4,31 +4,31 @@ namespace Fonet.Fo.Pagination
 {
     internal class LayoutMasterSet : FObj
     {
-        private readonly Hashtable allRegions;
-        private readonly Hashtable pageSequenceMasters;
+        private readonly Hashtable _allRegions;
+        private readonly Hashtable _pageSequenceMasters;
 
-        private readonly Root root;
+        private readonly Root _root;
 
-        private readonly Hashtable simplePageMasters;
+        private readonly Hashtable _simplePageMasters;
 
         protected internal LayoutMasterSet( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:layout-master-set";
-            simplePageMasters = new Hashtable();
-            pageSequenceMasters = new Hashtable();
+            Name = "fo:layout-master-set";
+            _simplePageMasters = new Hashtable();
+            _pageSequenceMasters = new Hashtable();
 
             if ( parent.GetName().Equals( "fo:root" ) )
             {
-                root = (Root)parent;
-                root.setLayoutMasterSet( this );
+                _root = (Root)parent;
+                _root.SetLayoutMasterSet( this );
             }
             else
             {
                 throw new FonetException( "fo:layout-master-set must be child of fo:root, not "
                     + parent.GetName() );
             }
-            allRegions = new Hashtable();
+            _allRegions = new Hashtable();
         }
 
         public new static FObj.Maker GetMaker()
@@ -36,67 +36,67 @@ namespace Fonet.Fo.Pagination
             return new Maker();
         }
 
-        protected internal void addSimplePageMaster( SimplePageMaster simplePageMaster )
+        protected internal void AddSimplePageMaster( SimplePageMaster simplePageMaster )
         {
-            if ( existsName( simplePageMaster.GetMasterName() ) )
+            if ( ExistsName( simplePageMaster.GetMasterName() ) )
             {
                 throw new FonetException( "'master-name' ("
                     + simplePageMaster.GetMasterName()
                     + ") must be unique "
                     + "across page-masters and page-sequence-masters" );
             }
-            simplePageMasters.Add( simplePageMaster.GetMasterName(),
+            _simplePageMasters.Add( simplePageMaster.GetMasterName(),
                 simplePageMaster );
         }
 
-        protected internal SimplePageMaster getSimplePageMaster( string masterName )
+        protected internal SimplePageMaster GetSimplePageMaster( string masterName )
         {
-            return (SimplePageMaster)simplePageMasters[ masterName ];
+            return (SimplePageMaster)_simplePageMasters[ masterName ];
         }
 
-        protected internal void addPageSequenceMaster( string masterName, PageSequenceMaster pageSequenceMaster )
+        protected internal void AddPageSequenceMaster( string masterName, PageSequenceMaster pageSequenceMaster )
         {
-            if ( existsName( masterName ) )
+            if ( ExistsName( masterName ) )
             {
                 throw new FonetException( "'master-name' (" + masterName
                     + ") must be unique "
                     + "across page-masters and page-sequence-masters" );
             }
-            pageSequenceMasters.Add( masterName, pageSequenceMaster );
+            _pageSequenceMasters.Add( masterName, pageSequenceMaster );
         }
 
-        protected internal PageSequenceMaster getPageSequenceMaster( string masterName )
+        protected internal PageSequenceMaster GetPageSequenceMaster( string masterName )
         {
-            return (PageSequenceMaster)pageSequenceMasters[ masterName ];
+            return (PageSequenceMaster)_pageSequenceMasters[ masterName ];
         }
 
-        private bool existsName( string masterName )
+        private bool ExistsName( string masterName )
         {
-            if ( simplePageMasters.ContainsKey( masterName )
-                || pageSequenceMasters.ContainsKey( masterName ) )
+            if ( _simplePageMasters.ContainsKey( masterName )
+                || _pageSequenceMasters.ContainsKey( masterName ) )
                 return true;
             return false;
         }
 
-        protected internal void resetPageMasters()
+        protected internal void ResetPageMasters()
         {
-            foreach ( PageSequenceMaster psm in pageSequenceMasters.Values )
+            foreach ( PageSequenceMaster psm in _pageSequenceMasters.Values )
                 psm.Reset();
         }
 
-        protected internal void checkRegionNames()
+        protected internal void CheckRegionNames()
         {
-            foreach ( SimplePageMaster spm in simplePageMasters.Values )
+            foreach ( SimplePageMaster spm in _simplePageMasters.Values )
             {
-                foreach ( Region region in spm.getRegions().Values )
+                foreach ( Region region in spm.GetRegions().Values )
                 {
-                    if ( allRegions.ContainsKey( region.getRegionName() ) )
+                    if ( _allRegions.ContainsKey( region.GetRegionName() ) )
                     {
-                        var localClass = (string)allRegions[ region.getRegionName() ];
+                        var localClass = (string)_allRegions[ region.GetRegionName() ];
                         if ( !localClass.Equals( region.GetRegionClass() ) )
                         {
                             throw new FonetException( "Duplicate region-names ("
-                                + region.getRegionName()
+                                + region.GetRegionName()
                                 + ") must map "
                                 + "to the same region-class ("
                                 + localClass + "!="
@@ -104,17 +104,17 @@ namespace Fonet.Fo.Pagination
                                 + ")" );
                         }
                     }
-                    allRegions[ region.getRegionName() ] = region.GetRegionClass();
+                    _allRegions[ region.GetRegionName() ] = region.GetRegionClass();
                 }
             }
         }
 
-        protected internal bool regionNameExists( string regionName )
+        protected internal bool RegionNameExists( string regionName )
         {
             var result = false;
-            foreach ( SimplePageMaster spm in simplePageMasters.Values )
+            foreach ( SimplePageMaster spm in _simplePageMasters.Values )
             {
-                result = spm.regionNameExists( regionName );
+                result = spm.RegionNameExists( regionName );
                 if ( result )
                     return result;
             }

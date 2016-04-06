@@ -13,7 +13,7 @@ namespace Fonet.Fo.Expr
             if ( propName == null )
                 throw new PropertyException( "Incorrect parameter to from-parent function" );
 
-            return pInfo.getPropertyList().GetFromParentProperty( propName );
+            return pInfo.GetPropertyList().GetFromParentProperty( propName );
         }
     }
 }

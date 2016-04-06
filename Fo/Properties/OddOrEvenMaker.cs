@@ -2,13 +2,13 @@ namespace Fonet.Fo.Properties
 {
     internal class OddOrEvenMaker : EnumProperty.Maker
     {
-        protected static readonly EnumProperty s_propODD = new EnumProperty( Constants.ODD );
+        protected static readonly EnumProperty SPropOdd = new EnumProperty( Constants.Odd );
 
-        protected static readonly EnumProperty s_propEVEN = new EnumProperty( Constants.EVEN );
+        protected static readonly EnumProperty SPropEven = new EnumProperty( Constants.Even );
 
-        protected static readonly EnumProperty s_propANY = new EnumProperty( Constants.ANY );
+        protected static readonly EnumProperty SPropAny = new EnumProperty( Constants.Any );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected OddOrEvenMaker( string name ) : base( name )
         {
@@ -29,22 +29,22 @@ namespace Fonet.Fo.Properties
         public override Property CheckEnumValues( string value )
         {
             if ( value.Equals( "odd" ) )
-                return s_propODD;
+                return SPropOdd;
 
             if ( value.Equals( "even" ) )
-                return s_propEVEN;
+                return SPropEven;
 
             if ( value.Equals( "any" ) )
-                return s_propANY;
+                return SPropAny;
 
             return base.CheckEnumValues( value );
         }
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "any", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "any", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Fonet.Pdf
 {
     public class PdfArray : PdfObject, IEnumerable
     {
-        private readonly ArrayList elements = new ArrayList();
+        private readonly ArrayList _elements = new ArrayList();
 
         public PdfArray()
         {
@@ -17,53 +17,53 @@ namespace Fonet.Pdf
 
         public PdfObject this[ int index ]
         {
-            get { return (PdfObject)elements[ index ]; }
-            set { elements[ index ] = value; }
+            get { return (PdfObject)_elements[ index ]; }
+            set { _elements[ index ] = value; }
         }
 
         public int Count
         {
-            get { return elements.Count; }
+            get { return _elements.Count; }
         }
 
         public IEnumerator GetEnumerator()
         {
-            return elements.GetEnumerator();
+            return _elements.GetEnumerator();
         }
 
         public int Add( PdfObject value )
         {
-            return elements.Add( value );
+            return _elements.Add( value );
         }
 
         public void Clear()
         {
-            elements.Clear();
+            _elements.Clear();
         }
 
         public bool Contains( PdfObject value )
         {
-            return elements.Contains( value );
+            return _elements.Contains( value );
         }
 
         public int IndexOf( PdfObject value )
         {
-            return elements.IndexOf( value );
+            return _elements.IndexOf( value );
         }
 
         public void Insert( int index, PdfObject value )
         {
-            elements.Insert( index, value );
+            _elements.Insert( index, value );
         }
 
         public void Remove( PdfObject value )
         {
-            elements.Remove( value );
+            _elements.Remove( value );
         }
 
         public void RemoveAt( int index )
         {
-            elements.RemoveAt( index );
+            _elements.RemoveAt( index );
         }
 
         public void AddArray( Array data )
@@ -76,7 +76,7 @@ namespace Fonet.Pdf
         {
             writer.WriteKeyword( Keyword.ArrayBegin );
             var isFirst = true;
-            foreach ( PdfObject obj in elements )
+            foreach ( PdfObject obj in _elements )
             {
                 if ( !isFirst )
                     writer.WriteSpace();

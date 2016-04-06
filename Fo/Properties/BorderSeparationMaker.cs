@@ -4,21 +4,21 @@ namespace Fonet.Fo.Properties
 {
     internal class BorderSeparationMaker : LengthPairProperty.Maker
     {
-        private static readonly PropertyMaker s_BlockProgressionDirectionMaker =
+        private static readonly PropertyMaker SBlockProgressionDirectionMaker =
             new LengthProperty.Maker( "border-separation.block-progression-direction" );
 
-        private static readonly PropertyMaker s_InlineProgressionDirectionMaker =
+        private static readonly PropertyMaker SInlineProgressionDirectionMaker =
             new LengthProperty.Maker( "border-separation.inline-progression-direction" );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
 
-        private readonly PropertyMaker m_shorthandMaker;
+        private readonly PropertyMaker _mShorthandMaker;
 
         protected BorderSeparationMaker( string name )
             : base( name )
         {
-            m_shorthandMaker = GetSubpropMaker( "block-progression-direction" );
+            _mShorthandMaker = GetSubpropMaker( "block-progression-direction" );
         }
 
 
@@ -29,7 +29,7 @@ namespace Fonet.Fo.Properties
 
         public override Property CheckEnumValues( string value )
         {
-            return m_shorthandMaker.CheckEnumValues( value );
+            return _mShorthandMaker.CheckEnumValues( value );
         }
 
         protected override bool IsCompoundMaker()
@@ -40,10 +40,10 @@ namespace Fonet.Fo.Properties
         protected override PropertyMaker GetSubpropMaker( string subprop )
         {
             if ( subprop.Equals( "block-progression-direction" ) )
-                return s_BlockProgressionDirectionMaker;
+                return SBlockProgressionDirectionMaker;
 
             if ( subprop.Equals( "inline-progression-direction" ) )
-                return s_InlineProgressionDirectionMaker;
+                return SInlineProgressionDirectionMaker;
 
             return base.GetSubpropMaker( subprop );
         }
@@ -63,9 +63,9 @@ namespace Fonet.Fo.Properties
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = MakeCompound( propertyList, propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = MakeCompound( propertyList, propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
 
 
@@ -75,23 +75,23 @@ namespace Fonet.Fo.Properties
             Property subProp;
 
             subProp = GetSubpropMaker( "block-progression-direction" ).Make( pList,
-                getDefaultForBlockProgressionDirection(), fo );
+                GetDefaultForBlockProgressionDirection(), fo );
             p.SetComponent( "block-progression-direction", subProp, true );
 
             subProp = GetSubpropMaker( "inline-progression-direction" ).Make( pList,
-                getDefaultForInlineProgressionDirection(), fo );
+                GetDefaultForInlineProgressionDirection(), fo );
             p.SetComponent( "inline-progression-direction", subProp, true );
 
             return new LengthPairProperty( p );
         }
 
 
-        protected virtual string getDefaultForBlockProgressionDirection()
+        protected virtual string GetDefaultForBlockProgressionDirection()
         {
             return "0pt";
         }
 
-        protected virtual string getDefaultForInlineProgressionDirection()
+        protected virtual string GetDefaultForInlineProgressionDirection()
         {
             return "0pt";
         }
@@ -101,7 +101,7 @@ namespace Fonet.Fo.Properties
             if ( p is LengthPairProperty )
                 return p;
             if ( !( p is EnumProperty ) )
-                p = m_shorthandMaker.ConvertProperty( p, pList, fo );
+                p = _mShorthandMaker.ConvertProperty( p, pList, fo );
             if ( p != null )
             {
                 Property prop = MakeCompound( pList, fo );

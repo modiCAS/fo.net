@@ -5,14 +5,14 @@ namespace Fonet.Fo.Pagination
 {
     internal class RegionBefore : Region
     {
-        public const string REGION_CLASS = "before";
+        public const string RegionClass = "before";
 
-        private readonly int precedence;
+        private readonly int _precedence;
 
         protected RegionBefore( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            precedence = properties.GetProperty( "precedence" ).GetEnum();
+            _precedence = Properties.GetProperty( "precedence" ).GetEnum();
         }
 
         public new static FObj.Maker GetMaker()
@@ -26,9 +26,9 @@ namespace Fonet.Fo.Pagination
             int allocationRectangleWidth,
             int allocationRectangleHeight )
         {
-            BorderAndPadding bap = propMgr.GetBorderAndPadding();
-            BackgroundProps bProps = propMgr.GetBackgroundProps();
-            int extent = properties.GetProperty( "extent" ).GetLength().MValue();
+            BorderAndPadding bap = PropMgr.GetBorderAndPadding();
+            BackgroundProps bProps = PropMgr.GetBackgroundProps();
+            int extent = Properties.GetProperty( "extent" ).GetLength().MValue();
 
             var area = new RegionArea(
                 allocationRectangleXPosition,
@@ -53,12 +53,12 @@ namespace Fonet.Fo.Pagination
 
         public override string GetRegionClass()
         {
-            return REGION_CLASS;
+            return RegionClass;
         }
 
-        public bool getPrecedence()
+        public bool GetPrecedence()
         {
-            return precedence == Precedence.TRUE ? true : false;
+            return _precedence == Precedence.True ? true : false;
         }
 
         internal new class Maker : FObj.Maker

@@ -6,14 +6,14 @@ namespace Fonet.Fo.Flow
 {
     internal class Character : FObj
     {
-        public const int OK = 0;
+        public const int Ok = 0;
 
-        public const int DOESNOT_FIT = 1;
+        public const int DoesnotFit = 1;
 
         public Character( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:character";
+            Name = "fo:character";
         }
 
         public new static FObj.Maker GetMaker()
@@ -28,52 +28,52 @@ namespace Fonet.Fo.Flow
             {
                 FonetDriver.ActiveDriver.FireFonetWarning(
                     "Currently Character can only be in a BlockArea" );
-                return new Status( Status.OK );
+                return new Status( Status.Ok );
             }
             blockArea = (BlockArea)area;
             bool textDecoration;
 
-            AuralProps mAurProps = propMgr.GetAuralProps();
-            BorderAndPadding bap = propMgr.GetBorderAndPadding();
-            BackgroundProps bProps = propMgr.GetBackgroundProps();
-            HyphenationProps mHyphProps = propMgr.GetHyphenationProps();
-            MarginInlineProps mProps = propMgr.GetMarginInlineProps();
-            RelativePositionProps mRelProps = propMgr.GetRelativePositionProps();
-            ColorType c = properties.GetProperty( "color" ).GetColorType();
+            AuralProps mAurProps = PropMgr.GetAuralProps();
+            BorderAndPadding bap = PropMgr.GetBorderAndPadding();
+            BackgroundProps bProps = PropMgr.GetBackgroundProps();
+            HyphenationProps mHyphProps = PropMgr.GetHyphenationProps();
+            MarginInlineProps mProps = PropMgr.GetMarginInlineProps();
+            RelativePositionProps mRelProps = PropMgr.GetRelativePositionProps();
+            ColorType c = Properties.GetProperty( "color" ).GetColorType();
             float red = c.Red;
             float green = c.Green;
             float blue = c.Blue;
 
             int whiteSpaceCollapse =
-                properties.GetProperty( "white-space-collapse" ).GetEnum();
-            int wrapOption = parent.properties.GetProperty( "wrap-option" ).GetEnum();
+                Properties.GetProperty( "white-space-collapse" ).GetEnum();
+            int wrapOption = Parent.Properties.GetProperty( "wrap-option" ).GetEnum();
 
-            int tmp = properties.GetProperty( "text-decoration" ).GetEnum();
-            if ( tmp == TextDecoration.UNDERLINE )
+            int tmp = Properties.GetProperty( "text-decoration" ).GetEnum();
+            if ( tmp == TextDecoration.Underline )
                 textDecoration = true;
             else
                 textDecoration = false;
 
-            char characterValue = properties.GetProperty( "character" ).GetCharacter();
-            string id = properties.GetProperty( "id" ).GetString();
+            char characterValue = Properties.GetProperty( "character" ).GetCharacter();
+            string id = Properties.GetProperty( "id" ).GetString();
             blockArea.getIDReferences().InitializeID( id, blockArea );
 
             LineArea la = blockArea.getCurrentLineArea();
             if ( la == null )
-                return new Status( Status.AREA_FULL_NONE );
-            la.changeFont( propMgr.GetFontState( area.getFontInfo() ) );
+                return new Status( Status.AreaFullNone );
+            la.changeFont( PropMgr.GetFontState( area.getFontInfo() ) );
             la.changeColor( red, green, blue );
             la.changeWrapOption( wrapOption );
             la.changeWhiteSpaceCollapse( whiteSpaceCollapse );
             blockArea.setupLinkSet( GetLinkSet() );
             int result = la.addCharacter( characterValue, GetLinkSet(),
                 textDecoration );
-            if ( result == DOESNOT_FIT )
+            if ( result == DoesnotFit )
             {
                 la = blockArea.createNextLineArea();
                 if ( la == null )
-                    return new Status( Status.AREA_FULL_NONE );
-                la.changeFont( propMgr.GetFontState( area.getFontInfo() ) );
+                    return new Status( Status.AreaFullNone );
+                la.changeFont( PropMgr.GetFontState( area.getFontInfo() ) );
                 la.changeColor( red, green, blue );
                 la.changeWrapOption( wrapOption );
                 la.changeWhiteSpaceCollapse( whiteSpaceCollapse );
@@ -81,7 +81,7 @@ namespace Fonet.Fo.Flow
                 la.addCharacter( characterValue, GetLinkSet(),
                     textDecoration );
             }
-            return new Status( Status.OK );
+            return new Status( Status.Ok );
         }
 
         internal new class Maker : FObj.Maker

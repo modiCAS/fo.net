@@ -4,21 +4,21 @@ namespace Fonet.Fo
 {
     internal class LengthRangeProperty : Property
     {
-        private readonly LengthRange lengthRange;
+        private readonly LengthRange _lengthRange;
 
         public LengthRangeProperty( LengthRange lengthRange )
         {
-            this.lengthRange = lengthRange;
+            this._lengthRange = lengthRange;
         }
 
         public override LengthRange GetLengthRange()
         {
-            return lengthRange;
+            return _lengthRange;
         }
 
         public override object GetObject()
         {
-            return lengthRange;
+            return _lengthRange;
         }
 
         internal class Maker : LengthProperty.Maker

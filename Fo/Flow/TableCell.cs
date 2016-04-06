@@ -5,31 +5,31 @@ namespace Fonet.Fo.Flow
 {
     internal class TableCell : FObj
     {
-        private bool bDone;
-        protected int beforeOffset;
-        protected int borderHeight;
-        protected bool bRelativeAlign;
-        private bool bSepBorders = true;
-        private AreaContainer cellArea;
-        protected int height;
-        private int iColNumber = -1;
+        private bool _bDone;
+        protected int BeforeOffset;
+        protected int BorderHeight;
+        protected bool BRelativeAlign;
+        private bool _bSepBorders = true;
+        private AreaContainer _cellArea;
+        protected int Height;
+        private int _iColNumber = -1;
 
-        private string id;
-        private int m_borderSeparation;
-        protected int minCellHeight;
-        private int numColumnsSpanned;
-        private int numRowsSpanned;
-        protected int startAdjust;
-        protected int startOffset;
-        protected int top;
-        protected int verticalAlign;
-        protected int width;
-        protected int widthAdjust;
+        private string _id;
+        private int _mBorderSeparation;
+        protected int MinCellHeight;
+        private int _numColumnsSpanned;
+        private int _numRowsSpanned;
+        protected int StartAdjust;
+        protected int StartOffset;
+        protected int Top;
+        protected int VerticalAlign;
+        protected int Width;
+        protected int WidthAdjust;
 
         public TableCell( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:table-cell";
+            Name = "fo:table-cell";
             DoSetup();
         }
 
@@ -40,173 +40,173 @@ namespace Fonet.Fo.Flow
 
         public void SetStartOffset( int offset )
         {
-            startOffset = offset;
+            StartOffset = offset;
         }
 
         public void SetWidth( int width )
         {
-            this.width = width;
+            this.Width = width;
         }
 
         public int GetColumnNumber()
         {
-            return iColNumber;
+            return _iColNumber;
         }
 
         public int GetNumColumnsSpanned()
         {
-            return numColumnsSpanned;
+            return _numColumnsSpanned;
         }
 
         public int GetNumRowsSpanned()
         {
-            return numRowsSpanned;
+            return _numRowsSpanned;
         }
 
         public void DoSetup()
         {
-            AccessibilityProps mAccProps = propMgr.GetAccessibilityProps();
-            AuralProps mAurProps = propMgr.GetAuralProps();
-            BorderAndPadding bap = propMgr.GetBorderAndPadding();
-            BackgroundProps bProps = propMgr.GetBackgroundProps();
-            RelativePositionProps mRelProps = propMgr.GetRelativePositionProps();
+            AccessibilityProps mAccProps = PropMgr.GetAccessibilityProps();
+            AuralProps mAurProps = PropMgr.GetAuralProps();
+            BorderAndPadding bap = PropMgr.GetBorderAndPadding();
+            BackgroundProps bProps = PropMgr.GetBackgroundProps();
+            RelativePositionProps mRelProps = PropMgr.GetRelativePositionProps();
 
-            iColNumber =
-                properties.GetProperty( "column-number" ).GetNumber().IntValue();
-            if ( iColNumber < 0 )
-                iColNumber = 0;
-            numColumnsSpanned =
-                properties.GetProperty( "number-columns-spanned" ).GetNumber().IntValue();
-            if ( numColumnsSpanned < 1 )
-                numColumnsSpanned = 1;
-            numRowsSpanned =
-                properties.GetProperty( "number-rows-spanned" ).GetNumber().IntValue();
-            if ( numRowsSpanned < 1 )
-                numRowsSpanned = 1;
+            _iColNumber =
+                Properties.GetProperty( "column-number" ).GetNumber().IntValue();
+            if ( _iColNumber < 0 )
+                _iColNumber = 0;
+            _numColumnsSpanned =
+                Properties.GetProperty( "number-columns-spanned" ).GetNumber().IntValue();
+            if ( _numColumnsSpanned < 1 )
+                _numColumnsSpanned = 1;
+            _numRowsSpanned =
+                Properties.GetProperty( "number-rows-spanned" ).GetNumber().IntValue();
+            if ( _numRowsSpanned < 1 )
+                _numRowsSpanned = 1;
 
-            id = properties.GetProperty( "id" ).GetString();
+            _id = Properties.GetProperty( "id" ).GetString();
 
-            bSepBorders = properties.GetProperty( "border-collapse" ).GetEnum()
-                == BorderCollapse.SEPARATE;
+            _bSepBorders = Properties.GetProperty( "border-collapse" ).GetEnum()
+                == BorderCollapse.Separate;
 
-            CalcBorders( propMgr.GetBorderAndPadding() );
+            CalcBorders( PropMgr.GetBorderAndPadding() );
 
-            verticalAlign = properties.GetProperty( "display-align" ).GetEnum();
-            if ( verticalAlign == DisplayAlign.AUTO )
+            VerticalAlign = Properties.GetProperty( "display-align" ).GetEnum();
+            if ( VerticalAlign == DisplayAlign.Auto )
             {
-                bRelativeAlign = true;
-                verticalAlign = properties.GetProperty( "relative-align" ).GetEnum();
+                BRelativeAlign = true;
+                VerticalAlign = Properties.GetProperty( "relative-align" ).GetEnum();
             }
             else
-                bRelativeAlign = false;
+                BRelativeAlign = false;
 
-            minCellHeight =
-                properties.GetProperty( "height" ).GetLength().MValue();
+            MinCellHeight =
+                Properties.GetProperty( "height" ).GetLength().MValue();
         }
 
 
         public override Status Layout( Area area )
         {
             int originalAbsoluteHeight = area.getAbsoluteHeight();
-            if ( marker == MarkerBreakAfter )
-                return new Status( Status.OK );
+            if ( Marker == MarkerBreakAfter )
+                return new Status( Status.Ok );
 
-            if ( marker == MarkerStart )
+            if ( Marker == MarkerStart )
             {
-                area.getIDReferences().CreateID( id );
+                area.getIDReferences().CreateID( _id );
 
-                marker = 0;
-                bDone = false;
+                Marker = 0;
+                _bDone = false;
             }
 
-            if ( marker == 0 )
-                area.getIDReferences().ConfigureID( id, area );
+            if ( Marker == 0 )
+                area.getIDReferences().ConfigureID( _id, area );
 
-            int spaceLeft = area.spaceLeft() - m_borderSeparation;
-            cellArea =
-                new AreaContainer( propMgr.GetFontState( area.getFontInfo() ),
-                    startOffset + startAdjust, beforeOffset,
-                    width - widthAdjust, spaceLeft,
-                    Position.RELATIVE );
+            int spaceLeft = area.spaceLeft() - _mBorderSeparation;
+            _cellArea =
+                new AreaContainer( PropMgr.GetFontState( area.getFontInfo() ),
+                    StartOffset + StartAdjust, BeforeOffset,
+                    Width - WidthAdjust, spaceLeft,
+                    Position.Relative );
 
-            cellArea.foCreator = this;
-            cellArea.setPage( area.getPage() );
-            cellArea.setParent( area );
-            cellArea.setBorderAndPadding(
-                (BorderAndPadding)propMgr.GetBorderAndPadding().Clone() );
-            cellArea.setBackground( propMgr.GetBackgroundProps() );
-            cellArea.start();
+            _cellArea.foCreator = this;
+            _cellArea.setPage( area.getPage() );
+            _cellArea.setParent( area );
+            _cellArea.setBorderAndPadding(
+                (BorderAndPadding)PropMgr.GetBorderAndPadding().Clone() );
+            _cellArea.setBackground( PropMgr.GetBackgroundProps() );
+            _cellArea.start();
 
-            cellArea.setAbsoluteHeight( area.getAbsoluteHeight() );
-            cellArea.setIDReferences( area.getIDReferences() );
-            cellArea.setTableCellXOffset( startOffset + startAdjust );
+            _cellArea.setAbsoluteHeight( area.getAbsoluteHeight() );
+            _cellArea.setIDReferences( area.getIDReferences() );
+            _cellArea.setTableCellXOffset( StartOffset + StartAdjust );
 
-            int numChildren = children.Count;
-            for ( int i = marker; bDone == false && i < numChildren; i++ )
+            int numChildren = Children.Count;
+            for ( int i = Marker; _bDone == false && i < numChildren; i++ )
             {
-                var fo = (FObj)children[ i ];
+                var fo = (FObj)Children[ i ];
                 fo.SetIsInTableCell();
-                fo.ForceWidth( width );
+                fo.ForceWidth( Width );
 
-                marker = i;
+                Marker = i;
 
                 Status status;
-                if ( ( status = fo.Layout( cellArea ) ).isIncomplete() )
+                if ( ( status = fo.Layout( _cellArea ) ).IsIncomplete() )
                 {
-                    if ( i == 0 && status.getCode() == Status.AREA_FULL_NONE )
-                        return new Status( Status.AREA_FULL_NONE );
-                    area.addChild( cellArea );
-                    return new Status( Status.AREA_FULL_SOME );
+                    if ( i == 0 && status.GetCode() == Status.AreaFullNone )
+                        return new Status( Status.AreaFullNone );
+                    area.addChild( _cellArea );
+                    return new Status( Status.AreaFullSome );
                 }
 
                 area.setMaxHeight( area.getMaxHeight() - spaceLeft
-                    + cellArea.getMaxHeight() );
+                    + _cellArea.getMaxHeight() );
             }
-            bDone = true;
-            cellArea.end();
-            area.addChild( cellArea );
+            _bDone = true;
+            _cellArea.end();
+            area.addChild( _cellArea );
 
-            if ( minCellHeight > cellArea.getContentHeight() )
-                cellArea.SetHeight( minCellHeight );
+            if ( MinCellHeight > _cellArea.getContentHeight() )
+                _cellArea.SetHeight( MinCellHeight );
 
-            height = cellArea.GetHeight();
-            top = cellArea.GetCurrentYPosition();
+            Height = _cellArea.GetHeight();
+            Top = _cellArea.GetCurrentYPosition();
 
-            return new Status( Status.OK );
+            return new Status( Status.Ok );
         }
 
         public int GetHeight()
         {
-            return cellArea.GetHeight() + m_borderSeparation - borderHeight;
+            return _cellArea.GetHeight() + _mBorderSeparation - BorderHeight;
         }
 
         public void SetRowHeight( int h )
         {
             int delta = h - GetHeight();
-            if ( bRelativeAlign )
-                cellArea.increaseHeight( delta );
+            if ( BRelativeAlign )
+                _cellArea.increaseHeight( delta );
             else if ( delta > 0 )
             {
-                BorderAndPadding cellBP = cellArea.GetBorderAndPadding();
-                switch ( verticalAlign )
+                BorderAndPadding cellBp = _cellArea.GetBorderAndPadding();
+                switch ( VerticalAlign )
                 {
-                case DisplayAlign.CENTER:
-                    cellArea.shiftYPosition( delta / 2 );
-                    cellBP.setPaddingLength( BorderAndPadding.TOP,
-                        cellBP.getPaddingTop( false )
+                case DisplayAlign.Center:
+                    _cellArea.shiftYPosition( delta / 2 );
+                    cellBp.setPaddingLength( BorderAndPadding.TOP,
+                        cellBp.getPaddingTop( false )
                             + delta / 2 );
-                    cellBP.setPaddingLength( BorderAndPadding.BOTTOM,
-                        cellBP.getPaddingBottom( false )
+                    cellBp.setPaddingLength( BorderAndPadding.BOTTOM,
+                        cellBp.getPaddingBottom( false )
                             + delta - delta / 2 );
                     break;
-                case DisplayAlign.AFTER:
-                    cellBP.setPaddingLength( BorderAndPadding.TOP,
-                        cellBP.getPaddingTop( false ) + delta );
-                    cellArea.shiftYPosition( delta );
+                case DisplayAlign.After:
+                    cellBp.setPaddingLength( BorderAndPadding.TOP,
+                        cellBp.getPaddingTop( false ) + delta );
+                    _cellArea.shiftYPosition( delta );
                     break;
-                case DisplayAlign.BEFORE:
-                    cellBP.setPaddingLength( BorderAndPadding.BOTTOM,
-                        cellBP.getPaddingBottom( false )
+                case DisplayAlign.Before:
+                    cellBp.setPaddingLength( BorderAndPadding.BOTTOM,
+                        cellBp.getPaddingBottom( false )
                             + delta );
                     break;
                 default:
@@ -217,18 +217,18 @@ namespace Fonet.Fo.Flow
 
         private void CalcBorders( BorderAndPadding bp )
         {
-            if ( bSepBorders )
+            if ( _bSepBorders )
             {
                 int iSep =
-                    properties.GetProperty( "border-separation.inline-progression-direction" ).GetLength().MValue();
-                startAdjust = iSep / 2 + bp.getBorderLeftWidth( false )
+                    Properties.GetProperty( "border-separation.inline-progression-direction" ).GetLength().MValue();
+                StartAdjust = iSep / 2 + bp.getBorderLeftWidth( false )
                     + bp.getPaddingLeft( false );
-                widthAdjust = startAdjust + iSep - iSep / 2
+                WidthAdjust = StartAdjust + iSep - iSep / 2
                     + bp.getBorderRightWidth( false )
                     + bp.getPaddingRight( false );
-                m_borderSeparation =
-                    properties.GetProperty( "border-separation.block-progression-direction" ).GetLength().MValue();
-                beforeOffset = m_borderSeparation / 2
+                _mBorderSeparation =
+                    Properties.GetProperty( "border-separation.block-progression-direction" ).GetLength().MValue();
+                BeforeOffset = _mBorderSeparation / 2
                     + bp.getBorderTopWidth( false )
                     + bp.getPaddingTop( false );
             }
@@ -239,12 +239,12 @@ namespace Fonet.Fo.Flow
                 int borderBefore = bp.getBorderTopWidth( false );
                 int borderAfter = bp.getBorderBottomWidth( false );
 
-                startAdjust = borderStart / 2 + bp.getPaddingLeft( false );
+                StartAdjust = borderStart / 2 + bp.getPaddingLeft( false );
 
-                widthAdjust = startAdjust + borderEnd / 2
+                WidthAdjust = StartAdjust + borderEnd / 2
                     + bp.getPaddingRight( false );
-                beforeOffset = borderBefore / 2 + bp.getPaddingTop( false );
-                borderHeight = ( borderBefore + borderAfter ) / 2;
+                BeforeOffset = borderBefore / 2 + bp.getPaddingTop( false );
+                BorderHeight = ( borderBefore + borderAfter ) / 2;
             }
         }
 

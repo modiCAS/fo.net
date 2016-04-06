@@ -5,9 +5,9 @@ namespace Fonet.Pdf.Gdi
     public class GdiKerningPairs
     {
         public static readonly GdiKerningPairs Empty = new GdiKerningPairs( null, null );
-        private readonly PdfUnitConverter converter;
+        private readonly PdfUnitConverter _converter;
 
-        private readonly KerningPairs pairs;
+        private readonly KerningPairs _pairs;
 
         /// <summary>
         ///     Class constructor.
@@ -16,8 +16,8 @@ namespace Fonet.Pdf.Gdi
         /// <param name="converter">Class to convert from TTF to PDF units.</param>
         internal GdiKerningPairs( KerningPairs pairs, PdfUnitConverter converter )
         {
-            this.pairs = pairs;
-            this.converter = converter;
+            this._pairs = pairs;
+            this._converter = converter;
         }
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace Fonet.Pdf.Gdi
         /// </summary>
         public int Count
         {
-            get { return pairs == null ? 0 : pairs.Length; }
+            get { return _pairs == null ? 0 : _pairs.Length; }
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Fonet.Pdf.Gdi
             get
             {
                 // TODO: Crapy performance
-                return converter.ToPdfUnits( pairs[ left, right ] );
+                return _converter.ToPdfUnits( _pairs[ left, right ] );
             }
         }
 
@@ -50,7 +50,7 @@ namespace Fonet.Pdf.Gdi
         /// <returns></returns>
         public bool HasPair( ushort left, ushort right )
         {
-            return pairs == null ? false : pairs.HasKerning( left, right );
+            return _pairs == null ? false : _pairs.HasKerning( left, right );
         }
     }
 }

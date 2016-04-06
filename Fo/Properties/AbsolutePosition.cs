@@ -2,12 +2,12 @@ namespace Fonet.Fo.Properties
 {
     internal class AbsolutePosition
     {
-        public const int AUTO = Constants.AUTO;
+        public const int Auto = Constants.Auto;
 
-        public const int FIXED = Constants.FIXED;
+        public const int Fixed = Constants.Fixed;
 
-        public const int ABSOLUTE = Constants.ABSOLUTE;
+        public const int Absolute = Constants.Absolute;
 
-        public const int INHERIT = Constants.INHERIT;
+        public const int Inherit = Constants.Inherit;
     }
 }

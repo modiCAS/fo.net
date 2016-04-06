@@ -2,10 +2,10 @@ namespace Fonet.Fo.Properties
 {
     internal class LeaderAlignment
     {
-        public const int NONE = Constants.NONE;
+        public const int None = Constants.None;
 
-        public const int REFERENCE_AREA = Constants.REFERENCE_AREA;
+        public const int ReferenceArea = Constants.ReferenceArea;
 
-        public const int PAGE = Constants.PAGE;
+        public const int Page = Constants.Page;
     }
 }

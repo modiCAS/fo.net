@@ -2,21 +2,21 @@ namespace Fonet.Fo.Properties
 {
     internal class RuleStyleMaker : EnumProperty.Maker
     {
-        protected static readonly EnumProperty s_propNONE = new EnumProperty( Constants.NONE );
+        protected static readonly EnumProperty SPropNone = new EnumProperty( Constants.None );
 
-        protected static readonly EnumProperty s_propDOTTED = new EnumProperty( Constants.DOTTED );
+        protected static readonly EnumProperty SPropDotted = new EnumProperty( Constants.Dotted );
 
-        protected static readonly EnumProperty s_propDASHED = new EnumProperty( Constants.DASHED );
+        protected static readonly EnumProperty SPropDashed = new EnumProperty( Constants.Dashed );
 
-        protected static readonly EnumProperty s_propSOLID = new EnumProperty( Constants.SOLID );
+        protected static readonly EnumProperty SPropSolid = new EnumProperty( Constants.Solid );
 
-        protected static readonly EnumProperty s_propDOUBLE = new EnumProperty( Constants.DOUBLE );
+        protected static readonly EnumProperty SPropDouble = new EnumProperty( Constants.Double );
 
-        protected static readonly EnumProperty s_propGROOVE = new EnumProperty( Constants.GROOVE );
+        protected static readonly EnumProperty SPropGroove = new EnumProperty( Constants.Groove );
 
-        protected static readonly EnumProperty s_propRIDGE = new EnumProperty( Constants.RIDGE );
+        protected static readonly EnumProperty SPropRidge = new EnumProperty( Constants.Ridge );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected RuleStyleMaker( string name ) : base( name )
         {
@@ -37,34 +37,34 @@ namespace Fonet.Fo.Properties
         public override Property CheckEnumValues( string value )
         {
             if ( value.Equals( "none" ) )
-                return s_propNONE;
+                return SPropNone;
 
             if ( value.Equals( "dotted" ) )
-                return s_propDOTTED;
+                return SPropDotted;
 
             if ( value.Equals( "dashed" ) )
-                return s_propDASHED;
+                return SPropDashed;
 
             if ( value.Equals( "solid" ) )
-                return s_propSOLID;
+                return SPropSolid;
 
             if ( value.Equals( "double" ) )
-                return s_propDOUBLE;
+                return SPropDouble;
 
             if ( value.Equals( "groove" ) )
-                return s_propGROOVE;
+                return SPropGroove;
 
             if ( value.Equals( "ridge" ) )
-                return s_propRIDGE;
+                return SPropRidge;
 
             return base.CheckEnumValues( value );
         }
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "solid", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "solid", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

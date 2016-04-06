@@ -11,18 +11,18 @@ namespace Fonet.Fo.Expr
 
         public override Property Eval( Property[] args, PropertyInfo pInfo )
         {
-            Numeric distance = pInfo.getPropertyList().GetProperty( "provisional-distance-between-starts" ).GetNumeric();
+            Numeric distance = pInfo.GetPropertyList().GetProperty( "provisional-distance-between-starts" ).GetNumeric();
 
-            FObj item = pInfo.getFO();
+            FObj item = pInfo.GetFo();
             while ( item != null && !( item is ListItem ) )
-                item = item.getParent();
+                item = item.GetParent();
             if ( item == null )
                 throw new PropertyException( "body-start() called from outside an fo:list-item" );
 
             Numeric startIndent =
-                item.properties.GetProperty( "start-indent" ).GetNumeric();
+                item.Properties.GetProperty( "start-indent" ).GetNumeric();
 
-            return new NumericProperty( distance.add( startIndent ) );
+            return new NumericProperty( distance.Add( startIndent ) );
         }
     }
 }

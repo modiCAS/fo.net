@@ -2,17 +2,17 @@ namespace Fonet.Fo.Properties
 {
     internal class GenericBreak : EnumProperty.Maker
     {
-        protected static readonly EnumProperty s_propAUTO = new EnumProperty( Enums.AUTO );
+        protected static readonly EnumProperty SPropAuto = new EnumProperty( Enums.Auto );
 
-        protected static readonly EnumProperty s_propCOLUMN = new EnumProperty( Enums.COLUMN );
+        protected static readonly EnumProperty SPropColumn = new EnumProperty( Enums.Column );
 
-        protected static readonly EnumProperty s_propPAGE = new EnumProperty( Enums.PAGE );
+        protected static readonly EnumProperty SPropPage = new EnumProperty( Enums.Page );
 
-        protected static readonly EnumProperty s_propEVEN_PAGE = new EnumProperty( Enums.EVEN_PAGE );
+        protected static readonly EnumProperty SPropEvenPage = new EnumProperty( Enums.EvenPage );
 
-        protected static readonly EnumProperty s_propODD_PAGE = new EnumProperty( Enums.ODD_PAGE );
+        protected static readonly EnumProperty SPropOddPage = new EnumProperty( Enums.OddPage );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected GenericBreak( string name ) : base( name )
         {
@@ -33,41 +33,41 @@ namespace Fonet.Fo.Properties
         public override Property CheckEnumValues( string value )
         {
             if ( value.Equals( "auto" ) )
-                return s_propAUTO;
+                return SPropAuto;
 
             if ( value.Equals( "column" ) )
-                return s_propCOLUMN;
+                return SPropColumn;
 
             if ( value.Equals( "page" ) )
-                return s_propPAGE;
+                return SPropPage;
 
             if ( value.Equals( "even-page" ) )
-                return s_propEVEN_PAGE;
+                return SPropEvenPage;
 
             if ( value.Equals( "odd-page" ) )
-                return s_propODD_PAGE;
+                return SPropOddPage;
 
             return base.CheckEnumValues( value );
         }
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "auto", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "auto", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
 
         internal class Enums
         {
-            public const int AUTO = Constants.AUTO;
+            public const int Auto = Constants.Auto;
 
-            public const int COLUMN = Constants.COLUMN;
+            public const int Column = Constants.Column;
 
-            public const int PAGE = Constants.PAGE;
+            public const int Page = Constants.Page;
 
-            public const int EVEN_PAGE = Constants.EVEN_PAGE;
+            public const int EvenPage = Constants.EvenPage;
 
-            public const int ODD_PAGE = Constants.ODD_PAGE;
+            public const int OddPage = Constants.OddPage;
         }
     }
 }

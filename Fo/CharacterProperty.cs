@@ -2,26 +2,26 @@ namespace Fonet.Fo
 {
     internal class CharacterProperty : Property
     {
-        private readonly char character;
+        private readonly char _character;
 
         public CharacterProperty( char character )
         {
-            this.character = character;
+            this._character = character;
         }
 
         public override object GetObject()
         {
-            return character;
+            return _character;
         }
 
         public override char GetCharacter()
         {
-            return character;
+            return _character;
         }
 
         public override string GetString()
         {
-            return character.ToString();
+            return _character.ToString();
         }
 
         internal class Maker : PropertyMaker

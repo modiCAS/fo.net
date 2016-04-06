@@ -3,11 +3,11 @@ using Fonet.Layout.Inline;
 
 namespace Fonet.Fo
 {
-    internal class XMLElement : XMLObj
+    internal class XmlElement : XmlObj
     {
-        private readonly string nmspace = string.Empty;
+        private readonly string _nmspace = string.Empty;
 
-        public XMLElement( FObj parent, PropertyList propertyList, string tag )
+        public XmlElement( FObj parent, PropertyList propertyList, string tag )
             : base( parent, propertyList, tag )
         {
             Init();
@@ -23,7 +23,7 @@ namespace Fonet.Fo
             if ( !( area is ForeignObjectArea ) )
                 throw new FonetException( "XML not in fo:instream-foreign-object" );
 
-            return new Status( Status.OK );
+            return new Status( Status.Ok );
         }
 
         private void Init()
@@ -33,21 +33,21 @@ namespace Fonet.Fo
 
         public override string GetNameSpace()
         {
-            return nmspace;
+            return _nmspace;
         }
 
         internal new class Maker : FObj.Maker
         {
-            private readonly string tag;
+            private readonly string _tag;
 
             internal Maker( string t )
             {
-                tag = t;
+                _tag = t;
             }
 
             public override FObj Make( FObj parent, PropertyList propertyList )
             {
-                return new XMLElement( parent, propertyList, tag );
+                return new XmlElement( parent, propertyList, _tag );
             }
         }
     }

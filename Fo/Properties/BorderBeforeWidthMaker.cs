@@ -20,7 +20,7 @@ namespace Fonet.Fo.Properties
 
             sbExpr.Length = 0;
             sbExpr.Append( "border-" );
-            sbExpr.Append( propertyList.wmRelToAbs( PropertyList.BEFORE ) );
+            sbExpr.Append( propertyList.WmRelToAbs( PropertyList.Before ) );
             sbExpr.Append( "-width" );
             if ( propertyList.GetExplicitProperty( sbExpr.ToString() ) != null )
                 return true;
@@ -31,21 +31,21 @@ namespace Fonet.Fo.Properties
 
         public override Property Compute( PropertyList propertyList )
         {
-            FObj parentFO = propertyList.getParentFObj();
+            FObj parentFo = propertyList.GetParentFObj();
             var sbExpr = new StringBuilder();
             Property p = null;
             sbExpr.Append( "border-" );
-            sbExpr.Append( propertyList.wmRelToAbs( PropertyList.BEFORE ) );
+            sbExpr.Append( propertyList.WmRelToAbs( PropertyList.Before ) );
             sbExpr.Append( "-width" );
             p = propertyList.GetExplicitOrShorthandProperty( sbExpr.ToString() );
 
             if ( p != null )
-                p = ConvertProperty( p, propertyList, parentFO );
+                p = ConvertProperty( p, propertyList, parentFo );
 
             return p;
         }
 
-        protected override string getDefaultForConditionality()
+        protected override string GetDefaultForConditionality()
         {
             return "retain";
         }

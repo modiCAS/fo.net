@@ -11,20 +11,20 @@ namespace Fonet.Pdf.Gdi.Font
         /// <summary>
         ///     Maps a glyph index to a subset index.
         /// </summary>
-        private readonly SortedList glyphToSubset;
+        private readonly SortedList _glyphToSubset;
 
         /// <summary>
         ///     Maps a subset index to glyph index.
         /// </summary>
-        private readonly SortedList subsetToGlyph;
+        private readonly SortedList _subsetToGlyph;
 
         /// <summary>
         ///     Class constructor.
         /// </summary>
         public IndexMappings()
         {
-            glyphToSubset = new SortedList();
-            subsetToGlyph = new SortedList();
+            _glyphToSubset = new SortedList();
+            _subsetToGlyph = new SortedList();
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public int Count
         {
-            get { return glyphToSubset.Count; }
+            get { return _glyphToSubset.Count; }
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public IList GlyphIndices
         {
-            get { return new ArrayList( glyphToSubset.Keys ); }
+            get { return new ArrayList( _glyphToSubset.Keys ); }
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public IList SubsetIndices
         {
-            get { return new ArrayList( subsetToGlyph.Keys ); }
+            get { return new ArrayList( _subsetToGlyph.Keys ); }
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// <returns></returns>
         public bool HasMapping( int glyphIndex )
         {
-            return glyphToSubset.Contains( glyphIndex );
+            return _glyphToSubset.Contains( glyphIndex );
         }
 
         /// <summary>
@@ -70,13 +70,13 @@ namespace Fonet.Pdf.Gdi.Font
         public int Map( int glyphIndex )
         {
             var subsetIndex = 0;
-            if ( glyphToSubset.Contains( glyphIndex ) )
-                subsetIndex = (int)glyphToSubset[ glyphIndex ];
+            if ( _glyphToSubset.Contains( glyphIndex ) )
+                subsetIndex = (int)_glyphToSubset[ glyphIndex ];
             else
             {
-                subsetIndex = glyphToSubset.Count;
-                glyphToSubset.Add( glyphIndex, subsetIndex );
-                subsetToGlyph.Add( subsetIndex, glyphIndex );
+                subsetIndex = _glyphToSubset.Count;
+                _glyphToSubset.Add( glyphIndex, subsetIndex );
+                _subsetToGlyph.Add( subsetIndex, glyphIndex );
             }
             return subsetIndex;
         }
@@ -101,8 +101,8 @@ namespace Fonet.Pdf.Gdi.Font
         /// </returns>
         public int GetSubsetIndex( int glyphIndex )
         {
-            if ( glyphToSubset.Contains( glyphIndex ) )
-                return (int)glyphToSubset[ glyphIndex ];
+            if ( _glyphToSubset.Contains( glyphIndex ) )
+                return (int)_glyphToSubset[ glyphIndex ];
             return -1;
         }
 
@@ -115,8 +115,8 @@ namespace Fonet.Pdf.Gdi.Font
         /// </returns>
         public int GetGlyphIndex( int subsetIndex )
         {
-            if ( subsetToGlyph.Contains( subsetIndex ) )
-                return (int)subsetToGlyph[ subsetIndex ];
+            if ( _subsetToGlyph.Contains( subsetIndex ) )
+                return (int)_subsetToGlyph[ subsetIndex ];
             return -1;
         }
     }

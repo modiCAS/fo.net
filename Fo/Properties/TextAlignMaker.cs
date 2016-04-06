@@ -2,15 +2,15 @@ namespace Fonet.Fo.Properties
 {
     internal class TextAlignMaker : EnumProperty.Maker
     {
-        protected static readonly EnumProperty s_propCENTER = new EnumProperty( Constants.CENTER );
+        protected static readonly EnumProperty SPropCenter = new EnumProperty( Constants.Center );
 
-        protected static readonly EnumProperty s_propEND = new EnumProperty( Constants.END );
+        protected static readonly EnumProperty SPropEnd = new EnumProperty( Constants.End );
 
-        protected static readonly EnumProperty s_propSTART = new EnumProperty( Constants.START );
+        protected static readonly EnumProperty SPropStart = new EnumProperty( Constants.Start );
 
-        protected static readonly EnumProperty s_propJUSTIFY = new EnumProperty( Constants.JUSTIFY );
+        protected static readonly EnumProperty SPropJustify = new EnumProperty( Constants.Justify );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected TextAlignMaker( string name ) : base( name )
         {
@@ -30,31 +30,31 @@ namespace Fonet.Fo.Properties
         public override Property CheckEnumValues( string value )
         {
             if ( value.Equals( "center" ) )
-                return s_propCENTER;
+                return SPropCenter;
 
             if ( value.Equals( "end" ) )
-                return s_propEND;
+                return SPropEnd;
 
             if ( value.Equals( "right" ) )
-                return s_propEND;
+                return SPropEnd;
 
             if ( value.Equals( "start" ) )
-                return s_propSTART;
+                return SPropStart;
 
             if ( value.Equals( "left" ) )
-                return s_propSTART;
+                return SPropStart;
 
             if ( value.Equals( "justify" ) )
-                return s_propJUSTIFY;
+                return SPropJustify;
 
             return base.CheckEnumValues( value );
         }
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "start", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "start", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

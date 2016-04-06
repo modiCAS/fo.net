@@ -5,26 +5,26 @@ namespace Fonet.Pdf
     /// </summary>
     public class PdfWArray : PdfObject
     {
-        private readonly PdfArray array = new PdfArray();
-        private readonly int startCID;
+        private readonly PdfArray _array = new PdfArray();
+        private readonly int _startCid;
 
-        public PdfWArray( int startCID )
+        public PdfWArray( int startCid )
         {
-            this.startCID = startCID;
+            this._startCid = startCid;
         }
 
         public void AddEntry( int[] widths )
         {
-            array.AddArray( widths );
+            _array.AddArray( widths );
         }
 
         protected internal override void Write( PdfWriter writer )
         {
             writer.WriteKeyword( Keyword.ArrayBegin );
             writer.WriteSpace();
-            writer.Write( startCID );
+            writer.Write( _startCid );
             writer.WriteSpace();
-            array.Write( writer );
+            _array.Write( writer );
             writer.WriteKeyword( Keyword.ArrayEnd );
         }
     }

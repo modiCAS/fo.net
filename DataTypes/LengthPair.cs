@@ -4,35 +4,35 @@ namespace Fonet.DataTypes
 {
     internal class LengthPair : ICompoundDatatype
     {
-        private Property bpd;
-        private Property ipd;
+        private Property _bpd;
+        private Property _ipd;
 
         public void SetComponent( string sCmpnName, Property cmpnValue,
             bool bIsDefault )
         {
             if ( sCmpnName.Equals( "block-progression-direction" ) )
-                bpd = cmpnValue;
+                _bpd = cmpnValue;
             else if ( sCmpnName.Equals( "inline-progression-direction" ) )
-                ipd = cmpnValue;
+                _ipd = cmpnValue;
         }
 
         public Property GetComponent( string sCmpnName )
         {
             if ( sCmpnName.Equals( "block-progression-direction" ) )
-                return GetBPD();
+                return GetBpd();
             if ( sCmpnName.Equals( "inline-progression-direction" ) )
-                return GetIPD();
+                return GetIpd();
             return null;
         }
 
-        public Property GetIPD()
+        public Property GetIpd()
         {
-            return ipd;
+            return _ipd;
         }
 
-        public Property GetBPD()
+        public Property GetBpd()
         {
-            return bpd;
+            return _bpd;
         }
     }
 }

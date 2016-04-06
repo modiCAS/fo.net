@@ -7,16 +7,16 @@ namespace Fonet.DataTypes
 {
     internal class IDReferences
     {
-        private const int ID_PADDING = 5000;
-        private readonly Hashtable idReferences;
-        private readonly Hashtable idValidation;
-        private readonly Hashtable idUnvalidated;
+        private const int IDPadding = 5000;
+        private readonly Hashtable _idReferences;
+        private readonly Hashtable _idValidation;
+        private readonly Hashtable _idUnvalidated;
 
         public IDReferences()
         {
-            idReferences = new Hashtable();
-            idValidation = new Hashtable();
-            idUnvalidated = new Hashtable();
+            _idReferences = new Hashtable();
+            _idValidation = new Hashtable();
+            _idUnvalidated = new Hashtable();
         }
 
         public void InitializeID( string id, Area area )
@@ -34,14 +34,14 @@ namespace Fonet.DataTypes
                     RemoveFromUnvalidatedIDList( id );
                     RemoveFromIdValidationList( id );
                 }
-                else if ( doesIDExist( id ) )
+                else if ( DoesIDExist( id ) )
                 {
                     throw new FonetException( "The id \"" + id
                         + "\" already exists in this document" );
                 }
                 else
                 {
-                    createNewId( id );
+                    CreateNewId( id );
                     RemoveFromIdValidationList( id );
                 }
             }
@@ -51,9 +51,9 @@ namespace Fonet.DataTypes
         {
             if ( id != null && !id.Equals( "" ) )
             {
-                if ( !doesIDExist( id ) )
+                if ( !DoesIDExist( id ) )
                 {
-                    createNewId( id );
+                    CreateNewId( id );
                     AddToUnvalidatedIdList( id );
                 }
             }
@@ -61,57 +61,57 @@ namespace Fonet.DataTypes
 
         public void AddToUnvalidatedIdList( string id )
         {
-            idUnvalidated[ id ] = "";
+            _idUnvalidated[ id ] = "";
         }
 
         public void RemoveFromUnvalidatedIDList( string id )
         {
-            idUnvalidated.Remove( id );
+            _idUnvalidated.Remove( id );
         }
 
         public bool DoesUnvalidatedIDExist( string id )
         {
-            return idUnvalidated.ContainsKey( id );
+            return _idUnvalidated.ContainsKey( id );
         }
 
         public void ConfigureID( string id, Area area )
         {
             if ( id != null && !id.Equals( "" ) )
             {
-                setPosition( id,
+                SetPosition( id,
                     area.getPage().getBody().getXPosition()
-                        + area.getTableCellXOffset() - ID_PADDING,
+                        + area.getTableCellXOffset() - IDPadding,
                     area.getPage().getBody().GetYPosition()
-                        - area.getAbsoluteHeight() + ID_PADDING );
-                setPageNumber( id, area.getPage().getNumber() );
+                        - area.getAbsoluteHeight() + IDPadding );
+                SetPageNumber( id, area.getPage().getNumber() );
                 area.getPage().addToIDList( id );
             }
         }
 
         public void AddToIdValidationList( string id )
         {
-            idValidation[ id ] = "";
+            _idValidation[ id ] = "";
         }
 
         public void RemoveFromIdValidationList( string id )
         {
-            idValidation.Remove( id );
+            _idValidation.Remove( id );
         }
 
         public void RemoveID( string id )
         {
-            idReferences.Remove( id );
+            _idReferences.Remove( id );
         }
 
         public bool IsEveryIdValid()
         {
-            return idValidation.Count == 0;
+            return _idValidation.Count == 0;
         }
 
         public string GetInvalidIds()
         {
             var list = new StringBuilder();
-            foreach ( object o in idValidation.Keys )
+            foreach ( object o in _idValidation.Keys )
             {
                 list.Append( "\n\"" );
                 list.Append( o );
@@ -120,76 +120,76 @@ namespace Fonet.DataTypes
             return list.ToString();
         }
 
-        public bool doesIDExist( string id )
+        public bool DoesIDExist( string id )
         {
-            return idReferences.ContainsKey( id );
+            return _idReferences.ContainsKey( id );
         }
 
-        public bool doesGoToReferenceExist( string id )
+        public bool DoesGoToReferenceExist( string id )
         {
-            var node = (IDNode)idReferences[ id ];
+            var node = (IDNode)_idReferences[ id ];
             return node.IsThereInternalLinkGoTo();
         }
 
-        public PdfGoTo getInternalLinkGoTo( string id )
+        public PdfGoTo GetInternalLinkGoTo( string id )
         {
-            var node = (IDNode)idReferences[ id ];
+            var node = (IDNode)_idReferences[ id ];
             return node.GetInternalLinkGoTo();
         }
 
-        public PdfGoTo createInternalLinkGoTo( string id, PdfObjectId objectId )
+        public PdfGoTo CreateInternalLinkGoTo( string id, PdfObjectId objectId )
         {
-            var node = (IDNode)idReferences[ id ];
+            var node = (IDNode)_idReferences[ id ];
             node.CreateInternalLinkGoTo( objectId );
             return node.GetInternalLinkGoTo();
         }
 
-        public void createNewId( string id )
+        public void CreateNewId( string id )
         {
             var node = new IDNode( id );
-            idReferences[ id ] = node;
+            _idReferences[ id ] = node;
         }
 
-        public PdfGoTo getPDFGoTo( string id )
+        public PdfGoTo GetPdfGoTo( string id )
         {
-            var node = (IDNode)idReferences[ id ];
+            var node = (IDNode)_idReferences[ id ];
             return node.GetInternalLinkGoTo();
         }
 
-        public void setInternalGoToPageReference( string id,
+        public void SetInternalGoToPageReference( string id,
             PdfObjectReference pageReference )
         {
-            var node = (IDNode)idReferences[ id ];
+            var node = (IDNode)_idReferences[ id ];
             if ( node != null )
                 node.SetInternalLinkGoToPageReference( pageReference );
         }
 
-        public void setPageNumber( string id, int pageNumber )
+        public void SetPageNumber( string id, int pageNumber )
         {
-            var node = (IDNode)idReferences[ id ];
+            var node = (IDNode)_idReferences[ id ];
             node.SetPageNumber( pageNumber );
         }
 
-        public string getPageNumber( string id )
+        public string GetPageNumber( string id )
         {
-            if ( doesIDExist( id ) )
+            if ( DoesIDExist( id ) )
             {
-                var node = (IDNode)idReferences[ id ];
+                var node = (IDNode)_idReferences[ id ];
                 return node.GetPageNumber();
             }
             AddToIdValidationList( id );
             return null;
         }
 
-        public void setPosition( string id, int x, int y )
+        public void SetPosition( string id, int x, int y )
         {
-            var node = (IDNode)idReferences[ id ];
+            var node = (IDNode)_idReferences[ id ];
             node.SetPosition( x, y );
         }
 
-        public ICollection getInvalidElements()
+        public ICollection GetInvalidElements()
         {
-            return idValidation.Keys;
+            return _idValidation.Keys;
         }
     }
 }

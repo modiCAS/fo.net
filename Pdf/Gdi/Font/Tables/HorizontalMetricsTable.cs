@@ -10,7 +10,7 @@ namespace Fonet.Pdf.Gdi.Font
     /// </remarks>
     internal class HorizontalMetricsTable : FontTable
     {
-        public IList metrics;
+        public IList Metrics;
 
         /// <summary>
         ///     Initialises a new instance of the
@@ -30,7 +30,7 @@ namespace Fonet.Pdf.Gdi.Font
         public HorizontalMetricsTable( DirectoryEntry entry, int numMetrics )
             : base( TableNames.Hmtx, entry )
         {
-            metrics = new ArrayList( numMetrics );
+            Metrics = new ArrayList( numMetrics );
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public int Count
         {
-            get { return metrics.Count; }
+            get { return Metrics.Count; }
         }
 
         /// <summary>
@@ -47,8 +47,8 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public HorizontalMetric this[ int index ]
         {
-            get { return (HorizontalMetric)metrics[ index ]; }
-            set { metrics.Insert( index, value ); }
+            get { return (HorizontalMetric)Metrics[ index ]; }
+            set { Metrics.Insert( index, value ); }
         }
 
         /// <summary>
@@ -70,21 +70,21 @@ namespace Fonet.Pdf.Gdi.Font
             // the font is monospaced the hMetrics array will only contain a 
             // single entry
             int metricsSize = numGlyphs > numberOfHMetrics ? numGlyphs : numberOfHMetrics;
-            metrics = new ArrayList( metricsSize );
+            Metrics = new ArrayList( metricsSize );
 
             for ( var i = 0; i < numberOfHMetrics; i++ )
             {
-                metrics.Add( new HorizontalMetric(
+                Metrics.Add( new HorizontalMetric(
                     stream.ReadUShort(), stream.ReadShort() ) );
             }
 
             // Fill in missing widths
             if ( numberOfHMetrics < metricsSize )
             {
-                var lastHMetric = (HorizontalMetric)metrics[ metrics.Count - 1 ];
+                var lastHMetric = (HorizontalMetric)Metrics[ Metrics.Count - 1 ];
                 for ( int i = numberOfHMetrics; i < numGlyphs; i++ )
                 {
-                    metrics.Add(
+                    Metrics.Add(
                         new HorizontalMetric( lastHMetric.AdvanceWidth, stream.ReadShort() ) );
                 }
             }
@@ -93,9 +93,9 @@ namespace Fonet.Pdf.Gdi.Font
         protected internal override void Write( FontFileWriter writer )
         {
             FontFileStream stream = writer.Stream;
-            for ( var i = 0; i < metrics.Count; i++ )
+            for ( var i = 0; i < Metrics.Count; i++ )
             {
-                var metric = (HorizontalMetric)metrics[ i ];
+                var metric = (HorizontalMetric)Metrics[ i ];
                 stream.WriteUShort( metric.AdvanceWidth );
                 stream.WriteShort( metric.LeftSideBearing );
             }

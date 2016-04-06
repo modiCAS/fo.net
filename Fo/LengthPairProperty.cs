@@ -4,21 +4,21 @@ namespace Fonet.Fo
 {
     internal class LengthPairProperty : Property
     {
-        private readonly LengthPair lengthPair;
+        private readonly LengthPair _lengthPair;
 
         public LengthPairProperty( LengthPair lengthPair )
         {
-            this.lengthPair = lengthPair;
+            this._lengthPair = lengthPair;
         }
 
         public override LengthPair GetLengthPair()
         {
-            return lengthPair;
+            return _lengthPair;
         }
 
         public override object GetObject()
         {
-            return lengthPair;
+            return _lengthPair;
         }
 
         internal class Maker : LengthProperty.Maker

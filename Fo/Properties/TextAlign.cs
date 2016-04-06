@@ -2,12 +2,12 @@ namespace Fonet.Fo.Properties
 {
     internal class TextAlign
     {
-        public const int CENTER = Constants.CENTER;
+        public const int Center = Constants.Center;
 
-        public const int END = Constants.END;
+        public const int End = Constants.End;
 
-        public const int START = Constants.START;
+        public const int Start = Constants.Start;
 
-        public const int JUSTIFY = Constants.JUSTIFY;
+        public const int Justify = Constants.Justify;
     }
 }

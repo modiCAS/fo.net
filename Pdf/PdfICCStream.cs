@@ -3,22 +3,22 @@ namespace Fonet.Pdf
     /// <summary>
     ///     An International Color Code stream
     /// </summary>
-    public class PdfICCStream : PdfStream
+    public class PdfIccStream : PdfStream
     {
-        public PdfICCStream( PdfObjectId id, byte[] profileData )
+        public PdfIccStream( PdfObjectId id, byte[] profileData )
             : base( id )
         {
-            data = profileData;
+            Data = profileData;
         }
 
         public PdfNumeric NumComponents
         {
-            set { dictionary[ PdfName.Names.N ] = value; }
+            set { Dictionary[ PdfName.Names.N ] = value; }
         }
 
         public PdfString AlternativeColorSpace
         {
-            set { dictionary[ PdfName.Names.Alternate ] = value; }
+            set { Dictionary[ PdfName.Names.Alternate ] = value; }
         }
     }
 }

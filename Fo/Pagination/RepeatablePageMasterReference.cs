@@ -3,25 +3,25 @@ using System;
 namespace Fonet.Fo.Pagination
 {
     internal class RepeatablePageMasterReference :
-        PageMasterReference, SubSequenceSpecifier
+        PageMasterReference, ISubSequenceSpecifier
     {
-        private const int INFINITE = -1;
+        private const int Infinite = -1;
 
-        private int maximumRepeats;
+        private int _maximumRepeats;
 
-        private int numberConsumed;
+        private int _numberConsumed;
 
         public RepeatablePageMasterReference( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
             string mr = GetProperty( "maximum-repeats" ).GetString();
             if ( mr.Equals( "no-limit" ) )
-                setMaximumRepeats( INFINITE );
+                SetMaximumRepeats( Infinite );
             else
             {
                 try
                 {
-                    setMaximumRepeats( int.Parse( mr ) );
+                    SetMaximumRepeats( int.Parse( mr ) );
                 }
                 catch ( FormatException )
                 {
@@ -34,10 +34,10 @@ namespace Fonet.Fo.Pagination
             int currentPageNumber, bool thisIsFirstPage, bool isEmptyPage )
         {
             string pm = MasterName;
-            if ( getMaximumRepeats() != INFINITE )
+            if ( GetMaximumRepeats() != Infinite )
             {
-                if ( numberConsumed < getMaximumRepeats() )
-                    numberConsumed++;
+                if ( _numberConsumed < GetMaximumRepeats() )
+                    _numberConsumed++;
                 else
                     pm = null;
             }
@@ -46,7 +46,7 @@ namespace Fonet.Fo.Pagination
 
         public override void Reset()
         {
-            numberConsumed = 0;
+            _numberConsumed = 0;
         }
 
         public new static FObj.Maker GetMaker()
@@ -54,17 +54,17 @@ namespace Fonet.Fo.Pagination
             return new Maker();
         }
 
-        private void setMaximumRepeats( int maximumRepeats )
+        private void SetMaximumRepeats( int maximumRepeats )
         {
-            if ( maximumRepeats == INFINITE )
-                this.maximumRepeats = maximumRepeats;
+            if ( maximumRepeats == Infinite )
+                this._maximumRepeats = maximumRepeats;
             else
-                this.maximumRepeats = maximumRepeats < 0 ? 0 : maximumRepeats;
+                this._maximumRepeats = maximumRepeats < 0 ? 0 : maximumRepeats;
         }
 
-        private int getMaximumRepeats()
+        private int GetMaximumRepeats()
         {
-            return maximumRepeats;
+            return _maximumRepeats;
         }
 
         protected override string GetElementName()

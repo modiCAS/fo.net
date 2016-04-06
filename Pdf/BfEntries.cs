@@ -7,14 +7,14 @@ namespace Fonet.Pdf
     /// </summary>
     internal class BfEntryList : IEnumerable
     {
-        private readonly ArrayList entries = new ArrayList();
+        private readonly ArrayList _entries = new ArrayList();
 
         /// <summary>
         ///     Gets the <see cref="BfEntry" /> at <i>index</i>.
         /// </summary>
         public BfEntry this[ int index ]
         {
-            get { return (BfEntry)entries[ index ]; }
+            get { return (BfEntry)_entries[ index ]; }
         }
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace Fonet.Pdf
         /// </summary>
         public int Count
         {
-            get { return entries.Count; }
+            get { return _entries.Count; }
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace Fonet.Pdf
             get
             {
                 var count = 0;
-                foreach ( BfEntry entry in entries )
+                foreach ( BfEntry entry in _entries )
                 {
                     if ( entry.IsRange )
                         count++;
@@ -68,7 +68,7 @@ namespace Fonet.Pdf
         /// <returns></returns>
         public int NumChars
         {
-            get { return entries.Count - NumRanges; }
+            get { return _entries.Count - NumRanges; }
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace Fonet.Pdf
         /// <returns></returns>
         public IEnumerator GetEnumerator()
         {
-            return ArrayList.ReadOnly( entries ).GetEnumerator();
+            return ArrayList.ReadOnly( _entries ).GetEnumerator();
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace Fonet.Pdf
         /// <param name="entry"></param>
         public void Add( BfEntry entry )
         {
-            entries.Add( entry );
+            _entries.Add( entry );
         }
     }
 

@@ -28,24 +28,24 @@ namespace Fonet.Pdf.Gdi.Font
         public const string Prep = "prep";
 
         // s Related to PostScript Outlines 
-        public const string CFF = "CFF ";
-        public const string VORG = "VORG";
+        public const string Cff = "CFF ";
+        public const string Vorg = "VORG";
 
         // s Related to Bitmap Glyphs 
-        public const string BASE = "BASE";
-        public const string GDEF = "GDEF";
-        public const string GPOS = "GPOS";
-        public const string GSUB = "GSUB";
-        public const string JSTF = "JSTF";
+        public const string Base = "BASE";
+        public const string Gdef = "GDEF";
+        public const string Gpos = "GPOS";
+        public const string Gsub = "GSUB";
+        public const string Jstf = "JSTF";
 
         // Other OpenType s 
-        public const string DSIG = "DSIG";
+        public const string Dsig = "DSIG";
         public const string Gasp = "gasp";
         public const string Hdmx = "hdmx";
         public const string Kern = "kern";
-        public const string LTSH = "LTSH";
-        public const string PCLT = "PCLT";
-        public const string VDMX = "VDMX";
+        public const string Ltsh = "LTSH";
+        public const string Pclt = "PCLT";
+        public const string Vdmx = "VDMX";
         public const string Vhea = "vhea";
         public const string Vmtx = "vmtx";
 

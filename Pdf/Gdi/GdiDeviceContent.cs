@@ -10,7 +10,7 @@ namespace Fonet.Pdf.Gdi
         /// <summary>
         ///     Pointer to device context created by ::CreateDC()
         /// </summary>
-        private IntPtr hDC;
+        private IntPtr _hDc;
 
         /// <summary>
         ///     Creates a new device context that matches the desktop display surface
@@ -18,7 +18,7 @@ namespace Fonet.Pdf.Gdi
         public GdiDeviceContent()
         {
             //this.hDC = LibWrapper.CreateDC("Display", String.Empty, null, IntPtr.Zero);
-            hDC = LibWrapper.GetDC( IntPtr.Zero );
+            _hDc = LibWrapper.GetDC( IntPtr.Zero );
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace Fonet.Pdf.Gdi
         /// </summary>
         internal IntPtr Handle
         {
-            get { return hDC; }
+            get { return _hDc; }
         }
 
         public virtual void Dispose()
@@ -48,12 +48,12 @@ namespace Fonet.Pdf.Gdi
         /// </summary>
         protected virtual void Dispose( bool disposing )
         {
-            if ( hDC != IntPtr.Zero )
+            if ( _hDc != IntPtr.Zero )
             {
-                LibWrapper.DeleteDC( hDC );
+                LibWrapper.DeleteDC( _hDc );
 
                 // Mark as deleted
-                hDC = IntPtr.Zero;
+                _hDc = IntPtr.Zero;
             }
         }
 
@@ -65,7 +65,7 @@ namespace Fonet.Pdf.Gdi
         /// <returns>A handle to the object being replaced.</returns>
         public IntPtr SelectFont( GdiFont font )
         {
-            return LibWrapper.SelectObject( hDC, font.Handle );
+            return LibWrapper.SelectObject( _hDc, font.Handle );
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace Fonet.Pdf.Gdi
         /// </summary>
         public IntPtr GetCurrentObject( GdiDcObject objectType )
         {
-            return LibWrapper.GetCurrentObject( hDC, objectType );
+            return LibWrapper.GetCurrentObject( _hDc, objectType );
         }
     }
 }

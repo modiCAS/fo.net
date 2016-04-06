@@ -7,7 +7,7 @@ namespace Fonet.Fo.Flow
         protected MultiToggle( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:multi-toggle";
+            Name = "fo:multi-toggle";
         }
 
         public new static FObj.Maker GetMaker()
@@ -17,7 +17,7 @@ namespace Fonet.Fo.Flow
 
         public override Status Layout( Area area )
         {
-            AccessibilityProps mAccProps = propMgr.GetAccessibilityProps();
+            AccessibilityProps mAccProps = PropMgr.GetAccessibilityProps();
             return base.Layout( area );
         }
 

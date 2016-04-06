@@ -16,16 +16,16 @@ namespace Fonet.Pdf
         private static readonly byte[] EmptyByteArray = new byte[ 0 ];
 
         private static readonly Encoding BigEndianEncoding = BigEndianUnicode;
-        private GdiFontMetrics metrics;
+        private GdiFontMetrics _metrics;
 
         public PdfIdentityHEncoding( GdiFontMetrics metrics )
         {
-            this.metrics = metrics;
+            this._metrics = metrics;
         }
 
         public GdiFontMetrics Metrics
         {
-            set { metrics = value; }
+            set { _metrics = value; }
         }
 
         public override int GetByteCount( char[] chars )
@@ -49,7 +49,7 @@ namespace Fonet.Pdf
 
             var gids = new char[ count ];
             for ( var i = 0; i < count; i++ )
-                gids[ i ] = (char)metrics.MapCharacter( chars[ index + i ] );
+                gids[ i ] = (char)_metrics.MapCharacter( chars[ index + i ] );
             return BigEndianEncoding.GetByteCount( gids, 0, gids.Length );
         }
 

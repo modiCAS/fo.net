@@ -20,8 +20,8 @@ namespace Fonet.Pdf
         Trailer,
         StartXRef,
         Eof,
-        BT,
-        ET,
+        Bt,
+        Et,
         Tf,
         Td,
         Tr,
@@ -56,8 +56,8 @@ namespace Fonet.Pdf
                 new[]
                 { (byte)'s', (byte)'t', (byte)'a', (byte)'r', (byte)'t', (byte)'x', (byte)'r', (byte)'e', (byte)'f' } );
             Entries.Add( Keyword.Eof, new[] { (byte)'%', (byte)'%', (byte)'E', (byte)'O', (byte)'F' } );
-            Entries.Add( Keyword.BT, new[] { (byte)'B', (byte)'T' } );
-            Entries.Add( Keyword.ET, new[] { (byte)'E', (byte)'T' } );
+            Entries.Add( Keyword.Bt, new[] { (byte)'B', (byte)'T' } );
+            Entries.Add( Keyword.Et, new[] { (byte)'E', (byte)'T' } );
             Entries.Add( Keyword.Tf, new[] { (byte)'T', (byte)'f' } );
             Entries.Add( Keyword.Td, new[] { (byte)'T', (byte)'d' } );
             Entries.Add( Keyword.Tr, new[] { (byte)'T', (byte)'r' } );

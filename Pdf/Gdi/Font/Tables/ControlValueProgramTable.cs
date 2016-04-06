@@ -9,7 +9,7 @@ namespace Fonet.Pdf.Gdi.Font
         ///     Set of instructions executed whenever point size or font
         ///     or transformation change.
         /// </summary>
-        private byte[] instructions;
+        private byte[] _instructions;
 
         /// <summary>
         ///     Creates an instance of the <see cref="ControlValueProgramTable" /> class.
@@ -27,8 +27,8 @@ namespace Fonet.Pdf.Gdi.Font
         /// <param name="reader"></param>
         protected internal override void Read( FontFileReader reader )
         {
-            instructions = new byte[ Entry.Length ];
-            reader.Stream.Read( instructions, 0, instructions.Length );
+            _instructions = new byte[ Entry.Length ];
+            reader.Stream.Read( _instructions, 0, _instructions.Length );
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// <param name="writer"></param>
         protected internal override void Write( FontFileWriter writer )
         {
-            writer.Stream.Write( instructions, 0, instructions.Length );
+            writer.Stream.Write( _instructions, 0, _instructions.Length );
         }
     }
 }

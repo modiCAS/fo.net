@@ -12,7 +12,7 @@ namespace Fonet.Pdf.Filter
 
         public PdfObject Name
         {
-            get { return PdfName.Names.ASCIIHexDecode; }
+            get { return PdfName.Names.AsciiHexDecode; }
         }
 
         public PdfObject DecodeParms

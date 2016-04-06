@@ -2,13 +2,13 @@ namespace Fonet.Fo.Properties
 {
     internal class LetterValueMaker : EnumProperty.Maker
     {
-        protected static readonly EnumProperty s_propALPHABETIC = new EnumProperty( Constants.ALPHABETIC );
+        protected static readonly EnumProperty SPropAlphabetic = new EnumProperty( Constants.Alphabetic );
 
-        protected static readonly EnumProperty s_propTRADITIONAL = new EnumProperty( Constants.TRADITIONAL );
+        protected static readonly EnumProperty SPropTraditional = new EnumProperty( Constants.Traditional );
 
-        protected static readonly EnumProperty s_propAUTO = new EnumProperty( Constants.AUTO );
+        protected static readonly EnumProperty SPropAuto = new EnumProperty( Constants.Auto );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected LetterValueMaker( string name ) : base( name )
         {
@@ -29,22 +29,22 @@ namespace Fonet.Fo.Properties
         public override Property CheckEnumValues( string value )
         {
             if ( value.Equals( "alphabetic" ) )
-                return s_propALPHABETIC;
+                return SPropAlphabetic;
 
             if ( value.Equals( "traditional" ) )
-                return s_propTRADITIONAL;
+                return SPropTraditional;
 
             if ( value.Equals( "auto" ) )
-                return s_propAUTO;
+                return SPropAuto;
 
             return base.CheckEnumValues( value );
         }
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "auto", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "auto", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Fonet.Fo.Flow
         public ListItemLabel( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:list-item-label";
+            Name = "fo:list-item-label";
         }
 
         public new static FObj.Maker GetMaker()
@@ -17,16 +17,16 @@ namespace Fonet.Fo.Flow
 
         public override Status Layout( Area area )
         {
-            int numChildren = children.Count;
+            int numChildren = Children.Count;
 
             if ( numChildren != 1 )
                 throw new FonetException( "list-item-label must have exactly one block in this version of FO.NET" );
 
-            AccessibilityProps mAccProps = propMgr.GetAccessibilityProps();
-            string id = properties.GetProperty( "id" ).GetString();
+            AccessibilityProps mAccProps = PropMgr.GetAccessibilityProps();
+            string id = Properties.GetProperty( "id" ).GetString();
             area.getIDReferences().InitializeID( id, area );
 
-            var block = (Block)children[ 0 ];
+            var block = (Block)Children[ 0 ];
 
             Status status;
             status = block.Layout( area );

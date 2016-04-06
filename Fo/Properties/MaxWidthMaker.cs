@@ -2,9 +2,9 @@ namespace Fonet.Fo.Properties
 {
     internal class MaxWidthMaker : LengthProperty.Maker
     {
-        protected static readonly EnumProperty s_propNONE = new EnumProperty( Constants.NONE );
+        protected static readonly EnumProperty SPropNone = new EnumProperty( Constants.None );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected MaxWidthMaker( string name ) : base( name )
         {
@@ -23,16 +23,16 @@ namespace Fonet.Fo.Properties
         public override Property CheckEnumValues( string value )
         {
             if ( value.Equals( "none" ) )
-                return s_propNONE;
+                return SPropNone;
 
             return base.CheckEnumValues( value );
         }
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "none", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "none", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

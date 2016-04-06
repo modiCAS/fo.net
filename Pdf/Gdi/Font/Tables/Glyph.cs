@@ -15,25 +15,25 @@ namespace Fonet.Pdf.Gdi.Font
         /// <summary>
         ///     List of composite glyph indices.
         /// </summary>
-        private readonly IList children;
+        private readonly IList _children;
 
         /// <summary>
         ///     Contains glyph description as raw data.
         /// </summary>
-        private byte[] glyphData;
+        private byte[] _glyphData;
 
         /// <summary>
         ///     The index of this glyph as obtained from the 'loca' table.
         /// </summary>
-        private readonly int glyphIndex;
+        private readonly int _glyphIndex;
 
         /// <summary>
         ///     Class constructor.
         /// </summary>
         public Glyph( int glyphIndex )
         {
-            this.glyphIndex = glyphIndex;
-            children = new ArrayList();
+            this._glyphIndex = glyphIndex;
+            _children = new ArrayList();
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public int Index
         {
-            get { return glyphIndex; }
+            get { return _glyphIndex; }
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public uint Length
         {
-            get { return glyphData != null ? (uint)glyphData.Length : 0; }
+            get { return _glyphData != null ? (uint)_glyphData.Length : 0; }
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public IList Children
         {
-            get { return children; }
+            get { return _children; }
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public bool IsComposite
         {
-            get { return children.Count != 0; }
+            get { return _children.Count != 0; }
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// <param name="glyphData"></param>
         public void SetGlyphData( byte[] glyphData )
         {
-            this.glyphData = glyphData;
+            this._glyphData = glyphData;
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// <param name="glyphIndex"></param>
         public void AddChild( int glyphIndex )
         {
-            children.Add( glyphIndex );
+            _children.Add( glyphIndex );
         }
 
         /// <summary>
@@ -93,8 +93,8 @@ namespace Fonet.Pdf.Gdi.Font
         /// <param name="stream"></param>
         public void Write( FontFileStream stream )
         {
-            if ( glyphData != null && glyphData.Length > 0 )
-                stream.Write( glyphData, 0, glyphData.Length );
+            if ( _glyphData != null && _glyphData.Length > 0 )
+                stream.Write( _glyphData, 0, _glyphData.Length );
         }
     }
 }

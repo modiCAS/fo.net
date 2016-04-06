@@ -4,27 +4,27 @@ namespace Fonet.Fo.Flow
 {
     internal class Block : FObjMixed
     {
-        private int align;
-        private int alignLast;
-        private bool anythingLaidOut;
-        private int areaHeight;
-        private int blockOrphans;
-        private int blockWidows;
-        private int breakAfter;
-        private int contentWidth;
-        private int endIndent;
-        private string id;
-        private int keepWithNext;
-        private int lineHeight;
-        private int spaceAfter;
-        private int spaceBefore;
-        private readonly int span;
-        private int startIndent;
-        private int textIndent;
+        private int _align;
+        private int _alignLast;
+        private bool _anythingLaidOut;
+        private int _areaHeight;
+        private int _blockOrphans;
+        private int _blockWidows;
+        private int _breakAfter;
+        private int _contentWidth;
+        private int _endIndent;
+        private string _id;
+        private int _keepWithNext;
+        private int _lineHeight;
+        private int _spaceAfter;
+        private int _spaceBefore;
+        private readonly int _span;
+        private int _startIndent;
+        private int _textIndent;
 
         public Block( FObj parent, PropertyList propertyList ) : base( parent, propertyList )
         {
-            name = "fo:block";
+            Name = "fo:block";
 
             switch ( parent.GetName() )
             {
@@ -51,8 +51,8 @@ namespace Fonet.Fo.Flow
                         "fo:basic-link, fo:block, fo:block-container, fo:float, fo:flow, fo:footnote-body, fo:inline, fo:inline-container, fo:list-item-body, fo:list-item-label, fo:marker, fo:multi-case, fo:static-content, fo:table-caption, fo:table-cell or fo:wrapper " +
                         "not " + parent.GetName() );
             }
-            span = properties.GetProperty( "span" ).GetEnum();
-            ts = propMgr.getTextDecoration( parent );
+            _span = Properties.GetProperty( "span" ).GetEnum();
+            Ts = PropMgr.GetTextDecoration( parent );
         }
 
         public new static FObj.Maker GetMaker()
@@ -64,120 +64,120 @@ namespace Fonet.Fo.Flow
         {
             BlockArea blockArea;
 
-            if ( marker == MarkerBreakAfter )
-                return new Status( Status.OK );
+            if ( Marker == MarkerBreakAfter )
+                return new Status( Status.Ok );
 
-            if ( marker == MarkerStart )
+            if ( Marker == MarkerStart )
             {
-                AccessibilityProps mAccProps = propMgr.GetAccessibilityProps();
-                AuralProps mAurProps = propMgr.GetAuralProps();
-                BorderAndPadding bap = propMgr.GetBorderAndPadding();
-                BackgroundProps bProps = propMgr.GetBackgroundProps();
-                HyphenationProps mHyphProps = propMgr.GetHyphenationProps();
-                MarginProps mProps = propMgr.GetMarginProps();
-                RelativePositionProps mRelProps = propMgr.GetRelativePositionProps();
+                AccessibilityProps mAccProps = PropMgr.GetAccessibilityProps();
+                AuralProps mAurProps = PropMgr.GetAuralProps();
+                BorderAndPadding bap = PropMgr.GetBorderAndPadding();
+                BackgroundProps bProps = PropMgr.GetBackgroundProps();
+                HyphenationProps mHyphProps = PropMgr.GetHyphenationProps();
+                MarginProps mProps = PropMgr.GetMarginProps();
+                RelativePositionProps mRelProps = PropMgr.GetRelativePositionProps();
 
-                align = properties.GetProperty( "text-align" ).GetEnum();
-                alignLast = properties.GetProperty( "text-align-last" ).GetEnum();
-                breakAfter = properties.GetProperty( "break-after" ).GetEnum();
-                lineHeight =
-                    properties.GetProperty( "line-height" ).GetLength().MValue();
-                startIndent =
-                    properties.GetProperty( "start-indent" ).GetLength().MValue();
-                endIndent =
-                    properties.GetProperty( "end-indent" ).GetLength().MValue();
-                spaceBefore =
-                    properties.GetProperty( "space-before.optimum" ).GetLength().MValue();
-                spaceAfter =
-                    properties.GetProperty( "space-after.optimum" ).GetLength().MValue();
-                textIndent =
-                    properties.GetProperty( "text-indent" ).GetLength().MValue();
-                keepWithNext =
-                    properties.GetProperty( "keep-with-next" ).GetEnum();
+                _align = Properties.GetProperty( "text-align" ).GetEnum();
+                _alignLast = Properties.GetProperty( "text-align-last" ).GetEnum();
+                _breakAfter = Properties.GetProperty( "break-after" ).GetEnum();
+                _lineHeight =
+                    Properties.GetProperty( "line-height" ).GetLength().MValue();
+                _startIndent =
+                    Properties.GetProperty( "start-indent" ).GetLength().MValue();
+                _endIndent =
+                    Properties.GetProperty( "end-indent" ).GetLength().MValue();
+                _spaceBefore =
+                    Properties.GetProperty( "space-before.optimum" ).GetLength().MValue();
+                _spaceAfter =
+                    Properties.GetProperty( "space-after.optimum" ).GetLength().MValue();
+                _textIndent =
+                    Properties.GetProperty( "text-indent" ).GetLength().MValue();
+                _keepWithNext =
+                    Properties.GetProperty( "keep-with-next" ).GetEnum();
 
-                blockWidows =
-                    properties.GetProperty( "widows" ).GetNumber().IntValue();
-                blockOrphans = properties.GetProperty( "orphans" ).GetNumber().IntValue();
-                id = properties.GetProperty( "id" ).GetString();
+                _blockWidows =
+                    Properties.GetProperty( "widows" ).GetNumber().IntValue();
+                _blockOrphans = Properties.GetProperty( "orphans" ).GetNumber().IntValue();
+                _id = Properties.GetProperty( "id" ).GetString();
 
                 if ( area is BlockArea )
                     area.end();
 
                 if ( area.getIDReferences() != null )
-                    area.getIDReferences().CreateID( id );
+                    area.getIDReferences().CreateID( _id );
 
-                marker = 0;
+                Marker = 0;
 
-                int breakBeforeStatus = propMgr.CheckBreakBefore( area );
-                if ( breakBeforeStatus != Status.OK )
+                int breakBeforeStatus = PropMgr.CheckBreakBefore( area );
+                if ( breakBeforeStatus != Status.Ok )
                     return new Status( breakBeforeStatus );
 
-                int numChildren = children.Count;
+                int numChildren = Children.Count;
                 for ( var i = 0; i < numChildren; i++ )
                 {
-                    var fo = (FONode)children[ i ];
-                    if ( fo is FOText )
+                    var fo = (FoNode)Children[ i ];
+                    if ( fo is FoText )
                     {
-                        if ( ( (FOText)fo ).willCreateArea() )
+                        if ( ( (FoText)fo ).WillCreateArea() )
                         {
-                            fo.SetWidows( blockWidows );
+                            fo.SetWidows( _blockWidows );
                             break;
                         }
-                        children.RemoveAt( i );
-                        numChildren = children.Count;
+                        Children.RemoveAt( i );
+                        numChildren = Children.Count;
                         i--;
                     }
                     else
                     {
-                        fo.SetWidows( blockWidows );
+                        fo.SetWidows( _blockWidows );
                         break;
                     }
                 }
 
                 for ( int i = numChildren - 1; i >= 0; i-- )
                 {
-                    var fo = (FONode)children[ i ];
-                    if ( fo is FOText )
+                    var fo = (FoNode)Children[ i ];
+                    if ( fo is FoText )
                     {
-                        if ( ( (FOText)fo ).willCreateArea() )
+                        if ( ( (FoText)fo ).WillCreateArea() )
                         {
-                            fo.SetOrphans( blockOrphans );
+                            fo.SetOrphans( _blockOrphans );
                             break;
                         }
                     }
                     else
                     {
-                        fo.SetOrphans( blockOrphans );
+                        fo.SetOrphans( _blockOrphans );
                         break;
                     }
                 }
             }
 
-            if ( spaceBefore != 0 && marker == 0 )
-                area.addDisplaySpace( spaceBefore );
+            if ( _spaceBefore != 0 && Marker == 0 )
+                area.addDisplaySpace( _spaceBefore );
 
-            if ( anythingLaidOut )
-                textIndent = 0;
+            if ( _anythingLaidOut )
+                _textIndent = 0;
 
-            if ( marker == 0 && area.getIDReferences() != null )
-                area.getIDReferences().ConfigureID( id, area );
+            if ( Marker == 0 && area.getIDReferences() != null )
+                area.getIDReferences().ConfigureID( _id, area );
 
             int spaceLeft = area.spaceLeft();
             blockArea =
-                new BlockArea( propMgr.GetFontState( area.getFontInfo() ),
+                new BlockArea( PropMgr.GetFontState( area.getFontInfo() ),
                     area.getAllocationWidth(), area.spaceLeft(),
-                    startIndent, endIndent, textIndent, align,
-                    alignLast, lineHeight );
+                    _startIndent, _endIndent, _textIndent, _align,
+                    _alignLast, _lineHeight );
             blockArea.setGeneratedBy( this );
-            areasGenerated++;
-            if ( areasGenerated == 1 )
+            AreasGenerated++;
+            if ( AreasGenerated == 1 )
                 blockArea.isFirst( true );
-            blockArea.addLineagePair( this, areasGenerated );
+            blockArea.addLineagePair( this, AreasGenerated );
             blockArea.setParent( area );
             blockArea.setPage( area.getPage() );
-            blockArea.setBackground( propMgr.GetBackgroundProps() );
-            blockArea.setBorderAndPadding( propMgr.GetBorderAndPadding() );
-            blockArea.setHyphenation( propMgr.GetHyphenationProps() );
+            blockArea.setBackground( PropMgr.GetBackgroundProps() );
+            blockArea.setBorderAndPadding( PropMgr.GetBorderAndPadding() );
+            blockArea.setHyphenation( PropMgr.GetHyphenationProps() );
             blockArea.start();
 
             blockArea.setAbsoluteHeight( area.getAbsoluteHeight() );
@@ -185,37 +185,37 @@ namespace Fonet.Fo.Flow
 
             blockArea.setTableCellXOffset( area.getTableCellXOffset() );
 
-            for ( int i = marker; i < children.Count; i++ )
+            for ( int i = Marker; i < Children.Count; i++ )
             {
-                var fo = (FONode)children[ i ];
+                var fo = (FoNode)Children[ i ];
                 Status status;
-                if ( ( status = fo.Layout( blockArea ) ).isIncomplete() )
+                if ( ( status = fo.Layout( blockArea ) ).IsIncomplete() )
                 {
-                    marker = i;
-                    if ( status.getCode() == Status.AREA_FULL_NONE )
+                    Marker = i;
+                    if ( status.GetCode() == Status.AreaFullNone )
                     {
                         if ( i != 0 )
                         {
-                            status = new Status( Status.AREA_FULL_SOME );
+                            status = new Status( Status.AreaFullSome );
                             area.addChild( blockArea );
                             area.setMaxHeight( area.getMaxHeight() - spaceLeft
                                 + blockArea.getMaxHeight() );
                             area.increaseHeight( blockArea.GetHeight() );
-                            anythingLaidOut = true;
+                            _anythingLaidOut = true;
 
                             return status;
                         }
-                        anythingLaidOut = false;
+                        _anythingLaidOut = false;
                         return status;
                     }
                     area.addChild( blockArea );
                     area.setMaxHeight( area.getMaxHeight() - spaceLeft
                         + blockArea.getMaxHeight() );
                     area.increaseHeight( blockArea.GetHeight() );
-                    anythingLaidOut = true;
+                    _anythingLaidOut = true;
                     return status;
                 }
-                anythingLaidOut = true;
+                _anythingLaidOut = true;
             }
 
             blockArea.end();
@@ -227,50 +227,50 @@ namespace Fonet.Fo.Flow
 
             area.increaseHeight( blockArea.GetHeight() );
 
-            if ( spaceAfter != 0 )
-                area.addDisplaySpace( spaceAfter );
+            if ( _spaceAfter != 0 )
+                area.addDisplaySpace( _spaceAfter );
 
             if ( area is BlockArea )
                 area.start();
-            areaHeight = blockArea.GetHeight();
-            contentWidth = blockArea.getContentWidth();
-            int breakAfterStatus = propMgr.CheckBreakAfter( area );
-            if ( breakAfterStatus != Status.OK )
+            _areaHeight = blockArea.GetHeight();
+            _contentWidth = blockArea.getContentWidth();
+            int breakAfterStatus = PropMgr.CheckBreakAfter( area );
+            if ( breakAfterStatus != Status.Ok )
             {
-                marker = MarkerBreakAfter;
+                Marker = MarkerBreakAfter;
                 blockArea = null;
                 return new Status( breakAfterStatus );
             }
 
-            if ( keepWithNext != 0 )
+            if ( _keepWithNext != 0 )
             {
                 blockArea = null;
-                return new Status( Status.KEEP_WITH_NEXT );
+                return new Status( Status.KeepWithNext );
             }
 
             blockArea.isLast( true );
             blockArea = null;
-            return new Status( Status.OK );
+            return new Status( Status.Ok );
         }
 
         public int GetAreaHeight()
         {
-            return areaHeight;
+            return _areaHeight;
         }
 
         public override int GetContentWidth()
         {
-            return contentWidth;
+            return _contentWidth;
         }
 
         public int GetSpan()
         {
-            return span;
+            return _span;
         }
 
         public override void ResetMarker()
         {
-            anythingLaidOut = false;
+            _anythingLaidOut = false;
             base.ResetMarker();
         }
 

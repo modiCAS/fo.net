@@ -4,28 +4,28 @@ namespace Fonet.Fo.Pagination
 {
     internal class PageSequenceMaster : FObj
     {
-        private readonly LayoutMasterSet layoutMasterSet;
+        private readonly LayoutMasterSet _layoutMasterSet;
 
-        private readonly ArrayList subSequenceSpecifiers;
+        private readonly ArrayList _subSequenceSpecifiers;
 
         protected PageSequenceMaster( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:page-sequence-master";
+            Name = "fo:page-sequence-master";
 
-            subSequenceSpecifiers = new ArrayList();
+            _subSequenceSpecifiers = new ArrayList();
 
             if ( parent.GetName().Equals( "fo:layout-master-set" ) )
             {
-                layoutMasterSet = (LayoutMasterSet)parent;
-                string pm = properties.GetProperty( "master-name" ).GetString();
+                _layoutMasterSet = (LayoutMasterSet)parent;
+                string pm = Properties.GetProperty( "master-name" ).GetString();
                 if ( pm == null )
                 {
                     FonetDriver.ActiveDriver.FireFonetWarning(
                         "page-sequence-master does not have a page-master-name and so is being ignored" );
                 }
                 else
-                    layoutMasterSet.addPageSequenceMaster( pm, this );
+                    _layoutMasterSet.AddPageSequenceMaster( pm, this );
             }
             else
             {
@@ -40,27 +40,27 @@ namespace Fonet.Fo.Pagination
             return new Maker();
         }
 
-        protected internal void AddSubsequenceSpecifier( SubSequenceSpecifier pageMasterReference )
+        protected internal void AddSubsequenceSpecifier( ISubSequenceSpecifier pageMasterReference )
         {
-            subSequenceSpecifiers.Add( pageMasterReference );
+            _subSequenceSpecifiers.Add( pageMasterReference );
         }
 
-        protected internal SubSequenceSpecifier getSubSequenceSpecifier( int sequenceNumber )
+        protected internal ISubSequenceSpecifier GetSubSequenceSpecifier( int sequenceNumber )
         {
             if ( sequenceNumber >= 0
                 && sequenceNumber < GetSubSequenceSpecifierCount() )
-                return (SubSequenceSpecifier)subSequenceSpecifiers[ sequenceNumber ];
+                return (ISubSequenceSpecifier)_subSequenceSpecifiers[ sequenceNumber ];
             return null;
         }
 
         protected internal int GetSubSequenceSpecifierCount()
         {
-            return subSequenceSpecifiers.Count;
+            return _subSequenceSpecifiers.Count;
         }
 
         public void Reset()
         {
-            foreach ( SubSequenceSpecifier s in subSequenceSpecifiers )
+            foreach ( ISubSequenceSpecifier s in _subSequenceSpecifiers )
                 s.Reset();
         }
 

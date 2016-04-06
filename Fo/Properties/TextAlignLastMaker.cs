@@ -2,15 +2,15 @@ namespace Fonet.Fo.Properties
 {
     internal class TextAlignLastMaker : EnumProperty.Maker
     {
-        protected static readonly EnumProperty s_propCENTER = new EnumProperty( Constants.CENTER );
+        protected static readonly EnumProperty SPropCenter = new EnumProperty( Constants.Center );
 
-        protected static readonly EnumProperty s_propEND = new EnumProperty( Constants.END );
+        protected static readonly EnumProperty SPropEnd = new EnumProperty( Constants.End );
 
-        protected static readonly EnumProperty s_propSTART = new EnumProperty( Constants.START );
+        protected static readonly EnumProperty SPropStart = new EnumProperty( Constants.Start );
 
-        protected static readonly EnumProperty s_propJUSTIFY = new EnumProperty( Constants.JUSTIFY );
+        protected static readonly EnumProperty SPropJustify = new EnumProperty( Constants.Justify );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected TextAlignLastMaker( string name ) : base( name )
         {
@@ -35,14 +35,14 @@ namespace Fonet.Fo.Properties
             {
                 int correspondingValue = correspondingProperty.GetEnum();
 
-                if ( correspondingValue == TextAlign.JUSTIFY )
-                    computedProperty = new EnumProperty( Constants.START );
-                else if ( correspondingValue == TextAlign.END )
-                    computedProperty = new EnumProperty( Constants.END );
-                else if ( correspondingValue == TextAlign.START )
-                    computedProperty = new EnumProperty( Constants.START );
-                else if ( correspondingValue == TextAlign.CENTER )
-                    computedProperty = new EnumProperty( Constants.CENTER );
+                if ( correspondingValue == TextAlign.Justify )
+                    computedProperty = new EnumProperty( Constants.Start );
+                else if ( correspondingValue == TextAlign.End )
+                    computedProperty = new EnumProperty( Constants.End );
+                else if ( correspondingValue == TextAlign.Start )
+                    computedProperty = new EnumProperty( Constants.Start );
+                else if ( correspondingValue == TextAlign.Center )
+                    computedProperty = new EnumProperty( Constants.Center );
             }
             return computedProperty;
         }
@@ -50,25 +50,25 @@ namespace Fonet.Fo.Properties
         public override Property CheckEnumValues( string value )
         {
             if ( value.Equals( "center" ) )
-                return s_propCENTER;
+                return SPropCenter;
 
             if ( value.Equals( "end" ) )
-                return s_propEND;
+                return SPropEnd;
 
             if ( value.Equals( "start" ) )
-                return s_propSTART;
+                return SPropStart;
 
             if ( value.Equals( "justify" ) )
-                return s_propJUSTIFY;
+                return SPropJustify;
 
             return base.CheckEnumValues( value );
         }
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "start", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "start", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

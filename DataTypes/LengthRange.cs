@@ -4,13 +4,13 @@ namespace Fonet.DataTypes
 {
     internal class LengthRange : ICompoundDatatype
     {
-        private const int MINSET = 1;
-        private const int OPTSET = 2;
-        private const int MAXSET = 4;
-        private bool bChecked;
-        private Property maximum;
-        private Property minimum;
-        private Property optimum;
+        private const int Minset = 1;
+        private const int Optset = 2;
+        private const int Maxset = 4;
+        private bool _bChecked;
+        private Property _maximum;
+        private Property _minimum;
+        private Property _optimum;
 
         public LengthRange()
         {
@@ -43,48 +43,48 @@ namespace Fonet.DataTypes
 
         protected void SetMinimum( Property minimum, bool bIsDefault )
         {
-            this.minimum = minimum;
+            this._minimum = minimum;
             if ( !bIsDefault )
-                BfSet |= MINSET;
+                BfSet |= Minset;
         }
 
         protected void SetMaximum( Property max, bool bIsDefault )
         {
-            maximum = max;
+            _maximum = max;
             if ( !bIsDefault )
-                BfSet |= MAXSET;
+                BfSet |= Maxset;
         }
 
         protected void SetOptimum( Property opt, bool bIsDefault )
         {
-            optimum = opt;
+            _optimum = opt;
             if ( !bIsDefault )
-                BfSet |= OPTSET;
+                BfSet |= Optset;
         }
 
         private void CheckConsistency()
         {
-            if ( bChecked )
+            if ( _bChecked )
                 return;
-            bChecked = true;
+            _bChecked = true;
         }
 
         public Property GetMinimum()
         {
             CheckConsistency();
-            return minimum;
+            return _minimum;
         }
 
         public Property GetMaximum()
         {
             CheckConsistency();
-            return maximum;
+            return _maximum;
         }
 
         public Property GetOptimum()
         {
             CheckConsistency();
-            return optimum;
+            return _optimum;
         }
     }
 }

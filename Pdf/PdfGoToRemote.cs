@@ -4,7 +4,7 @@ namespace Fonet.Pdf
     {
         private static readonly PdfArray DefaultDestination;
 
-        protected PdfFileSpec fileSpec;
+        protected PdfFileSpec FileSpec;
 
         static PdfGoToRemote()
         {
@@ -19,7 +19,7 @@ namespace Fonet.Pdf
         public PdfGoToRemote( PdfFileSpec fileSpec, PdfObjectId objectId )
             : base( objectId )
         {
-            this.fileSpec = fileSpec;
+            this.FileSpec = fileSpec;
             this[ PdfName.Names.Type ] = PdfName.Names.Action;
             this[ PdfName.Names.S ] = PdfName.Names.GoToR;
             this[ PdfName.Names.F ] = fileSpec.GetReference();

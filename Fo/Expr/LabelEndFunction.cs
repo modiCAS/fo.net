@@ -13,21 +13,21 @@ namespace Fonet.Fo.Expr
         public override Property Eval( Property[] args, PropertyInfo pInfo )
         {
             Length distance =
-                pInfo.getPropertyList().GetProperty( "provisional-distance-between-starts" ).GetLength();
+                pInfo.GetPropertyList().GetProperty( "provisional-distance-between-starts" ).GetLength();
             Length separation =
-                pInfo.getPropertyList().GetNearestSpecifiedProperty( "provisional-label-separation" ).GetLength();
+                pInfo.GetPropertyList().GetNearestSpecifiedProperty( "provisional-label-separation" ).GetLength();
 
-            FObj item = pInfo.getFO();
+            FObj item = pInfo.GetFo();
             while ( item != null && !( item is ListItem ) )
-                item = item.getParent();
+                item = item.GetParent();
             if ( item == null )
                 throw new PropertyException( "label-end() called from outside an fo:list-item" );
-            Length startIndent = item.properties.GetProperty( "start-indent" ).GetLength();
+            Length startIndent = item.Properties.GetProperty( "start-indent" ).GetLength();
 
             var labelEnd = new LinearCombinationLength();
 
-            var bse = new LengthBase( item, pInfo.getPropertyList(),
-                LengthBase.CONTAINING_BOX );
+            var bse = new LengthBase( item, pInfo.GetPropertyList(),
+                LengthBase.ContainingBox );
             var refWidth = new PercentLength( 1.0, bse );
 
             labelEnd.AddTerm( 1.0, refWidth );

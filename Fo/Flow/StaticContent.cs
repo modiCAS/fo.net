@@ -23,20 +23,20 @@ namespace Fonet.Fo.Flow
 
         public override Status Layout( Area area, Region region )
         {
-            int numChildren = children.Count;
+            int numChildren = Children.Count;
             var regionClass = "none";
             if ( region != null )
                 regionClass = region.GetRegionClass();
             else
             {
                 if ( GetFlowName().Equals( "xsl-region-before" ) )
-                    regionClass = RegionBefore.REGION_CLASS;
+                    regionClass = RegionBefore.RegionClass;
                 else if ( GetFlowName().Equals( "xsl-region-after" ) )
-                    regionClass = RegionAfter.REGION_CLASS;
+                    regionClass = RegionAfter.RegionClass;
                 else if ( GetFlowName().Equals( "xsl-region-start" ) )
-                    regionClass = RegionStart.REGION_CLASS;
+                    regionClass = RegionStart.RegionClass;
                 else if ( GetFlowName().Equals( "xsl-region-end" ) )
-                    regionClass = RegionEnd.REGION_CLASS;
+                    regionClass = RegionEnd.RegionClass;
             }
 
             if ( area is AreaContainer )
@@ -48,21 +48,21 @@ namespace Fonet.Fo.Flow
 
             for ( var i = 0; i < numChildren; i++ )
             {
-                var fo = (FObj)children[ i ];
+                var fo = (FObj)Children[ i ];
 
                 Status status;
-                if ( ( status = fo.Layout( area ) ).isIncomplete() )
+                if ( ( status = fo.Layout( area ) ).IsIncomplete() )
                 {
                     FonetDriver.ActiveDriver.FireFonetWarning(
                         "Some static content could not fit in the area." );
-                    marker = i;
-                    if ( i != 0 && status.getCode() == Status.AREA_FULL_NONE )
-                        status = new Status( Status.AREA_FULL_SOME );
+                    Marker = i;
+                    if ( i != 0 && status.GetCode() == Status.AreaFullNone )
+                        status = new Status( Status.AreaFullSome );
                     return status;
                 }
             }
             ResetMarker();
-            return new Status( Status.OK );
+            return new Status( Status.Ok );
         }
 
         protected override string GetElementName()

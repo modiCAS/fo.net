@@ -5,7 +5,7 @@ namespace Fonet.Pdf.Gdi
     /// </summary>
     internal class PdfUnitConverter
     {
-        private readonly int emSquare;
+        private readonly int _emSquare;
 
         /// <summary>
         ///     Class constructor.
@@ -16,7 +16,7 @@ namespace Fonet.Pdf.Gdi
         /// </param>
         public PdfUnitConverter( int emSquare )
         {
-            this.emSquare = emSquare;
+            this._emSquare = emSquare;
         }
 
         /// <summary>
@@ -31,17 +31,17 @@ namespace Fonet.Pdf.Gdi
         public int ToPdfUnits( int value )
         {
             // Watch out for divide by zero
-            if ( emSquare == 0 )
+            if ( _emSquare == 0 )
                 return value;
 
             if ( value < 0 )
             {
-                long rest1 = value % emSquare;
+                long rest1 = value % _emSquare;
                 long storrest = 1000 * rest1;
                 long ledd2 = rest1 / storrest;
-                return -( -1000 * value / emSquare - (int)ledd2 );
+                return -( -1000 * value / _emSquare - (int)ledd2 );
             }
-            return value / emSquare * 1000 + value % emSquare * 1000 / emSquare;
+            return value / _emSquare * 1000 + value % _emSquare * 1000 / _emSquare;
         }
     }
 }

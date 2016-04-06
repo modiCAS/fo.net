@@ -4,7 +4,7 @@ namespace Fonet.Pdf.Filter
     {
         public PdfObject Name
         {
-            get { return PdfName.Names.DCTDecode; }
+            get { return PdfName.Names.DctDecode; }
         }
 
         public PdfObject DecodeParms

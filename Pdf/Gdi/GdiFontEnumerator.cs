@@ -18,10 +18,10 @@ namespace Fonet.Pdf.Gdi
         private const byte AnsiCharset = 0;
         private const byte DefaultCharset = 1;
         private const byte SymbolCharset = 2;
-        private readonly GdiDeviceContent dc;
+        private readonly GdiDeviceContent _dc;
 
-        private readonly SortedList families = new SortedList();
-        private readonly FontStyles styles = new FontStyles();
+        private readonly SortedList _families = new SortedList();
+        private readonly FontStyles _styles = new FontStyles();
 
         /// <summary>
         ///     Class constructor.
@@ -29,7 +29,7 @@ namespace Fonet.Pdf.Gdi
         /// <param name="dc">A non-null reference to a wrapper around a GDI device context.</param>
         public GdiFontEnumerator( GdiDeviceContent dc )
         {
-            this.dc = dc;
+            this._dc = dc;
         }
 
         /// <summary>
@@ -43,9 +43,9 @@ namespace Fonet.Pdf.Gdi
                 lf.lfCharSet = DefaultCharset;
 
                 FontEnumDelegate font = EnumFontMethod;
-                LibWrapper.EnumFontFamiliesEx( dc.Handle, lf, font, ExtractFamilies, 0 );
+                LibWrapper.EnumFontFamiliesEx( _dc.Handle, lf, font, ExtractFamilies, 0 );
 
-                return (string[])new ArrayList( families.Keys ).ToArray( typeof( string ) );
+                return (string[])new ArrayList( _families.Keys ).ToArray( typeof( string ) );
             }
         }
 
@@ -56,11 +56,11 @@ namespace Fonet.Pdf.Gdi
         /// <returns></returns>
         public FontStyles GetStyles( string familyName )
         {
-            styles.Clear();
+            _styles.Clear();
             FontEnumDelegate font = EnumFontMethod;
-            LibWrapper.EnumFontFamilies( dc.Handle, familyName, font, ExtractStyles );
+            LibWrapper.EnumFontFamilies( _dc.Handle, familyName, font, ExtractStyles );
 
-            return styles;
+            return _styles;
         }
 
         private int EnumFontMethod(
@@ -75,14 +75,14 @@ namespace Fonet.Pdf.Gdi
                 if ( lParam == ExtractFamilies )
                 {
                     string familyName = logFont.elfLogFont.lfFaceName;
-                    if ( !families.ContainsKey( familyName ) )
-                        families.Add( familyName, string.Empty );
+                    if ( !_families.ContainsKey( familyName ) )
+                        _families.Add( familyName, string.Empty );
                 }
                 else if ( lParam == ExtractStyles )
                 {
                     string styleName = new string( logFont.elfStyle ).Trim( '\0' );
-                    if ( !styles.Contains( styleName ) )
-                        styles.AddStyle( styleName );
+                    if ( !_styles.Contains( styleName ) )
+                        _styles.AddStyle( styleName );
                 }
                 else
                     throw new InvalidOperationException( "Unknown EnumFontMethod parameter." );
@@ -94,41 +94,41 @@ namespace Fonet.Pdf.Gdi
 
     public class FontStyles
     {
-        private readonly IDictionary styles = new Hashtable();
+        private readonly IDictionary _styles = new Hashtable();
 
         public bool RegularAvailable
         {
-            get { return styles.Contains( "Regular" ) || styles.Contains( "Normal" ); }
+            get { return _styles.Contains( "Regular" ) || _styles.Contains( "Normal" ); }
         }
 
         public bool BoldAvailable
         {
-            get { return styles.Contains( "Bold" ); }
+            get { return _styles.Contains( "Bold" ); }
         }
 
         public bool ItalicAvailable
         {
-            get { return styles.Contains( "Italic" ); }
+            get { return _styles.Contains( "Italic" ); }
         }
 
         public bool BoldItalicAvailable
         {
-            get { return styles.Contains( "Bold Italic" ); }
+            get { return _styles.Contains( "Bold Italic" ); }
         }
 
         internal void AddStyle( string styleName )
         {
-            styles.Add( styleName, string.Empty );
+            _styles.Add( styleName, string.Empty );
         }
 
         internal void Clear()
         {
-            styles.Clear();
+            _styles.Clear();
         }
 
         internal bool Contains( string styleName )
         {
-            return styles.Contains( styleName );
+            return _styles.Contains( styleName );
         }
     }
 }

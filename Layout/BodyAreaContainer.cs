@@ -44,13 +44,13 @@ namespace Fonet.Layout
                 - footnoteRefAreaHeight;
             beforeFloatReferenceArea = new AreaContainer( fontState, xPosition,
                 yPosition, allocationWidth, beforeFloatRefAreaHeight,
-                Position.ABSOLUTE );
+                Position.Absolute );
             beforeFloatReferenceArea.setAreaName( "before-float-reference-area" );
             addChild( beforeFloatReferenceArea );
             mainReferenceArea = new AreaContainer( fontState, xPosition,
                 yPosition, allocationWidth,
                 mainRefAreaHeight,
-                Position.ABSOLUTE );
+                Position.Absolute );
             mainReferenceArea.setAreaName( "main-reference-area" );
             addChild( mainReferenceArea );
             int footnoteRefAreaYPosition = yPosition - mainRefAreaHeight;
@@ -58,7 +58,7 @@ namespace Fonet.Layout
                 footnoteRefAreaYPosition,
                 allocationWidth,
                 footnoteRefAreaHeight,
-                Position.ABSOLUTE );
+                Position.Absolute );
             footnoteReferenceArea.setAreaName( "footnote-reference-area" );
             addChild( footnoteReferenceArea );
         }
@@ -122,7 +122,7 @@ namespace Fonet.Layout
         {
             _isNewSpanArea = false;
 
-            int span = Span.NONE;
+            int span = Span.None;
             if ( fo is Block )
                 span = ( (Block)fo ).GetSpan();
             else if ( fo is BlockContainer )
@@ -130,7 +130,7 @@ namespace Fonet.Layout
 
             if ( mainReferenceArea.getChildren().Count == 0 )
             {
-                if ( span == Span.ALL )
+                if ( span == Span.All )
                     return addSpanArea( 1 );
                 return addSpanArea( columnCount );
             }
@@ -138,14 +138,14 @@ namespace Fonet.Layout
             ArrayList spanAreas = mainReferenceArea.getChildren();
             var spanArea = (SpanArea)spanAreas[ spanAreas.Count - 1 ];
 
-            if ( span == Span.ALL && spanArea.getColumnCount() == 1 )
+            if ( span == Span.All && spanArea.getColumnCount() == 1 )
                 return spanArea.getCurrentColumnArea();
-            if ( span == Span.NONE
+            if ( span == Span.None
                 && spanArea.getColumnCount() == columnCount )
                 return spanArea.getCurrentColumnArea();
-            if ( span == Span.ALL )
+            if ( span == Span.All )
                 return addSpanArea( 1 );
-            if ( span == Span.NONE )
+            if ( span == Span.None )
                 return addSpanArea( columnCount );
             throw new FonetException( "BodyAreaContainer::getNextArea(): Span attribute messed up" );
         }
@@ -177,20 +177,20 @@ namespace Fonet.Layout
             if ( spanArea.isBalanced() )
                 return false;
 
-            int span = Span.NONE;
+            int span = Span.None;
             if ( fo is Block )
                 span = ( (Block)fo ).GetSpan();
             else if ( fo is BlockContainer )
                 span = ( (BlockContainer)fo ).GetSpan();
 
-            if ( span == Span.ALL && spanArea.getColumnCount() == 1 )
+            if ( span == Span.All && spanArea.getColumnCount() == 1 )
                 return false;
-            if ( span == Span.NONE
+            if ( span == Span.None
                 && spanArea.getColumnCount() == columnCount )
                 return false;
-            if ( span == Span.ALL )
+            if ( span == Span.All )
                 return true;
-            if ( span == Span.NONE )
+            if ( span == Span.None )
                 return false;
             return false;
         }

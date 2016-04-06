@@ -2,13 +2,13 @@ namespace Fonet.Fo.Properties
 {
     internal class BlankOrNotBlankMaker : EnumProperty.Maker
     {
-        protected static readonly EnumProperty s_propBLANK = new EnumProperty( Constants.BLANK );
+        protected static readonly EnumProperty SPropBlank = new EnumProperty( Constants.Blank );
 
-        protected static readonly EnumProperty s_propNOT_BLANK = new EnumProperty( Constants.NOT_BLANK );
+        protected static readonly EnumProperty SPropNotBlank = new EnumProperty( Constants.NotBlank );
 
-        protected static readonly EnumProperty s_propANY = new EnumProperty( Constants.ANY );
+        protected static readonly EnumProperty SPropAny = new EnumProperty( Constants.Any );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected BlankOrNotBlankMaker( string name ) : base( name )
         {
@@ -27,22 +27,22 @@ namespace Fonet.Fo.Properties
         public override Property CheckEnumValues( string value )
         {
             if ( value.Equals( "blank" ) )
-                return s_propBLANK;
+                return SPropBlank;
 
             if ( value.Equals( "not-blank" ) )
-                return s_propNOT_BLANK;
+                return SPropNotBlank;
 
             if ( value.Equals( "any" ) )
-                return s_propANY;
+                return SPropAny;
 
             return base.CheckEnumValues( value );
         }
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "any", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "any", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

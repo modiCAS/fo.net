@@ -2,11 +2,11 @@ namespace Fonet.Fo.Properties
 {
     internal class WrapOptionMaker : EnumProperty.Maker
     {
-        protected static readonly EnumProperty s_propWRAP = new EnumProperty( Constants.WRAP );
+        protected static readonly EnumProperty SPropWrap = new EnumProperty( Constants.Wrap );
 
-        protected static readonly EnumProperty s_propNO_WRAP = new EnumProperty( Constants.NO_WRAP );
+        protected static readonly EnumProperty SPropNoWrap = new EnumProperty( Constants.NoWrap );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected WrapOptionMaker( string name ) : base( name )
         {
@@ -25,19 +25,19 @@ namespace Fonet.Fo.Properties
         public override Property CheckEnumValues( string value )
         {
             if ( value.Equals( "wrap" ) )
-                return s_propWRAP;
+                return SPropWrap;
 
             if ( value.Equals( "no-wrap" ) )
-                return s_propNO_WRAP;
+                return SPropNoWrap;
 
             return base.CheckEnumValues( value );
         }
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "wrap", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "wrap", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

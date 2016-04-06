@@ -15,21 +15,21 @@ namespace Fonet.Pdf
 
         public static readonly byte[] DefaultBinaryComment = { 0x25, 0xe2, 0xe3, 0xcf, 0xd3 };
 
-        private byte[] binaryComment = DefaultBinaryComment;
+        private byte[] _binaryComment = DefaultBinaryComment;
 
-        private readonly Stack indirectObjects = new Stack();
+        private readonly Stack _indirectObjects = new Stack();
 
-        private byte[] newLine = DefaultNewLine;
+        private byte[] _newLine = DefaultNewLine;
 
-        private readonly byte[] space = DefaultSpace;
+        private readonly byte[] _space = DefaultSpace;
 
-        private readonly Stream stream;
+        private readonly Stream _stream;
 
         public PdfWriter( Stream stream )
         {
             Debug.Assert( stream != null );
             Debug.Assert( stream.CanWrite );
-            this.stream = stream;
+            this._stream = stream;
         }
 
         public SecurityManager SecurityManager { get; set; }
@@ -38,8 +38,8 @@ namespace Fonet.Pdf
         {
             get
             {
-                Debug.Assert( indirectObjects.Count > 0 );
-                return (PdfObject)indirectObjects.Peek();
+                Debug.Assert( _indirectObjects.Count > 0 );
+                return (PdfObject)_indirectObjects.Peek();
             }
         }
 
@@ -47,19 +47,19 @@ namespace Fonet.Pdf
 
         public byte[] NewLine
         {
-            get { return newLine; }
-            set { newLine = value; }
+            get { return _newLine; }
+            set { _newLine = value; }
         }
 
         public byte[] BinaryComment
         {
-            get { return binaryComment; }
-            set { binaryComment = value; }
+            get { return _binaryComment; }
+            set { _binaryComment = value; }
         }
 
         public void Close()
         {
-            stream.Close();
+            _stream.Close();
         }
 
         public void WriteHeader( PdfVersion version )
@@ -69,7 +69,7 @@ namespace Fonet.Pdf
 
         public void WriteBinaryComment()
         {
-            WriteLine( binaryComment );
+            WriteLine( _binaryComment );
         }
 
         public void Write( PdfObject obj )
@@ -77,9 +77,9 @@ namespace Fonet.Pdf
             Debug.Assert( obj != null );
             if ( obj.IsIndirect )
             {
-                indirectObjects.Push( obj );
+                _indirectObjects.Push( obj );
                 obj.WriteIndirect( this );
-                indirectObjects.Pop();
+                _indirectObjects.Pop();
             }
             else
                 obj.Write( this );
@@ -124,25 +124,25 @@ namespace Fonet.Pdf
 
         public void WriteSpace()
         {
-            stream.Write( space, 0, space.Length );
-            Position += space.Length;
+            _stream.Write( _space, 0, _space.Length );
+            Position += _space.Length;
         }
 
         public void WriteLine()
         {
-            stream.Write( newLine, 0, newLine.Length );
-            Position += newLine.Length;
+            _stream.Write( _newLine, 0, _newLine.Length );
+            Position += _newLine.Length;
         }
 
         public void WriteByte( byte value )
         {
-            stream.WriteByte( value );
+            _stream.WriteByte( value );
             Position++;
         }
 
         public void Write( byte[] data )
         {
-            stream.Write( data, 0, data.Length );
+            _stream.Write( data, 0, data.Length );
             Position += data.Length;
         }
 

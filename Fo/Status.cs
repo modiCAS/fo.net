@@ -2,42 +2,42 @@ namespace Fonet.Fo
 {
     internal struct Status
     {
-        private readonly int code;
+        private readonly int _code;
 
-        public const int OK = 1;
-        public const int AREA_FULL_NONE = 2;
-        public const int AREA_FULL_SOME = 3;
-        public const int FORCE_PAGE_BREAK = 4;
-        public const int FORCE_PAGE_BREAK_EVEN = 5;
-        public const int FORCE_PAGE_BREAK_ODD = 6;
-        public const int FORCE_COLUMN_BREAK = 7;
-        public const int KEEP_WITH_NEXT = 8;
+        public const int Ok = 1;
+        public const int AreaFullNone = 2;
+        public const int AreaFullSome = 3;
+        public const int ForcePageBreak = 4;
+        public const int ForcePageBreakEven = 5;
+        public const int ForcePageBreakOdd = 6;
+        public const int ForceColumnBreak = 7;
+        public const int KeepWithNext = 8;
 
         public Status( int code )
         {
-            this.code = code;
+            this._code = code;
         }
 
-        public int getCode()
+        public int GetCode()
         {
-            return code;
+            return _code;
         }
 
-        public bool isIncomplete()
+        public bool IsIncomplete()
         {
-            return code != OK && code != KEEP_WITH_NEXT;
+            return _code != Ok && _code != KeepWithNext;
         }
 
-        public bool laidOutNone()
+        public bool LaidOutNone()
         {
-            return code == AREA_FULL_NONE;
+            return _code == AreaFullNone;
         }
 
-        public bool isPageBreak()
+        public bool IsPageBreak()
         {
-            return code == FORCE_PAGE_BREAK
-                || code == FORCE_PAGE_BREAK_EVEN
-                || code == FORCE_PAGE_BREAK_ODD;
+            return _code == ForcePageBreak
+                || _code == ForcePageBreakEven
+                || _code == ForcePageBreakOdd;
         }
     }
 }

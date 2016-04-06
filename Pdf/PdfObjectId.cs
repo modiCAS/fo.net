@@ -2,30 +2,30 @@ namespace Fonet.Pdf
 {
     public struct PdfObjectId
     {
-        private readonly uint objectNumber;
+        private readonly uint _objectNumber;
 
-        private readonly ushort generationNumber;
+        private readonly ushort _generationNumber;
 
         public PdfObjectId( uint objectNumber )
         {
-            this.objectNumber = objectNumber;
-            generationNumber = 0;
+            this._objectNumber = objectNumber;
+            _generationNumber = 0;
         }
 
         public PdfObjectId( uint objectNumber, ushort generationNumber )
         {
-            this.objectNumber = objectNumber;
-            this.generationNumber = generationNumber;
+            this._objectNumber = objectNumber;
+            this._generationNumber = generationNumber;
         }
 
         public uint ObjectNumber
         {
-            get { return objectNumber; }
+            get { return _objectNumber; }
         }
 
         public ushort GenerationNumber
         {
-            get { return generationNumber; }
+            get { return _generationNumber; }
         }
 
         // TODO: implement equals/hashcode etc.

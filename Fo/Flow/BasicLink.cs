@@ -8,7 +8,7 @@ namespace Fonet.Fo.Flow
         public BasicLink( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:basic-link";
+            Name = "fo:basic-link";
         }
 
         public new static FObj.Maker GetMaker()
@@ -20,47 +20,47 @@ namespace Fonet.Fo.Flow
         {
             string destination;
             int linkType;
-            AccessibilityProps mAccProps = propMgr.GetAccessibilityProps();
-            AuralProps mAurProps = propMgr.GetAuralProps();
-            BorderAndPadding bap = propMgr.GetBorderAndPadding();
-            BackgroundProps bProps = propMgr.GetBackgroundProps();
-            MarginInlineProps mProps = propMgr.GetMarginInlineProps();
-            RelativePositionProps mRelProps = propMgr.GetRelativePositionProps();
+            AccessibilityProps mAccProps = PropMgr.GetAccessibilityProps();
+            AuralProps mAurProps = PropMgr.GetAuralProps();
+            BorderAndPadding bap = PropMgr.GetBorderAndPadding();
+            BackgroundProps bProps = PropMgr.GetBackgroundProps();
+            MarginInlineProps mProps = PropMgr.GetMarginInlineProps();
+            RelativePositionProps mRelProps = PropMgr.GetRelativePositionProps();
 
             if ( !( destination =
-                properties.GetProperty( "internal-destination" ).GetString() ).Equals( "" ) )
+                Properties.GetProperty( "internal-destination" ).GetString() ).Equals( "" ) )
                 linkType = LinkSet.INTERNAL;
             else if ( !( destination =
-                properties.GetProperty( "external-destination" ).GetString() ).Equals( "" ) )
+                Properties.GetProperty( "external-destination" ).GetString() ).Equals( "" ) )
                 linkType = LinkSet.EXTERNAL;
             else
                 throw new FonetException( "internal-destination or external-destination must be specified in basic-link" );
 
-            if ( marker == MarkerStart )
+            if ( Marker == MarkerStart )
             {
-                string id = properties.GetProperty( "id" ).GetString();
+                string id = Properties.GetProperty( "id" ).GetString();
                 area.getIDReferences().InitializeID( id, area );
-                marker = 0;
+                Marker = 0;
             }
 
             var ls = new LinkSet( destination, area, linkType );
 
             AreaContainer ac = area.getNearestAncestorAreaContainer();
-            while ( ac != null && ac.getPosition() != Position.ABSOLUTE )
+            while ( ac != null && ac.getPosition() != Position.Absolute )
                 ac = ac.getNearestAncestorAreaContainer();
             if ( ac == null )
                 ac = area.getPage().getBody().getCurrentColumnArea();
 
-            int numChildren = children.Count;
-            for ( int i = marker; i < numChildren; i++ )
+            int numChildren = Children.Count;
+            for ( int i = Marker; i < numChildren; i++ )
             {
-                var fo = (FONode)children[ i ];
+                var fo = (FoNode)Children[ i ];
                 fo.SetLinkSet( ls );
 
                 Status status;
-                if ( ( status = fo.Layout( area ) ).isIncomplete() )
+                if ( ( status = fo.Layout( area ) ).IsIncomplete() )
                 {
-                    marker = i;
+                    Marker = i;
                     return status;
                 }
             }
@@ -68,7 +68,7 @@ namespace Fonet.Fo.Flow
             ls.applyAreaContainerOffsets( ac, area );
             area.getPage().addLinkSet( ls );
 
-            return new Status( Status.OK );
+            return new Status( Status.Ok );
         }
 
         internal new class Maker : FObj.Maker

@@ -9,7 +9,7 @@ namespace Fonet.Pdf.Filter
 
         public PdfObject Name
         {
-            get { return PdfName.Names.JBIG2Decode; }
+            get { return PdfName.Names.Jbig2Decode; }
         }
 
         public PdfObject DecodeParms

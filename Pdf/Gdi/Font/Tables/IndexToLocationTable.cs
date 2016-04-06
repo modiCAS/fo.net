@@ -10,7 +10,7 @@ namespace Fonet.Pdf.Gdi.Font
     /// </remarks>
     internal class IndexToLocationTable : FontTable
     {
-        private IList offsets;
+        private IList _offsets;
 
         /// <summary>
         ///     Initialises a new instance of the
@@ -30,7 +30,7 @@ namespace Fonet.Pdf.Gdi.Font
         public IndexToLocationTable( DirectoryEntry entry, int numOffsets )
             : base( TableNames.Loca, entry )
         {
-            offsets = new ArrayList( numOffsets );
+            _offsets = new ArrayList( numOffsets );
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public int Count
         {
-            get { return offsets.Count; }
+            get { return _offsets.Count; }
         }
 
         /// <summary>
@@ -48,8 +48,8 @@ namespace Fonet.Pdf.Gdi.Font
         /// <returns></returns>
         public uint this[ int index ]
         {
-            get { return (uint)offsets[ index ]; }
-            set { offsets.Insert( index, value ); }
+            get { return (uint)_offsets[ index ]; }
+            set { _offsets.Insert( index, value ); }
         }
 
         /// <summary>
@@ -67,15 +67,15 @@ namespace Fonet.Pdf.Gdi.Font
             // Number of glyphs including extra entry
             int glyphCount = reader.GetMaximumProfileTable().GlyphCount + 1;
 
-            offsets = new ArrayList( glyphCount );
+            _offsets = new ArrayList( glyphCount );
             for ( var i = 0; i < glyphCount; i++ )
-                offsets.Insert( i, isShortFormat ? (uint)( stream.ReadUShort() << 1 ) : stream.ReadULong() );
+                _offsets.Insert( i, isShortFormat ? (uint)( stream.ReadUShort() << 1 ) : stream.ReadULong() );
         }
 
         protected internal override void Write( FontFileWriter writer )
         {
             // TODO: Determine short/long format
-            foreach ( uint offset in offsets )
+            foreach ( uint offset in _offsets )
                 writer.Stream.WriteULong( offset );
         }
 
@@ -84,7 +84,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public void Clear()
         {
-            offsets.Clear();
+            _offsets.Clear();
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// <param name="offset"></param>
         public void AddOffset( uint offset )
         {
-            offsets.Add( offset );
+            _offsets.Add( offset );
         }
     }
 }

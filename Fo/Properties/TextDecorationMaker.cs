@@ -2,25 +2,25 @@ namespace Fonet.Fo.Properties
 {
     internal class TextDecorationMaker : EnumProperty.Maker
     {
-        protected static readonly EnumProperty s_propNONE = new EnumProperty( Constants.NONE );
+        protected static readonly EnumProperty SPropNone = new EnumProperty( Constants.None );
 
-        protected static readonly EnumProperty s_propUNDERLINE = new EnumProperty( Constants.UNDERLINE );
+        protected static readonly EnumProperty SPropUnderline = new EnumProperty( Constants.Underline );
 
-        protected static readonly EnumProperty s_propOVERLINE = new EnumProperty( Constants.OVERLINE );
+        protected static readonly EnumProperty SPropOverline = new EnumProperty( Constants.Overline );
 
-        protected static readonly EnumProperty s_propLINE_THROUGH = new EnumProperty( Constants.LINE_THROUGH );
+        protected static readonly EnumProperty SPropLineThrough = new EnumProperty( Constants.LineThrough );
 
-        protected static readonly EnumProperty s_propBLINK = new EnumProperty( Constants.BLINK );
+        protected static readonly EnumProperty SPropBlink = new EnumProperty( Constants.Blink );
 
-        protected static readonly EnumProperty s_propNO_UNDERLINE = new EnumProperty( Constants.NO_UNDERLINE );
+        protected static readonly EnumProperty SPropNoUnderline = new EnumProperty( Constants.NoUnderline );
 
-        protected static readonly EnumProperty s_propNO_OVERLINE = new EnumProperty( Constants.NO_OVERLINE );
+        protected static readonly EnumProperty SPropNoOverline = new EnumProperty( Constants.NoOverline );
 
-        protected static readonly EnumProperty s_propNO_LINE_THROUGH = new EnumProperty( Constants.NO_LINE_THROUGH );
+        protected static readonly EnumProperty SPropNoLineThrough = new EnumProperty( Constants.NoLineThrough );
 
-        protected static readonly EnumProperty s_propNO_BLINK = new EnumProperty( Constants.NO_BLINK );
+        protected static readonly EnumProperty SPropNoBlink = new EnumProperty( Constants.NoBlink );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected TextDecorationMaker( string name ) : base( name )
         {
@@ -40,40 +40,40 @@ namespace Fonet.Fo.Properties
         public override Property CheckEnumValues( string value )
         {
             if ( value.Equals( "none" ) )
-                return s_propNONE;
+                return SPropNone;
 
             if ( value.Equals( "underline" ) )
-                return s_propUNDERLINE;
+                return SPropUnderline;
 
             if ( value.Equals( "overline" ) )
-                return s_propOVERLINE;
+                return SPropOverline;
 
             if ( value.Equals( "line-through" ) )
-                return s_propLINE_THROUGH;
+                return SPropLineThrough;
 
             if ( value.Equals( "blink" ) )
-                return s_propBLINK;
+                return SPropBlink;
 
             if ( value.Equals( "no-underline" ) )
-                return s_propNO_UNDERLINE;
+                return SPropNoUnderline;
 
             if ( value.Equals( "no-overline" ) )
-                return s_propNO_OVERLINE;
+                return SPropNoOverline;
 
             if ( value.Equals( "no-line-through" ) )
-                return s_propNO_LINE_THROUGH;
+                return SPropNoLineThrough;
 
             if ( value.Equals( "no-blink" ) )
-                return s_propNO_BLINK;
+                return SPropNoBlink;
 
             return base.CheckEnumValues( value );
         }
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "none", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "none", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

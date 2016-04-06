@@ -7,7 +7,7 @@ namespace Fonet.Fo.Flow
         protected Float( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:float";
+            Name = "fo:float";
         }
 
         public new static FObj.Maker GetMaker()

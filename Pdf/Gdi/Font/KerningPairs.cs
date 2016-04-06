@@ -8,7 +8,7 @@ namespace Fonet.Pdf.Gdi.Font
         ///     Key - Kerning pair identifier
         ///     Value - Kerning amount
         /// </summary>
-        private readonly IDictionary pairs;
+        private readonly IDictionary _pairs;
 
         /// <summary>
         ///     Creates an instance of KerningPairs allocating space for
@@ -25,7 +25,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// <param name="numPairs"></param>
         public KerningPairs( int numPairs )
         {
-            pairs = new Hashtable( 100 );
+            _pairs = new Hashtable( 100 );
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace Fonet.Pdf.Gdi.Font
             get
             {
                 uint index = GetIndex( left, right );
-                return pairs.Contains( index ) ? (int)pairs[ index ] : 0;
+                return _pairs.Contains( index ) ? (int)_pairs[ index ] : 0;
             }
         }
 
@@ -45,7 +45,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public int Length
         {
-            get { return pairs.Count; }
+            get { return _pairs.Count; }
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// <returns></returns>
         public bool HasKerning( ushort left, ushort right )
         {
-            return pairs.Contains( GetIndex( left, right ) );
+            return _pairs.Contains( GetIndex( left, right ) );
         }
 
         /// <summary>
@@ -74,8 +74,8 @@ namespace Fonet.Pdf.Gdi.Font
             if ( value != 0 )
             {
                 uint index = GetIndex( left, right );
-                if ( !pairs.Contains( index ) )
-                    pairs[ index ] = value;
+                if ( !_pairs.Contains( index ) )
+                    _pairs[ index ] = value;
             }
         }
 

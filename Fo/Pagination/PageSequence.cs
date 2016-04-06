@@ -8,24 +8,24 @@ namespace Fonet.Fo.Pagination
 {
     internal class PageSequence : FObj
     {
-        private const int EXPLICIT = 0;
-        private const int AUTO = 1;
-        private const int AUTO_EVEN = 2;
-        private const int AUTO_ODD = 3;
+        private const int Explicit = 0;
+        private const int Auto = 1;
+        private const int AutoEven = 2;
+        private const int AutoOdd = 3;
         private readonly Hashtable _flowMap;
-        private Page currentPage;
-        private string currentPageMasterName;
-        private SubSequenceSpecifier currentSubsequence;
-        private int currentSubsequenceNumber = -1;
-        private readonly int forcePageCount;
-        private bool isForcing;
-        private readonly LayoutMasterSet layoutMasterSet;
-        private readonly string masterName;
-        private readonly PageNumberGenerator pageNumberGenerator;
-        private readonly int pageNumberType;
+        private Page _currentPage;
+        private string _currentPageMasterName;
+        private ISubSequenceSpecifier _currentSubsequence;
+        private int _currentSubsequenceNumber = -1;
+        private readonly int _forcePageCount;
+        private bool _isForcing;
+        private readonly LayoutMasterSet _layoutMasterSet;
+        private readonly string _masterName;
+        private readonly PageNumberGenerator _pageNumberGenerator;
+        private readonly int _pageNumberType;
 
-        private readonly Root root;
-        private bool thisIsFirstPage;
+        private readonly Root _root;
+        private bool _thisIsFirstPage;
 
         protected PageSequence( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
@@ -33,33 +33,33 @@ namespace Fonet.Fo.Pagination
             PageCount = 0;
             CurrentPageNumber = 0;
             IsFlowSet = false;
-            name = "fo:page-sequence";
+            Name = "fo:page-sequence";
 
             if ( parent.GetName().Equals( "fo:root" ) )
-                root = (Root)parent;
+                _root = (Root)parent;
             else
             {
                 throw new FonetException( "page-sequence must be child of root, not "
                     + parent.GetName() );
             }
 
-            layoutMasterSet = root.getLayoutMasterSet();
-            layoutMasterSet.checkRegionNames();
+            _layoutMasterSet = _root.GetLayoutMasterSet();
+            _layoutMasterSet.CheckRegionNames();
 
             _flowMap = new Hashtable();
 
-            thisIsFirstPage = true;
-            IpnValue = properties.GetProperty( "initial-page-number" ).GetString();
+            _thisIsFirstPage = true;
+            IpnValue = Properties.GetProperty( "initial-page-number" ).GetString();
 
             if ( IpnValue.Equals( "auto" ) )
-                pageNumberType = AUTO;
+                _pageNumberType = Auto;
             else if ( IpnValue.Equals( "auto-even" ) )
-                pageNumberType = AUTO_EVEN;
+                _pageNumberType = AutoEven;
             else if ( IpnValue.Equals( "auto-odd" ) )
-                pageNumberType = AUTO_ODD;
+                _pageNumberType = AutoOdd;
             else
             {
-                pageNumberType = EXPLICIT;
+                _pageNumberType = Explicit;
                 try
                 {
                     int pageStart = int.Parse( IpnValue );
@@ -72,16 +72,16 @@ namespace Fonet.Fo.Pagination
                 }
             }
 
-            masterName = properties.GetProperty( "master-reference" ).GetString();
+            _masterName = Properties.GetProperty( "master-reference" ).GetString();
 
-            pageNumberGenerator =
-                new PageNumberGenerator( properties.GetProperty( "format" ).GetString(),
-                    properties.GetProperty( "grouping-separator" ).GetCharacter(),
-                    properties.GetProperty( "grouping-size" ).GetNumber().IntValue(),
-                    properties.GetProperty( "letter-value" ).GetEnum() );
+            _pageNumberGenerator =
+                new PageNumberGenerator( Properties.GetProperty( "format" ).GetString(),
+                    Properties.GetProperty( "grouping-separator" ).GetCharacter(),
+                    Properties.GetProperty( "grouping-size" ).GetNumber().IntValue(),
+                    Properties.GetProperty( "letter-value" ).GetEnum() );
 
-            forcePageCount =
-                properties.GetProperty( "force-page-count" ).GetEnum();
+            _forcePageCount =
+                Properties.GetProperty( "force-page-count" ).GetEnum();
         }
 
         public bool IsFlowSet { get; set; }
@@ -102,7 +102,7 @@ namespace Fonet.Fo.Pagination
         {
             if ( _flowMap.ContainsKey( flow.GetFlowName() ) )
                 throw new FonetException( "flow-names must be unique within an fo:page-sequence" );
-            if ( !layoutMasterSet.regionNameExists( flow.GetFlowName() ) )
+            if ( !_layoutMasterSet.RegionNameExists( flow.GetFlowName() ) )
             {
                 FonetDriver.ActiveDriver.FireFonetError(
                     "region-name '" + flow.GetFlowName() + "' doesn't exist in the layout-master-set." );
@@ -113,113 +113,113 @@ namespace Fonet.Fo.Pagination
 
         public void Format( AreaTree areaTree )
         {
-            var status = new Status( Status.OK );
+            var status = new Status( Status.Ok );
 
-            layoutMasterSet.resetPageMasters();
+            _layoutMasterSet.ResetPageMasters();
 
             var firstAvailPageNumber = 0;
             do
             {
-                firstAvailPageNumber = root.getRunningPageNumberCounter();
+                firstAvailPageNumber = _root.GetRunningPageNumberCounter();
                 var tempIsFirstPage = false;
 
-                if ( thisIsFirstPage )
+                if ( _thisIsFirstPage )
                 {
-                    tempIsFirstPage = thisIsFirstPage;
-                    if ( pageNumberType == AUTO )
+                    tempIsFirstPage = _thisIsFirstPage;
+                    if ( _pageNumberType == Auto )
                     {
                         CurrentPageNumber =
-                            root.getRunningPageNumberCounter();
+                            _root.GetRunningPageNumberCounter();
                     }
-                    else if ( pageNumberType == AUTO_ODD )
+                    else if ( _pageNumberType == AutoOdd )
                     {
                         CurrentPageNumber =
-                            root.getRunningPageNumberCounter();
+                            _root.GetRunningPageNumberCounter();
                         if ( CurrentPageNumber % 2 == 1 )
                             CurrentPageNumber++;
                     }
-                    else if ( pageNumberType == AUTO_EVEN )
+                    else if ( _pageNumberType == AutoEven )
                     {
                         CurrentPageNumber =
-                            root.getRunningPageNumberCounter();
+                            _root.GetRunningPageNumberCounter();
                         if ( CurrentPageNumber % 2 == 0 )
                             CurrentPageNumber++;
                     }
-                    thisIsFirstPage = false;
+                    _thisIsFirstPage = false;
                 }
 
                 CurrentPageNumber++;
                 var isEmptyPage = false;
 
-                if ( status.getCode() == Status.FORCE_PAGE_BREAK_EVEN
+                if ( status.GetCode() == Status.ForcePageBreakEven
                     && CurrentPageNumber % 2 == 1 )
                     isEmptyPage = true;
-                else if ( status.getCode() == Status.FORCE_PAGE_BREAK_ODD
+                else if ( status.GetCode() == Status.ForcePageBreakOdd
                     && CurrentPageNumber % 2 == 0 )
                     isEmptyPage = true;
                 else
                     isEmptyPage = false;
 
-                currentPage = MakePage( areaTree, firstAvailPageNumber,
+                _currentPage = MakePage( areaTree, firstAvailPageNumber,
                     tempIsFirstPage, isEmptyPage );
 
-                currentPage.setNumber( CurrentPageNumber );
+                _currentPage.setNumber( CurrentPageNumber );
                 string formattedPageNumber =
-                    pageNumberGenerator.makeFormattedPageNumber( CurrentPageNumber );
-                currentPage.setFormattedNumber( formattedPageNumber );
-                root.setRunningPageNumberCounter( CurrentPageNumber );
+                    _pageNumberGenerator.MakeFormattedPageNumber( CurrentPageNumber );
+                _currentPage.setFormattedNumber( formattedPageNumber );
+                _root.SetRunningPageNumberCounter( CurrentPageNumber );
 
                 FonetDriver.ActiveDriver.FireFonetInfo(
                     "[" + CurrentPageNumber + "]" );
 
-                if ( status.getCode() == Status.FORCE_PAGE_BREAK_EVEN
+                if ( status.GetCode() == Status.ForcePageBreakEven
                     && CurrentPageNumber % 2 == 1 )
                 {
                 }
-                else if ( status.getCode() == Status.FORCE_PAGE_BREAK_ODD
+                else if ( status.GetCode() == Status.ForcePageBreakOdd
                     && CurrentPageNumber % 2 == 0 )
                 {
                 }
                 else
                 {
-                    BodyAreaContainer bodyArea = currentPage.getBody();
+                    BodyAreaContainer bodyArea = _currentPage.getBody();
                     bodyArea.setIDReferences( areaTree.getIDReferences() );
 
-                    Flow.Flow flow = GetCurrentFlow( RegionBody.REGION_CLASS );
+                    Flow.Flow flow = GetCurrentFlow( RegionBody.RegionClass );
 
                     if ( flow == null )
                     {
                         FonetDriver.ActiveDriver.FireFonetError(
-                            "No flow found for region-body in page-master '" + currentPageMasterName + "'" );
+                            "No flow found for region-body in page-master '" + _currentPageMasterName + "'" );
                         break;
                     }
                     status = flow.Layout( bodyArea );
                 }
 
-                currentPage.setPageSequence( this );
+                _currentPage.setPageSequence( this );
                 FormatStaticContent( areaTree );
 
-                areaTree.addPage( currentPage );
+                areaTree.addPage( _currentPage );
                 PageCount++;
             }
             while ( FlowsAreIncomplete() );
             ForcePage( areaTree, firstAvailPageNumber );
-            currentPage = null;
+            _currentPage = null;
         }
 
         private Page MakePage( AreaTree areaTree, int firstAvailPageNumber,
             bool isFirstPage,
             bool isEmptyPage )
         {
-            PageMaster pageMaster = GetNextPageMaster( masterName,
+            PageMaster pageMaster = GetNextPageMaster( _masterName,
                 firstAvailPageNumber,
                 isFirstPage, isEmptyPage );
             if ( pageMaster == null )
                 throw new FonetException( "page masters exhausted. Cannot recover." );
             Page p = pageMaster.makePage( areaTree );
-            if ( currentPage != null )
+            if ( _currentPage != null )
             {
-                ArrayList foots = currentPage.getPendingFootnotes();
+                ArrayList foots = _currentPage.getPendingFootnotes();
                 p.setPendingFootnotes( foots );
             }
             return p;
@@ -229,62 +229,62 @@ namespace Fonet.Fo.Pagination
         {
             SimplePageMaster simpleMaster = GetCurrentSimplePageMaster();
 
-            if ( simpleMaster.getRegion( RegionBefore.REGION_CLASS ) != null
-                && currentPage.getBefore() != null )
+            if ( simpleMaster.GetRegion( RegionBefore.RegionClass ) != null
+                && _currentPage.getBefore() != null )
             {
                 var staticFlow =
-                    (Flow.Flow)_flowMap[ simpleMaster.getRegion( RegionBefore.REGION_CLASS ).getRegionName() ];
+                    (Flow.Flow)_flowMap[ simpleMaster.GetRegion( RegionBefore.RegionClass ).GetRegionName() ];
                 if ( staticFlow != null )
                 {
-                    AreaContainer beforeArea = currentPage.getBefore();
+                    AreaContainer beforeArea = _currentPage.getBefore();
                     beforeArea.setIDReferences( areaTree.getIDReferences() );
                     LayoutStaticContent( staticFlow,
-                        simpleMaster.getRegion( RegionBefore.REGION_CLASS ),
+                        simpleMaster.GetRegion( RegionBefore.RegionClass ),
                         beforeArea );
                 }
             }
 
-            if ( simpleMaster.getRegion( RegionAfter.REGION_CLASS ) != null
-                && currentPage.getAfter() != null )
+            if ( simpleMaster.GetRegion( RegionAfter.RegionClass ) != null
+                && _currentPage.getAfter() != null )
             {
                 var staticFlow =
-                    (Flow.Flow)_flowMap[ simpleMaster.getRegion( RegionAfter.REGION_CLASS ).getRegionName() ];
+                    (Flow.Flow)_flowMap[ simpleMaster.GetRegion( RegionAfter.RegionClass ).GetRegionName() ];
                 if ( staticFlow != null )
                 {
-                    AreaContainer afterArea = currentPage.getAfter();
+                    AreaContainer afterArea = _currentPage.getAfter();
                     afterArea.setIDReferences( areaTree.getIDReferences() );
                     LayoutStaticContent( staticFlow,
-                        simpleMaster.getRegion( RegionAfter.REGION_CLASS ),
+                        simpleMaster.GetRegion( RegionAfter.RegionClass ),
                         afterArea );
                 }
             }
 
-            if ( simpleMaster.getRegion( RegionStart.REGION_CLASS ) != null
-                && currentPage.getStart() != null )
+            if ( simpleMaster.GetRegion( RegionStart.RegionClass ) != null
+                && _currentPage.getStart() != null )
             {
                 var staticFlow =
-                    (Flow.Flow)_flowMap[ simpleMaster.getRegion( RegionStart.REGION_CLASS ).getRegionName() ];
+                    (Flow.Flow)_flowMap[ simpleMaster.GetRegion( RegionStart.RegionClass ).GetRegionName() ];
                 if ( staticFlow != null )
                 {
-                    AreaContainer startArea = currentPage.getStart();
+                    AreaContainer startArea = _currentPage.getStart();
                     startArea.setIDReferences( areaTree.getIDReferences() );
                     LayoutStaticContent( staticFlow,
-                        simpleMaster.getRegion( RegionStart.REGION_CLASS ),
+                        simpleMaster.GetRegion( RegionStart.RegionClass ),
                         startArea );
                 }
             }
 
-            if ( simpleMaster.getRegion( RegionEnd.REGION_CLASS ) != null
-                && currentPage.getEnd() != null )
+            if ( simpleMaster.GetRegion( RegionEnd.RegionClass ) != null
+                && _currentPage.getEnd() != null )
             {
                 var staticFlow =
-                    (Flow.Flow)_flowMap[ simpleMaster.getRegion( RegionEnd.REGION_CLASS ).getRegionName() ];
+                    (Flow.Flow)_flowMap[ simpleMaster.GetRegion( RegionEnd.RegionClass ).GetRegionName() ];
                 if ( staticFlow != null )
                 {
-                    AreaContainer endArea = currentPage.getEnd();
+                    AreaContainer endArea = _currentPage.getEnd();
                     endArea.setIDReferences( areaTree.getIDReferences() );
                     LayoutStaticContent( staticFlow,
-                        simpleMaster.getRegion( RegionEnd.REGION_CLASS ),
+                        simpleMaster.GetRegion( RegionEnd.RegionClass ),
                         endArea );
                 }
             }
@@ -304,15 +304,15 @@ namespace Fonet.Fo.Pagination
             }
         }
 
-        private SubSequenceSpecifier GetNextSubsequence( PageSequenceMaster master )
+        private ISubSequenceSpecifier GetNextSubsequence( PageSequenceMaster master )
         {
             if ( master.GetSubSequenceSpecifierCount()
-                > currentSubsequenceNumber + 1 )
+                > _currentSubsequenceNumber + 1 )
             {
-                currentSubsequence =
-                    master.getSubSequenceSpecifier( currentSubsequenceNumber + 1 );
-                currentSubsequenceNumber++;
-                return currentSubsequence;
+                _currentSubsequence =
+                    master.GetSubSequenceSpecifier( _currentSubsequenceNumber + 1 );
+                _currentSubsequenceNumber++;
+                return _currentSubsequence;
             }
             return null;
         }
@@ -321,14 +321,14 @@ namespace Fonet.Fo.Pagination
             int currentPageNumber, bool thisIsFirstPage,
             bool isEmptyPage )
         {
-            if ( isForcing )
+            if ( _isForcing )
             {
-                return layoutMasterSet.getSimplePageMaster(
+                return _layoutMasterSet.GetSimplePageMaster(
                     GetNextPageMasterName( sequenceMaster, currentPageNumber, false, true ) );
             }
             string nextPageMaster =
                 GetNextPageMasterName( sequenceMaster, currentPageNumber, thisIsFirstPage, isEmptyPage );
-            return layoutMasterSet.getSimplePageMaster( nextPageMaster );
+            return _layoutMasterSet.GetSimplePageMaster( nextPageMaster );
         }
 
         private string GetNextPageMasterName( PageSequenceMaster sequenceMaster,
@@ -336,19 +336,19 @@ namespace Fonet.Fo.Pagination
             bool thisIsFirstPage,
             bool isEmptyPage )
         {
-            if ( null == currentSubsequence )
-                currentSubsequence = GetNextSubsequence( sequenceMaster );
+            if ( null == _currentSubsequence )
+                _currentSubsequence = GetNextSubsequence( sequenceMaster );
 
             string nextPageMaster =
-                currentSubsequence.GetNextPageMaster( currentPageNumber,
+                _currentSubsequence.GetNextPageMaster( currentPageNumber,
                     thisIsFirstPage,
                     isEmptyPage );
 
 
             if ( null == nextPageMaster
-                || IsFlowForMasterNameDone( currentPageMasterName ) )
+                || IsFlowForMasterNameDone( _currentPageMasterName ) )
             {
-                SubSequenceSpecifier nextSubsequence =
+                ISubSequenceSpecifier nextSubsequence =
                     GetNextSubsequence( sequenceMaster );
                 if ( nextSubsequence == null )
                 {
@@ -356,29 +356,29 @@ namespace Fonet.Fo.Pagination
                         "Page subsequences exhausted. Using previous subsequence." );
                     thisIsFirstPage =
                         true;
-                    currentSubsequence.Reset();
+                    _currentSubsequence.Reset();
                 }
                 else
-                    currentSubsequence = nextSubsequence;
+                    _currentSubsequence = nextSubsequence;
 
                 nextPageMaster =
-                    currentSubsequence.GetNextPageMaster( currentPageNumber,
+                    _currentSubsequence.GetNextPageMaster( currentPageNumber,
                         thisIsFirstPage,
                         isEmptyPage );
             }
-            currentPageMasterName = nextPageMaster;
+            _currentPageMasterName = nextPageMaster;
 
             return nextPageMaster;
         }
 
         private SimplePageMaster GetCurrentSimplePageMaster()
         {
-            return layoutMasterSet.getSimplePageMaster( currentPageMasterName );
+            return _layoutMasterSet.GetSimplePageMaster( _currentPageMasterName );
         }
 
         private string GetCurrentPageMasterName()
         {
-            return currentPageMasterName;
+            return _currentPageMasterName;
         }
 
         private PageMaster GetNextPageMaster( string pageSequenceName,
@@ -389,25 +389,25 @@ namespace Fonet.Fo.Pagination
             PageMaster pageMaster = null;
 
             PageSequenceMaster sequenceMaster =
-                layoutMasterSet.getPageSequenceMaster( pageSequenceName );
+                _layoutMasterSet.GetPageSequenceMaster( pageSequenceName );
 
             if ( sequenceMaster != null )
             {
                 pageMaster = GetNextSimplePageMaster( sequenceMaster,
                     currentPageNumber,
                     thisIsFirstPage,
-                    isEmptyPage ).getPageMaster();
+                    isEmptyPage ).GetPageMaster();
             }
             else
             {
                 SimplePageMaster simpleMaster =
-                    layoutMasterSet.getSimplePageMaster( pageSequenceName );
+                    _layoutMasterSet.GetSimplePageMaster( pageSequenceName );
                 if ( simpleMaster == null )
                 {
                     throw new FonetException( "'master-reference' for 'fo:page-sequence'"
                         + "matches no 'simple-page-master' or 'page-sequence-master'" );
                 }
-                currentPageMasterName = pageSequenceName;
+                _currentPageMasterName = pageSequenceName;
 
                 pageMaster = simpleMaster.GetNextPageMaster();
             }
@@ -422,18 +422,18 @@ namespace Fonet.Fo.Pagination
             {
                 if ( flow is StaticContent )
                     continue;
-                Status status = flow.getStatus();
-                isIncomplete |= status.isIncomplete();
+                Status status = flow.GetStatus();
+                isIncomplete |= status.IsIncomplete();
             }
             return isIncomplete;
         }
 
         private Flow.Flow GetCurrentFlow( string regionClass )
         {
-            Region region = GetCurrentSimplePageMaster().getRegion( regionClass );
+            Region region = GetCurrentSimplePageMaster().GetRegion( regionClass );
             if ( region != null )
             {
-                var flow = (Flow.Flow)_flowMap[ region.getRegionName() ];
+                var flow = (Flow.Flow)_flowMap[ region.GetRegionName() ];
                 return flow;
             }
             FonetDriver.ActiveDriver.FireFonetInfo(
@@ -445,17 +445,17 @@ namespace Fonet.Fo.Pagination
 
         private bool IsFlowForMasterNameDone( string masterName )
         {
-            if ( isForcing )
+            if ( _isForcing )
                 return false;
             if ( masterName != null )
             {
                 SimplePageMaster spm =
-                    layoutMasterSet.getSimplePageMaster( masterName );
-                Region region = spm.getRegion( RegionBody.REGION_CLASS );
+                    _layoutMasterSet.GetSimplePageMaster( masterName );
+                Region region = spm.GetRegion( RegionBody.RegionClass );
 
 
-                var flow = (Flow.Flow)_flowMap[ region.getRegionName() ];
-                if ( null == flow || flow.getStatus().isIncomplete() )
+                var flow = (Flow.Flow)_flowMap[ region.GetRegionName() ];
+                if ( null == flow || flow.GetStatus().IsIncomplete() )
                     return false;
                 return true;
             }
@@ -465,10 +465,10 @@ namespace Fonet.Fo.Pagination
         private void ForcePage( AreaTree areaTree, int firstAvailPageNumber )
         {
             var bmakePage = false;
-            if ( forcePageCount == ForcePageCount.AUTO )
+            if ( _forcePageCount == ForcePageCount.Auto )
             {
                 PageSequence nextSequence =
-                    root.getSucceedingPageSequence( this );
+                    _root.GetSucceedingPageSequence( this );
                 if ( nextSequence != null )
                 {
                     if ( nextSequence.IpnValue.Equals( "auto" ) )
@@ -498,19 +498,19 @@ namespace Fonet.Fo.Pagination
                     }
                 }
             }
-            else if ( forcePageCount == ForcePageCount.EVEN
+            else if ( _forcePageCount == ForcePageCount.Even
                 && PageCount % 2 != 0 )
                 bmakePage = true;
-            else if ( forcePageCount == ForcePageCount.ODD
+            else if ( _forcePageCount == ForcePageCount.Odd
                 && PageCount % 2 == 0 )
                 bmakePage = true;
-            else if ( forcePageCount == ForcePageCount.END_ON_EVEN
+            else if ( _forcePageCount == ForcePageCount.EndOnEven
                 && firstAvailPageNumber % 2 == 0 )
                 bmakePage = true;
-            else if ( forcePageCount == ForcePageCount.END_ON_ODD
+            else if ( _forcePageCount == ForcePageCount.EndOnOdd
                 && firstAvailPageNumber % 2 != 0 )
                 bmakePage = true;
-            else if ( forcePageCount == ForcePageCount.NO_FORCE )
+            else if ( _forcePageCount == ForcePageCount.NoForce )
             {
                 // do nothing
             }
@@ -519,22 +519,22 @@ namespace Fonet.Fo.Pagination
             {
                 try
                 {
-                    isForcing = true;
+                    _isForcing = true;
                     CurrentPageNumber++;
                     firstAvailPageNumber = CurrentPageNumber;
-                    currentPage = MakePage( areaTree, firstAvailPageNumber, false, true );
+                    _currentPage = MakePage( areaTree, firstAvailPageNumber, false, true );
                     string formattedPageNumber =
-                        pageNumberGenerator.makeFormattedPageNumber( CurrentPageNumber );
-                    currentPage.setFormattedNumber( formattedPageNumber );
-                    currentPage.setPageSequence( this );
+                        _pageNumberGenerator.MakeFormattedPageNumber( CurrentPageNumber );
+                    _currentPage.setFormattedNumber( formattedPageNumber );
+                    _currentPage.setPageSequence( this );
                     FormatStaticContent( areaTree );
 
                     FonetDriver.ActiveDriver.FireFonetInfo(
                         "[forced-" + firstAvailPageNumber + "]" );
 
-                    areaTree.addPage( currentPage );
-                    root.setRunningPageNumberCounter( CurrentPageNumber );
-                    isForcing = false;
+                    areaTree.addPage( _currentPage );
+                    _root.SetRunningPageNumberCounter( CurrentPageNumber );
+                    _isForcing = false;
                 }
                 catch ( FonetException )
                 {

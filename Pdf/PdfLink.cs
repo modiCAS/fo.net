@@ -10,7 +10,7 @@ namespace Fonet.Pdf
 
         private static readonly PdfArray DefaultBorder;
 
-        private IPdfAction action;
+        private IPdfAction _action;
 
         static PdfLink()
         {
@@ -42,13 +42,13 @@ namespace Fonet.Pdf
 
         public void SetAction( IPdfAction action )
         {
-            this.action = action;
+            this._action = action;
         }
 
         protected internal override void Write( PdfWriter writer )
         {
-            Debug.Assert( action != null, "PdfLink must be given an IAction before writing." );
-            this[ PdfName.Names.A ] = action.GetAction();
+            Debug.Assert( _action != null, "PdfLink must be given an IAction before writing." );
+            this[ PdfName.Names.A ] = _action.GetAction();
             base.Write( writer );
         }
     }

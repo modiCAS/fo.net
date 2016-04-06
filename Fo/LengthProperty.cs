@@ -5,26 +5,26 @@ namespace Fonet.Fo
 {
     internal class LengthProperty : Property
     {
-        private readonly Length length;
+        private readonly Length _length;
 
         public LengthProperty( Length length )
         {
-            this.length = length;
+            this._length = length;
         }
 
         public override Numeric GetNumeric()
         {
-            return length.AsNumeric();
+            return _length.AsNumeric();
         }
 
         public override Length GetLength()
         {
-            return length;
+            return _length;
         }
 
         public override object GetObject()
         {
-            return length;
+            return _length;
         }
 
         internal class Maker : PropertyMaker

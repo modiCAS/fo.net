@@ -7,14 +7,14 @@ namespace Fonet.Pdf
 {
     public class PdfContentStream : PdfStream
     {
-        protected MemoryStream stream;
-        protected PdfWriter streamData;
+        protected MemoryStream Stream;
+        protected PdfWriter StreamData;
 
         public PdfContentStream( PdfObjectId objectId )
             : base( objectId )
         {
-            stream = new MemoryStream();
-            streamData = new PdfWriter( stream );
+            Stream = new MemoryStream();
+            StreamData = new PdfWriter( Stream );
         }
 
         public void Write( PdfObject obj )
@@ -23,7 +23,7 @@ namespace Fonet.Pdf
             if ( obj.IsIndirect || obj is PdfObjectReference )
                 throw new ArgumentException( "Cannot write indirect PdfObject", "obj" );
 
-            streamData.Write( obj );
+            StreamData.Write( obj );
         }
 
         public void WriteLine( PdfObject obj )
@@ -32,7 +32,7 @@ namespace Fonet.Pdf
             if ( obj.IsIndirect || obj is PdfObjectReference )
                 throw new ArgumentException( "Cannot write indirect PdfObject", "obj" );
 
-            streamData.WriteLine( obj );
+            StreamData.WriteLine( obj );
         }
 
         /// <summary>
@@ -42,67 +42,67 @@ namespace Fonet.Pdf
         /// <param name="s"></param>
         public void Write( string s )
         {
-            streamData.Write( Encoding.Default.GetBytes( s ) );
+            StreamData.Write( Encoding.Default.GetBytes( s ) );
         }
 
         public void WriteLine( string s )
         {
-            streamData.WriteLine( Encoding.Default.GetBytes( s ) );
+            StreamData.WriteLine( Encoding.Default.GetBytes( s ) );
         }
 
         public void Write( int val )
         {
-            streamData.Write( val );
+            StreamData.Write( val );
         }
 
         public void WriteLine( int val )
         {
-            streamData.WriteLine( val );
+            StreamData.WriteLine( val );
         }
 
         public void Write( decimal val )
         {
-            streamData.Write( val );
+            StreamData.Write( val );
         }
 
         public void WriteLine( decimal val )
         {
-            streamData.WriteLine( val );
+            StreamData.WriteLine( val );
         }
 
         public void WriteSpace()
         {
-            streamData.WriteSpace();
+            StreamData.WriteSpace();
         }
 
         public void WriteLine()
         {
-            streamData.WriteLine();
+            StreamData.WriteLine();
         }
 
         public void WriteByte( byte value )
         {
-            streamData.WriteByte( value );
+            StreamData.WriteByte( value );
         }
 
         public void Write( byte[] data )
         {
-            streamData.Write( data );
+            StreamData.Write( data );
         }
 
         public void WriteKeyword( Keyword keyword )
         {
-            streamData.WriteKeyword( keyword );
+            StreamData.WriteKeyword( keyword );
         }
 
         public void WriteLine( byte[] data )
         {
-            streamData.WriteLine( data );
+            StreamData.WriteLine( data );
         }
 
         protected internal override void Write( PdfWriter writer )
         {
-            data = stream.ToArray();
+            Data = Stream.ToArray();
             base.Write( writer );
         }
     }

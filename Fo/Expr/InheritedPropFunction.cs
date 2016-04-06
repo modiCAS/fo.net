@@ -12,7 +12,7 @@ namespace Fonet.Fo.Expr
             string propName = args[ 0 ].GetString();
             if ( propName == null )
                 throw new PropertyException( "Incorrect parameter to inherited-property-value function" );
-            return pInfo.getPropertyList().GetInheritedProperty( propName );
+            return pInfo.GetPropertyList().GetInheritedProperty( propName );
         }
     }
 }

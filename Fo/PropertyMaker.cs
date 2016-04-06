@@ -6,7 +6,7 @@ namespace Fonet.Fo
 {
     internal class PropertyMaker
     {
-        private const string UNKNOWN = "UNKNOWN";
+        private const string Unknown = "UNKNOWN";
 
         /// <summary>
         ///     Construct an instance of a PropertyMaker.
@@ -16,7 +16,7 @@ namespace Fonet.Fo
         /// </remarks>
         protected PropertyMaker()
         {
-            PropName = UNKNOWN;
+            PropName = Unknown;
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace Fonet.Fo
                 if ( pret == null )
                 {
                     pvalue = CheckValueKeywords( value );
-                    Property p = PropertyParser.parse( pvalue,
+                    Property p = PropertyParser.Parse( pvalue,
                         new PropertyInfo( this,
                             propertyList, fo ) );
                     pret = ConvertProperty( p, propertyList, fo );
@@ -205,7 +205,7 @@ namespace Fonet.Fo
                             if ( !pvalue.Equals( sval ) )
                             {
                                 Property p =
-                                    PropertyParser.parse( pvalue,
+                                    PropertyParser.Parse( pvalue,
                                         new PropertyInfo( this,
                                             propertyList,
                                             fo ) );
@@ -299,13 +299,13 @@ namespace Fonet.Fo
         ///     Return a Property object representing the initial value.
         /// </summary>
         /// <param name="propertyList">The PropertyList object being built for this FO.</param>
-        /// <param name="parentFO">The parent FO for the FO whose property is being made.</param>
+        /// <param name="parentFo">The parent FO for the FO whose property is being made.</param>
         /// <returns>
         ///     A Property subclass object holding a "compound" property object
         ///     initialized to the default values for each component.
         /// </returns>
         protected virtual Property MakeCompound( PropertyList propertyList,
-            FObj parentFO )
+            FObj parentFo )
         {
             return null;
         }
@@ -339,7 +339,7 @@ namespace Fonet.Fo
                         try
                         {
                             return Make( propertyList, specVal,
-                                propertyList.getParentFObj() );
+                                propertyList.GetParentFObj() );
                         }
                         catch ( FonetException )
                         {

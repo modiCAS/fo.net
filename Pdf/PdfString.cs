@@ -15,51 +15,51 @@ namespace Fonet.Pdf
             0x38, 0x39, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66
         };
 
-        private readonly byte[] data;
+        private readonly byte[] _data;
 
-        private readonly Encoding encoding = Encoding.Default;
+        private readonly Encoding _encoding = Encoding.Default;
 
-        private PdfStringFormat format = PdfStringFormat.Literal;
+        private PdfStringFormat _format = PdfStringFormat.Literal;
 
         public PdfString( string val )
         {
             NeverEncrypt = false;
-            data = encoding.GetBytes( val );
+            _data = _encoding.GetBytes( val );
         }
 
         public PdfString( string val, PdfObjectId objectId )
             : base( objectId )
         {
             NeverEncrypt = false;
-            data = encoding.GetBytes( val );
+            _data = _encoding.GetBytes( val );
         }
 
         public PdfString( string val, Encoding encoding )
         {
             NeverEncrypt = false;
-            this.encoding = encoding;
-            data = encoding.GetBytes( val );
+            this._encoding = encoding;
+            _data = encoding.GetBytes( val );
         }
 
         public PdfString( string val, Encoding encoding, PdfObjectId objectId )
             : base( objectId )
         {
             NeverEncrypt = false;
-            this.encoding = encoding;
-            data = encoding.GetBytes( val );
+            this._encoding = encoding;
+            _data = encoding.GetBytes( val );
         }
 
         public PdfString( byte[] data )
         {
             NeverEncrypt = false;
-            this.data = data;
+            this._data = data;
         }
 
         public PdfString( byte[] data, PdfObjectId objectId )
             : base( objectId )
         {
             NeverEncrypt = false;
-            this.data = data;
+            this._data = data;
         }
 
         /// <summary>
@@ -70,8 +70,8 @@ namespace Fonet.Pdf
         /// </remarks>
         public PdfStringFormat Format
         {
-            get { return format; }
-            set { format = value; }
+            get { return _format; }
+            set { _format = value; }
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace Fonet.Pdf
 
         protected internal override void Write( PdfWriter writer )
         {
-            var bytes = (byte[])data.Clone();
+            var bytes = (byte[])_data.Clone();
 
             // Encrypt the data if required.
             if ( !NeverEncrypt )
@@ -98,10 +98,10 @@ namespace Fonet.Pdf
             }
 
             // Format as a PDF string.
-            if ( format == PdfStringFormat.Literal )
-                bytes = ToPdfLiteral( encoding.GetPreamble(), bytes );
+            if ( _format == PdfStringFormat.Literal )
+                bytes = ToPdfLiteral( _encoding.GetPreamble(), bytes );
             else
-                bytes = ToPdfHexadecimal( encoding.GetPreamble(), bytes );
+                bytes = ToPdfHexadecimal( _encoding.GetPreamble(), bytes );
 
             // Finally, write out the bytes.
             writer.Write( bytes );

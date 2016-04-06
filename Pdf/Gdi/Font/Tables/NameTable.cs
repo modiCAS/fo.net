@@ -29,13 +29,13 @@ namespace Fonet.Pdf.Gdi.Font
         private const int VersionNameID = 5;
         private const int PostscriptNameID = 6;
 
-        private string familyName = string.Empty;
-        private string fullName = string.Empty;
+        private string _familyName = string.Empty;
+        private string _fullName = string.Empty;
 
         /// <summary>
         ///     Offset to start of string storage (from start of table).
         /// </summary>
-        private ushort storageOffset;
+        private ushort _storageOffset;
 
         public NameTable( DirectoryEntry entry )
             : base( TableNames.Name, entry )
@@ -47,7 +47,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public string FamilyName
         {
-            get { return familyName; }
+            get { return _familyName; }
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public string FullName
         {
-            get { return fullName; }
+            get { return _fullName; }
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace Fonet.Pdf.Gdi.Font
             int numRecords = stream.ReadUShort();
 
             // Offset to start of string storage (from start of table).
-            storageOffset = stream.ReadUShort();
+            _storageOffset = stream.ReadUShort();
 
             for ( var i = 0; i < numRecords; i++ )
             {
@@ -95,14 +95,14 @@ namespace Fonet.Pdf.Gdi.Font
                     switch ( nameID )
                     {
                     case FamilyNameID:
-                        familyName = ReadString( stream, stringOffset, length );
+                        _familyName = ReadString( stream, stringOffset, length );
                         break;
                     case FullNameID:
-                        fullName = ReadString( stream, stringOffset, length );
+                        _fullName = ReadString( stream, stringOffset, length );
                         break;
                     }
 
-                    if ( familyName != string.Empty && fullName != string.Empty )
+                    if ( _familyName != string.Empty && _fullName != string.Empty )
                         break;
                 }
             }
@@ -125,7 +125,7 @@ namespace Fonet.Pdf.Gdi.Font
             stream.SetRestorePoint();
 
             // Navigate to beginning of string
-            stream.Position = Entry.Offset + storageOffset + stringOffset;
+            stream.Position = Entry.Offset + _storageOffset + stringOffset;
 
             // Read string data 
             var buffer = new byte[ length ];

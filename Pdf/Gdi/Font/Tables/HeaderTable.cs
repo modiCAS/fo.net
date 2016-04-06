@@ -13,23 +13,23 @@ namespace Fonet.Pdf.Gdi.Font
         private static readonly DateTime BaseDate =
             new DateTime( 1904, 1, 1, 0, 0, 0 );
 
-        internal uint checkSumAdjustment;
-        internal DateTime createDate;
-        internal ushort flags;
-        internal short fontDirectionHint;
-        internal int fontRevision;
-        internal short glyphDataFormat;
-        internal short indexToLocFormat;
-        internal ushort lowestRecPPEM;
-        internal ushort macStyle;
-        internal uint magicNumber;
-        internal ushort unitsPermEm;
-        internal DateTime updateDate;
-        internal int versionNo;
-        internal short xMax;
-        internal short xMin;
-        internal short yMax;
-        internal short yMin;
+        internal uint CheckSumAdjustment;
+        internal DateTime CreateDate;
+        internal ushort Flags;
+        internal short FontDirectionHint;
+        internal int FontRevision;
+        internal short GlyphDataFormat;
+        internal short IndexToLocFormat;
+        internal ushort LowestRecPpem;
+        internal ushort MacStyle;
+        internal uint MagicNumber;
+        internal ushort UnitsPermEm;
+        internal DateTime UpdateDate;
+        internal int VersionNo;
+        internal short XMax;
+        internal short XMin;
+        internal short YMax;
+        internal short YMin;
 
         /// <summary>
         ///     Class constructor.
@@ -46,7 +46,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public bool IsShortFormat
         {
-            get { return indexToLocFormat == 0; }
+            get { return IndexToLocFormat == 0; }
         }
 
         /// <summary>
@@ -57,24 +57,24 @@ namespace Fonet.Pdf.Gdi.Font
         protected internal override void Read( FontFileReader reader )
         {
             FontFileStream stream = reader.Stream;
-            versionNo = stream.ReadFixed();
-            fontRevision = stream.ReadFixed();
-            checkSumAdjustment = stream.ReadULong();
-            magicNumber = stream.ReadULong();
-            flags = stream.ReadUShort();
-            unitsPermEm = stream.ReadUShort();
+            VersionNo = stream.ReadFixed();
+            FontRevision = stream.ReadFixed();
+            CheckSumAdjustment = stream.ReadULong();
+            MagicNumber = stream.ReadULong();
+            Flags = stream.ReadUShort();
+            UnitsPermEm = stream.ReadUShort();
             // Some fonts have dodgy date offsets that cause AddSeconds to throw an exception
-            createDate = GetDate( stream.ReadLongDateTime() );
-            updateDate = GetDate( stream.ReadLongDateTime() );
-            xMin = stream.ReadShort();
-            yMin = stream.ReadShort();
-            xMax = stream.ReadShort();
-            yMax = stream.ReadShort();
-            macStyle = stream.ReadUShort();
-            lowestRecPPEM = stream.ReadUShort();
-            fontDirectionHint = stream.ReadShort();
-            indexToLocFormat = stream.ReadShort();
-            glyphDataFormat = stream.ReadShort();
+            CreateDate = GetDate( stream.ReadLongDateTime() );
+            UpdateDate = GetDate( stream.ReadLongDateTime() );
+            XMin = stream.ReadShort();
+            YMin = stream.ReadShort();
+            XMax = stream.ReadShort();
+            YMax = stream.ReadShort();
+            MacStyle = stream.ReadUShort();
+            LowestRecPpem = stream.ReadUShort();
+            FontDirectionHint = stream.ReadShort();
+            IndexToLocFormat = stream.ReadShort();
+            GlyphDataFormat = stream.ReadShort();
         }
 
         /// <summary>
@@ -101,25 +101,25 @@ namespace Fonet.Pdf.Gdi.Font
         protected internal override void Write( FontFileWriter writer )
         {
             FontFileStream stream = writer.Stream;
-            stream.WriteFixed( versionNo );
-            stream.WriteFixed( fontRevision );
+            stream.WriteFixed( VersionNo );
+            stream.WriteFixed( FontRevision );
             // TODO: Calculate based on entire font 
             stream.WriteULong( 0 );
             stream.WriteULong( 0x5F0F3CF5 );
-            stream.WriteUShort( flags );
-            stream.WriteUShort( unitsPermEm );
-            stream.WriteDateTime( (long)( createDate - BaseDate ).TotalSeconds );
-            stream.WriteDateTime( (long)( updateDate - BaseDate ).TotalSeconds );
-            stream.WriteShort( xMin );
-            stream.WriteShort( yMin );
-            stream.WriteShort( xMax );
-            stream.WriteShort( yMax );
-            stream.WriteUShort( macStyle );
-            stream.WriteUShort( lowestRecPPEM );
-            stream.WriteShort( fontDirectionHint );
+            stream.WriteUShort( Flags );
+            stream.WriteUShort( UnitsPermEm );
+            stream.WriteDateTime( (long)( CreateDate - BaseDate ).TotalSeconds );
+            stream.WriteDateTime( (long)( UpdateDate - BaseDate ).TotalSeconds );
+            stream.WriteShort( XMin );
+            stream.WriteShort( YMin );
+            stream.WriteShort( XMax );
+            stream.WriteShort( YMax );
+            stream.WriteUShort( MacStyle );
+            stream.WriteUShort( LowestRecPpem );
+            stream.WriteShort( FontDirectionHint );
             // TODO: Always write loca offsets as ulongs
             stream.WriteShort( 1 );
-            stream.WriteShort( glyphDataFormat );
+            stream.WriteShort( GlyphDataFormat );
         }
     }
 }

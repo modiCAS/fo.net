@@ -14,18 +14,18 @@ namespace Fonet.Pdf.Gdi
         ///     Specifies that only the process that called the AddFontResourceEx
         ///     function can use this font.
         /// </summary>
-        private const int FR_PRIVATE = 0x10;
+        private const int FrPrivate = 0x10;
 
         /// <summary>
         ///     Specifies that no process, including the process that called the
         ///     AddFontResourceEx function, can enumerate this font.
         /// </summary>
-        private const int FR_NOT_ENUM = 0x20;
+        private const int FrNotEnum = 0x20;
 
         /// <summary>
         ///     Collection of absolute filenames.
         /// </summary>
-        private readonly IDictionary fonts = new Hashtable();
+        private readonly IDictionary _fonts = new Hashtable();
 
         /// <summary>
         ///     Adds <i>filename</i> to this private font collection.
@@ -67,16 +67,16 @@ namespace Fonet.Pdf.Gdi
                 throw new ArgumentNullException( "fontFile", "Parameter cannot be null" );
             if ( !fontFile.Exists )
                 throw new FileNotFoundException( "Font file does not exist", fontFile.FullName );
-            if ( fonts.Contains( fontFile.FullName ) )
+            if ( _fonts.Contains( fontFile.FullName ) )
                 throw new ArgumentException( "Font file already exists", "fontFile" );
 
             // Dispose needs the font filename to remove it from the system
             string absolutePath = fontFile.FullName;
-            fonts.Add( absolutePath, string.Empty );
+            _fonts.Add( absolutePath, string.Empty );
 
             // AddFontResourceEx returns the number of fonts added which 
             // may be greater than 1 if adding a TrueType collection.
-            if ( LibWrapper.AddFontResourceEx( absolutePath, FR_PRIVATE, 0 ) == 0 )
+            if ( LibWrapper.AddFontResourceEx( absolutePath, FrPrivate, 0 ) == 0 )
                 throw new ArgumentException( "Unable to add font file: " + absolutePath, "fontFile" );
         }
     }

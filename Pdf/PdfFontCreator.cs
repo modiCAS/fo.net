@@ -14,14 +14,14 @@ namespace Fonet.Pdf
         /// <summary>
         ///     Generates object id's.
         /// </summary>
-        private readonly PdfCreator creator;
+        private readonly PdfCreator _creator;
 
         /// <summary>
         /// </summary>
         /// <param name="creator"></param>
         public PdfFontCreator( PdfCreator creator )
         {
-            this.creator = creator;
+            this._creator = creator;
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Fonet.Pdf
                 {
                     // A character indexed font that may be subsetted.
                     var cid = (CIDFont)realMetrics;
-                    pdfFont = CreateCIDFont( pdfFontID, font, cid );
+                    pdfFont = CreateCidFont( pdfFontID, font, cid );
                 }
             }
 
@@ -73,7 +73,7 @@ namespace Fonet.Pdf
             if ( pdfFont == null )
                 throw new Exception( "Unable to create Pdf font object for " + pdfFontID );
 
-            creator.AddObject( pdfFont );
+            _creator.AddObject( pdfFont );
 
             return pdfFont;
         }
@@ -90,7 +90,7 @@ namespace Fonet.Pdf
         /// <param name="font">Required to access the font descriptor.</param>
         /// <param name="cidFont">The underlying CID font.</param>
         /// <returns></returns>
-        private PdfFont CreateCIDFont(
+        private PdfFont CreateCidFont(
             string pdfFontID, Font font, CIDFont cidFont )
         {
             // The font descriptor is required to access licensing details are 
@@ -105,11 +105,11 @@ namespace Fonet.Pdf
             PdfFontDescriptor pdfDescriptor = MakeFontDescriptor( pdfFontID, cidFont );
             pdfDescriptor.FontFile2 = fontFile;
 
-            var pdfCidSystemInfo = new PdfCIDSystemInfo(
+            var pdfCidSystemInfo = new PdfCidSystemInfo(
                 cidFont.Registry, cidFont.Ordering, cidFont.Supplement );
 
-            var pdfCidFont = new PdfCIDFont(
-                NextObjectId(), PdfFontSubTypeEnum.CIDFontType2, font.FontName );
+            var pdfCidFont = new PdfCidFont(
+                NextObjectId(), PdfFontSubTypeEnum.CidFontType2, font.FontName );
             pdfCidFont.SystemInfo = pdfCidSystemInfo;
             pdfCidFont.Descriptor = pdfDescriptor;
             pdfCidFont.DefaultWidth = new PdfNumeric( cidFont.DefaultWidth );
@@ -132,10 +132,10 @@ namespace Fonet.Pdf
 
             // Add all the Pdf objects to the document.  MakeFont will add the actual 
             // PdfFont object to the document.
-            creator.AddObject( pdfDescriptor );
-            creator.AddObject( pdfCidFont );
-            creator.AddObject( pdfCMap );
-            creator.AddObject( fontFile );
+            _creator.AddObject( pdfDescriptor );
+            _creator.AddObject( pdfCidFont );
+            _creator.AddObject( pdfCMap );
+            _creator.AddObject( fontFile );
 
             return pdfFont;
         }
@@ -146,7 +146,7 @@ namespace Fonet.Pdf
         /// <returns></returns>
         private PdfObjectId NextObjectId()
         {
-            return creator.Doc.NextObjectId();
+            return _creator.Doc.NextObjectId();
         }
 
         /// <summary>
@@ -185,7 +185,7 @@ namespace Fonet.Pdf
             pdfFont.LastChar = new PdfNumeric( ttf.LastChar );
             pdfFont.Widths = ttf.Array;
 
-            creator.AddObject( pdfDescriptor );
+            _creator.AddObject( pdfDescriptor );
 
             return pdfFont;
         }

@@ -5,7 +5,7 @@ namespace Fonet.Fo.Flow
         public Wrapper( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:wrapper";
+            Name = "fo:wrapper";
         }
 
         public new static FObj.Maker GetMaker()
@@ -15,8 +15,8 @@ namespace Fonet.Fo.Flow
 
         protected internal override void AddCharacters( char[] data, int start, int length )
         {
-            var ft = new FOText( data, start, length, this );
-            children.Add( ft );
+            var ft = new FoText( data, start, length, this );
+            Children.Add( ft );
         }
 
         internal new class Maker : FObj.Maker

@@ -7,20 +7,20 @@ namespace Fonet.Fo.Flow
         public Inline( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:inline";
+            Name = "fo:inline";
             if ( parent.GetName().Equals( "fo:flow" ) )
             {
                 throw new FonetException( "inline formatting objects cannot"
                     + " be directly under flow" );
             }
 
-            AccessibilityProps mAccProps = propMgr.GetAccessibilityProps();
-            AuralProps mAurProps = propMgr.GetAuralProps();
-            BorderAndPadding bap = propMgr.GetBorderAndPadding();
-            BackgroundProps bProps = propMgr.GetBackgroundProps();
-            MarginInlineProps mProps = propMgr.GetMarginInlineProps();
-            RelativePositionProps mRelProps = propMgr.GetRelativePositionProps();
-            ts = propMgr.getTextDecoration( parent );
+            AccessibilityProps mAccProps = PropMgr.GetAccessibilityProps();
+            AuralProps mAurProps = PropMgr.GetAuralProps();
+            BorderAndPadding bap = PropMgr.GetBorderAndPadding();
+            BackgroundProps bProps = PropMgr.GetBackgroundProps();
+            MarginInlineProps mProps = PropMgr.GetMarginInlineProps();
+            RelativePositionProps mRelProps = PropMgr.GetRelativePositionProps();
+            Ts = PropMgr.GetTextDecoration( parent );
         }
 
         public new static FObj.Maker GetMaker()
@@ -30,11 +30,11 @@ namespace Fonet.Fo.Flow
 
         protected internal override void AddCharacters( char[] data, int start, int length )
         {
-            var ft = new FOText( data, start, length, this );
-            ft.setUnderlined( ts.getUnderlined() );
-            ft.setOverlined( ts.getOverlined() );
-            ft.setLineThrough( ts.getLineThrough() );
-            children.Add( ft );
+            var ft = new FoText( data, start, length, this );
+            ft.SetUnderlined( Ts.getUnderlined() );
+            ft.SetOverlined( Ts.getOverlined() );
+            ft.SetLineThrough( Ts.getLineThrough() );
+            Children.Add( ft );
         }
 
         internal new class Maker : FObj.Maker

@@ -4,7 +4,7 @@ namespace Fonet.Fo.Properties
 {
     internal class SpeakHeaderMaker : ToBeImplementedProperty.Maker
     {
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected SpeakHeaderMaker( string name ) : base( name )
         {
@@ -23,9 +23,9 @@ namespace Fonet.Fo.Properties
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "once", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "once", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

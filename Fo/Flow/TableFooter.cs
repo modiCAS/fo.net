@@ -5,17 +5,17 @@ namespace Fonet.Fo.Flow
         public TableFooter( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:table-footer";
+            Name = "fo:table-footer";
         }
 
         public override int GetYPosition()
         {
-            return areaContainer.GetCurrentYPosition() - spaceBefore;
+            return AreaContainer.GetCurrentYPosition() - SpaceBefore;
         }
 
         public override void SetYPosition( int value )
         {
-            areaContainer.setYPosition( value + 2 * spaceBefore );
+            AreaContainer.setYPosition( value + 2 * SpaceBefore );
         }
 
         public new static FObj.Maker GetMaker()

@@ -7,91 +7,91 @@ namespace Fonet.Fo
 {
     internal class StandardElementMapping
     {
-        public const string URI = "http://www.w3.org/1999/XSL/Format";
+        public const string Uri = "http://www.w3.org/1999/XSL/Format";
 
-        private static readonly Hashtable foObjs;
+        private static readonly Hashtable FoObjs;
 
         static StandardElementMapping()
         {
-            foObjs = new Hashtable();
+            FoObjs = new Hashtable();
 
             // Declarations and Pagination and Layout Formatting Objects
-            foObjs.Add( "root", Root.GetMaker() );
-            foObjs.Add( "declarations", Declarations.GetMaker() );
-            foObjs.Add( "color-profile", ColorProfile.GetMaker() );
-            foObjs.Add( "page-sequence", PageSequence.GetMaker() );
-            foObjs.Add( "layout-master-set", LayoutMasterSet.GetMaker() );
-            foObjs.Add( "page-sequence-master", PageSequenceMaster.GetMaker() );
-            foObjs.Add( "single-page-master-reference", SinglePageMasterReference.GetMaker() );
-            foObjs.Add( "repeatable-page-master-reference", RepeatablePageMasterReference.GetMaker() );
-            foObjs.Add( "repeatable-page-master-alternatives", RepeatablePageMasterAlternatives.GetMaker() );
-            foObjs.Add( "conditional-page-master-reference", ConditionalPageMasterReference.GetMaker() );
-            foObjs.Add( "simple-page-master", SimplePageMaster.GetMaker() );
-            foObjs.Add( "region-body", RegionBody.GetMaker() );
-            foObjs.Add( "region-before", RegionBefore.GetMaker() );
-            foObjs.Add( "region-after", RegionAfter.GetMaker() );
-            foObjs.Add( "region-start", RegionStart.GetMaker() );
-            foObjs.Add( "region-end", RegionEnd.GetMaker() );
-            foObjs.Add( "flow", Flow.Flow.GetMaker() );
-            foObjs.Add( "static-content", StaticContent.GetMaker() );
-            foObjs.Add( "title", Title.GetMaker() );
+            FoObjs.Add( "root", Root.GetMaker() );
+            FoObjs.Add( "declarations", Declarations.GetMaker() );
+            FoObjs.Add( "color-profile", ColorProfile.GetMaker() );
+            FoObjs.Add( "page-sequence", PageSequence.GetMaker() );
+            FoObjs.Add( "layout-master-set", LayoutMasterSet.GetMaker() );
+            FoObjs.Add( "page-sequence-master", PageSequenceMaster.GetMaker() );
+            FoObjs.Add( "single-page-master-reference", SinglePageMasterReference.GetMaker() );
+            FoObjs.Add( "repeatable-page-master-reference", RepeatablePageMasterReference.GetMaker() );
+            FoObjs.Add( "repeatable-page-master-alternatives", RepeatablePageMasterAlternatives.GetMaker() );
+            FoObjs.Add( "conditional-page-master-reference", ConditionalPageMasterReference.GetMaker() );
+            FoObjs.Add( "simple-page-master", SimplePageMaster.GetMaker() );
+            FoObjs.Add( "region-body", RegionBody.GetMaker() );
+            FoObjs.Add( "region-before", RegionBefore.GetMaker() );
+            FoObjs.Add( "region-after", RegionAfter.GetMaker() );
+            FoObjs.Add( "region-start", RegionStart.GetMaker() );
+            FoObjs.Add( "region-end", RegionEnd.GetMaker() );
+            FoObjs.Add( "flow", Flow.Flow.GetMaker() );
+            FoObjs.Add( "static-content", StaticContent.GetMaker() );
+            FoObjs.Add( "title", Title.GetMaker() );
 
             // Block-level Formatting Objects
-            foObjs.Add( "block", Block.GetMaker() );
-            foObjs.Add( "block-container", BlockContainer.GetMaker() );
+            FoObjs.Add( "block", Block.GetMaker() );
+            FoObjs.Add( "block-container", BlockContainer.GetMaker() );
 
             // Inline-level Formatting Objects
-            foObjs.Add( "bidi-override", BidiOverride.GetMaker() );
-            foObjs.Add( "character", Character.GetMaker() );
-            foObjs.Add( "initial-property-set", InitialPropertySet.GetMaker() );
-            foObjs.Add( "external-graphic", ExternalGraphic.GetMaker() );
-            foObjs.Add( "instream-foreign-object", InstreamForeignObject.GetMaker() );
-            foObjs.Add( "inline", Inline.GetMaker() );
-            foObjs.Add( "inline-container", InlineContainer.GetMaker() );
-            foObjs.Add( "leader", Leader.GetMaker() );
-            foObjs.Add( "page-number", PageNumber.GetMaker() );
-            foObjs.Add( "page-number-citation", PageNumberCitation.GetMaker() );
+            FoObjs.Add( "bidi-override", BidiOverride.GetMaker() );
+            FoObjs.Add( "character", Character.GetMaker() );
+            FoObjs.Add( "initial-property-set", InitialPropertySet.GetMaker() );
+            FoObjs.Add( "external-graphic", ExternalGraphic.GetMaker() );
+            FoObjs.Add( "instream-foreign-object", InstreamForeignObject.GetMaker() );
+            FoObjs.Add( "inline", Inline.GetMaker() );
+            FoObjs.Add( "inline-container", InlineContainer.GetMaker() );
+            FoObjs.Add( "leader", Leader.GetMaker() );
+            FoObjs.Add( "page-number", PageNumber.GetMaker() );
+            FoObjs.Add( "page-number-citation", PageNumberCitation.GetMaker() );
 
             // Formatting Objects for Tables
-            foObjs.Add( "table-and-caption", TableAndCaption.GetMaker() );
-            foObjs.Add( "table", Table.GetMaker() );
-            foObjs.Add( "table-column", TableColumn.GetMaker() );
-            foObjs.Add( "table-caption", TableCaption.GetMaker() );
-            foObjs.Add( "table-header", TableHeader.GetMaker() );
-            foObjs.Add( "table-footer", TableFooter.GetMaker() );
-            foObjs.Add( "table-body", TableBody.GetMaker() );
-            foObjs.Add( "table-row", TableRow.GetMaker() );
-            foObjs.Add( "table-cell", TableCell.GetMaker() );
+            FoObjs.Add( "table-and-caption", TableAndCaption.GetMaker() );
+            FoObjs.Add( "table", Table.GetMaker() );
+            FoObjs.Add( "table-column", TableColumn.GetMaker() );
+            FoObjs.Add( "table-caption", TableCaption.GetMaker() );
+            FoObjs.Add( "table-header", TableHeader.GetMaker() );
+            FoObjs.Add( "table-footer", TableFooter.GetMaker() );
+            FoObjs.Add( "table-body", TableBody.GetMaker() );
+            FoObjs.Add( "table-row", TableRow.GetMaker() );
+            FoObjs.Add( "table-cell", TableCell.GetMaker() );
 
             // Formatting Objects for Lists
-            foObjs.Add( "list-block", ListBlock.GetMaker() );
-            foObjs.Add( "list-item", ListItem.GetMaker() );
-            foObjs.Add( "list-item-body", ListItemBody.GetMaker() );
-            foObjs.Add( "list-item-label", ListItemLabel.GetMaker() );
+            FoObjs.Add( "list-block", ListBlock.GetMaker() );
+            FoObjs.Add( "list-item", ListItem.GetMaker() );
+            FoObjs.Add( "list-item-body", ListItemBody.GetMaker() );
+            FoObjs.Add( "list-item-label", ListItemLabel.GetMaker() );
 
             // Dynamic Effects: Link and Multi Formatting Objects
-            foObjs.Add( "basic-link", BasicLink.GetMaker() );
-            foObjs.Add( "multi-switch", MultiSwitch.GetMaker() );
-            foObjs.Add( "multi-case", MultiCase.GetMaker() );
-            foObjs.Add( "multi-toggle", MultiToggle.GetMaker() );
-            foObjs.Add( "multi-properties", MultiProperties.GetMaker() );
-            foObjs.Add( "multi-property-set", MultiPropertySet.GetMaker() );
+            FoObjs.Add( "basic-link", BasicLink.GetMaker() );
+            FoObjs.Add( "multi-switch", MultiSwitch.GetMaker() );
+            FoObjs.Add( "multi-case", MultiCase.GetMaker() );
+            FoObjs.Add( "multi-toggle", MultiToggle.GetMaker() );
+            FoObjs.Add( "multi-properties", MultiProperties.GetMaker() );
+            FoObjs.Add( "multi-property-set", MultiPropertySet.GetMaker() );
 
             // Out-of-Line Formatting Objects
-            foObjs.Add( "float", Float.GetMaker() );
-            foObjs.Add( "footnote", Footnote.GetMaker() );
-            foObjs.Add( "footnote-body", FootnoteBody.GetMaker() );
+            FoObjs.Add( "float", Float.GetMaker() );
+            FoObjs.Add( "footnote", Footnote.GetMaker() );
+            FoObjs.Add( "footnote-body", FootnoteBody.GetMaker() );
 
             // Other Formatting Objects
-            foObjs.Add( "wrapper", Wrapper.GetMaker() );
-            foObjs.Add( "marker", Marker.GetMaker() );
-            foObjs.Add( "retrieve-marker", RetrieveMarker.GetMaker() );
+            FoObjs.Add( "wrapper", Wrapper.GetMaker() );
+            FoObjs.Add( "marker", Marker.GetMaker() );
+            FoObjs.Add( "retrieve-marker", RetrieveMarker.GetMaker() );
         }
 
-        public void AddToBuilder( FOTreeBuilder builder )
+        public void AddToBuilder( FoTreeBuilder builder )
         {
-            builder.AddElementMapping( URI, foObjs );
-            builder.AddPropertyMapping( URI, FOPropertyMapping.getGenericMappings() );
+            builder.AddElementMapping( Uri, FoObjs );
+            builder.AddPropertyMapping( Uri, FoPropertyMapping.GetGenericMappings() );
         }
     }
 }

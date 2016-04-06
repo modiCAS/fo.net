@@ -131,7 +131,7 @@ namespace Fonet
                 for ( var i = 0; i < markers.Count; i++ )
                 {
                     var marker = (Marker)markers[ i ];
-                    marker.releaseRegistryArea();
+                    marker.ReleaseRegistryArea();
                     currentPageSequenceMarkers.Add( marker );
                     documentMarkers.Add( marker );
                 }
@@ -229,7 +229,7 @@ namespace Fonet
                 this.outer = outer;
                 this.page = page;
 
-                foreach ( object o in outer.idReferences.getInvalidElements() )
+                foreach ( object o in outer.idReferences.GetInvalidElements() )
                     unresolvedIdReferences.Add( o );
             }
 
@@ -251,7 +251,7 @@ namespace Fonet
                 // See if any of the unresolved references are still unresolved.
                 foreach ( string s in unresolvedIdReferences )
                 {
-                    if ( !outer.idReferences.doesIDExist( s ) )
+                    if ( !outer.idReferences.DoesIDExist( s ) )
                         return false;
                 }
 

@@ -14,7 +14,7 @@ namespace Fonet.Layout
             int allocationWidth, int maxHeight, int columnCount,
             int columnGap ) :
                 base( fontState, xPosition, yPosition, allocationWidth, maxHeight,
-                    Position.ABSOLUTE )
+                    Position.Absolute )
         {
             contentRectangleWidth = allocationWidth;
             this.columnCount = columnCount;

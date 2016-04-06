@@ -4,18 +4,18 @@ namespace Fonet.Fo.Flow
 {
     internal class ListItem : FObj
     {
-        private int align;
-        private int alignLast;
-        private BlockArea blockArea;
-        private string id;
-        private int lineHeight;
-        private int spaceAfter;
-        private int spaceBefore;
+        private int _align;
+        private int _alignLast;
+        private BlockArea _blockArea;
+        private string _id;
+        private int _lineHeight;
+        private int _spaceAfter;
+        private int _spaceBefore;
 
         public ListItem( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:list-item";
+            Name = "fo:list-item";
         }
 
         public new static FObj.Maker GetMaker()
@@ -25,98 +25,98 @@ namespace Fonet.Fo.Flow
 
         public override Status Layout( Area area )
         {
-            if ( marker == MarkerStart )
+            if ( Marker == MarkerStart )
             {
-                AccessibilityProps mAccProps = propMgr.GetAccessibilityProps();
-                AuralProps mAurProps = propMgr.GetAuralProps();
-                BorderAndPadding bap = propMgr.GetBorderAndPadding();
-                BackgroundProps bProps = propMgr.GetBackgroundProps();
-                MarginProps mProps = propMgr.GetMarginProps();
-                RelativePositionProps mRelProps = propMgr.GetRelativePositionProps();
+                AccessibilityProps mAccProps = PropMgr.GetAccessibilityProps();
+                AuralProps mAurProps = PropMgr.GetAuralProps();
+                BorderAndPadding bap = PropMgr.GetBorderAndPadding();
+                BackgroundProps bProps = PropMgr.GetBackgroundProps();
+                MarginProps mProps = PropMgr.GetMarginProps();
+                RelativePositionProps mRelProps = PropMgr.GetRelativePositionProps();
 
-                align = properties.GetProperty( "text-align" ).GetEnum();
-                alignLast = properties.GetProperty( "text-align-last" ).GetEnum();
-                lineHeight =
-                    properties.GetProperty( "line-height" ).GetLength().MValue();
-                spaceBefore =
-                    properties.GetProperty( "space-before.optimum" ).GetLength().MValue();
-                spaceAfter =
-                    properties.GetProperty( "space-after.optimum" ).GetLength().MValue();
-                id = properties.GetProperty( "id" ).GetString();
+                _align = Properties.GetProperty( "text-align" ).GetEnum();
+                _alignLast = Properties.GetProperty( "text-align-last" ).GetEnum();
+                _lineHeight =
+                    Properties.GetProperty( "line-height" ).GetLength().MValue();
+                _spaceBefore =
+                    Properties.GetProperty( "space-before.optimum" ).GetLength().MValue();
+                _spaceAfter =
+                    Properties.GetProperty( "space-after.optimum" ).GetLength().MValue();
+                _id = Properties.GetProperty( "id" ).GetString();
 
-                area.getIDReferences().CreateID( id );
+                area.getIDReferences().CreateID( _id );
 
-                marker = 0;
+                Marker = 0;
             }
 
             if ( area is BlockArea )
                 area.end();
 
-            if ( spaceBefore != 0 )
-                area.addDisplaySpace( spaceBefore );
+            if ( _spaceBefore != 0 )
+                area.addDisplaySpace( _spaceBefore );
 
-            blockArea =
-                new BlockArea( propMgr.GetFontState( area.getFontInfo() ),
+            _blockArea =
+                new BlockArea( PropMgr.GetFontState( area.getFontInfo() ),
                     area.getAllocationWidth(), area.spaceLeft(), 0, 0,
-                    0, align, alignLast, lineHeight );
-            blockArea.setTableCellXOffset( area.getTableCellXOffset() );
-            blockArea.setGeneratedBy( this );
-            areasGenerated++;
-            if ( areasGenerated == 1 )
-                blockArea.isFirst( true );
-            blockArea.addLineagePair( this, areasGenerated );
+                    0, _align, _alignLast, _lineHeight );
+            _blockArea.setTableCellXOffset( area.getTableCellXOffset() );
+            _blockArea.setGeneratedBy( this );
+            AreasGenerated++;
+            if ( AreasGenerated == 1 )
+                _blockArea.isFirst( true );
+            _blockArea.addLineagePair( this, AreasGenerated );
 
-            blockArea.setParent( area );
-            blockArea.setPage( area.getPage() );
-            blockArea.start();
+            _blockArea.setParent( area );
+            _blockArea.setPage( area.getPage() );
+            _blockArea.start();
 
-            blockArea.setAbsoluteHeight( area.getAbsoluteHeight() );
-            blockArea.setIDReferences( area.getIDReferences() );
+            _blockArea.setAbsoluteHeight( area.getAbsoluteHeight() );
+            _blockArea.setIDReferences( area.getIDReferences() );
 
-            int numChildren = children.Count;
+            int numChildren = Children.Count;
             if ( numChildren != 2 )
                 throw new FonetException( "list-item must have exactly two children" );
-            var label = (ListItemLabel)children[ 0 ];
-            var body = (ListItemBody)children[ 1 ];
+            var label = (ListItemLabel)Children[ 0 ];
+            var body = (ListItemBody)Children[ 1 ];
 
             Status status;
 
-            if ( marker == 0 )
+            if ( Marker == 0 )
             {
-                area.getIDReferences().ConfigureID( id, area );
+                area.getIDReferences().ConfigureID( _id, area );
 
-                status = label.Layout( blockArea );
-                if ( status.isIncomplete() )
+                status = label.Layout( _blockArea );
+                if ( status.IsIncomplete() )
                     return status;
             }
 
-            status = body.Layout( blockArea );
-            if ( status.isIncomplete() )
+            status = body.Layout( _blockArea );
+            if ( status.IsIncomplete() )
             {
-                blockArea.end();
-                area.addChild( blockArea );
-                area.increaseHeight( blockArea.GetHeight() );
-                marker = 1;
+                _blockArea.end();
+                area.addChild( _blockArea );
+                area.increaseHeight( _blockArea.GetHeight() );
+                Marker = 1;
                 return status;
             }
 
-            blockArea.end();
-            area.addChild( blockArea );
-            area.increaseHeight( blockArea.GetHeight() );
+            _blockArea.end();
+            area.addChild( _blockArea );
+            area.increaseHeight( _blockArea.GetHeight() );
 
-            if ( spaceAfter != 0 )
-                area.addDisplaySpace( spaceAfter );
+            if ( _spaceAfter != 0 )
+                area.addDisplaySpace( _spaceAfter );
 
             if ( area is BlockArea )
                 area.start();
-            blockArea.isLast( true );
-            return new Status( Status.OK );
+            _blockArea.isLast( true );
+            return new Status( Status.Ok );
         }
 
         public override int GetContentWidth()
         {
-            if ( blockArea != null )
-                return blockArea.getContentWidth();
+            if ( _blockArea != null )
+                return _blockArea.getContentWidth();
             return 0;
         }
 

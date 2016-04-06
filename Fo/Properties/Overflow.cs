@@ -2,12 +2,12 @@ namespace Fonet.Fo.Properties
 {
     internal class Overflow
     {
-        public const int VISIBLE = Constants.VISIBLE;
+        public const int Visible = Constants.Visible;
 
-        public const int HIDDEN = Constants.HIDDEN;
+        public const int Hidden = Constants.Hidden;
 
-        public const int SCROLL = Constants.SCROLL;
+        public const int Scroll = Constants.Scroll;
 
-        public const int AUTO = Constants.AUTO;
+        public const int Auto = Constants.Auto;
     }
 }

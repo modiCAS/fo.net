@@ -20,9 +20,9 @@ namespace Fonet.Pdf.Security
             0x2f, 0x0c, 0xa9, 0xfe, 0x64, 0x53, 0x69, 0x7a
         };
 
-        private byte[] masterKey;
+        private byte[] _masterKey;
 
-        private readonly int permissions;
+        private readonly int _permissions;
 
         /// <summary>
         ///     Constructs a new standard security manager.
@@ -40,7 +40,7 @@ namespace Fonet.Pdf.Security
             CreateOwnerEntry( options );
             CreateMasterKey( options, fileId ); // requires the owner entry
             CreateUserEntry( options ); // requires the master key
-            permissions = options.Permissions;
+            _permissions = options.Permissions;
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace Fonet.Pdf.Security
             var u = new PdfString( UserEntry );
             u.NeverEncrypt = true;
             encrypt[ PdfName.Names.U ] = u;
-            encrypt[ PdfName.Names.P ] = new PdfNumeric( permissions );
+            encrypt[ PdfName.Names.P ] = new PdfNumeric( _permissions );
             return encrypt;
         }
 
@@ -89,7 +89,7 @@ namespace Fonet.Pdf.Security
         /// </param>
         private void CreateMasterKey( SecurityOptions options, FileIdentifier fileId )
         {
-            masterKey = ComputeEncryptionKey32(
+            _masterKey = ComputeEncryptionKey32(
                 PadPassword( options.UserPassword ),
                 OwnerEntry,
                 options.Permissions,
@@ -140,7 +140,7 @@ namespace Fonet.Pdf.Security
         private void CreateUserEntry( SecurityOptions options )
         {
             // Encrypt the 32-byte padding string using the master key.
-            var arc4 = new Arc4( masterKey );
+            var arc4 = new Arc4( _masterKey );
             UserEntry = new byte[ 32 ];
             arc4.Encrypt( Padding, UserEntry );
         }
@@ -150,7 +150,7 @@ namespace Fonet.Pdf.Security
         /// </summary>
         public byte[] Encrypt( byte[] data, PdfObjectId objectId )
         {
-            var arc4 = new Arc4( ComputeEncryptionKey31( masterKey, objectId ) );
+            var arc4 = new Arc4( ComputeEncryptionKey31( _masterKey, objectId ) );
             arc4.Encrypt( data, data );
             return data;
         }

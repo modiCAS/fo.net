@@ -2,13 +2,13 @@ namespace Fonet.Fo.Properties
 {
     internal class BaselineShiftMaker : LengthProperty.Maker
     {
-        protected static readonly EnumProperty s_propBASELINE = new EnumProperty( Constants.BASELINE );
+        protected static readonly EnumProperty SPropBaseline = new EnumProperty( Constants.Baseline );
 
-        protected static readonly EnumProperty s_propSUB = new EnumProperty( Constants.SUB );
+        protected static readonly EnumProperty SPropSub = new EnumProperty( Constants.Sub );
 
-        protected static readonly EnumProperty s_propSUPER = new EnumProperty( Constants.SUPER );
+        protected static readonly EnumProperty SPropSuper = new EnumProperty( Constants.Super );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected BaselineShiftMaker( string name ) : base( name )
         {
@@ -27,22 +27,22 @@ namespace Fonet.Fo.Properties
         public override Property CheckEnumValues( string value )
         {
             if ( value.Equals( "baseline" ) )
-                return s_propBASELINE;
+                return SPropBaseline;
 
             if ( value.Equals( "sub" ) )
-                return s_propSUB;
+                return SPropSub;
 
             if ( value.Equals( "super" ) )
-                return s_propSUPER;
+                return SPropSuper;
 
             return base.CheckEnumValues( value );
         }
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "baseline", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "baseline", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Fonet.Pdf.Gdi.Font
     ///         http://www.panose.com/hardware/pan2.asp
     ///     </p>
     /// </remarks>
-    internal class OS2Table : FontTable
+    internal class Os2Table : FontTable
     {
         private const int OldStyleSerifs = 1;
         private const int TransitionalSerifs = 2;
@@ -26,45 +26,45 @@ namespace Fonet.Pdf.Gdi.Font
         private const int SansSerif = 8;
         private const int Scripts = 10;
         private const int Symbolic = 12;
-        private short avgCharWidth;
-        private byte classID;
-        private uint codePageRange1;
-        private uint codePageRange2;
-        private ushort fsSelection;
-        private ushort fsType;
-        private readonly byte[] panose = new byte[ 10 ];
-        private short sCapHeight;
-        private short strikeoutPosition;
-        private short strikeoutSize;
-        private byte subclassID;
-        private short subscriptXOffset;
-        private short subscriptXSize;
-        private short subscriptYOffset;
-        private short subscriptYSize;
-        private short superscriptXOffset;
-        private short superscriptXSize;
-        private short superscriptYOffset;
-        private short superscriptYSize;
-        private short sxHeight;
-        private short typoAscender;
-        private short typoDescender;
-        private short typoLineGap;
-        private uint unicodeRange1;
-        private uint unicodeRange2;
-        private uint unicodeRange3;
-        private uint unicodeRange4;
-        private ushort usBreakChar;
-        private ushort usDefaultChar;
-        private ushort usMaxContext;
-        private ushort usWeightClass;
-        private ushort usWidthClass;
-        private ushort usWinAscent;
-        private ushort usWinDescent;
-        private readonly sbyte[] vendorID = new sbyte[ 4 ];
+        private short _avgCharWidth;
+        private byte _classID;
+        private uint _codePageRange1;
+        private uint _codePageRange2;
+        private ushort _fsSelection;
+        private ushort _fsType;
+        private readonly byte[] _panose = new byte[ 10 ];
+        private short _sCapHeight;
+        private short _strikeoutPosition;
+        private short _strikeoutSize;
+        private byte _subclassID;
+        private short _subscriptXOffset;
+        private short _subscriptXSize;
+        private short _subscriptYOffset;
+        private short _subscriptYSize;
+        private short _superscriptXOffset;
+        private short _superscriptXSize;
+        private short _superscriptYOffset;
+        private short _superscriptYSize;
+        private short _sxHeight;
+        private short _typoAscender;
+        private short _typoDescender;
+        private short _typoLineGap;
+        private uint _unicodeRange1;
+        private uint _unicodeRange2;
+        private uint _unicodeRange3;
+        private uint _unicodeRange4;
+        private ushort _usBreakChar;
+        private ushort _usDefaultChar;
+        private ushort _usMaxContext;
+        private ushort _usWeightClass;
+        private ushort _usWidthClass;
+        private ushort _usWinAscent;
+        private ushort _usWinDescent;
+        private readonly sbyte[] _vendorID = new sbyte[ 4 ];
 
-        private ushort version;
+        private ushort _version;
 
-        public OS2Table( DirectoryEntry entry ) : base( TableNames.Os2, entry )
+        public Os2Table( DirectoryEntry entry ) : base( TableNames.Os2, entry )
         {
         }
 
@@ -74,7 +74,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public bool IsItalic
         {
-            get { return ( fsSelection & 0x01 ) == 0x01; }
+            get { return ( _fsSelection & 0x01 ) == 0x01; }
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public bool IsRegular
         {
-            get { return ( fsSelection & 0x40 ) == 0x40; }
+            get { return ( _fsSelection & 0x40 ) == 0x40; }
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public bool IsBold
         {
-            get { return ( fsSelection & 0x20 ) == 0x20 || usWeightClass >= 700; }
+            get { return ( _fsSelection & 0x20 ) == 0x20 || _usWeightClass >= 700; }
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public bool IsMonospaced
         {
-            get { return panose[ 3 ] == 9; }
+            get { return _panose[ 3 ] == 9; }
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public bool IsSymbolic
         {
-            get { return classID == Symbolic; }
+            get { return _classID == Symbolic; }
         }
 
         /// <summary>
@@ -121,12 +121,12 @@ namespace Fonet.Pdf.Gdi.Font
         {
             get
             {
-                return classID == OldStyleSerifs ||
-                    classID == TransitionalSerifs ||
-                    classID == ModernSerifs ||
-                    classID == ClarendonSerifs ||
-                    classID == SlabSerifs ||
-                    classID == FreeformSerifs;
+                return _classID == OldStyleSerifs ||
+                    _classID == TransitionalSerifs ||
+                    _classID == ModernSerifs ||
+                    _classID == ClarendonSerifs ||
+                    _classID == SlabSerifs ||
+                    _classID == FreeformSerifs;
             }
         }
 
@@ -136,7 +136,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public bool IsScript
         {
-            get { return classID == Scripts; }
+            get { return _classID == Scripts; }
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public bool IsSansSerif
         {
-            get { return classID == SansSerif; }
+            get { return _classID == SansSerif; }
         }
 
         /// <summary>
@@ -159,22 +159,22 @@ namespace Fonet.Pdf.Gdi.Font
 
         public bool InstallableEmbedding
         {
-            get { return fsType == 0; }
+            get { return _fsType == 0; }
         }
 
         public bool RestricedLicenseEmbedding
         {
-            get { return ( fsType & 0x0002 ) == 0x0002; }
+            get { return ( _fsType & 0x0002 ) == 0x0002; }
         }
 
         public bool EditableEmbedding
         {
-            get { return ( fsType & 0x0008 ) == 0x0008; }
+            get { return ( _fsType & 0x0008 ) == 0x0008; }
         }
 
         public bool PreviewAndPrintEmbedding
         {
-            get { return ( fsType & 0x0004 ) == 0x0004; }
+            get { return ( _fsType & 0x0004 ) == 0x0004; }
         }
 
         /// <summary>
@@ -183,17 +183,17 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public bool IsSubsettable
         {
-            get { return ( fsType & 0x0100 ) != 0x0100; }
+            get { return ( _fsType & 0x0100 ) != 0x0100; }
         }
 
         public int CapHeight
         {
-            get { return sCapHeight; }
+            get { return _sCapHeight; }
         }
 
         public int XHeight
         {
-            get { return sxHeight; }
+            get { return _sxHeight; }
         }
 
         public ushort FirstChar { get; private set; }
@@ -208,49 +208,49 @@ namespace Fonet.Pdf.Gdi.Font
         protected internal override void Read( FontFileReader reader )
         {
             FontFileStream stream = reader.Stream;
-            version = stream.ReadUShort();
-            avgCharWidth = stream.ReadShort();
-            usWeightClass = stream.ReadUShort();
-            usWidthClass = stream.ReadUShort();
+            _version = stream.ReadUShort();
+            _avgCharWidth = stream.ReadShort();
+            _usWeightClass = stream.ReadUShort();
+            _usWidthClass = stream.ReadUShort();
             // According to the OpenType spec, bit 0 must be zero.
-            fsType = (ushort)( stream.ReadUShort() & ~1 );
-            subscriptXSize = stream.ReadShort();
-            subscriptYSize = stream.ReadShort();
-            subscriptXOffset = stream.ReadShort();
-            subscriptYOffset = stream.ReadShort();
-            superscriptXSize = stream.ReadShort();
-            superscriptYSize = stream.ReadShort();
-            superscriptXOffset = stream.ReadShort();
-            superscriptYOffset = stream.ReadShort();
-            strikeoutSize = stream.ReadShort();
-            strikeoutPosition = stream.ReadShort();
+            _fsType = (ushort)( stream.ReadUShort() & ~1 );
+            _subscriptXSize = stream.ReadShort();
+            _subscriptYSize = stream.ReadShort();
+            _subscriptXOffset = stream.ReadShort();
+            _subscriptYOffset = stream.ReadShort();
+            _superscriptXSize = stream.ReadShort();
+            _superscriptYSize = stream.ReadShort();
+            _superscriptXOffset = stream.ReadShort();
+            _superscriptYOffset = stream.ReadShort();
+            _strikeoutSize = stream.ReadShort();
+            _strikeoutPosition = stream.ReadShort();
             short familyClass = stream.ReadShort();
-            classID = (byte)( familyClass >> 8 );
-            subclassID = (byte)( familyClass & 255 );
-            stream.Read( panose, 0, panose.Length );
-            unicodeRange1 = stream.ReadULong();
-            unicodeRange2 = stream.ReadULong();
-            unicodeRange3 = stream.ReadULong();
-            unicodeRange4 = stream.ReadULong();
-            vendorID[ 0 ] = stream.ReadChar();
-            vendorID[ 1 ] = stream.ReadChar();
-            vendorID[ 2 ] = stream.ReadChar();
-            vendorID[ 3 ] = stream.ReadChar();
-            fsSelection = stream.ReadUShort();
+            _classID = (byte)( familyClass >> 8 );
+            _subclassID = (byte)( familyClass & 255 );
+            stream.Read( _panose, 0, _panose.Length );
+            _unicodeRange1 = stream.ReadULong();
+            _unicodeRange2 = stream.ReadULong();
+            _unicodeRange3 = stream.ReadULong();
+            _unicodeRange4 = stream.ReadULong();
+            _vendorID[ 0 ] = stream.ReadChar();
+            _vendorID[ 1 ] = stream.ReadChar();
+            _vendorID[ 2 ] = stream.ReadChar();
+            _vendorID[ 3 ] = stream.ReadChar();
+            _fsSelection = stream.ReadUShort();
             FirstChar = stream.ReadUShort();
             LastChar = stream.ReadUShort();
-            typoAscender = stream.ReadShort();
-            typoDescender = stream.ReadShort();
-            typoLineGap = stream.ReadShort();
-            usWinAscent = stream.ReadUShort();
-            usWinDescent = stream.ReadUShort();
-            codePageRange1 = stream.ReadULong();
-            codePageRange2 = stream.ReadULong();
-            sxHeight = stream.ReadShort();
-            sCapHeight = stream.ReadShort();
-            usDefaultChar = stream.ReadUShort();
-            usBreakChar = stream.ReadUShort();
-            usMaxContext = stream.ReadUShort();
+            _typoAscender = stream.ReadShort();
+            _typoDescender = stream.ReadShort();
+            _typoLineGap = stream.ReadShort();
+            _usWinAscent = stream.ReadUShort();
+            _usWinDescent = stream.ReadUShort();
+            _codePageRange1 = stream.ReadULong();
+            _codePageRange2 = stream.ReadULong();
+            _sxHeight = stream.ReadShort();
+            _sCapHeight = stream.ReadShort();
+            _usDefaultChar = stream.ReadUShort();
+            _usBreakChar = stream.ReadUShort();
+            _usMaxContext = stream.ReadUShort();
         }
 
         protected internal override void Write( FontFileWriter writer )

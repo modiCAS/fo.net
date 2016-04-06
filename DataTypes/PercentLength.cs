@@ -4,7 +4,7 @@ namespace Fonet.DataTypes
 {
     internal class PercentLength : Length
     {
-        private readonly double factor;
+        private readonly double _factor;
 
         public PercentLength( double factor ) : this( factor, null )
         {
@@ -12,7 +12,7 @@ namespace Fonet.DataTypes
 
         public PercentLength( double factor, IPercentBase lbase )
         {
-            this.factor = factor;
+            this._factor = factor;
             BaseLength = lbase;
         }
 
@@ -20,17 +20,17 @@ namespace Fonet.DataTypes
 
         public override void ComputeValue()
         {
-            SetComputedValue( (int)( factor * BaseLength.GetBaseLength() ) );
+            SetComputedValue( (int)( _factor * BaseLength.GetBaseLength() ) );
         }
 
-        public double value()
+        public double Value()
         {
-            return factor;
+            return _factor;
         }
 
         public override string ToString()
         {
-            return factor * 100.0 + "%";
+            return _factor * 100.0 + "%";
         }
 
         public override Numeric AsNumeric()

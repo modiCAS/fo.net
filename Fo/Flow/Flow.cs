@@ -7,19 +7,19 @@ namespace Fonet.Fo.Flow
     internal class Flow : FObj
     {
         private string _flowName;
-        private Status _status = new Status( Status.AREA_FULL_NONE );
-        private int contentWidth;
-        private ArrayList markerSnapshot;
+        private Status _status = new Status( Status.AreaFullNone );
+        private int _contentWidth;
+        private ArrayList _markerSnapshot;
 
-        private readonly PageSequence pageSequence;
+        private readonly PageSequence _pageSequence;
 
         protected Flow( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = GetElementName();
+            Name = GetElementName();
 
             if ( parent.GetName().Equals( "fo:page-sequence" ) )
-                pageSequence = (PageSequence)parent;
+                _pageSequence = (PageSequence)parent;
             else
             {
                 throw new FonetException( "flow must be child of "
@@ -28,17 +28,17 @@ namespace Fonet.Fo.Flow
             }
             SetFlowName( GetProperty( "flow-name" ).GetString() );
 
-            if ( pageSequence.IsFlowSet )
+            if ( _pageSequence.IsFlowSet )
             {
-                if ( name.Equals( "fo:flow" ) )
+                if ( Name.Equals( "fo:flow" ) )
                 {
                     throw new FonetException( "Only a single fo:flow permitted"
                         + " per fo:page-sequence" );
                 }
-                throw new FonetException( name
+                throw new FonetException( Name
                     + " not allowed after fo:flow" );
             }
-            pageSequence.AddFlow( this );
+            _pageSequence.AddFlow( this );
         }
 
         public new static FObj.Maker GetMaker()
@@ -70,73 +70,73 @@ namespace Fonet.Fo.Flow
 
         public virtual Status Layout( Area area, Region region )
         {
-            if ( marker == MarkerStart )
-                marker = 0;
+            if ( Marker == MarkerStart )
+                Marker = 0;
 
             var bac = (BodyAreaContainer)area;
 
             var prevChildMustKeepWithNext = false;
-            ArrayList pageMarker = getMarkerSnapshot( new ArrayList() );
+            ArrayList pageMarker = GetMarkerSnapshot( new ArrayList() );
 
-            int numChildren = children.Count;
+            int numChildren = Children.Count;
             if ( numChildren == 0 )
                 throw new FonetException( "fo:flow must contain block-level children" );
-            for ( int i = marker; i < numChildren; i++ )
+            for ( int i = Marker; i < numChildren; i++ )
             {
-                var fo = (FObj)children[ i ];
+                var fo = (FObj)Children[ i ];
 
                 if ( bac.isBalancingRequired( fo ) )
                 {
                     bac.resetSpanArea();
 
-                    Rollback( markerSnapshot );
-                    i = marker - 1;
+                    Rollback( _markerSnapshot );
+                    i = Marker - 1;
                     continue;
                 }
                 Area currentArea = bac.getNextArea( fo );
                 currentArea.setIDReferences( bac.getIDReferences() );
                 if ( bac.isNewSpanArea() )
                 {
-                    marker = i;
-                    markerSnapshot = getMarkerSnapshot( new ArrayList() );
+                    Marker = i;
+                    _markerSnapshot = GetMarkerSnapshot( new ArrayList() );
                 }
                 SetContentWidth( currentArea.getContentWidth() );
 
                 _status = fo.Layout( currentArea );
 
-                if ( _status.isIncomplete() )
+                if ( _status.IsIncomplete() )
                 {
-                    if ( prevChildMustKeepWithNext && _status.laidOutNone() )
+                    if ( prevChildMustKeepWithNext && _status.LaidOutNone() )
                     {
-                        marker = i - 1;
-                        var prevChild = (FObj)children[ marker ];
+                        Marker = i - 1;
+                        var prevChild = (FObj)Children[ Marker ];
                         prevChild.RemoveAreas();
                         prevChild.ResetMarker();
                         prevChild.RemoveID( area.getIDReferences() );
-                        _status = new Status( Status.AREA_FULL_SOME );
+                        _status = new Status( Status.AreaFullSome );
                         return _status;
                     }
                     if ( bac.isLastColumn() )
                     {
-                        if ( _status.getCode() == Status.FORCE_COLUMN_BREAK )
+                        if ( _status.GetCode() == Status.ForceColumnBreak )
                         {
-                            marker = i;
+                            Marker = i;
                             _status =
-                                new Status( Status.FORCE_PAGE_BREAK );
+                                new Status( Status.ForcePageBreak );
                             return _status;
                         }
-                        marker = i;
+                        Marker = i;
                         return _status;
                     }
-                    if ( _status.isPageBreak() )
+                    if ( _status.IsPageBreak() )
                     {
-                        marker = i;
+                        Marker = i;
                         return _status;
                     }
                     ( (ColumnArea)currentArea ).incrementSpanIndex();
                     i--;
                 }
-                if ( _status.getCode() == Status.KEEP_WITH_NEXT )
+                if ( _status.GetCode() == Status.KeepWithNext )
                     prevChildMustKeepWithNext = true;
                 else
                     prevChildMustKeepWithNext = false;
@@ -146,12 +146,12 @@ namespace Fonet.Fo.Flow
 
         protected void SetContentWidth( int contentWidth )
         {
-            this.contentWidth = contentWidth;
+            this._contentWidth = contentWidth;
         }
 
         public override int GetContentWidth()
         {
-            return contentWidth;
+            return _contentWidth;
         }
 
         protected virtual string GetElementName()
@@ -159,7 +159,7 @@ namespace Fonet.Fo.Flow
             return "fo:flow";
         }
 
-        public Status getStatus()
+        public Status GetStatus()
         {
             return _status;
         }

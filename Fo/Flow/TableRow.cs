@@ -7,33 +7,33 @@ namespace Fonet.Fo.Flow
 {
     internal class TableRow : FObj
     {
-        private bool areaAdded;
+        private bool _areaAdded;
 
-        private AreaContainer areaContainer;
+        private AreaContainer _areaContainer;
 
-        private bool bIgnoreKeepTogether;
+        private bool _bIgnoreKeepTogether;
 
-        private int breakAfter;
+        private int _breakAfter;
 
-        private CellArray cellArray;
+        private CellArray _cellArray;
 
-        private ArrayList columns;
+        private ArrayList _columns;
 
-        private string id;
+        private string _id;
 
-        private KeepValue keepTogether;
+        private KeepValue _keepTogether;
 
-        private KeepValue keepWithNext;
+        private KeepValue _keepWithNext;
 
-        private KeepValue keepWithPrevious;
+        private KeepValue _keepWithPrevious;
 
-        private int largestCellHeight;
+        private int _largestCellHeight;
 
-        private int minHeight;
+        private int _minHeight;
 
-        private RowSpanMgr rowSpanMgr;
+        private RowSpanMgr _rowSpanMgr;
 
-        private bool setup;
+        private bool _setup;
 
         public TableRow( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
@@ -45,7 +45,7 @@ namespace Fonet.Fo.Flow
                     + parent.GetName() );
             }
 
-            name = "fo:table-row";
+            Name = "fo:table-row";
         }
 
         public new static FObj.Maker GetMaker()
@@ -55,121 +55,121 @@ namespace Fonet.Fo.Flow
 
         public void SetColumns( ArrayList columns )
         {
-            this.columns = columns;
+            this._columns = columns;
         }
 
         public KeepValue GetKeepWithPrevious()
         {
-            return keepWithPrevious;
+            return _keepWithPrevious;
         }
 
         public KeepValue GetKeepWithNext()
         {
-            return keepWithNext;
+            return _keepWithNext;
         }
 
         public KeepValue GetKeepTogether()
         {
-            return keepTogether;
+            return _keepTogether;
         }
 
         public void DoSetup( Area area )
         {
-            AccessibilityProps mAccProps = propMgr.GetAccessibilityProps();
-            AuralProps mAurProps = propMgr.GetAuralProps();
-            BorderAndPadding bap = propMgr.GetBorderAndPadding();
-            BackgroundProps bProps = propMgr.GetBackgroundProps();
-            RelativePositionProps mRelProps = propMgr.GetRelativePositionProps();
+            AccessibilityProps mAccProps = PropMgr.GetAccessibilityProps();
+            AuralProps mAurProps = PropMgr.GetAuralProps();
+            BorderAndPadding bap = PropMgr.GetBorderAndPadding();
+            BackgroundProps bProps = PropMgr.GetBackgroundProps();
+            RelativePositionProps mRelProps = PropMgr.GetRelativePositionProps();
 
-            breakAfter = properties.GetProperty( "break-after" ).GetEnum();
-            keepTogether = getKeepValue( "keep-together.within-column" );
-            keepWithNext = getKeepValue( "keep-with-next.within-column" );
-            keepWithPrevious =
-                getKeepValue( "keep-with-previous.within-column" );
+            _breakAfter = Properties.GetProperty( "break-after" ).GetEnum();
+            _keepTogether = GetKeepValue( "keep-together.within-column" );
+            _keepWithNext = GetKeepValue( "keep-with-next.within-column" );
+            _keepWithPrevious =
+                GetKeepValue( "keep-with-previous.within-column" );
 
-            id = properties.GetProperty( "id" ).GetString();
-            minHeight = properties.GetProperty( "height" ).GetLength().MValue();
-            setup = true;
+            _id = Properties.GetProperty( "id" ).GetString();
+            _minHeight = Properties.GetProperty( "height" ).GetLength().MValue();
+            _setup = true;
         }
 
-        private KeepValue getKeepValue( string sPropName )
+        private KeepValue GetKeepValue( string sPropName )
         {
-            Property p = properties.GetProperty( sPropName );
+            Property p = Properties.GetProperty( sPropName );
             Number n = p.GetNumber();
             if ( n != null )
-                return new KeepValue( KeepValue.KEEP_WITH_VALUE, n.IntValue() );
+                return new KeepValue( KeepValue.KeepWithValue, n.IntValue() );
             switch ( p.GetEnum() )
             {
-            case Constants.ALWAYS:
-                return new KeepValue( KeepValue.KEEP_WITH_ALWAYS, 0 );
-            case Constants.AUTO:
+            case Constants.Always:
+                return new KeepValue( KeepValue.KeepWithAlways, 0 );
+            case Constants.Auto:
             default:
-                return new KeepValue( KeepValue.KEEP_WITH_AUTO, 0 );
+                return new KeepValue( KeepValue.KeepWithAuto, 0 );
             }
         }
 
         public override Status Layout( Area area )
         {
-            if ( marker == MarkerBreakAfter )
-                return new Status( Status.OK );
+            if ( Marker == MarkerBreakAfter )
+                return new Status( Status.Ok );
 
-            if ( marker == MarkerStart )
+            if ( Marker == MarkerStart )
             {
-                if ( !setup )
+                if ( !_setup )
                     DoSetup( area );
 
-                if ( cellArray == null )
+                if ( _cellArray == null )
                 {
                     InitCellArray();
-                    area.getIDReferences().CreateID( id );
+                    area.getIDReferences().CreateID( _id );
                 }
 
-                marker = 0;
-                int breakStatus = propMgr.CheckBreakBefore( area );
-                if ( breakStatus != Status.OK )
+                Marker = 0;
+                int breakStatus = PropMgr.CheckBreakBefore( area );
+                if ( breakStatus != Status.Ok )
                     return new Status( breakStatus );
             }
 
-            if ( marker == 0 )
-                area.getIDReferences().ConfigureID( id, area );
+            if ( Marker == 0 )
+                area.getIDReferences().ConfigureID( _id, area );
 
             int spaceLeft = area.spaceLeft();
 
-            areaContainer =
-                new AreaContainer( propMgr.GetFontState( area.getFontInfo() ), 0, 0,
+            _areaContainer =
+                new AreaContainer( PropMgr.GetFontState( area.getFontInfo() ), 0, 0,
                     area.getContentWidth(), spaceLeft,
-                    Position.RELATIVE );
-            areaContainer.foCreator = this;
-            areaContainer.setPage( area.getPage() );
-            areaContainer.setParent( area );
+                    Position.Relative );
+            _areaContainer.foCreator = this;
+            _areaContainer.setPage( area.getPage() );
+            _areaContainer.setParent( area );
 
-            areaContainer.setBackground( propMgr.GetBackgroundProps() );
-            areaContainer.start();
+            _areaContainer.setBackground( PropMgr.GetBackgroundProps() );
+            _areaContainer.start();
 
-            areaContainer.setAbsoluteHeight( area.getAbsoluteHeight() );
-            areaContainer.setIDReferences( area.getIDReferences() );
+            _areaContainer.setAbsoluteHeight( area.getAbsoluteHeight() );
+            _areaContainer.setIDReferences( area.getIDReferences() );
 
-            largestCellHeight = minHeight;
+            _largestCellHeight = _minHeight;
 
             var someCellDidNotLayoutCompletely = false;
 
             var offset = 0;
             var iColIndex = 0;
 
-            foreach ( TableColumn tcol in columns )
+            foreach ( TableColumn tcol in _columns )
             {
                 TableCell cell;
                 ++iColIndex;
                 int colWidth = tcol.GetColumnWidth();
-                if ( cellArray.GetCellType( iColIndex ) == CellArray.CELLSTART )
-                    cell = cellArray.GetCell( iColIndex );
+                if ( _cellArray.GetCellType( iColIndex ) == CellArray.Cellstart )
+                    cell = _cellArray.GetCell( iColIndex );
                 else
                 {
-                    if ( rowSpanMgr.IsInLastRow( iColIndex ) )
+                    if ( _rowSpanMgr.IsInLastRow( iColIndex ) )
                     {
-                        int h = rowSpanMgr.GetRemainingHeight( iColIndex );
-                        if ( h > largestCellHeight )
-                            largestCellHeight = h;
+                        int h = _rowSpanMgr.GetRemainingHeight( iColIndex );
+                        if ( h > _largestCellHeight )
+                            _largestCellHeight = h;
                     }
                     offset += colWidth;
                     continue;
@@ -179,95 +179,95 @@ namespace Fonet.Fo.Flow
 
                 int rowSpan = cell.GetNumRowsSpanned();
                 Status status;
-                if ( ( status = cell.Layout( areaContainer ) ).isIncomplete() )
+                if ( ( status = cell.Layout( _areaContainer ) ).IsIncomplete() )
                 {
-                    if ( keepTogether.GetKeepType() == KeepValue.KEEP_WITH_ALWAYS
-                        || status.getCode() == Status.AREA_FULL_NONE
+                    if ( _keepTogether.GetKeepType() == KeepValue.KeepWithAlways
+                        || status.GetCode() == Status.AreaFullNone
                         || rowSpan > 1 )
                     {
                         ResetMarker();
                         RemoveID( area.getIDReferences() );
-                        return new Status( Status.AREA_FULL_NONE );
+                        return new Status( Status.AreaFullNone );
                     }
-                    if ( status.getCode() == Status.AREA_FULL_SOME )
+                    if ( status.GetCode() == Status.AreaFullSome )
                         someCellDidNotLayoutCompletely = true;
                 }
                 int hi = cell.GetHeight();
                 if ( rowSpan > 1 )
                 {
-                    rowSpanMgr.AddRowSpan( cell, iColIndex,
+                    _rowSpanMgr.AddRowSpan( cell, iColIndex,
                         cell.GetNumColumnsSpanned(), hi,
                         rowSpan );
                 }
-                else if ( hi > largestCellHeight )
-                    largestCellHeight = hi;
+                else if ( hi > _largestCellHeight )
+                    _largestCellHeight = hi;
             }
 
             area.setMaxHeight( area.getMaxHeight() - spaceLeft
-                + areaContainer.getMaxHeight() );
+                + _areaContainer.getMaxHeight() );
 
-            for ( var iCol = 1; iCol <= columns.Count; iCol++ )
+            for ( var iCol = 1; iCol <= _columns.Count; iCol++ )
             {
-                if ( cellArray.GetCellType( iCol ) == CellArray.CELLSTART
-                    && rowSpanMgr.IsSpanned( iCol ) == false )
-                    cellArray.GetCell( iCol ).SetRowHeight( largestCellHeight );
+                if ( _cellArray.GetCellType( iCol ) == CellArray.Cellstart
+                    && _rowSpanMgr.IsSpanned( iCol ) == false )
+                    _cellArray.GetCell( iCol ).SetRowHeight( _largestCellHeight );
             }
 
-            rowSpanMgr.FinishRow( largestCellHeight );
+            _rowSpanMgr.FinishRow( _largestCellHeight );
 
-            area.addChild( areaContainer );
-            areaContainer.SetHeight( largestCellHeight );
-            areaAdded = true;
-            areaContainer.end();
+            area.addChild( _areaContainer );
+            _areaContainer.SetHeight( _largestCellHeight );
+            _areaAdded = true;
+            _areaContainer.end();
 
-            area.addDisplaySpace( largestCellHeight
-                + areaContainer.getPaddingTop()
-                + areaContainer.getBorderTopWidth()
-                + areaContainer.getPaddingBottom()
-                + areaContainer.getBorderBottomWidth() );
+            area.addDisplaySpace( _largestCellHeight
+                + _areaContainer.getPaddingTop()
+                + _areaContainer.getBorderTopWidth()
+                + _areaContainer.getPaddingBottom()
+                + _areaContainer.getBorderBottomWidth() );
 
             if ( someCellDidNotLayoutCompletely )
-                return new Status( Status.AREA_FULL_SOME );
-            if ( rowSpanMgr.HasUnfinishedSpans() )
-                return new Status( Status.KEEP_WITH_NEXT );
-            if ( breakAfter == GenericBreak.Enums.PAGE )
+                return new Status( Status.AreaFullSome );
+            if ( _rowSpanMgr.HasUnfinishedSpans() )
+                return new Status( Status.KeepWithNext );
+            if ( _breakAfter == GenericBreak.Enums.Page )
             {
-                marker = MarkerBreakAfter;
-                return new Status( Status.FORCE_PAGE_BREAK );
+                Marker = MarkerBreakAfter;
+                return new Status( Status.ForcePageBreak );
             }
 
-            if ( breakAfter == GenericBreak.Enums.ODD_PAGE )
+            if ( _breakAfter == GenericBreak.Enums.OddPage )
             {
-                marker = MarkerBreakAfter;
-                return new Status( Status.FORCE_PAGE_BREAK_ODD );
+                Marker = MarkerBreakAfter;
+                return new Status( Status.ForcePageBreakOdd );
             }
 
-            if ( breakAfter == GenericBreak.Enums.EVEN_PAGE )
+            if ( _breakAfter == GenericBreak.Enums.EvenPage )
             {
-                marker = MarkerBreakAfter;
-                return new Status( Status.FORCE_PAGE_BREAK_EVEN );
+                Marker = MarkerBreakAfter;
+                return new Status( Status.ForcePageBreakEven );
             }
 
-            if ( breakAfter == GenericBreak.Enums.COLUMN )
+            if ( _breakAfter == GenericBreak.Enums.Column )
             {
-                marker = MarkerBreakAfter;
-                return new Status( Status.FORCE_COLUMN_BREAK );
+                Marker = MarkerBreakAfter;
+                return new Status( Status.ForceColumnBreak );
             }
-            if ( keepWithNext.GetKeepType() != KeepValue.KEEP_WITH_AUTO )
-                return new Status( Status.KEEP_WITH_NEXT );
-            return new Status( Status.OK );
+            if ( _keepWithNext.GetKeepType() != KeepValue.KeepWithAuto )
+                return new Status( Status.KeepWithNext );
+            return new Status( Status.Ok );
         }
 
         public int GetAreaHeight()
         {
-            return areaContainer.GetHeight();
+            return _areaContainer.GetHeight();
         }
 
         public void RemoveLayout( Area area )
         {
-            if ( areaAdded )
-                area.removeChild( areaContainer );
-            areaAdded = false;
+            if ( _areaAdded )
+                area.removeChild( _areaContainer );
+            _areaAdded = false;
             ResetMarker();
             RemoveID( area.getIDReferences() );
         }
@@ -279,16 +279,16 @@ namespace Fonet.Fo.Flow
 
         public void SetRowSpanMgr( RowSpanMgr rowSpanMgr )
         {
-            this.rowSpanMgr = rowSpanMgr;
+            this._rowSpanMgr = rowSpanMgr;
         }
 
         private void InitCellArray()
         {
-            cellArray = new CellArray( rowSpanMgr, columns.Count );
+            _cellArray = new CellArray( _rowSpanMgr, _columns.Count );
             var colNum = 1;
-            foreach ( TableCell cell in children )
+            foreach ( TableCell cell in Children )
             {
-                colNum = cellArray.GetNextFreeCell( colNum );
+                colNum = _cellArray.GetNextFreeCell( colNum );
                 int numCols = cell.GetNumColumnsSpanned();
                 int numRows = cell.GetNumRowsSpanned();
                 int cellColNum = cell.GetColumnNumber();
@@ -299,11 +299,11 @@ namespace Fonet.Fo.Flow
                         continue;
                     cellColNum = colNum;
                 }
-                else if ( cellColNum > columns.Count )
+                else if ( cellColNum > _columns.Count )
                     continue;
-                if ( cellColNum + numCols - 1 > columns.Count )
-                    numCols = columns.Count - cellColNum + 1;
-                if ( cellArray.StoreCell( cell, cellColNum, numCols ) == false )
+                if ( cellColNum + numCols - 1 > _columns.Count )
+                    numCols = _columns.Count - cellColNum + 1;
+                if ( _cellArray.StoreCell( cell, cellColNum, numCols ) == false )
                 {
                 }
                 if ( cellColNum > colNum )
@@ -320,13 +320,13 @@ namespace Fonet.Fo.Flow
         {
             var width = 0;
             for ( var count = 0; count < numCols; count++ )
-                width += ( (TableColumn)columns[ startCol + count - 1 ] ).GetColumnWidth();
+                width += ( (TableColumn)_columns[ startCol + count - 1 ] ).GetColumnWidth();
             return width;
         }
 
-        internal void setIgnoreKeepTogether( bool bIgnoreKeepTogether )
+        internal void SetIgnoreKeepTogether( bool bIgnoreKeepTogether )
         {
-            this.bIgnoreKeepTogether = bIgnoreKeepTogether;
+            this._bIgnoreKeepTogether = bIgnoreKeepTogether;
         }
 
         internal new class Maker : FObj.Maker
@@ -339,37 +339,37 @@ namespace Fonet.Fo.Flow
 
         private class CellArray
         {
-            public const byte EMPTY = 0;
+            public const byte Empty = 0;
 
-            public const byte CELLSTART = 1;
+            public const byte Cellstart = 1;
 
-            public const byte CELLSPAN = 2;
+            public const byte Cellspan = 2;
 
-            private readonly TableCell[] cells;
+            private readonly TableCell[] _cells;
 
-            private readonly byte[] states;
+            private readonly byte[] _states;
 
             internal CellArray( RowSpanMgr rsi, int numColumns )
             {
-                cells = new TableCell[ numColumns ];
-                states = new byte[ numColumns ];
+                _cells = new TableCell[ numColumns ];
+                _states = new byte[ numColumns ];
                 for ( var i = 0; i < numColumns; i++ )
                 {
                     if ( rsi.IsSpanned( i + 1 ) )
                     {
-                        cells[ i ] = rsi.GetSpanningCell( i + 1 );
-                        states[ i ] = CELLSPAN;
+                        _cells[ i ] = rsi.GetSpanningCell( i + 1 );
+                        _states[ i ] = Cellspan;
                     }
                     else
-                        states[ i ] = EMPTY;
+                        _states[ i ] = Empty;
                 }
             }
 
             internal int GetNextFreeCell( int colNum )
             {
-                for ( int i = colNum - 1; i < states.Length; i++ )
+                for ( int i = colNum - 1; i < _states.Length; i++ )
                 {
-                    if ( states[ i ] == EMPTY )
+                    if ( _states[ i ] == Empty )
                         return i + 1;
                 }
                 return -1;
@@ -377,15 +377,15 @@ namespace Fonet.Fo.Flow
 
             internal int GetCellType( int colNum )
             {
-                if ( colNum > 0 && colNum <= cells.Length )
-                    return states[ colNum - 1 ];
+                if ( colNum > 0 && colNum <= _cells.Length )
+                    return _states[ colNum - 1 ];
                 return -1;
             }
 
             internal TableCell GetCell( int colNum )
             {
-                if ( colNum > 0 && colNum <= cells.Length )
-                    return cells[ colNum - 1 ];
+                if ( colNum > 0 && colNum <= _cells.Length )
+                    return _cells[ colNum - 1 ];
                 return null;
             }
 
@@ -394,13 +394,13 @@ namespace Fonet.Fo.Flow
                 var rslt = true;
                 int index = colNum - 1;
                 for ( var count = 0;
-                    index < cells.Length && count < numCols;
+                    index < _cells.Length && count < numCols;
                     count++, index++ )
                 {
-                    if ( cells[ index ] == null )
+                    if ( _cells[ index ] == null )
                     {
-                        cells[ index ] = cell;
-                        states[ index ] = count == 0 ? CELLSTART : CELLSPAN;
+                        _cells[ index ] = cell;
+                        _states[ index ] = count == 0 ? Cellstart : Cellspan;
                     }
                     else
                         rslt = false;

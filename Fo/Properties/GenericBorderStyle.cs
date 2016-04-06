@@ -2,27 +2,27 @@ namespace Fonet.Fo.Properties
 {
     internal class GenericBorderStyle : EnumProperty.Maker
     {
-        protected static readonly EnumProperty s_propNONE = new EnumProperty( Enums.NONE );
+        protected static readonly EnumProperty SPropNone = new EnumProperty( Enums.None );
 
-        protected static readonly EnumProperty s_propHIDDEN = new EnumProperty( Enums.HIDDEN );
+        protected static readonly EnumProperty SPropHidden = new EnumProperty( Enums.Hidden );
 
-        protected static readonly EnumProperty s_propDOTTED = new EnumProperty( Enums.DOTTED );
+        protected static readonly EnumProperty SPropDotted = new EnumProperty( Enums.Dotted );
 
-        protected static readonly EnumProperty s_propDASHED = new EnumProperty( Enums.DASHED );
+        protected static readonly EnumProperty SPropDashed = new EnumProperty( Enums.Dashed );
 
-        protected static readonly EnumProperty s_propSOLID = new EnumProperty( Enums.SOLID );
+        protected static readonly EnumProperty SPropSolid = new EnumProperty( Enums.Solid );
 
-        protected static readonly EnumProperty s_propDOUBLE = new EnumProperty( Enums.DOUBLE );
+        protected static readonly EnumProperty SPropDouble = new EnumProperty( Enums.Double );
 
-        protected static readonly EnumProperty s_propGROOVE = new EnumProperty( Enums.GROOVE );
+        protected static readonly EnumProperty SPropGroove = new EnumProperty( Enums.Groove );
 
-        protected static readonly EnumProperty s_propRIDGE = new EnumProperty( Enums.RIDGE );
+        protected static readonly EnumProperty SPropRidge = new EnumProperty( Enums.Ridge );
 
-        protected static readonly EnumProperty s_propINSET = new EnumProperty( Enums.INSET );
+        protected static readonly EnumProperty SPropInset = new EnumProperty( Enums.Inset );
 
-        protected static readonly EnumProperty s_propOUTSET = new EnumProperty( Enums.OUTSET );
+        protected static readonly EnumProperty SPropOutset = new EnumProperty( Enums.Outset );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected GenericBorderStyle( string name ) : base( name )
         {
@@ -61,66 +61,66 @@ namespace Fonet.Fo.Properties
         public override Property CheckEnumValues( string value )
         {
             if ( value.Equals( "none" ) )
-                return s_propNONE;
+                return SPropNone;
 
             if ( value.Equals( "hidden" ) )
-                return s_propHIDDEN;
+                return SPropHidden;
 
             if ( value.Equals( "dotted" ) )
-                return s_propDOTTED;
+                return SPropDotted;
 
             if ( value.Equals( "dashed" ) )
-                return s_propDASHED;
+                return SPropDashed;
 
             if ( value.Equals( "solid" ) )
-                return s_propSOLID;
+                return SPropSolid;
 
             if ( value.Equals( "double" ) )
-                return s_propDOUBLE;
+                return SPropDouble;
 
             if ( value.Equals( "groove" ) )
-                return s_propGROOVE;
+                return SPropGroove;
 
             if ( value.Equals( "ridge" ) )
-                return s_propRIDGE;
+                return SPropRidge;
 
             if ( value.Equals( "inset" ) )
-                return s_propINSET;
+                return SPropInset;
 
             if ( value.Equals( "outset" ) )
-                return s_propOUTSET;
+                return SPropOutset;
 
             return base.CheckEnumValues( value );
         }
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "none", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "none", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
 
         internal class Enums
         {
-            public const int NONE = Constants.NONE;
+            public const int None = Constants.None;
 
-            public const int HIDDEN = Constants.HIDDEN;
+            public const int Hidden = Constants.Hidden;
 
-            public const int DOTTED = Constants.DOTTED;
+            public const int Dotted = Constants.Dotted;
 
-            public const int DASHED = Constants.DASHED;
+            public const int Dashed = Constants.Dashed;
 
-            public const int SOLID = Constants.SOLID;
+            public const int Solid = Constants.Solid;
 
-            public const int DOUBLE = Constants.DOUBLE;
+            public const int Double = Constants.Double;
 
-            public const int GROOVE = Constants.GROOVE;
+            public const int Groove = Constants.Groove;
 
-            public const int RIDGE = Constants.RIDGE;
+            public const int Ridge = Constants.Ridge;
 
-            public const int INSET = Constants.INSET;
+            public const int Inset = Constants.Inset;
 
-            public const int OUTSET = Constants.OUTSET;
+            public const int Outset = Constants.Outset;
         }
     }
 }

@@ -1,6 +1,6 @@
 namespace Fonet.Fo.Pagination
 {
-    internal interface SubSequenceSpecifier
+    internal interface ISubSequenceSpecifier
     {
         string GetNextPageMaster( int currentPageNumber, bool thisIsFirstPage, bool isEmptyPage );
 

@@ -7,11 +7,11 @@ namespace Fonet.Pdf
 {
     public class PdfStream : PdfObject
     {
-        protected byte[] data;
+        protected byte[] Data;
 
-        protected PdfDictionary dictionary = new PdfDictionary();
+        private readonly PdfDictionary _dictionary = new PdfDictionary();
 
-        private IList filters;
+        private IList _filters;
 
         public PdfStream()
         {
@@ -23,13 +23,13 @@ namespace Fonet.Pdf
 
         public PdfStream( byte[] data )
         {
-            this.data = data;
+            this.Data = data;
         }
 
         public PdfStream( byte[] data, PdfObjectId objectId )
             : base( objectId )
         {
-            this.data = data;
+            this.Data = data;
         }
 
         private PdfObject FilterName
@@ -38,13 +38,13 @@ namespace Fonet.Pdf
             {
                 if ( !HasFilters )
                     return PdfNull.Null;
-                if ( filters.Count == 1 )
+                if ( _filters.Count == 1 )
                 {
-                    var filter = (IFilter)filters[ 0 ];
+                    var filter = (IFilter)_filters[ 0 ];
                     return filter.Name;
                 }
                 var names = new PdfArray();
-                foreach ( IFilter filter in filters )
+                foreach ( IFilter filter in _filters )
                     names.Add( filter.Name );
                 return names;
             }
@@ -56,13 +56,13 @@ namespace Fonet.Pdf
             {
                 if ( !HasFilters )
                     return PdfNull.Null;
-                if ( filters.Count == 1 )
+                if ( _filters.Count == 1 )
                 {
-                    var filter = (IFilter)filters[ 0 ];
+                    var filter = (IFilter)_filters[ 0 ];
                     return filter.DecodeParms;
                 }
                 var decodeParams = new PdfArray();
-                foreach ( IFilter filter in filters )
+                foreach ( IFilter filter in _filters )
                     decodeParams.Add( filter.DecodeParms );
                 return decodeParams;
             }
@@ -72,8 +72,8 @@ namespace Fonet.Pdf
         {
             get
             {
-                if ( filters != null )
-                    return filters.Count > 0;
+                if ( _filters != null )
+                    return _filters.Count > 0;
                 return false;
             }
         }
@@ -82,9 +82,9 @@ namespace Fonet.Pdf
         {
             get
             {
-                if ( filters == null )
+                if ( _filters == null )
                     return false;
-                foreach ( IFilter filter in filters )
+                foreach ( IFilter filter in _filters )
                 {
                     if ( filter.HasDecodeParams )
                         return true;
@@ -93,24 +93,29 @@ namespace Fonet.Pdf
             }
         }
 
+        public PdfDictionary Dictionary
+        {
+            get { return _dictionary; }
+        }
+
         public void AddFilter( IFilter filter )
         {
             if ( filter == null )
                 throw new ArgumentNullException( "filter" );
-            if ( filters == null )
-                filters = new ArrayList();
-            filters.Add( filter );
+            if ( _filters == null )
+                _filters = new ArrayList();
+            _filters.Add( filter );
         }
 
         private byte[] ApplyFilters( byte[] data )
         {
-            if ( filters == null )
+            if ( _filters == null )
                 return data;
 
             byte[] encoded = data;
-            for ( int x = filters.Count - 1; x >= 0; x-- )
+            for ( int x = _filters.Count - 1; x >= 0; x-- )
             {
-                var filter = (IFilter)filters[ x ];
+                var filter = (IFilter)_filters[ x ];
                 encoded = filter.Encode( encoded );
             }
             return encoded;
@@ -120,15 +125,15 @@ namespace Fonet.Pdf
         {
             if ( writer == null )
                 throw new ArgumentNullException( "writer" );
-            if ( data == null )
+            if ( Data == null )
                 throw new InvalidOperationException( "No data for stream." );
 
             // Prepare the stream's data.
-            var bytes = (byte[])data.Clone();
+            var bytes = (byte[])Data.Clone();
 
             // Apply any filters.
             if ( HasFilters )
-                bytes = ApplyFilters( data );
+                bytes = ApplyFilters( Data );
 
             // Encrypt the data if required.
             SecurityManager sm = writer.SecurityManager;
@@ -136,16 +141,16 @@ namespace Fonet.Pdf
                 bytes = sm.Encrypt( bytes, writer.EnclosingIndirect.ObjectId );
 
             // Create the stream's dictionary.
-            dictionary[ PdfName.Names.Length ] = new PdfNumeric( bytes.Length );
+            _dictionary[ PdfName.Names.Length ] = new PdfNumeric( bytes.Length );
             if ( HasFilters )
             {
-                dictionary[ PdfName.Names.Filter ] = FilterName;
+                _dictionary[ PdfName.Names.Filter ] = FilterName;
                 if ( HasDecodeParams )
-                    dictionary[ PdfName.Names.DecodeParams ] = FilterDecodeParms;
+                    _dictionary[ PdfName.Names.DecodeParams ] = FilterDecodeParms;
             }
 
             // Write out the dictionary.
-            writer.WriteLine( dictionary );
+            writer.WriteLine( _dictionary );
 
             // Write out the stream data.
             writer.WriteKeywordLine( Keyword.Stream );

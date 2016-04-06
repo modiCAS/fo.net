@@ -2,15 +2,15 @@ namespace Fonet.Fo.Properties
 {
     internal class PositionMaker : EnumProperty.Maker
     {
-        protected static readonly EnumProperty s_propSTATIC = new EnumProperty( Constants.STATIC );
+        protected static readonly EnumProperty SPropStatic = new EnumProperty( Constants.Static );
 
-        protected static readonly EnumProperty s_propRELATIVE = new EnumProperty( Constants.RELATIVE );
+        protected static readonly EnumProperty SPropRelative = new EnumProperty( Constants.Relative );
 
-        protected static readonly EnumProperty s_propABSOLUTE = new EnumProperty( Constants.ABSOLUTE );
+        protected static readonly EnumProperty SPropAbsolute = new EnumProperty( Constants.Absolute );
 
-        protected static readonly EnumProperty s_propFIXED = new EnumProperty( Constants.FIXED );
+        protected static readonly EnumProperty SPropFixed = new EnumProperty( Constants.Fixed );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected PositionMaker( string name ) : base( name )
         {
@@ -31,25 +31,25 @@ namespace Fonet.Fo.Properties
         public override Property CheckEnumValues( string value )
         {
             if ( value.Equals( "static" ) )
-                return s_propSTATIC;
+                return SPropStatic;
 
             if ( value.Equals( "relative" ) )
-                return s_propRELATIVE;
+                return SPropRelative;
 
             if ( value.Equals( "absolute" ) )
-                return s_propABSOLUTE;
+                return SPropAbsolute;
 
             if ( value.Equals( "fixed" ) )
-                return s_propFIXED;
+                return SPropFixed;
 
             return base.CheckEnumValues( value );
         }
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "static", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "static", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

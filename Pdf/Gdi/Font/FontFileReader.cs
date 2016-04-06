@@ -13,28 +13,28 @@ namespace Fonet.Pdf.Gdi.Font
         /// <summary>
         ///     Used to identity a font within a TrueType collection.
         /// </summary>
-        private readonly string fontName;
+        private readonly string _fontName;
 
         /// <summary>
         ///     Maps a table name (4-character string) to a <see cref="DirectoryEntry" />
         /// </summary>
-        private TrueTypeHeader header;
+        private TrueTypeHeader _header;
 
         /// <summary>
         ///     Maps a glyph index to a subset index.
         /// </summary>
-        private IndexMappings mappings;
+        private IndexMappings _mappings;
 
         /// <summary>
         ///     A Big Endian stream.
         /// </summary>
-        private readonly FontFileStream stream;
+        private readonly FontFileStream _stream;
 
         /// <summary>
         ///     A dictionary of cached <see cref="FontTable" /> instances.
         ///     The index is the table name.
         /// </summary>
-        private readonly IDictionary tableCache = new Hashtable();
+        private readonly IDictionary _tableCache = new Hashtable();
 
         /// <summary>
         ///     Class constructor.
@@ -52,8 +52,8 @@ namespace Fonet.Pdf.Gdi.Font
         /// <param name="fontName">Name of a font in a TrueType collection.</param>
         public FontFileReader( MemoryStream stream, string fontName )
         {
-            this.stream = new FontFileStream( stream );
-            this.fontName = fontName;
+            this._stream = new FontFileStream( stream );
+            this._fontName = fontName;
 
             // Parse offset and directory tables
             ReadTableHeaders();
@@ -70,11 +70,11 @@ namespace Fonet.Pdf.Gdi.Font
         {
             get
             {
-                if ( mappings == null )
-                    mappings = new IndexMappings();
-                return mappings;
+                if ( _mappings == null )
+                    _mappings = new IndexMappings();
+                return _mappings;
             }
-            set { mappings = value; }
+            set { _mappings = value; }
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         internal FontFileStream Stream
         {
-            get { return stream; }
+            get { return _stream; }
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public int TableCount
         {
-            get { return header.Count; }
+            get { return _header.Count; }
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// <returns></returns>
         public bool ContainsTable( string tableName )
         {
-            return header.Contains( tableName );
+            return _header.Contains( tableName );
         }
 
         /// <summary>
@@ -129,8 +129,8 @@ namespace Fonet.Pdf.Gdi.Font
                 throw new ArgumentException( "Cannot locate table '" + tableName + "'", "tableName" );
 
             // Obtain from cache is present
-            if ( tableCache.Contains( tableName ) )
-                return (FontTable)tableCache[ tableName ];
+            if ( _tableCache.Contains( tableName ) )
+                return (FontTable)_tableCache[ tableName ];
 
             // Otherwise instantiate appropriate FontTable subclass and parse
             DirectoryEntry tableEntry = GetDictionaryEntry( tableName );
@@ -188,9 +188,9 @@ namespace Fonet.Pdf.Gdi.Font
             return (IndexToLocationTable)GetTable( TableNames.Loca );
         }
 
-        internal OS2Table GetOS2Table()
+        internal Os2Table GetOs2Table()
         {
-            return (OS2Table)GetTable( TableNames.Os2 );
+            return (Os2Table)GetTable( TableNames.Os2 );
         }
 
         internal PostTable GetPostTable()
@@ -214,7 +214,7 @@ namespace Fonet.Pdf.Gdi.Font
             if ( !ContainsTable( tableName ) )
                 throw new ArgumentException( "Cannot locate table named " + tableName, "tableName" );
 
-            return header[ tableName ];
+            return _header[ tableName ];
         }
 
         /// <summary>
@@ -228,54 +228,54 @@ namespace Fonet.Pdf.Gdi.Font
         protected void ReadTableHeaders()
         {
             // Check for possible TrueType collection
-            string tag = Encoding.ASCII.GetString( stream.ReadTag() );
+            string tag = Encoding.ASCII.GetString( _stream.ReadTag() );
             if ( tag == TableNames.Ttcf )
             {
                 // Skip Version field - will be either 1.0 or 2.0
-                stream.Skip( PrimitiveSizes.ULong );
+                _stream.Skip( PrimitiveSizes.ULong );
 
                 // Number of fonts in TrueType collection
-                var numFonts = (int)stream.ReadULong();
+                var numFonts = (int)_stream.ReadULong();
 
                 var foundFont = false;
                 for ( var i = 0; i < numFonts && !foundFont; i++ )
                 {
                     // Offset from beginning of file to a font's subtable
-                    uint directoryOffset = stream.ReadULong();
+                    uint directoryOffset = _stream.ReadULong();
 
                     // Set a restore point since the code below will alter the stream position
-                    stream.SetRestorePoint();
-                    stream.Position = directoryOffset;
+                    _stream.SetRestorePoint();
+                    _stream.Position = directoryOffset;
 
-                    header = new TrueTypeHeader();
-                    header.Read( stream );
+                    _header = new TrueTypeHeader();
+                    _header.Read( _stream );
 
                     // To ascertain whether this font is the one we're looking for,
                     // we must read the 'name' table.
-                    if ( !header.Contains( TableNames.Name ) )
+                    if ( !_header.Contains( TableNames.Name ) )
                         throw new Exception( "Unable to parse TrueType collection - missing 'head' table." );
 
                     // If font name is not supplied, select the first font in the colleciton;
                     // otherwise must have an exact match
                     var nameTable = (NameTable)GetTable( TableNames.Name );
-                    if ( fontName == string.Empty || nameTable.FullName == fontName )
+                    if ( _fontName == string.Empty || nameTable.FullName == _fontName )
                         foundFont = true;
 
                     // Stream will now point to the next directory offset
-                    stream.Restore();
+                    _stream.Restore();
                 }
 
                 // We were unable to locate font in collection
                 if ( !foundFont )
-                    throw new Exception( "Unable to locate font '" + fontName + "' in TrueType collection" );
+                    throw new Exception( "Unable to locate font '" + _fontName + "' in TrueType collection" );
             }
             else
             {
-                stream.Position = 0;
+                _stream.Position = 0;
 
                 // Read Offset and Directory tables
-                header = new TrueTypeHeader();
-                header.Read( stream );
+                _header = new TrueTypeHeader();
+                _header.Read( _stream );
             }
         }
 
@@ -284,10 +284,10 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         protected void ReadRequiredTables()
         {
-            tableCache[ TableNames.Head ] = GetTable( TableNames.Head );
-            tableCache[ TableNames.Hhea ] = GetTable( TableNames.Hhea );
-            tableCache[ TableNames.Maxp ] = GetTable( TableNames.Maxp );
-            tableCache[ TableNames.Loca ] = GetTable( TableNames.Loca );
+            _tableCache[ TableNames.Head ] = GetTable( TableNames.Head );
+            _tableCache[ TableNames.Hhea ] = GetTable( TableNames.Hhea );
+            _tableCache[ TableNames.Maxp ] = GetTable( TableNames.Maxp );
+            _tableCache[ TableNames.Loca ] = GetTable( TableNames.Loca );
         }
 
         /// <summary>
@@ -302,12 +302,12 @@ namespace Fonet.Pdf.Gdi.Font
         /// </exception>
         private void OffsetStream( DirectoryEntry entry )
         {
-            stream.Position = entry.Offset;
-            if ( stream.Position + entry.Length > stream.Length )
+            _stream.Position = entry.Offset;
+            if ( _stream.Position + entry.Length > _stream.Length )
             {
                 string msg = string.Format(
                     "Error reading table '{0}'.  Expected {1} bytes, current position {2}, stream length {3}",
-                    entry.TableName, entry.Length, stream.Position, stream.Length );
+                    entry.TableName, entry.Length, _stream.Position, _stream.Length );
                 throw new ArgumentException( msg );
             }
         }

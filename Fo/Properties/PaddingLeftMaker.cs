@@ -16,16 +16,16 @@ namespace Fonet.Fo.Properties
 
         public override Property Compute( PropertyList propertyList )
         {
-            FObj parentFO = propertyList.getParentFObj();
+            FObj parentFo = propertyList.GetParentFObj();
             var sbExpr = new StringBuilder();
             Property p = null;
             sbExpr.Append( "padding-" );
-            sbExpr.Append( propertyList.wmAbsToRel( PropertyList.LEFT ) );
+            sbExpr.Append( propertyList.WmAbsToRel( PropertyList.Left ) );
 
             p = propertyList.GetExplicitOrShorthandProperty( sbExpr.ToString() );
 
             if ( p != null )
-                p = ConvertProperty( p, propertyList, parentFO );
+                p = ConvertProperty( p, propertyList, parentFo );
 
             return p;
         }

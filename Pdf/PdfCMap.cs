@@ -11,19 +11,19 @@ namespace Fonet.Pdf
     {
         public const string DefaultName = "Adobe-Identity-UCS";
 
-        private readonly SortedList ranges;
+        private readonly SortedList _ranges;
 
-        private PdfCIDSystemInfo systemInfo;
+        private PdfCidSystemInfo _systemInfo;
 
         public PdfCMap( PdfObjectId id )
             : base( id )
         {
-            ranges = new SortedList();
+            _ranges = new SortedList();
         }
 
-        public PdfCIDSystemInfo SystemInfo
+        public PdfCidSystemInfo SystemInfo
         {
-            set { systemInfo = value; }
+            set { _systemInfo = value; }
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace Fonet.Pdf
         /// <param name="unicodeValue"></param>
         public void AddBfRange( ushort glyphIndex, ushort unicodeValue )
         {
-            ranges.Add( glyphIndex, unicodeValue );
+            _ranges.Add( glyphIndex, unicodeValue );
         }
 
         /// <summary>
@@ -63,13 +63,13 @@ namespace Fonet.Pdf
             WriteLine( "12 dict begin" );
             WriteLine( "begincmap" );
             WriteLine( "/CIDSystemInfo" );
-            WriteLine( systemInfo );
+            WriteLine( _systemInfo );
             WriteLine( "def" );
             WriteLine( string.Format( "/CMapName /{0} def", DefaultName ) );
             WriteLine( "/CMapType 2 def" );
 
             // No bfranges represents an error - we should really through an exception
-            if ( ranges.Count > 0 )
+            if ( _ranges.Count > 0 )
             {
                 // Groups CMap entries into bfranges
                 BfEntryList groups = GroupCMapEntries();
@@ -169,15 +169,15 @@ namespace Fonet.Pdf
             // List of grouped bfranges
             var groups = new BfEntryList();
 
-            var prevGlyphIndex = (ushort)ranges.GetKey( 0 );
-            var prevUnicodeValue = (ushort)ranges[ prevGlyphIndex ];
+            var prevGlyphIndex = (ushort)_ranges.GetKey( 0 );
+            var prevUnicodeValue = (ushort)_ranges[ prevGlyphIndex ];
             var range = new BfEntry( prevGlyphIndex, prevUnicodeValue );
             groups.Add( range );
 
-            for ( var i = 1; i < ranges.Count; i++ )
+            for ( var i = 1; i < _ranges.Count; i++ )
             {
-                var glyphIndex = (ushort)ranges.GetKey( i );
-                var unicodeValue = (ushort)ranges[ glyphIndex ];
+                var glyphIndex = (ushort)_ranges.GetKey( i );
+                var unicodeValue = (ushort)_ranges[ glyphIndex ];
 
                 if ( unicodeValue == prevUnicodeValue + 1 &&
                     glyphIndex == prevGlyphIndex + 1 )

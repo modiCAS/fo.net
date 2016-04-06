@@ -16,16 +16,16 @@ namespace Fonet.Fo.Properties
 
         public override Property Compute( PropertyList propertyList )
         {
-            FObj parentFO = propertyList.getParentFObj();
+            FObj parentFo = propertyList.GetParentFObj();
             var sbExpr = new StringBuilder();
             Property p = null;
             sbExpr.Append( "border-" );
-            sbExpr.Append( propertyList.wmAbsToRel( PropertyList.RIGHT ) );
+            sbExpr.Append( propertyList.WmAbsToRel( PropertyList.Right ) );
             sbExpr.Append( "-width" );
             p = propertyList.GetExplicitOrShorthandProperty( sbExpr.ToString() );
 
             if ( p != null )
-                p = ConvertProperty( p, propertyList, parentFO );
+                p = ConvertProperty( p, propertyList, parentFo );
 
             return p;
         }

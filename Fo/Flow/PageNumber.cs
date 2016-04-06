@@ -6,18 +6,18 @@ namespace Fonet.Fo.Flow
 {
     internal class PageNumber : FObj
     {
-        private float blue;
-        private float green;
+        private float _blue;
+        private float _green;
 
-        private float red;
-        private TextState ts;
-        private int whiteSpaceCollapse;
-        private int wrapOption;
+        private float _red;
+        private TextState _ts;
+        private int _whiteSpaceCollapse;
+        private int _wrapOption;
 
         public PageNumber( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:page-number";
+            Name = "fo:page-number";
         }
 
         public new static FObj.Maker GetMaker()
@@ -31,39 +31,39 @@ namespace Fonet.Fo.Flow
             {
                 FonetDriver.ActiveDriver.FireFonetWarning(
                     "Page-number outside block area" );
-                return new Status( Status.OK );
+                return new Status( Status.Ok );
             }
-            if ( marker == MarkerStart )
+            if ( Marker == MarkerStart )
             {
-                AccessibilityProps mAccProps = propMgr.GetAccessibilityProps();
-                AuralProps mAurProps = propMgr.GetAuralProps();
-                BorderAndPadding bap = propMgr.GetBorderAndPadding();
-                BackgroundProps bProps = propMgr.GetBackgroundProps();
-                MarginInlineProps mProps = propMgr.GetMarginInlineProps();
-                RelativePositionProps mRelProps = propMgr.GetRelativePositionProps();
+                AccessibilityProps mAccProps = PropMgr.GetAccessibilityProps();
+                AuralProps mAurProps = PropMgr.GetAuralProps();
+                BorderAndPadding bap = PropMgr.GetBorderAndPadding();
+                BackgroundProps bProps = PropMgr.GetBackgroundProps();
+                MarginInlineProps mProps = PropMgr.GetMarginInlineProps();
+                RelativePositionProps mRelProps = PropMgr.GetRelativePositionProps();
 
-                ColorType c = properties.GetProperty( "color" ).GetColorType();
-                red = c.Red;
-                green = c.Green;
-                blue = c.Blue;
+                ColorType c = Properties.GetProperty( "color" ).GetColorType();
+                _red = c.Red;
+                _green = c.Green;
+                _blue = c.Blue;
 
-                wrapOption = properties.GetProperty( "wrap-option" ).GetEnum();
-                whiteSpaceCollapse =
-                    properties.GetProperty( "white-space-collapse" ).GetEnum();
-                ts = new TextState();
-                marker = 0;
+                _wrapOption = Properties.GetProperty( "wrap-option" ).GetEnum();
+                _whiteSpaceCollapse =
+                    Properties.GetProperty( "white-space-collapse" ).GetEnum();
+                _ts = new TextState();
+                Marker = 0;
 
-                string id = properties.GetProperty( "id" ).GetString();
+                string id = Properties.GetProperty( "id" ).GetString();
                 area.getIDReferences().InitializeID( id, area );
             }
 
             string p = area.getPage().getFormattedNumber();
-            marker = FOText.addText( (BlockArea)area,
-                propMgr.GetFontState( area.getFontInfo() ),
-                red, green, blue, wrapOption, null,
-                whiteSpaceCollapse, p.ToCharArray(), 0,
-                p.Length, ts, VerticalAlign.BASELINE );
-            return new Status( Status.OK );
+            Marker = FoText.AddText( (BlockArea)area,
+                PropMgr.GetFontState( area.getFontInfo() ),
+                _red, _green, _blue, _wrapOption, null,
+                _whiteSpaceCollapse, p.ToCharArray(), 0,
+                p.Length, _ts, VerticalAlign.Baseline );
+            return new Status( Status.Ok );
         }
 
         internal new class Maker : FObj.Maker

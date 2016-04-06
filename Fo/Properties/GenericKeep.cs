@@ -4,24 +4,24 @@ namespace Fonet.Fo.Properties
 {
     internal class GenericKeep : KeepProperty.Maker
     {
-        private static readonly PropertyMaker s_WithinPageMaker =
-            new SP_WithinPageMaker( "generic-keep.within-page" );
+        private static readonly PropertyMaker SWithinPageMaker =
+            new SpWithinPageMaker( "generic-keep.within-page" );
 
-        private static readonly PropertyMaker s_WithinLineMaker =
-            new SP_WithinLineMaker( "generic-keep.within-line" );
+        private static readonly PropertyMaker SWithinLineMaker =
+            new SpWithinLineMaker( "generic-keep.within-line" );
 
-        private static readonly PropertyMaker s_WithinColumnMaker =
-            new SP_WithinColumnMaker( "generic-keep.within-column" );
+        private static readonly PropertyMaker SWithinColumnMaker =
+            new SpWithinColumnMaker( "generic-keep.within-column" );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
 
-        private readonly PropertyMaker m_shorthandMaker;
+        private readonly PropertyMaker _mShorthandMaker;
 
         protected GenericKeep( string name )
             : base( name )
         {
-            m_shorthandMaker = GetSubpropMaker( "within-page" );
+            _mShorthandMaker = GetSubpropMaker( "within-page" );
         }
 
 
@@ -32,7 +32,7 @@ namespace Fonet.Fo.Properties
 
         public override Property CheckEnumValues( string value )
         {
-            return m_shorthandMaker.CheckEnumValues( value );
+            return _mShorthandMaker.CheckEnumValues( value );
         }
 
         protected override bool IsCompoundMaker()
@@ -43,13 +43,13 @@ namespace Fonet.Fo.Properties
         protected override PropertyMaker GetSubpropMaker( string subprop )
         {
             if ( subprop.Equals( "within-page" ) )
-                return s_WithinPageMaker;
+                return SWithinPageMaker;
 
             if ( subprop.Equals( "within-line" ) )
-                return s_WithinLineMaker;
+                return SWithinLineMaker;
 
             if ( subprop.Equals( "within-column" ) )
-                return s_WithinColumnMaker;
+                return SWithinColumnMaker;
 
             return base.GetSubpropMaker( subprop );
         }
@@ -69,9 +69,9 @@ namespace Fonet.Fo.Properties
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = MakeCompound( propertyList, propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = MakeCompound( propertyList, propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
 
 
@@ -81,31 +81,31 @@ namespace Fonet.Fo.Properties
             Property subProp;
 
             subProp = GetSubpropMaker( "within-page" ).Make( pList,
-                getDefaultForWithinPage(), fo );
+                GetDefaultForWithinPage(), fo );
             p.SetComponent( "within-page", subProp, true );
 
             subProp = GetSubpropMaker( "within-line" ).Make( pList,
-                getDefaultForWithinLine(), fo );
+                GetDefaultForWithinLine(), fo );
             p.SetComponent( "within-line", subProp, true );
 
             subProp = GetSubpropMaker( "within-column" ).Make( pList,
-                getDefaultForWithinColumn(), fo );
+                GetDefaultForWithinColumn(), fo );
             p.SetComponent( "within-column", subProp, true );
 
             return new KeepProperty( p );
         }
 
-        protected virtual string getDefaultForWithinPage()
+        protected virtual string GetDefaultForWithinPage()
         {
             return "auto";
         }
 
-        protected virtual string getDefaultForWithinLine()
+        protected virtual string GetDefaultForWithinLine()
         {
             return "auto";
         }
 
-        protected virtual string getDefaultForWithinColumn()
+        protected virtual string GetDefaultForWithinColumn()
         {
             return "auto";
         }
@@ -115,7 +115,7 @@ namespace Fonet.Fo.Properties
             if ( p is KeepProperty )
                 return p;
             if ( !( p is EnumProperty ) )
-                p = m_shorthandMaker.ConvertProperty( p, pList, fo );
+                p = _mShorthandMaker.ConvertProperty( p, pList, fo );
             if ( p != null )
             {
                 Property prop = MakeCompound( pList, fo );
@@ -133,87 +133,87 @@ namespace Fonet.Fo.Properties
         {
             internal class WithinPage
             {
-                public const int AUTO = Constants.AUTO;
+                public const int Auto = Constants.Auto;
 
-                public const int ALWAYS = Constants.ALWAYS;
+                public const int Always = Constants.Always;
             }
 
             internal class WithinLine
             {
-                public const int AUTO = Constants.AUTO;
+                public const int Auto = Constants.Auto;
 
-                public const int ALWAYS = Constants.ALWAYS;
+                public const int Always = Constants.Always;
             }
 
             internal class WithinColumn
             {
-                public const int AUTO = Constants.AUTO;
+                public const int Auto = Constants.Auto;
 
-                public const int ALWAYS = Constants.ALWAYS;
+                public const int Always = Constants.Always;
             }
         }
 
-        private class SP_WithinPageMaker : NumberProperty.Maker
+        private class SpWithinPageMaker : NumberProperty.Maker
         {
-            protected internal static readonly EnumProperty s_propAUTO = new EnumProperty( Enums.WithinPage.AUTO );
+            protected internal static readonly EnumProperty SPropAuto = new EnumProperty( Enums.WithinPage.Auto );
 
-            protected internal static readonly EnumProperty s_propALWAYS = new EnumProperty( Enums.WithinPage.ALWAYS );
+            protected internal static readonly EnumProperty SPropAlways = new EnumProperty( Enums.WithinPage.Always );
 
-            protected internal SP_WithinPageMaker( string sPropName ) : base( sPropName )
+            protected internal SpWithinPageMaker( string sPropName ) : base( sPropName )
             {
             }
 
             public override Property CheckEnumValues( string value )
             {
                 if ( value.Equals( "auto" ) )
-                    return s_propAUTO;
+                    return SPropAuto;
 
                 if ( value.Equals( "always" ) )
-                    return s_propALWAYS;
+                    return SPropAlways;
 
                 return base.CheckEnumValues( value );
             }
         }
 
-        private class SP_WithinLineMaker : NumberProperty.Maker
+        private class SpWithinLineMaker : NumberProperty.Maker
         {
-            protected internal static readonly EnumProperty s_propAUTO = new EnumProperty( Enums.WithinLine.AUTO );
+            protected internal static readonly EnumProperty SPropAuto = new EnumProperty( Enums.WithinLine.Auto );
 
-            protected internal static readonly EnumProperty s_propALWAYS = new EnumProperty( Enums.WithinLine.ALWAYS );
+            protected internal static readonly EnumProperty SPropAlways = new EnumProperty( Enums.WithinLine.Always );
 
-            protected internal SP_WithinLineMaker( string sPropName ) : base( sPropName )
+            protected internal SpWithinLineMaker( string sPropName ) : base( sPropName )
             {
             }
 
             public override Property CheckEnumValues( string value )
             {
                 if ( value.Equals( "auto" ) )
-                    return s_propAUTO;
+                    return SPropAuto;
 
                 if ( value.Equals( "always" ) )
-                    return s_propALWAYS;
+                    return SPropAlways;
 
                 return base.CheckEnumValues( value );
             }
         }
 
-        private class SP_WithinColumnMaker : NumberProperty.Maker
+        private class SpWithinColumnMaker : NumberProperty.Maker
         {
-            protected internal static readonly EnumProperty s_propAUTO = new EnumProperty( Enums.WithinColumn.AUTO );
+            protected internal static readonly EnumProperty SPropAuto = new EnumProperty( Enums.WithinColumn.Auto );
 
-            protected internal static readonly EnumProperty s_propALWAYS = new EnumProperty( Enums.WithinColumn.ALWAYS );
+            protected internal static readonly EnumProperty SPropAlways = new EnumProperty( Enums.WithinColumn.Always );
 
-            protected internal SP_WithinColumnMaker( string sPropName ) : base( sPropName )
+            protected internal SpWithinColumnMaker( string sPropName ) : base( sPropName )
             {
             }
 
             public override Property CheckEnumValues( string value )
             {
                 if ( value.Equals( "auto" ) )
-                    return s_propAUTO;
+                    return SPropAuto;
 
                 if ( value.Equals( "always" ) )
-                    return s_propALWAYS;
+                    return SPropAlways;
 
                 return base.CheckEnumValues( value );
             }

@@ -410,7 +410,7 @@ namespace Fonet
                 var sr = new StreamRenderer( renderer );
 
                 // Create the tree builder and give it the stream renderer.
-                var tb = new FOTreeBuilder();
+                var tb = new FoTreeBuilder();
                 tb.SetStreamRenderer( sr );
 
                 // Setup the mapping between xsl:fo elements and our fo classes.

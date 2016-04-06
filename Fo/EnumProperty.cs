@@ -2,21 +2,21 @@ namespace Fonet.Fo
 {
     internal class EnumProperty : Property
     {
-        private readonly int value;
+        private readonly int _value;
 
         public EnumProperty( int explicitValue )
         {
-            value = explicitValue;
+            _value = explicitValue;
         }
 
         public override int GetEnum()
         {
-            return value;
+            return _value;
         }
 
         public override object GetObject()
         {
-            return value;
+            return _value;
         }
 
         internal class Maker : PropertyMaker
@@ -33,7 +33,7 @@ namespace Fonet.Fo
                 return null;
             }
 
-            protected Property findConstant( string value )
+            protected Property FindConstant( string value )
             {
                 return null;
             }

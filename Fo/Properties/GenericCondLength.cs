@@ -4,20 +4,20 @@ namespace Fonet.Fo.Properties
 {
     internal class GenericCondLength : CondLengthProperty.Maker
     {
-        private static readonly PropertyMaker s_LengthMaker =
+        private static readonly PropertyMaker SLengthMaker =
             new LengthProperty.Maker( "conditional-length-template.length" );
 
-        private static readonly PropertyMaker s_ConditionalityMaker =
-            new SP_ConditionalityMaker( "conditional-length-template.conditionality" );
+        private static readonly PropertyMaker SConditionalityMaker =
+            new SpConditionalityMaker( "conditional-length-template.conditionality" );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
-        private readonly PropertyMaker m_shorthandMaker;
+        private readonly PropertyMaker _mShorthandMaker;
 
         protected GenericCondLength( string name )
             : base( name )
         {
-            m_shorthandMaker = GetSubpropMaker( "length" );
+            _mShorthandMaker = GetSubpropMaker( "length" );
         }
 
 
@@ -28,7 +28,7 @@ namespace Fonet.Fo.Properties
 
         public override Property CheckEnumValues( string value )
         {
-            return m_shorthandMaker.CheckEnumValues( value );
+            return _mShorthandMaker.CheckEnumValues( value );
         }
 
         protected override bool IsCompoundMaker()
@@ -39,10 +39,10 @@ namespace Fonet.Fo.Properties
         protected override PropertyMaker GetSubpropMaker( string subprop )
         {
             if ( subprop.Equals( "length" ) )
-                return s_LengthMaker;
+                return SLengthMaker;
 
             if ( subprop.Equals( "conditionality" ) )
-                return s_ConditionalityMaker;
+                return SConditionalityMaker;
 
             return base.GetSubpropMaker( subprop );
         }
@@ -62,9 +62,9 @@ namespace Fonet.Fo.Properties
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = MakeCompound( propertyList, propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = MakeCompound( propertyList, propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
 
         protected override Property MakeCompound( PropertyList pList, FObj fo )
@@ -73,22 +73,22 @@ namespace Fonet.Fo.Properties
             Property subProp;
 
             subProp = GetSubpropMaker( "length" ).Make( pList,
-                getDefaultForLength(), fo );
+                GetDefaultForLength(), fo );
             p.SetComponent( "length", subProp, true );
 
             subProp = GetSubpropMaker( "conditionality" ).Make( pList,
-                getDefaultForConditionality(), fo );
+                GetDefaultForConditionality(), fo );
             p.SetComponent( "conditionality", subProp, true );
 
             return new CondLengthProperty( p );
         }
 
-        protected virtual string getDefaultForLength()
+        protected virtual string GetDefaultForLength()
         {
             return "";
         }
 
-        protected virtual string getDefaultForConditionality()
+        protected virtual string GetDefaultForConditionality()
         {
             return "";
         }
@@ -98,7 +98,7 @@ namespace Fonet.Fo.Properties
             if ( p is CondLengthProperty )
                 return p;
             if ( !( p is EnumProperty ) )
-                p = m_shorthandMaker.ConvertProperty( p, pList, fo );
+                p = _mShorthandMaker.ConvertProperty( p, pList, fo );
             if ( p != null )
             {
                 Property prop = MakeCompound( pList, fo );
@@ -114,30 +114,30 @@ namespace Fonet.Fo.Properties
         {
             internal class Conditionality
             {
-                public const int DISCARD = Constants.DISCARD;
+                public const int Discard = Constants.Discard;
 
-                public const int RETAIN = Constants.RETAIN;
+                public const int Retain = Constants.Retain;
             }
         }
 
-        private class SP_ConditionalityMaker : EnumProperty.Maker
+        private class SpConditionalityMaker : EnumProperty.Maker
         {
-            protected internal static readonly EnumProperty s_propDISCARD =
-                new EnumProperty( Enums.Conditionality.DISCARD );
+            protected internal static readonly EnumProperty SPropDiscard =
+                new EnumProperty( Enums.Conditionality.Discard );
 
-            protected internal static readonly EnumProperty s_propRETAIN = new EnumProperty( Enums.Conditionality.RETAIN );
+            protected internal static readonly EnumProperty SPropRetain = new EnumProperty( Enums.Conditionality.Retain );
 
-            protected internal SP_ConditionalityMaker( string sPropName ) : base( sPropName )
+            protected internal SpConditionalityMaker( string sPropName ) : base( sPropName )
             {
             }
 
             public override Property CheckEnumValues( string value )
             {
                 if ( value.Equals( "discard" ) )
-                    return s_propDISCARD;
+                    return SPropDiscard;
 
                 if ( value.Equals( "retain" ) )
-                    return s_propRETAIN;
+                    return SPropRetain;
 
                 return base.CheckEnumValues( value );
             }

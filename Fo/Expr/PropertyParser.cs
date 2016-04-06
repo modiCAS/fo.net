@@ -6,58 +6,58 @@ namespace Fonet.Fo.Expr
 {
     internal class PropertyParser : PropertyTokenizer
     {
-        private const string RELUNIT = "em";
-        private static readonly Numeric negOne = new Numeric( (decimal)-1.0 );
-        private static readonly Hashtable functionTable = new Hashtable();
-        private readonly PropertyInfo propInfo;
+        private const string Relunit = "em";
+        private static readonly Numeric NegOne = new Numeric( (decimal)-1.0 );
+        private static readonly Hashtable FunctionTable = new Hashtable();
+        private readonly PropertyInfo _propInfo;
 
         static PropertyParser()
         {
-            functionTable.Add( "ceiling", new CeilingFunction() );
-            functionTable.Add( "floor", new FloorFunction() );
-            functionTable.Add( "round", new RoundFunction() );
-            functionTable.Add( "min", new MinFunction() );
-            functionTable.Add( "max", new MaxFunction() );
-            functionTable.Add( "abs", new AbsFunction() );
-            functionTable.Add( "rgb", new RGBColorFunction() );
-            functionTable.Add( "from-table-column", new FromTableColumnFunction() );
-            functionTable.Add( "inherited-property-value",
+            FunctionTable.Add( "ceiling", new CeilingFunction() );
+            FunctionTable.Add( "floor", new FloorFunction() );
+            FunctionTable.Add( "round", new RoundFunction() );
+            FunctionTable.Add( "min", new MinFunction() );
+            FunctionTable.Add( "max", new MaxFunction() );
+            FunctionTable.Add( "abs", new AbsFunction() );
+            FunctionTable.Add( "rgb", new RgbColorFunction() );
+            FunctionTable.Add( "from-table-column", new FromTableColumnFunction() );
+            FunctionTable.Add( "inherited-property-value",
                 new InheritedPropFunction() );
-            functionTable.Add( "from-parent", new FromParentFunction() );
-            functionTable.Add( "from-nearest-specified-value",
+            FunctionTable.Add( "from-parent", new FromParentFunction() );
+            FunctionTable.Add( "from-nearest-specified-value",
                 new NearestSpecPropFunction() );
-            functionTable.Add( "proportional-column-width",
-                new PPColWidthFunction() );
-            functionTable.Add( "label-end", new LabelEndFunction() );
-            functionTable.Add( "body-start", new BodyStartFunction() );
-            functionTable.Add( "_fop-property-value", new FonetPropValFunction() );
+            FunctionTable.Add( "proportional-column-width",
+                new PpColWidthFunction() );
+            FunctionTable.Add( "label-end", new LabelEndFunction() );
+            FunctionTable.Add( "body-start", new BodyStartFunction() );
+            FunctionTable.Add( "_fop-property-value", new FonetPropValFunction() );
         }
 
         private PropertyParser( string propExpr, PropertyInfo pInfo )
             : base( propExpr )
         {
-            propInfo = pInfo;
+            _propInfo = pInfo;
         }
 
-        public static Property parse( string expr, PropertyInfo propInfo )
+        public static Property Parse( string expr, PropertyInfo propInfo )
         {
-            return new PropertyParser( expr, propInfo ).parseProperty();
+            return new PropertyParser( expr, propInfo ).ParseProperty();
         }
 
-        private Property parseProperty()
+        private Property ParseProperty()
         {
-            next();
-            if ( currentToken == TOK_EOF )
+            Next();
+            if ( CurrentToken == TokEof )
                 return new StringProperty( "" );
             ListProperty propList = null;
             while ( true )
             {
-                Property prop = parseAdditiveExpr();
-                if ( currentToken == TOK_EOF )
+                Property prop = ParseAdditiveExpr();
+                if ( CurrentToken == TokEof )
                 {
                     if ( propList != null )
                     {
-                        propList.addProperty( prop );
+                        propList.AddProperty( prop );
                         return propList;
                     }
                     return prop;
@@ -65,28 +65,28 @@ namespace Fonet.Fo.Expr
                 if ( propList == null )
                     propList = new ListProperty( prop );
                 else
-                    propList.addProperty( prop );
+                    propList.AddProperty( prop );
             }
         }
 
-        private Property parseAdditiveExpr()
+        private Property ParseAdditiveExpr()
         {
-            Property prop = parseMultiplicativeExpr();
+            Property prop = ParseMultiplicativeExpr();
             var cont = true;
             while ( cont )
             {
-                switch ( currentToken )
+                switch ( CurrentToken )
                 {
-                case TOK_PLUS:
-                    next();
-                    prop = evalAddition( prop.GetNumeric(),
-                        parseMultiplicativeExpr().GetNumeric() );
+                case TokPlus:
+                    Next();
+                    prop = EvalAddition( prop.GetNumeric(),
+                        ParseMultiplicativeExpr().GetNumeric() );
                     break;
-                case TOK_MINUS:
-                    next();
+                case TokMinus:
+                    Next();
                     prop =
-                        evalSubtraction( prop.GetNumeric(),
-                            parseMultiplicativeExpr().GetNumeric() );
+                        EvalSubtraction( prop.GetNumeric(),
+                            ParseMultiplicativeExpr().GetNumeric() );
                     break;
                 default:
                     cont = false;
@@ -96,28 +96,28 @@ namespace Fonet.Fo.Expr
             return prop;
         }
 
-        private Property parseMultiplicativeExpr()
+        private Property ParseMultiplicativeExpr()
         {
-            Property prop = parseUnaryExpr();
+            Property prop = ParseUnaryExpr();
             var cont = true;
             while ( cont )
             {
-                switch ( currentToken )
+                switch ( CurrentToken )
                 {
-                case TOK_DIV:
-                    next();
-                    prop = evalDivide( prop.GetNumeric(),
-                        parseUnaryExpr().GetNumeric() );
+                case TokDiv:
+                    Next();
+                    prop = EvalDivide( prop.GetNumeric(),
+                        ParseUnaryExpr().GetNumeric() );
                     break;
-                case TOK_MOD:
-                    next();
-                    prop = evalModulo( prop.GetNumber(),
-                        parseUnaryExpr().GetNumber() );
+                case TokMod:
+                    Next();
+                    prop = EvalModulo( prop.GetNumber(),
+                        ParseUnaryExpr().GetNumber() );
                     break;
-                case TOK_MULTIPLY:
-                    next();
-                    prop = evalMultiply( prop.GetNumeric(),
-                        parseUnaryExpr().GetNumeric() );
+                case TokMultiply:
+                    Next();
+                    prop = EvalMultiply( prop.GetNumeric(),
+                        ParseUnaryExpr().GetNumeric() );
                     break;
                 default:
                     cont = false;
@@ -127,54 +127,54 @@ namespace Fonet.Fo.Expr
             return prop;
         }
 
-        private Property parseUnaryExpr()
+        private Property ParseUnaryExpr()
         {
-            if ( currentToken == TOK_MINUS )
+            if ( CurrentToken == TokMinus )
             {
-                next();
-                return evalNegate( parseUnaryExpr().GetNumeric() );
+                Next();
+                return EvalNegate( ParseUnaryExpr().GetNumeric() );
             }
-            return parsePrimaryExpr();
+            return ParsePrimaryExpr();
         }
 
-        private void expectRpar()
+        private void ExpectRpar()
         {
-            if ( currentToken != TOK_RPAR )
+            if ( CurrentToken != TokRpar )
                 throw new PropertyException( "expected )" );
-            next();
+            Next();
         }
 
-        private Property parsePrimaryExpr()
+        private Property ParsePrimaryExpr()
         {
             Property prop;
-            switch ( currentToken )
+            switch ( CurrentToken )
             {
-            case TOK_LPAR:
-                next();
-                prop = parseAdditiveExpr();
-                expectRpar();
+            case TokLpar:
+                Next();
+                prop = ParseAdditiveExpr();
+                ExpectRpar();
                 return prop;
 
-            case TOK_LITERAL:
-                prop = new StringProperty( currentTokenValue );
+            case TokLiteral:
+                prop = new StringProperty( CurrentTokenValue );
                 break;
 
-            case TOK_NCNAME:
-                prop = new NCnameProperty( currentTokenValue );
+            case TokNcname:
+                prop = new NCnameProperty( CurrentTokenValue );
                 break;
 
-            case TOK_FLOAT:
-                prop = new NumberProperty( ParseDouble( currentTokenValue ) );
+            case TokFloat:
+                prop = new NumberProperty( ParseDouble( CurrentTokenValue ) );
                 break;
 
-            case TOK_INTEGER:
-                prop = new NumberProperty( int.Parse( currentTokenValue ) );
+            case TokInteger:
+                prop = new NumberProperty( int.Parse( CurrentTokenValue ) );
                 break;
 
-            case TOK_PERCENT:
+            case TokPercent:
                 double pcval = ParseDouble(
-                    currentTokenValue.Substring( 0, currentTokenValue.Length - 1 ) ) / 100.0;
-                IPercentBase pcBase = propInfo.GetPercentBase();
+                    CurrentTokenValue.Substring( 0, CurrentTokenValue.Length - 1 ) ) / 100.0;
+                IPercentBase pcBase = _propInfo.GetPercentBase();
                 if ( pcBase != null )
                 {
                     if ( pcBase.GetDimension() == 0 )
@@ -191,107 +191,107 @@ namespace Fonet.Fo.Expr
                     prop = new NumberProperty( pcval );
                 break;
 
-            case TOK_NUMERIC:
-                int numLen = currentTokenValue.Length - currentUnitLength;
-                string unitPart = currentTokenValue.Substring( numLen );
-                double numPart = ParseDouble( currentTokenValue.Substring( 0, numLen ) );
+            case TokNumeric:
+                int numLen = CurrentTokenValue.Length - CurrentUnitLength;
+                string unitPart = CurrentTokenValue.Substring( numLen );
+                double numPart = ParseDouble( CurrentTokenValue.Substring( 0, numLen ) );
                 Length length = null;
-                if ( unitPart.Equals( RELUNIT ) )
-                    length = new FixedLength( numPart, propInfo.currentFontSize() );
+                if ( unitPart.Equals( Relunit ) )
+                    length = new FixedLength( numPart, _propInfo.CurrentFontSize() );
                 else
                     length = new FixedLength( numPart, unitPart );
                 if ( length == null )
-                    throw new PropertyException( "unrecognized unit name: " + currentTokenValue );
+                    throw new PropertyException( "unrecognized unit name: " + CurrentTokenValue );
                 prop = new LengthProperty( length );
                 break;
 
-            case TOK_COLORSPEC:
-                prop = new ColorTypeProperty( new ColorType( currentTokenValue ) );
+            case TokColorspec:
+                prop = new ColorTypeProperty( new ColorType( CurrentTokenValue ) );
                 break;
 
-            case TOK_FUNCTION_LPAR:
+            case TokFunctionLpar:
                 {
                 var function =
-                    (IFunction)functionTable[ currentTokenValue ];
+                    (IFunction)FunctionTable[ CurrentTokenValue ];
                 if ( function == null )
                 {
                     throw new PropertyException( "no such function: "
-                        + currentTokenValue );
+                        + CurrentTokenValue );
                 }
-                next();
-                propInfo.pushFunction( function );
-                prop = function.Eval( parseArgs( function.NumArgs ), propInfo );
-                propInfo.popFunction();
+                Next();
+                _propInfo.PushFunction( function );
+                prop = function.Eval( ParseArgs( function.NumArgs ), _propInfo );
+                _propInfo.PopFunction();
                 return prop;
                 }
             default:
                 throw new PropertyException( "syntax error" );
             }
-            next();
+            Next();
             return prop;
         }
 
-        private Property[] parseArgs( int nbArgs )
+        private Property[] ParseArgs( int nbArgs )
         {
             var args = new Property[ nbArgs ];
             Property prop;
             var i = 0;
-            if ( currentToken == TOK_RPAR )
-                next();
+            if ( CurrentToken == TokRpar )
+                Next();
             else
             {
                 while ( true )
                 {
-                    prop = parseAdditiveExpr();
+                    prop = ParseAdditiveExpr();
                     if ( i < nbArgs )
                         args[ i++ ] = prop;
-                    if ( currentToken != TOK_COMMA )
+                    if ( CurrentToken != TokComma )
                         break;
-                    next();
+                    Next();
                 }
-                expectRpar();
+                ExpectRpar();
             }
             if ( nbArgs != i )
                 throw new PropertyException( "Wrong number of args for function" );
             return args;
         }
 
-        private Property evalAddition( Numeric op1, Numeric op2 )
+        private Property EvalAddition( Numeric op1, Numeric op2 )
         {
             if ( op1 == null || op2 == null )
                 throw new PropertyException( "Non numeric operand in addition" );
-            return new NumericProperty( op1.add( op2 ) );
+            return new NumericProperty( op1.Add( op2 ) );
         }
 
-        private Property evalSubtraction( Numeric op1, Numeric op2 )
+        private Property EvalSubtraction( Numeric op1, Numeric op2 )
         {
             if ( op1 == null || op2 == null )
                 throw new PropertyException( "Non numeric operand in subtraction" );
-            return new NumericProperty( op1.subtract( op2 ) );
+            return new NumericProperty( op1.Subtract( op2 ) );
         }
 
-        private Property evalNegate( Numeric op )
+        private Property EvalNegate( Numeric op )
         {
             if ( op == null )
                 throw new PropertyException( "Non numeric operand to unary minus" );
-            return new NumericProperty( op.multiply( negOne ) );
+            return new NumericProperty( op.Multiply( NegOne ) );
         }
 
-        private Property evalMultiply( Numeric op1, Numeric op2 )
+        private Property EvalMultiply( Numeric op1, Numeric op2 )
         {
             if ( op1 == null || op2 == null )
                 throw new PropertyException( "Non numeric operand in multiplication" );
-            return new NumericProperty( op1.multiply( op2 ) );
+            return new NumericProperty( op1.Multiply( op2 ) );
         }
 
-        private Property evalDivide( Numeric op1, Numeric op2 )
+        private Property EvalDivide( Numeric op1, Numeric op2 )
         {
             if ( op1 == null || op2 == null )
                 throw new PropertyException( "Non numeric operand in division" );
-            return new NumericProperty( op1.divide( op2 ) );
+            return new NumericProperty( op1.Divide( op2 ) );
         }
 
-        private Property evalModulo( Number op1, Number op2 )
+        private Property EvalModulo( Number op1, Number op2 )
         {
             if ( op1 == null || op2 == null )
                 throw new PropertyException( "Non number operand to modulo" );

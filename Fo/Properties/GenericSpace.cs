@@ -4,27 +4,27 @@ namespace Fonet.Fo.Properties
 {
     internal class GenericSpace : SpaceProperty.Maker
     {
-        private static readonly PropertyMaker s_MinimumMaker = new LengthProperty.Maker( "generic-space.minimum" );
+        private static readonly PropertyMaker SMinimumMaker = new LengthProperty.Maker( "generic-space.minimum" );
 
-        private static readonly PropertyMaker s_OptimumMaker = new LengthProperty.Maker( "generic-space.optimum" );
+        private static readonly PropertyMaker SOptimumMaker = new LengthProperty.Maker( "generic-space.optimum" );
 
-        private static readonly PropertyMaker s_MaximumMaker = new LengthProperty.Maker( "generic-space.maximum" );
+        private static readonly PropertyMaker SMaximumMaker = new LengthProperty.Maker( "generic-space.maximum" );
 
-        private static readonly PropertyMaker s_PrecedenceMaker =
-            new SP_PrecedenceMaker( "generic-space.precedence" );
+        private static readonly PropertyMaker SPrecedenceMaker =
+            new SpPrecedenceMaker( "generic-space.precedence" );
 
-        private static readonly PropertyMaker s_ConditionalityMaker =
-            new SP_ConditionalityMaker( "generic-space.conditionality" );
+        private static readonly PropertyMaker SConditionalityMaker =
+            new SpConditionalityMaker( "generic-space.conditionality" );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
 
-        private readonly PropertyMaker m_shorthandMaker;
+        private readonly PropertyMaker _mShorthandMaker;
 
         protected GenericSpace( string name )
             : base( name )
         {
-            m_shorthandMaker = GetSubpropMaker( "minimum" );
+            _mShorthandMaker = GetSubpropMaker( "minimum" );
         }
 
 
@@ -35,7 +35,7 @@ namespace Fonet.Fo.Properties
 
         public override Property CheckEnumValues( string value )
         {
-            return m_shorthandMaker.CheckEnumValues( value );
+            return _mShorthandMaker.CheckEnumValues( value );
         }
 
         protected override bool IsCompoundMaker()
@@ -46,19 +46,19 @@ namespace Fonet.Fo.Properties
         protected override PropertyMaker GetSubpropMaker( string subprop )
         {
             if ( subprop.Equals( "minimum" ) )
-                return s_MinimumMaker;
+                return SMinimumMaker;
 
             if ( subprop.Equals( "optimum" ) )
-                return s_OptimumMaker;
+                return SOptimumMaker;
 
             if ( subprop.Equals( "maximum" ) )
-                return s_MaximumMaker;
+                return SMaximumMaker;
 
             if ( subprop.Equals( "precedence" ) )
-                return s_PrecedenceMaker;
+                return SPrecedenceMaker;
 
             if ( subprop.Equals( "conditionality" ) )
-                return s_ConditionalityMaker;
+                return SConditionalityMaker;
 
             return base.GetSubpropMaker( subprop );
         }
@@ -78,9 +78,9 @@ namespace Fonet.Fo.Properties
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = MakeCompound( propertyList, propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = MakeCompound( propertyList, propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
 
 
@@ -102,11 +102,11 @@ namespace Fonet.Fo.Properties
             p.SetComponent( "maximum", subProp, true );
 
             subProp = GetSubpropMaker( "precedence" ).Make( pList,
-                getDefaultForPrecedence(), fo );
+                GetDefaultForPrecedence(), fo );
             p.SetComponent( "precedence", subProp, true );
 
             subProp = GetSubpropMaker( "conditionality" ).Make( pList,
-                getDefaultForConditionality(), fo );
+                GetDefaultForConditionality(), fo );
             p.SetComponent( "conditionality", subProp, true );
 
             return new SpaceProperty( p );
@@ -127,12 +127,12 @@ namespace Fonet.Fo.Properties
             return "0pt";
         }
 
-        protected virtual string getDefaultForPrecedence()
+        protected virtual string GetDefaultForPrecedence()
         {
             return "0";
         }
 
-        protected virtual string getDefaultForConditionality()
+        protected virtual string GetDefaultForConditionality()
         {
             return "discard";
         }
@@ -142,7 +142,7 @@ namespace Fonet.Fo.Properties
             if ( p is SpaceProperty )
                 return p;
             if ( !( p is EnumProperty ) )
-                p = m_shorthandMaker.ConvertProperty( p, pList, fo );
+                p = _mShorthandMaker.ConvertProperty( p, pList, fo );
             if ( p != null )
             {
                 Property prop = MakeCompound( pList, fo );
@@ -165,52 +165,52 @@ namespace Fonet.Fo.Properties
         {
             internal class Precedence
             {
-                public const int FORCE = Constants.FORCE;
+                public const int Force = Constants.Force;
             }
 
             internal class Conditionality
             {
-                public const int DISCARD = Constants.DISCARD;
+                public const int Discard = Constants.Discard;
 
-                public const int RETAIN = Constants.RETAIN;
+                public const int Retain = Constants.Retain;
             }
         }
 
-        private class SP_PrecedenceMaker : NumberProperty.Maker
+        private class SpPrecedenceMaker : NumberProperty.Maker
         {
-            protected internal static readonly EnumProperty s_propFORCE = new EnumProperty( Enums.Precedence.FORCE );
+            protected internal static readonly EnumProperty SPropForce = new EnumProperty( Enums.Precedence.Force );
 
-            protected internal SP_PrecedenceMaker( string sPropName ) : base( sPropName )
+            protected internal SpPrecedenceMaker( string sPropName ) : base( sPropName )
             {
             }
 
             public override Property CheckEnumValues( string value )
             {
                 if ( value.Equals( "force" ) )
-                    return s_propFORCE;
+                    return SPropForce;
 
                 return base.CheckEnumValues( value );
             }
         }
 
-        private class SP_ConditionalityMaker : EnumProperty.Maker
+        private class SpConditionalityMaker : EnumProperty.Maker
         {
-            protected internal static readonly EnumProperty s_propDISCARD =
-                new EnumProperty( Enums.Conditionality.DISCARD );
+            protected internal static readonly EnumProperty SPropDiscard =
+                new EnumProperty( Enums.Conditionality.Discard );
 
-            protected internal static readonly EnumProperty s_propRETAIN = new EnumProperty( Enums.Conditionality.RETAIN );
+            protected internal static readonly EnumProperty SPropRetain = new EnumProperty( Enums.Conditionality.Retain );
 
-            protected internal SP_ConditionalityMaker( string sPropName ) : base( sPropName )
+            protected internal SpConditionalityMaker( string sPropName ) : base( sPropName )
             {
             }
 
             public override Property CheckEnumValues( string value )
             {
                 if ( value.Equals( "discard" ) )
-                    return s_propDISCARD;
+                    return SPropDiscard;
 
                 if ( value.Equals( "retain" ) )
-                    return s_propRETAIN;
+                    return SPropRetain;
 
                 return base.CheckEnumValues( value );
             }

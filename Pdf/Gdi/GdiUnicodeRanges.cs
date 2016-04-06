@@ -20,7 +20,7 @@ namespace Fonet.Pdf.Gdi
         ///     is important since a binary search is used to locate and
         ///     uicode range from a charcater.
         /// </summary>
-        private UnicodeRange[] unicodeRanges;
+        private UnicodeRange[] _unicodeRanges;
 
         /// <summary>
         ///     Class constuctor.
@@ -36,7 +36,7 @@ namespace Fonet.Pdf.Gdi
         /// </summary>
         public int Count
         {
-            get { return unicodeRanges.Length; }
+            get { return _unicodeRanges.Length; }
         }
 
         /// <summary>
@@ -49,12 +49,12 @@ namespace Fonet.Pdf.Gdi
             if ( size == 0 )
                 throw new Exception( "Unable to retrieve unicode ranges." );
 
-            unicodeRanges = new UnicodeRange[ glyphSet.cRanges ];
+            _unicodeRanges = new UnicodeRange[ glyphSet.cRanges ];
             for ( int i = 0, offset = 0; i < glyphSet.cRanges; i++ )
             {
                 var wcLow = (ushort)( glyphSet.ranges[ offset++ ] + ( glyphSet.ranges[ offset++ ] << 8 ) );
                 var cGlyphs = (ushort)( glyphSet.ranges[ offset++ ] + ( glyphSet.ranges[ offset++ ] << 8 ) );
-                unicodeRanges[ i ] = new UnicodeRange( dc, wcLow, (ushort)( wcLow + cGlyphs - 1 ) );
+                _unicodeRanges[ i ] = new UnicodeRange( dc, wcLow, (ushort)( wcLow + cGlyphs - 1 ) );
             }
         }
 
@@ -70,10 +70,10 @@ namespace Fonet.Pdf.Gdi
         {
             // Use binary search algorith mto locate range
             int index = Array.BinarySearch(
-                unicodeRanges, 0, unicodeRanges.Length, c, SearchComparer );
+                _unicodeRanges, 0, _unicodeRanges.Length, c, SearchComparer );
 
             // BinarySearch will return -1 if character cannot be located
-            return index < 0 ? null : unicodeRanges[ index ];
+            return index < 0 ? null : _unicodeRanges[ index ];
         }
 
         /// <summary>

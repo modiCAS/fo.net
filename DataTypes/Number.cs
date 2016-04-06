@@ -2,41 +2,41 @@ namespace Fonet.DataTypes
 {
     internal class Number
     {
-        private readonly decimal value;
+        private readonly decimal _value;
 
         public Number( int n )
         {
-            value = n;
+            _value = n;
         }
 
         public Number( decimal n )
         {
-            value = n;
+            _value = n;
         }
 
         public Number( double n )
         {
-            value = (decimal)n;
+            _value = (decimal)n;
         }
 
         public int IntValue()
         {
-            return (int)value;
+            return (int)_value;
         }
 
         public double DoubleValue()
         {
-            return (double)value;
+            return (double)_value;
         }
 
         public float FloatValue()
         {
-            return (float)value;
+            return (float)_value;
         }
 
         public decimal DecimalValue()
         {
-            return value;
+            return _value;
         }
     }
 }

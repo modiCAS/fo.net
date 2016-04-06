@@ -2,15 +2,15 @@ namespace Fonet.Fo.Properties
 {
     internal class RetrievePositionMaker : EnumProperty.Maker
     {
-        protected static readonly EnumProperty s_propFSWP = new EnumProperty( Constants.FSWP );
+        protected static readonly EnumProperty SPropFswp = new EnumProperty( Constants.Fswp );
 
-        protected static readonly EnumProperty s_propFIC = new EnumProperty( Constants.FIC );
+        protected static readonly EnumProperty SPropFic = new EnumProperty( Constants.Fic );
 
-        protected static readonly EnumProperty s_propLSWP = new EnumProperty( Constants.LSWP );
+        protected static readonly EnumProperty SPropLswp = new EnumProperty( Constants.Lswp );
 
-        protected static readonly EnumProperty s_propLEWP = new EnumProperty( Constants.LEWP );
+        protected static readonly EnumProperty SPropLewp = new EnumProperty( Constants.Lewp );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected RetrievePositionMaker( string name ) : base( name )
         {
@@ -31,25 +31,25 @@ namespace Fonet.Fo.Properties
         public override Property CheckEnumValues( string value )
         {
             if ( value.Equals( "first-starting-within-page" ) )
-                return s_propFSWP;
+                return SPropFswp;
 
             if ( value.Equals( "first-including-carryover" ) )
-                return s_propFIC;
+                return SPropFic;
 
             if ( value.Equals( "last-starting-within-page" ) )
-                return s_propLSWP;
+                return SPropLswp;
 
             if ( value.Equals( "last-ending-within-page" ) )
-                return s_propLEWP;
+                return SPropLewp;
 
             return base.CheckEnumValues( value );
         }
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "first-starting-within-page", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "first-starting-within-page", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

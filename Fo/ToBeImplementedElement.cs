@@ -11,7 +11,7 @@ namespace Fonet.Fo
 
         public override Status Layout( Area area )
         {
-            return new Status( Status.OK );
+            return new Status( Status.Ok );
         }
     }
 }

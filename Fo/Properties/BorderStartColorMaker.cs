@@ -4,7 +4,7 @@ namespace Fonet.Fo.Properties
 {
     internal class BorderStartColorMaker : GenericColor
     {
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected BorderStartColorMaker( string name ) : base( name )
         {
@@ -27,7 +27,7 @@ namespace Fonet.Fo.Properties
 
             sbExpr.Length = 0;
             sbExpr.Append( "border-" );
-            sbExpr.Append( propertyList.wmRelToAbs( PropertyList.START ) );
+            sbExpr.Append( propertyList.WmRelToAbs( PropertyList.Start ) );
             sbExpr.Append( "-color" );
             if ( propertyList.GetExplicitProperty( sbExpr.ToString() ) != null )
                 return true;
@@ -38,25 +38,25 @@ namespace Fonet.Fo.Properties
 
         public override Property Compute( PropertyList propertyList )
         {
-            FObj parentFO = propertyList.getParentFObj();
+            FObj parentFo = propertyList.GetParentFObj();
             var sbExpr = new StringBuilder();
             Property p = null;
             sbExpr.Append( "border-" );
-            sbExpr.Append( propertyList.wmRelToAbs( PropertyList.START ) );
+            sbExpr.Append( propertyList.WmRelToAbs( PropertyList.Start ) );
             sbExpr.Append( "-color" );
             p = propertyList.GetExplicitOrShorthandProperty( sbExpr.ToString() );
 
             if ( p != null )
-                p = ConvertProperty( p, propertyList, parentFO );
+                p = ConvertProperty( p, propertyList, parentFo );
 
             return p;
         }
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "black", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "black", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

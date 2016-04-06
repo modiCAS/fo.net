@@ -6,7 +6,7 @@ namespace Fonet.Fo.Pagination
 {
     internal class RegionBody : Region
     {
-        public const string REGION_CLASS = "body";
+        public const string RegionClass = "body";
 
         protected RegionBody( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
@@ -23,9 +23,9 @@ namespace Fonet.Fo.Pagination
             int allocationRectangleWidth,
             int allocationRectangleHeight )
         {
-            BorderAndPadding bap = propMgr.GetBorderAndPadding();
-            BackgroundProps bProps = propMgr.GetBackgroundProps();
-            MarginProps mProps = propMgr.GetMarginProps();
+            BorderAndPadding bap = PropMgr.GetBorderAndPadding();
+            BackgroundProps bProps = PropMgr.GetBackgroundProps();
+            MarginProps mProps = PropMgr.GetMarginProps();
             var body = new BodyRegionArea( allocationRectangleXPosition
                 + mProps.marginLeft,
                 allocationRectangleYPosition
@@ -37,11 +37,11 @@ namespace Fonet.Fo.Pagination
                     - mProps.marginTop
                     - mProps.marginBottom );
 
-            body.setBackground( propMgr.GetBackgroundProps() );
+            body.setBackground( PropMgr.GetBackgroundProps() );
 
-            int overflow = properties.GetProperty( "overflow" ).GetEnum();
+            int overflow = Properties.GetProperty( "overflow" ).GetEnum();
             string columnCountAsString =
-                properties.GetProperty( "column-count" ).GetString();
+                Properties.GetProperty( "column-count" ).GetString();
             var columnCount = 1;
             try
             {
@@ -53,7 +53,7 @@ namespace Fonet.Fo.Pagination
                     "Bad value on region body 'column-count'" );
                 columnCount = 1;
             }
-            if ( columnCount > 1 && overflow == Overflow.SCROLL )
+            if ( columnCount > 1 && overflow == Overflow.Scroll )
             {
                 FonetDriver.ActiveDriver.FireFonetError(
                     "Setting 'column-count' to 1 because 'overflow' is set to 'scroll'" );
@@ -62,7 +62,7 @@ namespace Fonet.Fo.Pagination
             body.setColumnCount( columnCount );
 
             int columnGap =
-                properties.GetProperty( "column-gap" ).GetLength().MValue();
+                Properties.GetProperty( "column-gap" ).GetLength().MValue();
             body.setColumnGap( columnGap );
 
             return body;
@@ -80,7 +80,7 @@ namespace Fonet.Fo.Pagination
 
         public override string GetRegionClass()
         {
-            return REGION_CLASS;
+            return RegionClass;
         }
 
         internal new class Maker : FObj.Maker

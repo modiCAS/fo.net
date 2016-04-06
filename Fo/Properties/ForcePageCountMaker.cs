@@ -2,19 +2,19 @@ namespace Fonet.Fo.Properties
 {
     internal class ForcePageCountMaker : EnumProperty.Maker
     {
-        protected static readonly EnumProperty s_propEVEN = new EnumProperty( Constants.EVEN );
+        protected static readonly EnumProperty SPropEven = new EnumProperty( Constants.Even );
 
-        protected static readonly EnumProperty s_propODD = new EnumProperty( Constants.ODD );
+        protected static readonly EnumProperty SPropOdd = new EnumProperty( Constants.Odd );
 
-        protected static readonly EnumProperty s_propEND_ON_EVEN = new EnumProperty( Constants.END_ON_EVEN );
+        protected static readonly EnumProperty SPropEndOnEven = new EnumProperty( Constants.EndOnEven );
 
-        protected static readonly EnumProperty s_propEND_ON_ODD = new EnumProperty( Constants.END_ON_ODD );
+        protected static readonly EnumProperty SPropEndOnOdd = new EnumProperty( Constants.EndOnOdd );
 
-        protected static readonly EnumProperty s_propNO_FORCE = new EnumProperty( Constants.NO_FORCE );
+        protected static readonly EnumProperty SPropNoForce = new EnumProperty( Constants.NoForce );
 
-        protected static readonly EnumProperty s_propAUTO = new EnumProperty( Constants.AUTO );
+        protected static readonly EnumProperty SPropAuto = new EnumProperty( Constants.Auto );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected ForcePageCountMaker( string name ) : base( name )
         {
@@ -35,31 +35,31 @@ namespace Fonet.Fo.Properties
         public override Property CheckEnumValues( string value )
         {
             if ( value.Equals( "even" ) )
-                return s_propEVEN;
+                return SPropEven;
 
             if ( value.Equals( "odd" ) )
-                return s_propODD;
+                return SPropOdd;
 
             if ( value.Equals( "end-on-even" ) )
-                return s_propEND_ON_EVEN;
+                return SPropEndOnEven;
 
             if ( value.Equals( "end-on-odd" ) )
-                return s_propEND_ON_ODD;
+                return SPropEndOnOdd;
 
             if ( value.Equals( "no-force" ) )
-                return s_propNO_FORCE;
+                return SPropNoForce;
 
             if ( value.Equals( "auto" ) )
-                return s_propAUTO;
+                return SPropAuto;
 
             return base.CheckEnumValues( value );
         }
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "auto", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "auto", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

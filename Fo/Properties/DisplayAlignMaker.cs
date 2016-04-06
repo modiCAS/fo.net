@@ -2,15 +2,15 @@ namespace Fonet.Fo.Properties
 {
     internal class DisplayAlignMaker : EnumProperty.Maker
     {
-        protected static readonly EnumProperty s_propBEFORE = new EnumProperty( Constants.BEFORE );
+        protected static readonly EnumProperty SPropBefore = new EnumProperty( Constants.Before );
 
-        protected static readonly EnumProperty s_propAFTER = new EnumProperty( Constants.AFTER );
+        protected static readonly EnumProperty SPropAfter = new EnumProperty( Constants.After );
 
-        protected static readonly EnumProperty s_propCENTER = new EnumProperty( Constants.CENTER );
+        protected static readonly EnumProperty SPropCenter = new EnumProperty( Constants.Center );
 
-        protected static readonly EnumProperty s_propAUTO = new EnumProperty( Constants.AUTO );
+        protected static readonly EnumProperty SPropAuto = new EnumProperty( Constants.Auto );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected DisplayAlignMaker( string name ) : base( name )
         {
@@ -31,25 +31,25 @@ namespace Fonet.Fo.Properties
         public override Property CheckEnumValues( string value )
         {
             if ( value.Equals( "before" ) )
-                return s_propBEFORE;
+                return SPropBefore;
 
             if ( value.Equals( "after" ) )
-                return s_propAFTER;
+                return SPropAfter;
 
             if ( value.Equals( "center" ) )
-                return s_propCENTER;
+                return SPropCenter;
 
             if ( value.Equals( "auto" ) )
-                return s_propAUTO;
+                return SPropAuto;
 
             return base.CheckEnumValues( value );
         }
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "auto", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "auto", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

@@ -1,14 +1,14 @@
 namespace Fonet.Fo.Pagination
 {
-    internal abstract class PageMasterReference : FObj, SubSequenceSpecifier
+    internal abstract class PageMasterReference : FObj, ISubSequenceSpecifier
     {
         public PageMasterReference( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = GetElementName();
+            Name = GetElementName();
             if ( GetProperty( "master-reference" ) != null )
                 SetMasterName( GetProperty( "master-reference" ).GetString() );
-            validateParent( parent );
+            ValidateParent( parent );
         }
 
         public string MasterName { get; private set; }
@@ -28,7 +28,7 @@ namespace Fonet.Fo.Pagination
 
         protected abstract string GetElementName();
 
-        protected void validateParent( FObj parent )
+        protected void ValidateParent( FObj parent )
         {
             if ( parent.GetName().Equals( "fo:page-sequence-master" ) )
             {

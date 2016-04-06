@@ -2,11 +2,11 @@ namespace Fonet.Fo.Properties
 {
     internal class RelativeAlignMaker : EnumProperty.Maker
     {
-        protected static readonly EnumProperty s_propBEFORE = new EnumProperty( Constants.BEFORE );
+        protected static readonly EnumProperty SPropBefore = new EnumProperty( Constants.Before );
 
-        protected static readonly EnumProperty s_propBASELINE = new EnumProperty( Constants.BASELINE );
+        protected static readonly EnumProperty SPropBaseline = new EnumProperty( Constants.Baseline );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected RelativeAlignMaker( string name ) : base( name )
         {
@@ -27,19 +27,19 @@ namespace Fonet.Fo.Properties
         public override Property CheckEnumValues( string value )
         {
             if ( value.Equals( "before" ) )
-                return s_propBEFORE;
+                return SPropBefore;
 
             if ( value.Equals( "after" ) )
-                return s_propBASELINE;
+                return SPropBaseline;
 
             return base.CheckEnumValues( value );
         }
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "before", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "before", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

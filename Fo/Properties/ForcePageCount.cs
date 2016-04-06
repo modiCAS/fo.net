@@ -2,16 +2,16 @@ namespace Fonet.Fo.Properties
 {
     internal class ForcePageCount
     {
-        public const int EVEN = Constants.EVEN;
+        public const int Even = Constants.Even;
 
-        public const int ODD = Constants.ODD;
+        public const int Odd = Constants.Odd;
 
-        public const int END_ON_EVEN = Constants.END_ON_EVEN;
+        public const int EndOnEven = Constants.EndOnEven;
 
-        public const int END_ON_ODD = Constants.END_ON_ODD;
+        public const int EndOnOdd = Constants.EndOnOdd;
 
-        public const int NO_FORCE = Constants.NO_FORCE;
+        public const int NoForce = Constants.NoForce;
 
-        public const int AUTO = Constants.AUTO;
+        public const int Auto = Constants.Auto;
     }
 }

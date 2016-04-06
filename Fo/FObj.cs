@@ -4,23 +4,23 @@ using Fonet.Layout;
 
 namespace Fonet.Fo
 {
-    internal class FObj : FONode
+    internal class FObj : FoNode
     {
-        private Hashtable markerClassNames;
+        private Hashtable _markerClassNames;
 
-        protected string name;
+        protected string Name;
 
-        public PropertyList properties;
+        public PropertyList Properties;
 
-        protected PropertyManager propMgr;
+        protected PropertyManager PropMgr;
 
         protected FObj( FObj parent, PropertyList propertyList )
             : base( parent )
         {
-            properties = propertyList;
+            Properties = propertyList;
             propertyList.FObj = this;
-            propMgr = MakePropertyManager( propertyList );
-            name = "default FO";
+            PropMgr = MakePropertyManager( propertyList );
+            Name = "default FO";
             SetWritingMode();
         }
 
@@ -41,12 +41,12 @@ namespace Fonet.Fo
 
         public override Status Layout( Area area )
         {
-            return new Status( Status.OK );
+            return new Status( Status.Ok );
         }
 
         public string GetName()
         {
-            return name;
+            return Name;
         }
 
         protected internal virtual void Start()
@@ -61,7 +61,7 @@ namespace Fonet.Fo
 
         public override Property GetProperty( string name )
         {
-            return properties.GetProperty( name );
+            return Properties.GetProperty( name );
         }
 
         public virtual int GetContentWidth()
@@ -71,14 +71,14 @@ namespace Fonet.Fo
 
         public virtual void RemoveID( IDReferences idReferences )
         {
-            if ( properties.GetProperty( "id" ) == null
-                || properties.GetProperty( "id" ).GetString() == null )
+            if ( Properties.GetProperty( "id" ) == null
+                || Properties.GetProperty( "id" ).GetString() == null )
                 return;
-            idReferences.RemoveID( properties.GetProperty( "id" ).GetString() );
-            int numChildren = children.Count;
+            idReferences.RemoveID( Properties.GetProperty( "id" ).GetString() );
+            int numChildren = Children.Count;
             for ( var i = 0; i < numChildren; i++ )
             {
-                var child = (FONode)children[ i ];
+                var child = (FoNode)Children[ i ];
                 if ( child is FObj )
                     ( (FObj)child ).RemoveID( idReferences );
             }
@@ -94,19 +94,19 @@ namespace Fonet.Fo
             FObj p;
             FObj parent;
             for ( p = this;
-                !p.GeneratesReferenceAreas() && ( parent = p.getParent() ) != null;
+                !p.GeneratesReferenceAreas() && ( parent = p.GetParent() ) != null;
                 p = parent )
                 ;
-            properties.SetWritingMode( p.GetProperty( "writing-mode" ).GetEnum() );
+            Properties.SetWritingMode( p.GetProperty( "writing-mode" ).GetEnum() );
         }
 
         public void AddMarker( string markerClassName )
         {
-            if ( children != null )
+            if ( Children != null )
             {
-                for ( var i = 0; i < children.Count; i++ )
+                for ( var i = 0; i < Children.Count; i++ )
                 {
-                    var child = (FONode)children[ i ];
+                    var child = (FoNode)Children[ i ];
                     if ( !child.MayPrecedeMarker() )
                     {
                         throw new FonetException(
@@ -114,13 +114,13 @@ namespace Fonet.Fo
                     }
                 }
             }
-            if ( markerClassNames == null )
+            if ( _markerClassNames == null )
             {
-                markerClassNames = new Hashtable();
-                markerClassNames.Add( markerClassName, string.Empty );
+                _markerClassNames = new Hashtable();
+                _markerClassNames.Add( markerClassName, string.Empty );
             }
-            else if ( !markerClassNames.ContainsKey( markerClassName ) )
-                markerClassNames.Add( markerClassName, string.Empty );
+            else if ( !_markerClassNames.ContainsKey( markerClassName ) )
+                _markerClassNames.Add( markerClassName, string.Empty );
             else
             {
                 throw new FonetException(

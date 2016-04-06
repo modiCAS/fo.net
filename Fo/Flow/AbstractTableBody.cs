@@ -7,12 +7,12 @@ namespace Fonet.Fo.Flow
 {
     internal abstract class AbstractTableBody : FObj
     {
-        protected AreaContainer areaContainer;
-        protected ArrayList columns;
-        protected string id;
-        protected RowSpanMgr rowSpanMgr;
-        protected int spaceAfter;
-        protected int spaceBefore;
+        protected AreaContainer AreaContainer;
+        protected ArrayList Columns;
+        protected string ID;
+        protected RowSpanMgr RowSpanMgr;
+        protected int SpaceAfter;
+        protected int SpaceBefore;
 
         public AbstractTableBody( FObj parent, PropertyList propertyList ) : base( parent, propertyList )
         {
@@ -25,44 +25,44 @@ namespace Fonet.Fo.Flow
 
         public void SetColumns( ArrayList columns )
         {
-            this.columns = columns;
+            this.Columns = columns;
         }
 
         public virtual void SetYPosition( int value )
         {
-            areaContainer.setYPosition( value );
+            AreaContainer.setYPosition( value );
         }
 
         public virtual int GetYPosition()
         {
-            return areaContainer.GetCurrentYPosition();
+            return AreaContainer.GetCurrentYPosition();
         }
 
         public int GetHeight()
         {
-            return areaContainer.GetHeight() + spaceBefore + spaceAfter;
+            return AreaContainer.GetHeight() + SpaceBefore + SpaceAfter;
         }
 
         public override Status Layout( Area area )
         {
-            if ( marker == MarkerBreakAfter )
-                return new Status( Status.OK );
+            if ( Marker == MarkerBreakAfter )
+                return new Status( Status.Ok );
 
-            if ( marker == MarkerStart )
+            if ( Marker == MarkerStart )
             {
-                AccessibilityProps mAccProps = propMgr.GetAccessibilityProps();
-                AuralProps mAurProps = propMgr.GetAuralProps();
-                BorderAndPadding bap = propMgr.GetBorderAndPadding();
-                BackgroundProps bProps = propMgr.GetBackgroundProps();
-                RelativePositionProps mRelProps = propMgr.GetRelativePositionProps();
+                AccessibilityProps mAccProps = PropMgr.GetAccessibilityProps();
+                AuralProps mAurProps = PropMgr.GetAuralProps();
+                BorderAndPadding bap = PropMgr.GetBorderAndPadding();
+                BackgroundProps bProps = PropMgr.GetBackgroundProps();
+                RelativePositionProps mRelProps = PropMgr.GetRelativePositionProps();
 
-                spaceBefore = properties.GetProperty( "space-before.optimum" ).GetLength().MValue();
-                spaceAfter = properties.GetProperty( "space-after.optimum" ).GetLength().MValue();
-                id = properties.GetProperty( "id" ).GetString();
+                SpaceBefore = Properties.GetProperty( "space-before.optimum" ).GetLength().MValue();
+                SpaceAfter = Properties.GetProperty( "space-after.optimum" ).GetLength().MValue();
+                ID = Properties.GetProperty( "id" ).GetString();
 
                 try
                 {
-                    area.getIDReferences().CreateID( id );
+                    area.getIDReferences().CreateID( ID );
                 }
                 catch ( FonetException e )
                 {
@@ -72,42 +72,42 @@ namespace Fonet.Fo.Flow
                 if ( area is BlockArea )
                     area.end();
 
-                if ( rowSpanMgr == null )
-                    rowSpanMgr = new RowSpanMgr( columns.Count );
+                if ( RowSpanMgr == null )
+                    RowSpanMgr = new RowSpanMgr( Columns.Count );
 
-                marker = 0;
+                Marker = 0;
             }
 
-            if ( spaceBefore != 0 && marker == 0 )
-                area.increaseHeight( spaceBefore );
+            if ( SpaceBefore != 0 && Marker == 0 )
+                area.increaseHeight( SpaceBefore );
 
-            if ( marker == 0 )
-                area.getIDReferences().ConfigureID( id, area );
+            if ( Marker == 0 )
+                area.getIDReferences().ConfigureID( ID, area );
 
             int spaceLeft = area.spaceLeft();
 
-            areaContainer =
-                new AreaContainer( propMgr.GetFontState( area.getFontInfo() ), 0,
+            AreaContainer =
+                new AreaContainer( PropMgr.GetFontState( area.getFontInfo() ), 0,
                     area.getContentHeight(),
                     area.getContentWidth(),
-                    area.spaceLeft(), Position.RELATIVE );
-            areaContainer.foCreator = this;
-            areaContainer.setPage( area.getPage() );
-            areaContainer.setParent( area );
-            areaContainer.setBackground( propMgr.GetBackgroundProps() );
-            areaContainer.setBorderAndPadding( propMgr.GetBorderAndPadding() );
-            areaContainer.start();
+                    area.spaceLeft(), Position.Relative );
+            AreaContainer.foCreator = this;
+            AreaContainer.setPage( area.getPage() );
+            AreaContainer.setParent( area );
+            AreaContainer.setBackground( PropMgr.GetBackgroundProps() );
+            AreaContainer.setBorderAndPadding( PropMgr.GetBorderAndPadding() );
+            AreaContainer.start();
 
-            areaContainer.setAbsoluteHeight( area.getAbsoluteHeight() );
-            areaContainer.setIDReferences( area.getIDReferences() );
+            AreaContainer.setAbsoluteHeight( area.getAbsoluteHeight() );
+            AreaContainer.setIDReferences( area.getIDReferences() );
 
             var keepWith = new Hashtable();
-            int numChildren = children.Count;
+            int numChildren = Children.Count;
             TableRow lastRow = null;
             var endKeepGroup = true;
-            for ( int i = marker; i < numChildren; i++ )
+            for ( int i = Marker; i < numChildren; i++ )
             {
-                object child = children[ i ];
+                object child = Children[ i ];
                 if ( child is Marker )
                 {
                     ( (Marker)child ).Layout( area );
@@ -117,80 +117,80 @@ namespace Fonet.Fo.Flow
                     throw new FonetException( "Currently only Table Rows are supported in table body, header and footer" );
                 var row = (TableRow)child;
 
-                row.SetRowSpanMgr( rowSpanMgr );
-                row.SetColumns( columns );
-                row.DoSetup( areaContainer );
-                if ( ( row.GetKeepWithPrevious().GetKeepType() != KeepValue.KEEP_WITH_AUTO ||
-                    row.GetKeepWithNext().GetKeepType() != KeepValue.KEEP_WITH_AUTO ||
-                    row.GetKeepTogether().GetKeepType() != KeepValue.KEEP_WITH_AUTO ) &&
+                row.SetRowSpanMgr( RowSpanMgr );
+                row.SetColumns( Columns );
+                row.DoSetup( AreaContainer );
+                if ( ( row.GetKeepWithPrevious().GetKeepType() != KeepValue.KeepWithAuto ||
+                    row.GetKeepWithNext().GetKeepType() != KeepValue.KeepWithAuto ||
+                    row.GetKeepTogether().GetKeepType() != KeepValue.KeepWithAuto ) &&
                     lastRow != null && !keepWith.Contains( lastRow ) )
                     keepWith.Add( lastRow, null );
                 else
                 {
                     if ( endKeepGroup && keepWith.Count > 0 )
                         keepWith = new Hashtable();
-                    if ( endKeepGroup && i > marker )
-                        rowSpanMgr.SetIgnoreKeeps( false );
+                    if ( endKeepGroup && i > Marker )
+                        RowSpanMgr.SetIgnoreKeeps( false );
                 }
 
-                bool bRowStartsArea = i == marker;
+                bool bRowStartsArea = i == Marker;
                 if ( bRowStartsArea == false && keepWith.Count > 0 )
                 {
-                    if ( children.IndexOf( keepWith[ 0 ] ) == marker )
+                    if ( Children.IndexOf( keepWith[ 0 ] ) == Marker )
                         bRowStartsArea = true;
                 }
-                row.setIgnoreKeepTogether( bRowStartsArea && startsAC( area ) );
-                Status status = row.Layout( areaContainer );
-                if ( status.isIncomplete() )
+                row.SetIgnoreKeepTogether( bRowStartsArea && StartsAc( area ) );
+                Status status = row.Layout( AreaContainer );
+                if ( status.IsIncomplete() )
                 {
-                    if ( status.isPageBreak() )
+                    if ( status.IsPageBreak() )
                     {
-                        marker = i;
-                        area.addChild( areaContainer );
+                        Marker = i;
+                        area.addChild( AreaContainer );
 
-                        area.increaseHeight( areaContainer.GetHeight() );
+                        area.increaseHeight( AreaContainer.GetHeight() );
                         if ( i == numChildren - 1 )
                         {
-                            marker = MarkerBreakAfter;
-                            if ( spaceAfter != 0 )
-                                area.increaseHeight( spaceAfter );
+                            Marker = MarkerBreakAfter;
+                            if ( SpaceAfter != 0 )
+                                area.increaseHeight( SpaceAfter );
                         }
                         return status;
                     }
                     if ( keepWith.Count > 0
-                        && !rowSpanMgr.IgnoreKeeps() )
+                        && !RowSpanMgr.IgnoreKeeps() )
                     {
-                        row.RemoveLayout( areaContainer );
+                        row.RemoveLayout( AreaContainer );
                         foreach ( TableRow tr in keepWith.Keys )
                         {
-                            tr.RemoveLayout( areaContainer );
+                            tr.RemoveLayout( AreaContainer );
                             i--;
                         }
                         if ( i == 0 )
                         {
                             ResetMarker();
 
-                            rowSpanMgr.SetIgnoreKeeps( true );
+                            RowSpanMgr.SetIgnoreKeeps( true );
 
-                            return new Status( Status.AREA_FULL_NONE );
+                            return new Status( Status.AreaFullNone );
                         }
                     }
-                    marker = i;
-                    if ( i != 0 && status.getCode() == Status.AREA_FULL_NONE )
-                        status = new Status( Status.AREA_FULL_SOME );
-                    if ( !( i == 0 && areaContainer.getContentHeight() <= 0 ) )
+                    Marker = i;
+                    if ( i != 0 && status.GetCode() == Status.AreaFullNone )
+                        status = new Status( Status.AreaFullSome );
+                    if ( !( i == 0 && AreaContainer.getContentHeight() <= 0 ) )
                     {
-                        area.addChild( areaContainer );
+                        area.addChild( AreaContainer );
 
-                        area.increaseHeight( areaContainer.GetHeight() );
+                        area.increaseHeight( AreaContainer.GetHeight() );
                     }
 
-                    rowSpanMgr.SetIgnoreKeeps( true );
+                    RowSpanMgr.SetIgnoreKeeps( true );
 
                     return status;
                 }
-                if ( status.getCode() == Status.KEEP_WITH_NEXT
-                    || rowSpanMgr.HasUnfinishedSpans() )
+                if ( status.GetCode() == Status.KeepWithNext
+                    || RowSpanMgr.HasUnfinishedSpans() )
                 {
                     keepWith.Add( row, null );
                     endKeepGroup = false;
@@ -199,39 +199,39 @@ namespace Fonet.Fo.Flow
                     endKeepGroup = true;
                 lastRow = row;
                 area.setMaxHeight( area.getMaxHeight() - spaceLeft
-                    + areaContainer.getMaxHeight() );
+                    + AreaContainer.getMaxHeight() );
                 spaceLeft = area.spaceLeft();
             }
-            area.addChild( areaContainer );
-            areaContainer.end();
+            area.addChild( AreaContainer );
+            AreaContainer.end();
 
-            area.increaseHeight( areaContainer.GetHeight() );
+            area.increaseHeight( AreaContainer.GetHeight() );
 
-            if ( spaceAfter != 0 )
+            if ( SpaceAfter != 0 )
             {
-                area.increaseHeight( spaceAfter );
-                area.setMaxHeight( area.getMaxHeight() - spaceAfter );
+                area.increaseHeight( SpaceAfter );
+                area.setMaxHeight( area.getMaxHeight() - SpaceAfter );
             }
 
             if ( area is BlockArea )
                 area.start();
 
-            return new Status( Status.OK );
+            return new Status( Status.Ok );
         }
 
         internal void RemoveLayout( Area area )
         {
-            if ( areaContainer != null )
-                area.removeChild( areaContainer );
-            if ( spaceBefore != 0 )
-                area.increaseHeight( -spaceBefore );
-            if ( spaceAfter != 0 )
-                area.increaseHeight( -spaceAfter );
+            if ( AreaContainer != null )
+                area.removeChild( AreaContainer );
+            if ( SpaceBefore != 0 )
+                area.increaseHeight( -SpaceBefore );
+            if ( SpaceAfter != 0 )
+                area.increaseHeight( -SpaceAfter );
             ResetMarker();
             RemoveID( area.getIDReferences() );
         }
 
-        private bool startsAC( Area area )
+        private bool StartsAc( Area area )
         {
             Area parent = null;
 
@@ -239,7 +239,7 @@ namespace Fonet.Fo.Flow
                 parent.hasNonSpaceChildren() == false )
             {
                 if ( parent is AreaContainer &&
-                    ( (AreaContainer)parent ).getPosition() == Position.ABSOLUTE )
+                    ( (AreaContainer)parent ).getPosition() == Position.Absolute )
                     return true;
                 area = parent;
             }

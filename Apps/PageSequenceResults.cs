@@ -2,23 +2,23 @@ namespace Fonet.Apps
 {
     internal class PageSequenceResults
     {
-        private readonly string id;
-        private readonly int pageCount;
+        private readonly string _id;
+        private readonly int _pageCount;
 
         internal PageSequenceResults( string id, int pageCount )
         {
-            this.id = id;
-            this.pageCount = pageCount;
+            this._id = id;
+            this._pageCount = pageCount;
         }
 
         internal string GetID()
         {
-            return id;
+            return _id;
         }
 
         internal int GetPageCount()
         {
-            return pageCount;
+            return _pageCount;
         }
     }
 }

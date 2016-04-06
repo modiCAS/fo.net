@@ -2,10 +2,10 @@ namespace Fonet.Fo.Properties
 {
     internal class OddOrEven
     {
-        public const int ODD = Constants.ODD;
+        public const int Odd = Constants.Odd;
 
-        public const int EVEN = Constants.EVEN;
+        public const int Even = Constants.Even;
 
-        public const int ANY = Constants.ANY;
+        public const int Any = Constants.Any;
     }
 }

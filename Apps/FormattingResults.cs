@@ -5,34 +5,34 @@ namespace Fonet.Apps
 {
     internal class FormattingResults
     {
-        private int pageCount;
+        private int _pageCount;
 
-        private ArrayList pageSequences;
+        private ArrayList _pageSequences;
 
         internal int GetPageCount()
         {
-            return pageCount;
+            return _pageCount;
         }
 
         internal ArrayList GetPageSequences()
         {
-            return pageSequences;
+            return _pageSequences;
         }
 
         internal void Reset()
         {
-            pageCount = 0;
-            if ( pageSequences != null )
-                pageSequences.Clear();
+            _pageCount = 0;
+            if ( _pageSequences != null )
+                _pageSequences.Clear();
         }
 
         internal void HaveFormattedPageSequence( PageSequence pageSequence )
         {
-            pageCount += pageSequence.PageCount;
-            if ( pageSequences == null )
-                pageSequences = new ArrayList();
+            _pageCount += pageSequence.PageCount;
+            if ( _pageSequences == null )
+                _pageSequences = new ArrayList();
 
-            pageSequences.Add(
+            _pageSequences.Add(
                 new PageSequenceResults(
                     pageSequence.GetProperty( "id" ).GetString(),
                     pageSequence.PageCount ) );

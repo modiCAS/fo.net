@@ -4,7 +4,7 @@ namespace Fonet.Fo.Properties
 {
     internal class VisibilityMaker : ToBeImplementedProperty.Maker
     {
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected VisibilityMaker( string name ) : base( name )
         {
@@ -22,9 +22,9 @@ namespace Fonet.Fo.Properties
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "visible", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "visible", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

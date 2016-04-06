@@ -2,11 +2,11 @@ namespace Fonet.Fo.Properties
 {
     internal class ScalingMaker : EnumProperty.Maker
     {
-        protected static readonly EnumProperty s_propUNIFORM = new EnumProperty( Constants.UNIFORM );
+        protected static readonly EnumProperty SPropUniform = new EnumProperty( Constants.Uniform );
 
-        protected static readonly EnumProperty s_propNON_UNIFORM = new EnumProperty( Constants.NON_UNIFORM );
+        protected static readonly EnumProperty SPropNonUniform = new EnumProperty( Constants.NonUniform );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected ScalingMaker( string name ) : base( name )
         {
@@ -27,19 +27,19 @@ namespace Fonet.Fo.Properties
         public override Property CheckEnumValues( string value )
         {
             if ( value.Equals( "uniform" ) )
-                return s_propUNIFORM;
+                return SPropUniform;
 
             if ( value.Equals( "non-uniform" ) )
-                return s_propNON_UNIFORM;
+                return SPropNonUniform;
 
             return base.CheckEnumValues( value );
         }
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "uniform", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "uniform", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

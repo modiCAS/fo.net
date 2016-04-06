@@ -7,7 +7,7 @@ namespace Fonet.Fo.Flow
         protected TableAndCaption( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:table-and-caption";
+            Name = "fo:table-and-caption";
         }
 
         public new static FObj.Maker GetMaker()
@@ -17,12 +17,12 @@ namespace Fonet.Fo.Flow
 
         public override Status Layout( Area area )
         {
-            AccessibilityProps mAccProps = propMgr.GetAccessibilityProps();
-            AuralProps mAurProps = propMgr.GetAuralProps();
-            BorderAndPadding bap = propMgr.GetBorderAndPadding();
-            BackgroundProps bProps = propMgr.GetBackgroundProps();
-            MarginProps mProps = propMgr.GetMarginProps();
-            RelativePositionProps mRelProps = propMgr.GetRelativePositionProps();
+            AccessibilityProps mAccProps = PropMgr.GetAccessibilityProps();
+            AuralProps mAurProps = PropMgr.GetAuralProps();
+            BorderAndPadding bap = PropMgr.GetBorderAndPadding();
+            BackgroundProps bProps = PropMgr.GetBackgroundProps();
+            MarginProps mProps = PropMgr.GetMarginProps();
+            RelativePositionProps mRelProps = PropMgr.GetRelativePositionProps();
             return base.Layout( area );
         }
 

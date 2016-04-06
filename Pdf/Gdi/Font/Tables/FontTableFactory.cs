@@ -54,7 +54,7 @@ namespace Fonet.Pdf.Gdi.Font
             case TableNames.Post:
                 return new PostTable( entry );
             case TableNames.Os2:
-                return new OS2Table( entry );
+                return new Os2Table( entry );
             case TableNames.Name:
                 return new NameTable( entry );
             case TableNames.Kern:

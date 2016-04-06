@@ -4,7 +4,7 @@ namespace Fonet.Fo.Properties
 {
     internal class StartIndentMaker : LengthProperty.Maker
     {
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected StartIndentMaker( string name ) : base( name )
         {
@@ -26,7 +26,7 @@ namespace Fonet.Fo.Properties
 
             sbExpr.Length = 0;
             sbExpr.Append( "margin-" );
-            sbExpr.Append( propertyList.wmRelToAbs( PropertyList.START ) );
+            sbExpr.Append( propertyList.WmRelToAbs( PropertyList.Start ) );
 
             if ( propertyList.GetExplicitProperty( sbExpr.ToString() ) != null )
                 return true;
@@ -37,11 +37,11 @@ namespace Fonet.Fo.Properties
 
         public override Property Compute( PropertyList propertyList )
         {
-            FObj parentFO = propertyList.getParentFObj();
+            FObj parentFo = propertyList.GetParentFObj();
             var sbExpr = new StringBuilder();
             Property p = null;
             sbExpr.Append( "margin-" );
-            sbExpr.Append( propertyList.wmRelToAbs( PropertyList.START ) );
+            sbExpr.Append( propertyList.WmRelToAbs( PropertyList.Start ) );
 
             // Make sure the property is set before calculating it!
             if ( propertyList.GetExplicitOrShorthandProperty( sbExpr.ToString() ) == null )
@@ -50,35 +50,35 @@ namespace Fonet.Fo.Properties
 
             sbExpr.Append( "_fop-property-value(" );
             sbExpr.Append( "margin-" );
-            sbExpr.Append( propertyList.wmRelToAbs( PropertyList.START ) );
+            sbExpr.Append( propertyList.WmRelToAbs( PropertyList.Start ) );
 
             sbExpr.Append( ")" );
             sbExpr.Append( "+" );
             sbExpr.Append( "_fop-property-value(" );
             sbExpr.Append( "padding-" );
-            sbExpr.Append( propertyList.wmRelToAbs( PropertyList.START ) );
+            sbExpr.Append( propertyList.WmRelToAbs( PropertyList.Start ) );
 
             sbExpr.Append( ")" );
             sbExpr.Append( "+" );
             sbExpr.Append( "_fop-property-value(" );
             sbExpr.Append( "border-" );
-            sbExpr.Append( propertyList.wmRelToAbs( PropertyList.START ) );
+            sbExpr.Append( propertyList.WmRelToAbs( PropertyList.Start ) );
             sbExpr.Append( "-width" );
             sbExpr.Append( ")" );
 
-            p = Make( propertyList, sbExpr.ToString(), propertyList.getParentFObj() );
+            p = Make( propertyList, sbExpr.ToString(), propertyList.GetParentFObj() );
 
             if ( p != null )
-                p = ConvertProperty( p, propertyList, parentFO );
+                p = ConvertProperty( p, propertyList, parentFo );
 
             return p;
         }
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "0pt", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "0pt", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

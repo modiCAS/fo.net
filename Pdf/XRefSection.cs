@@ -12,14 +12,14 @@ namespace Fonet.Pdf
         /// <summary>
         ///     Right now we only support a single subsection.
         /// </summary>
-        private readonly XRefSubSection subsection = new XRefSubSection();
+        private readonly XRefSubSection _subsection = new XRefSubSection();
 
         /// <summary>
         ///     Adds an entry to the section.
         /// </summary>
         internal void Add( PdfObjectId objectId, long offset )
         {
-            subsection.Add( objectId, offset );
+            _subsection.Add( objectId, offset );
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace Fonet.Pdf
             writer.WriteKeywordLine( Keyword.XRef );
 
             // Get the one and only subsection to write itself.
-            subsection.Write( writer );
+            _subsection.Write( writer );
         }
     }
 }

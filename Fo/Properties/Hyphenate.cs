@@ -2,8 +2,8 @@ namespace Fonet.Fo.Properties
 {
     internal class Hyphenate
     {
-        public const int TRUE = Constants.TRUE;
+        public const int True = Constants.True;
 
-        public const int FALSE = Constants.FALSE;
+        public const int False = Constants.False;
     }
 }

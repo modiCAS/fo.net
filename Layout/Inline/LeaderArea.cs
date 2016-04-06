@@ -19,7 +19,7 @@ namespace Fonet.Layout.Inline
             this.leaderPattern = leaderPattern;
             this.leaderLengthOptimum = leaderLengthOptimum;
             this.ruleStyle = ruleStyle;
-            if ( ruleStyle == RuleStyle.NONE )
+            if ( ruleStyle == RuleStyle.None )
                 ruleThickness = 0;
             this.ruleThickness = ruleThickness;
         }

@@ -8,7 +8,7 @@ namespace Fonet.Pdf.Gdi
         /// <summary>
         ///     First column is codepoint value.  Second column is unicode value.
         /// </summary>
-        private static readonly int[] winAnsiEncoding
+        private static readonly int[] WinAnsiEncoding
             =
         {
             0x20, 0x0020, // space
@@ -236,15 +236,15 @@ namespace Fonet.Pdf.Gdi
 
         public static readonly WinAnsiMapping Mapping = new WinAnsiMapping();
 
-        private readonly ushort[] latin1Map;
+        private readonly ushort[] _latin1Map;
 
         private WinAnsiMapping()
         {
-            latin1Map = new ushort[ 256 ];
-            for ( var i = 0; i < winAnsiEncoding.Length; i += 2 )
+            _latin1Map = new ushort[ 256 ];
+            for ( var i = 0; i < WinAnsiEncoding.Length; i += 2 )
             {
-                if ( winAnsiEncoding[ i + 1 ] < 256 )
-                    latin1Map[ winAnsiEncoding[ i + 1 ] ] = (char)winAnsiEncoding[ i ];
+                if ( WinAnsiEncoding[ i + 1 ] < 256 )
+                    _latin1Map[ WinAnsiEncoding[ i + 1 ] ] = (char)WinAnsiEncoding[ i ];
             }
         }
 
@@ -252,7 +252,7 @@ namespace Fonet.Pdf.Gdi
         {
             if ( c > byte.MaxValue )
                 return 0;
-            return latin1Map[ c ];
+            return _latin1Map[ c ];
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Fonet.Fo.Expr
             Numeric n2 = args[ 1 ].GetNumeric();
             if ( n1 == null || n2 == null )
                 throw new PropertyException( "Non numeric operands to max function" );
-            return new NumericProperty( n1.max( n2 ) );
+            return new NumericProperty( n1.Max( n2 ) );
         }
     }
 }

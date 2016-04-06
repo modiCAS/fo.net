@@ -2,11 +2,11 @@ namespace Fonet.Fo.Properties
 {
     internal class BorderCollapseMaker : EnumProperty.Maker
     {
-        protected static readonly EnumProperty s_propSEPARATE = new EnumProperty( Constants.SEPARATE );
+        protected static readonly EnumProperty SPropSeparate = new EnumProperty( Constants.Separate );
 
-        protected static readonly EnumProperty s_propCOLLAPSE = new EnumProperty( Constants.COLLAPSE );
+        protected static readonly EnumProperty SPropCollapse = new EnumProperty( Constants.Collapse );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected BorderCollapseMaker( string name ) : base( name )
         {
@@ -26,18 +26,18 @@ namespace Fonet.Fo.Properties
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "collapse", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "collapse", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
 
         public override Property CheckEnumValues( string value )
         {
             if ( value.Equals( "separate" ) )
-                return s_propSEPARATE;
+                return SPropSeparate;
 
             if ( value.Equals( "collapse" ) )
-                return s_propCOLLAPSE;
+                return SPropCollapse;
 
             return base.CheckEnumValues( value );
         }

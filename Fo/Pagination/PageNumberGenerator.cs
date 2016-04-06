@@ -5,20 +5,20 @@ namespace Fonet.Fo.Pagination
 {
     internal class PageNumberGenerator
     {
-        private const int DECIMAL = 1; // '0*1'
-        private const int LOWERALPHA = 2; // 'a'
-        private const int UPPERALPHA = 3; // 'A'
-        private const int LOWERROMAN = 4; // 'i'
-        private const int UPPERROMAN = 5; // 'I'
-        private string format;
+        private const int Decimal = 1; // '0*1'
+        private const int Loweralpha = 2; // 'a'
+        private const int Upperalpha = 3; // 'A'
+        private const int Lowerroman = 4; // 'i'
+        private const int Upperroman = 5; // 'I'
+        private string _format;
 
-        private readonly int formatType = DECIMAL;
-        private char groupingSeparator;
-        private int groupingSize;
-        private int letterValue;
-        private readonly int minPadding;
+        private readonly int _formatType = Decimal;
+        private char _groupingSeparator;
+        private int _groupingSize;
+        private int _letterValue;
+        private readonly int _minPadding;
 
-        private readonly string[] zeros =
+        private readonly string[] _zeros =
         {
             "", "0", "00", "000", "0000", "00000"
         };
@@ -26,31 +26,31 @@ namespace Fonet.Fo.Pagination
         public PageNumberGenerator( string format, char groupingSeparator,
             int groupingSize, int letterValue )
         {
-            this.format = format;
-            this.groupingSeparator = groupingSeparator;
-            this.groupingSize = groupingSize;
-            this.letterValue = letterValue;
+            this._format = format;
+            this._groupingSeparator = groupingSeparator;
+            this._groupingSize = groupingSize;
+            this._letterValue = letterValue;
 
             int fmtLen = format.Length;
             if ( fmtLen == 1 )
             {
                 if ( format.Equals( "1" ) )
                 {
-                    formatType = DECIMAL;
-                    minPadding = 0;
+                    _formatType = Decimal;
+                    _minPadding = 0;
                 }
                 else if ( format.Equals( "a" ) )
-                    formatType = LOWERALPHA;
+                    _formatType = Loweralpha;
                 else if ( format.Equals( "A" ) )
-                    formatType = UPPERALPHA;
+                    _formatType = Upperalpha;
                 else if ( format.Equals( "i" ) )
-                    formatType = LOWERROMAN;
+                    _formatType = Lowerroman;
                 else if ( format.Equals( "I" ) )
-                    formatType = UPPERROMAN;
+                    _formatType = Upperroman;
                 else
                 {
-                    formatType = DECIMAL;
-                    minPadding = 0;
+                    _formatType = Decimal;
+                    _minPadding = 0;
                 }
             }
             else
@@ -59,43 +59,43 @@ namespace Fonet.Fo.Pagination
                 {
                     if ( format[ i ] != '0' )
                     {
-                        formatType = DECIMAL;
-                        minPadding = 0;
+                        _formatType = Decimal;
+                        _minPadding = 0;
                     }
                     else
-                        minPadding = fmtLen - 1;
+                        _minPadding = fmtLen - 1;
                 }
             }
         }
 
-        public string makeFormattedPageNumber( int number )
+        public string MakeFormattedPageNumber( int number )
         {
             string pn = null;
-            if ( formatType == DECIMAL )
+            if ( _formatType == Decimal )
             {
                 pn = number.ToString();
-                if ( minPadding >= pn.Length )
+                if ( _minPadding >= pn.Length )
                 {
-                    int nz = minPadding - pn.Length + 1;
-                    pn = zeros[ nz ] + pn;
+                    int nz = _minPadding - pn.Length + 1;
+                    pn = _zeros[ nz ] + pn;
                 }
             }
-            else if ( formatType == LOWERROMAN || formatType == UPPERROMAN )
+            else if ( _formatType == Lowerroman || _formatType == Upperroman )
             {
-                pn = makeRoman( number );
-                if ( formatType == UPPERROMAN )
+                pn = MakeRoman( number );
+                if ( _formatType == Upperroman )
                     pn = pn.ToUpper();
             }
             else
             {
-                pn = makeAlpha( number );
-                if ( formatType == UPPERALPHA )
+                pn = MakeAlpha( number );
+                if ( _formatType == Upperalpha )
                     pn = pn.ToUpper();
             }
             return pn;
         }
 
-        private string makeRoman( int num )
+        private string MakeRoman( int num )
         {
             int[] arabic =
             {
@@ -122,7 +122,7 @@ namespace Fonet.Fo.Pagination
             return romanNumber.ToString();
         }
 
-        private string makeAlpha( int num )
+        private string MakeAlpha( int num )
         {
             var letters = "abcdefghijklmnopqrstuvwxyz";
             var alphaNumber = new StringBuilder();

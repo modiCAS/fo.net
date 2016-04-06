@@ -4,27 +4,27 @@ namespace Fonet.Fo.Pagination
 {
     internal class ConditionalPageMasterReference : FObj
     {
-        private int blankOrNotBlank;
+        private int _blankOrNotBlank;
 
-        private string masterName;
-        private int oddOrEven;
+        private string _masterName;
+        private int _oddOrEven;
 
-        private int pagePosition;
+        private int _pagePosition;
 
-        private RepeatablePageMasterAlternatives repeatablePageMasterAlternatives;
+        private RepeatablePageMasterAlternatives _repeatablePageMasterAlternatives;
 
         public ConditionalPageMasterReference( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = GetElementName();
+            Name = GetElementName();
             if ( GetProperty( "master-reference" ) != null )
                 SetMasterName( GetProperty( "master-reference" ).GetString() );
 
-            validateParent( parent );
+            ValidateParent( parent );
 
-            setPagePosition( properties.GetProperty( "page-position" ).GetEnum() );
-            setOddOrEven( properties.GetProperty( "odd-or-even" ).GetEnum() );
-            setBlankOrNotBlank( properties.GetProperty( "blank-or-not-blank" ).GetEnum() );
+            SetPagePosition( Properties.GetProperty( "page-position" ).GetEnum() );
+            SetOddOrEven( Properties.GetProperty( "odd-or-even" ).GetEnum() );
+            SetBlankOrNotBlank( Properties.GetProperty( "blank-or-not-blank" ).GetEnum() );
         }
 
         public new static FObj.Maker GetMaker()
@@ -34,85 +34,85 @@ namespace Fonet.Fo.Pagination
 
         protected internal void SetMasterName( string masterName )
         {
-            this.masterName = masterName;
+            this._masterName = masterName;
         }
 
         public string GetMasterName()
         {
-            return masterName;
+            return _masterName;
         }
 
-        protected internal bool isValid( int currentPageNumber, bool thisIsFirstPage,
+        protected internal bool IsValid( int currentPageNumber, bool thisIsFirstPage,
             bool isEmptyPage )
         {
             var okOnPagePosition = true;
-            switch ( getPagePosition() )
+            switch ( GetPagePosition() )
             {
-            case PagePosition.FIRST:
+            case PagePosition.First:
                 if ( !thisIsFirstPage )
                     okOnPagePosition = false;
                 break;
-            case PagePosition.LAST:
+            case PagePosition.Last:
                 FonetDriver.ActiveDriver.FireFonetInfo( "Last page position not known" );
                 okOnPagePosition = true;
                 break;
-            case PagePosition.REST:
+            case PagePosition.Rest:
                 if ( thisIsFirstPage )
                     okOnPagePosition = false;
                 break;
-            case PagePosition.ANY:
+            case PagePosition.Any:
                 okOnPagePosition = true;
                 break;
             }
 
             var okOnOddOrEven = true;
-            int ooe = getOddOrEven();
+            int ooe = GetOddOrEven();
             bool isOddPage = currentPageNumber % 2 == 1 ? true : false;
-            if ( OddOrEven.ODD == ooe && !isOddPage )
+            if ( OddOrEven.Odd == ooe && !isOddPage )
                 okOnOddOrEven = false;
-            if ( OddOrEven.EVEN == ooe && isOddPage )
+            if ( OddOrEven.Even == ooe && isOddPage )
                 okOnOddOrEven = false;
 
             var okOnBlankOrNotBlank = true;
 
-            int bnb = getBlankOrNotBlank();
+            int bnb = GetBlankOrNotBlank();
 
-            if ( BlankOrNotBlank.BLANK == bnb && !isEmptyPage )
+            if ( BlankOrNotBlank.Blank == bnb && !isEmptyPage )
                 okOnBlankOrNotBlank = false;
-            else if ( BlankOrNotBlank.NOT_BLANK == bnb && isEmptyPage )
+            else if ( BlankOrNotBlank.NotBlank == bnb && isEmptyPage )
                 okOnBlankOrNotBlank = false;
 
             return okOnOddOrEven && okOnPagePosition && okOnBlankOrNotBlank;
         }
 
-        protected internal void setPagePosition( int pagePosition )
+        protected internal void SetPagePosition( int pagePosition )
         {
-            this.pagePosition = pagePosition;
+            this._pagePosition = pagePosition;
         }
 
-        protected internal int getPagePosition()
+        protected internal int GetPagePosition()
         {
-            return pagePosition;
+            return _pagePosition;
         }
 
-        protected internal void setOddOrEven( int oddOrEven )
+        protected internal void SetOddOrEven( int oddOrEven )
         {
-            this.oddOrEven = oddOrEven;
+            this._oddOrEven = oddOrEven;
         }
 
-        protected internal int getOddOrEven()
+        protected internal int GetOddOrEven()
         {
-            return oddOrEven;
+            return _oddOrEven;
         }
 
-        protected internal void setBlankOrNotBlank( int blankOrNotBlank )
+        protected internal void SetBlankOrNotBlank( int blankOrNotBlank )
         {
-            this.blankOrNotBlank = blankOrNotBlank;
+            this._blankOrNotBlank = blankOrNotBlank;
         }
 
-        protected internal int getBlankOrNotBlank()
+        protected internal int GetBlankOrNotBlank()
         {
-            return blankOrNotBlank;
+            return _blankOrNotBlank;
         }
 
         protected internal string GetElementName()
@@ -120,11 +120,11 @@ namespace Fonet.Fo.Pagination
             return "fo:conditional-page-master-reference";
         }
 
-        protected internal void validateParent( FObj parent )
+        protected internal void ValidateParent( FObj parent )
         {
             if ( parent.GetName().Equals( "fo:repeatable-page-master-alternatives" ) )
             {
-                repeatablePageMasterAlternatives =
+                _repeatablePageMasterAlternatives =
                     (RepeatablePageMasterAlternatives)parent;
 
                 if ( GetMasterName() == null )
@@ -134,7 +134,7 @@ namespace Fonet.Fo.Pagination
                             + "does not have a master-reference and so is being ignored" );
                 }
                 else
-                    repeatablePageMasterAlternatives.addConditionalPageMasterReference( this );
+                    _repeatablePageMasterAlternatives.AddConditionalPageMasterReference( this );
             }
             else
             {

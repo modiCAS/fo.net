@@ -2,13 +2,13 @@ namespace Fonet.Fo.Properties
 {
     internal class WritingModeMaker : EnumProperty.Maker
     {
-        protected static readonly EnumProperty s_propLR_TB = new EnumProperty( Constants.LR_TB );
+        protected static readonly EnumProperty SPropLrTb = new EnumProperty( Constants.LrTb );
 
-        protected static readonly EnumProperty s_propRL_TB = new EnumProperty( Constants.RL_TB );
+        protected static readonly EnumProperty SPropRlTb = new EnumProperty( Constants.RlTb );
 
-        protected static readonly EnumProperty s_propTB_RL = new EnumProperty( Constants.TB_RL );
+        protected static readonly EnumProperty SPropTbRl = new EnumProperty( Constants.TbRl );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected WritingModeMaker( string name ) : base( name )
         {
@@ -26,21 +26,21 @@ namespace Fonet.Fo.Properties
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "lr-tb", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "lr-tb", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
 
         public override Property CheckEnumValues( string value )
         {
             if ( value.Equals( "lr-tb" ) )
-                return s_propLR_TB;
+                return SPropLrTb;
 
             if ( value.Equals( "rl-tb" ) )
-                return s_propRL_TB;
+                return SPropRlTb;
 
             if ( value.Equals( "tb-rl" ) )
-                return s_propTB_RL;
+                return SPropTbRl;
 
             return base.CheckEnumValues( value );
         }

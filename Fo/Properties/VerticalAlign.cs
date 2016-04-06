@@ -2,20 +2,20 @@ namespace Fonet.Fo.Properties
 {
     internal class VerticalAlign
     {
-        public const int BASELINE = Constants.BASELINE;
+        public const int Baseline = Constants.Baseline;
 
-        public const int MIDDLE = Constants.MIDDLE;
+        public const int Middle = Constants.Middle;
 
-        public const int SUB = Constants.SUB;
+        public const int Sub = Constants.Sub;
 
-        public const int SUPER = Constants.SUPER;
+        public const int Super = Constants.Super;
 
-        public const int TEXT_TOP = Constants.TEXT_TOP;
+        public const int TextTop = Constants.TextTop;
 
-        public const int TEXT_BOTTOM = Constants.TEXT_BOTTOM;
+        public const int TextBottom = Constants.TextBottom;
 
-        public const int TOP = Constants.TOP;
+        public const int Top = Constants.Top;
 
-        public const int BOTTOM = Constants.BOTTOM;
+        public const int Bottom = Constants.Bottom;
     }
 }

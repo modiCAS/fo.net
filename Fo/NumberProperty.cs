@@ -5,41 +5,41 @@ namespace Fonet.Fo
 {
     internal class NumberProperty : Property
     {
-        private readonly decimal number;
+        private readonly decimal _number;
 
         public NumberProperty( Number num )
         {
-            number = num.DecimalValue();
+            _number = num.DecimalValue();
         }
 
         public NumberProperty( decimal num )
         {
-            number = num;
+            _number = num;
         }
 
         public NumberProperty( double num )
         {
-            number = (decimal)num;
+            _number = (decimal)num;
         }
 
         public NumberProperty( int num )
         {
-            number = num;
+            _number = num;
         }
 
         public override Number GetNumber()
         {
-            return new Number( number );
+            return new Number( _number );
         }
 
         public override object GetObject()
         {
-            return number;
+            return _number;
         }
 
         public override Numeric GetNumeric()
         {
-            return new Numeric( number );
+            return new Numeric( _number );
         }
 
         public override ColorType GetColorType()

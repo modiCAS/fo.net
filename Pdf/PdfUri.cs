@@ -5,8 +5,8 @@ namespace Fonet.Pdf
         public PdfUri( string uri )
         {
             this[ PdfName.Names.Type ] = PdfName.Names.Action;
-            this[ PdfName.Names.S ] = PdfName.Names.URI;
-            this[ PdfName.Names.URI ] = new PdfString( uri );
+            this[ PdfName.Names.S ] = PdfName.Names.Uri;
+            this[ PdfName.Names.Uri ] = new PdfString( uri );
         }
 
         public PdfObject GetAction()

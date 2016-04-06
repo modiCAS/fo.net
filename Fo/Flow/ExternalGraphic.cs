@@ -7,173 +7,173 @@ namespace Fonet.Fo.Flow
 {
     internal class ExternalGraphic : FObj
     {
-        private int align;
-        private readonly int breakAfter = 0;
-        private readonly int breakBefore = 0;
-        private int endIndent;
-        private int height;
-        private string id;
-        private ImageArea imageArea;
-        private int spaceAfter;
-        private int spaceBefore;
-        private string src;
-        private int startIndent;
-        private int width;
+        private int _align;
+        private readonly int _breakAfter = 0;
+        private readonly int _breakBefore = 0;
+        private int _endIndent;
+        private int _height;
+        private string _id;
+        private ImageArea _imageArea;
+        private int _spaceAfter;
+        private int _spaceBefore;
+        private string _src;
+        private int _startIndent;
+        private int _width;
 
         public ExternalGraphic( FObj parent, PropertyList propertyList ) : base( parent, propertyList )
         {
-            name = "fo:external-graphic";
+            Name = "fo:external-graphic";
         }
 
         public override Status Layout( Area area )
         {
-            if ( marker == MarkerStart )
+            if ( Marker == MarkerStart )
             {
-                AccessibilityProps mAccProps = propMgr.GetAccessibilityProps();
-                AuralProps mAurProps = propMgr.GetAuralProps();
-                BorderAndPadding bap = propMgr.GetBorderAndPadding();
-                BackgroundProps bProps = propMgr.GetBackgroundProps();
-                MarginInlineProps mProps = propMgr.GetMarginInlineProps();
-                RelativePositionProps mRelProps = propMgr.GetRelativePositionProps();
+                AccessibilityProps mAccProps = PropMgr.GetAccessibilityProps();
+                AuralProps mAurProps = PropMgr.GetAuralProps();
+                BorderAndPadding bap = PropMgr.GetBorderAndPadding();
+                BackgroundProps bProps = PropMgr.GetBackgroundProps();
+                MarginInlineProps mProps = PropMgr.GetMarginInlineProps();
+                RelativePositionProps mRelProps = PropMgr.GetRelativePositionProps();
 
-                align = properties.GetProperty( "text-align" ).GetEnum();
-                startIndent =
-                    properties.GetProperty( "start-indent" ).GetLength().MValue();
-                endIndent =
-                    properties.GetProperty( "end-indent" ).GetLength().MValue();
+                _align = Properties.GetProperty( "text-align" ).GetEnum();
+                _startIndent =
+                    Properties.GetProperty( "start-indent" ).GetLength().MValue();
+                _endIndent =
+                    Properties.GetProperty( "end-indent" ).GetLength().MValue();
 
-                spaceBefore =
-                    properties.GetProperty( "space-before.optimum" ).GetLength().MValue();
-                spaceAfter =
-                    properties.GetProperty( "space-after.optimum" ).GetLength().MValue();
+                _spaceBefore =
+                    Properties.GetProperty( "space-before.optimum" ).GetLength().MValue();
+                _spaceAfter =
+                    Properties.GetProperty( "space-after.optimum" ).GetLength().MValue();
 
-                width = properties.GetProperty( "width" ).GetLength().MValue();
-                height = properties.GetProperty( "height" ).GetLength().MValue();
+                _width = Properties.GetProperty( "width" ).GetLength().MValue();
+                _height = Properties.GetProperty( "height" ).GetLength().MValue();
 
-                src = properties.GetProperty( "src" ).GetString();
-                id = properties.GetProperty( "id" ).GetString();
+                _src = Properties.GetProperty( "src" ).GetString();
+                _id = Properties.GetProperty( "id" ).GetString();
 
-                area.getIDReferences().CreateID( id );
-                marker = 0;
+                area.getIDReferences().CreateID( _id );
+                Marker = 0;
             }
 
             try
             {
-                FonetImage img = FonetImageFactory.Make( src );
-                if ( width == 0 || height == 0 )
+                FonetImage img = FonetImageFactory.Make( _src );
+                if ( _width == 0 || _height == 0 )
                 {
                     double imgWidth = img.Width;
                     double imgHeight = img.Height;
 
-                    if ( width == 0 && height == 0 )
+                    if ( _width == 0 && _height == 0 )
                     {
-                        width = (int)( imgWidth * 1000d );
-                        height = (int)( imgHeight * 1000d );
+                        _width = (int)( imgWidth * 1000d );
+                        _height = (int)( imgHeight * 1000d );
                     }
-                    else if ( height == 0 )
-                        height = (int)( imgHeight * width / imgWidth );
-                    else if ( width == 0 )
-                        width = (int)( imgWidth * height / imgHeight );
+                    else if ( _height == 0 )
+                        _height = (int)( imgHeight * _width / imgWidth );
+                    else if ( _width == 0 )
+                        _width = (int)( imgWidth * _height / imgHeight );
                 }
 
-                double ratio = width / (double)height;
+                double ratio = _width / (double)_height;
 
-                Length maxWidth = properties.GetProperty( "max-width" ).GetLength();
-                Length maxHeight = properties.GetProperty( "max-height" ).GetLength();
+                Length maxWidth = Properties.GetProperty( "max-width" ).GetLength();
+                Length maxHeight = Properties.GetProperty( "max-height" ).GetLength();
 
-                if ( maxWidth != null && width > maxWidth.MValue() )
+                if ( maxWidth != null && _width > maxWidth.MValue() )
                 {
-                    width = maxWidth.MValue();
-                    height = (int)( width / ratio );
+                    _width = maxWidth.MValue();
+                    _height = (int)( _width / ratio );
                 }
-                if ( maxHeight != null && height > maxHeight.MValue() )
+                if ( maxHeight != null && _height > maxHeight.MValue() )
                 {
-                    height = maxHeight.MValue();
-                    width = (int)( ratio * height );
+                    _height = maxHeight.MValue();
+                    _width = (int)( ratio * _height );
                 }
 
-                int areaWidth = area.getAllocationWidth() - startIndent - endIndent;
-                int pageHeight = area.getPage().getBody().getMaxHeight() - spaceBefore;
+                int areaWidth = area.getAllocationWidth() - _startIndent - _endIndent;
+                int pageHeight = area.getPage().getBody().getMaxHeight() - _spaceBefore;
 
-                if ( height > pageHeight )
+                if ( _height > pageHeight )
                 {
-                    height = pageHeight;
-                    width = (int)( ratio * height );
+                    _height = pageHeight;
+                    _width = (int)( ratio * _height );
                 }
-                if ( width > areaWidth )
+                if ( _width > areaWidth )
                 {
-                    width = areaWidth;
-                    height = (int)( width / ratio );
+                    _width = areaWidth;
+                    _height = (int)( _width / ratio );
                 }
 
-                if ( area.spaceLeft() < height + spaceBefore )
-                    return new Status( Status.AREA_FULL_NONE );
+                if ( area.spaceLeft() < _height + _spaceBefore )
+                    return new Status( Status.AreaFullNone );
 
-                imageArea =
-                    new ImageArea( propMgr.GetFontState( area.getFontInfo() ), img,
-                        area.getAllocationWidth(), width, height,
-                        startIndent, endIndent, align );
+                _imageArea =
+                    new ImageArea( PropMgr.GetFontState( area.getFontInfo() ), img,
+                        area.getAllocationWidth(), _width, _height,
+                        _startIndent, _endIndent, _align );
 
-                if ( spaceBefore != 0 && marker == 0 )
-                    area.addDisplaySpace( spaceBefore );
+                if ( _spaceBefore != 0 && Marker == 0 )
+                    area.addDisplaySpace( _spaceBefore );
 
-                if ( marker == 0 )
-                    area.getIDReferences().ConfigureID( id, area );
+                if ( Marker == 0 )
+                    area.getIDReferences().ConfigureID( _id, area );
 
-                imageArea.start();
-                imageArea.end();
+                _imageArea.start();
+                _imageArea.end();
 
-                if ( spaceAfter != 0 )
-                    area.addDisplaySpace( spaceAfter );
-                if ( breakBefore == GenericBreak.Enums.PAGE
-                    || spaceBefore + imageArea.GetHeight()
+                if ( _spaceAfter != 0 )
+                    area.addDisplaySpace( _spaceAfter );
+                if ( _breakBefore == GenericBreak.Enums.Page
+                    || _spaceBefore + _imageArea.GetHeight()
                         > area.spaceLeft() )
-                    return new Status( Status.FORCE_PAGE_BREAK );
+                    return new Status( Status.ForcePageBreak );
 
-                if ( breakBefore == GenericBreak.Enums.ODD_PAGE )
-                    return new Status( Status.FORCE_PAGE_BREAK_ODD );
+                if ( _breakBefore == GenericBreak.Enums.OddPage )
+                    return new Status( Status.ForcePageBreakOdd );
 
-                if ( breakBefore == GenericBreak.Enums.EVEN_PAGE )
-                    return new Status( Status.FORCE_PAGE_BREAK_EVEN );
+                if ( _breakBefore == GenericBreak.Enums.EvenPage )
+                    return new Status( Status.ForcePageBreakEven );
 
                 if ( area is BlockArea )
                 {
                     var ba = (BlockArea)area;
                     LineArea la = ba.getCurrentLineArea();
                     if ( la == null )
-                        return new Status( Status.AREA_FULL_NONE );
+                        return new Status( Status.AreaFullNone );
                     la.addPending();
-                    if ( imageArea.getContentWidth() > la.getRemainingWidth() )
+                    if ( _imageArea.getContentWidth() > la.getRemainingWidth() )
                     {
                         la = ba.createNextLineArea();
                         if ( la == null )
-                            return new Status( Status.AREA_FULL_NONE );
+                            return new Status( Status.AreaFullNone );
                     }
-                    la.addInlineArea( imageArea, GetLinkSet() );
+                    la.addInlineArea( _imageArea, GetLinkSet() );
                 }
                 else
                 {
-                    area.addChild( imageArea );
-                    area.increaseHeight( imageArea.getContentHeight() );
+                    area.addChild( _imageArea );
+                    area.increaseHeight( _imageArea.getContentHeight() );
                 }
-                imageArea.setPage( area.getPage() );
+                _imageArea.setPage( area.getPage() );
 
-                if ( breakAfter == GenericBreak.Enums.PAGE )
+                if ( _breakAfter == GenericBreak.Enums.Page )
                 {
-                    marker = MarkerBreakAfter;
-                    return new Status( Status.FORCE_PAGE_BREAK );
-                }
-
-                if ( breakAfter == GenericBreak.Enums.ODD_PAGE )
-                {
-                    marker = MarkerBreakAfter;
-                    return new Status( Status.FORCE_PAGE_BREAK_ODD );
+                    Marker = MarkerBreakAfter;
+                    return new Status( Status.ForcePageBreak );
                 }
 
-                if ( breakAfter == GenericBreak.Enums.EVEN_PAGE )
+                if ( _breakAfter == GenericBreak.Enums.OddPage )
                 {
-                    marker = MarkerBreakAfter;
-                    return new Status( Status.FORCE_PAGE_BREAK_EVEN );
+                    Marker = MarkerBreakAfter;
+                    return new Status( Status.ForcePageBreakOdd );
+                }
+
+                if ( _breakAfter == GenericBreak.Enums.EvenPage )
+                {
+                    Marker = MarkerBreakAfter;
+                    return new Status( Status.ForcePageBreakEven );
                 }
             }
             catch ( FonetImageException imgex )
@@ -181,7 +181,7 @@ namespace Fonet.Fo.Flow
                 FonetDriver.ActiveDriver.FireFonetError( "Error while creating area : " + imgex.Message );
             }
 
-            return new Status( Status.OK );
+            return new Status( Status.Ok );
         }
 
         public new static FObj.Maker GetMaker()

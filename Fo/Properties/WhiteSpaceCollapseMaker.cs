@@ -2,7 +2,7 @@ namespace Fonet.Fo.Properties
 {
     internal class WhiteSpaceCollapseMaker : GenericBoolean
     {
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected WhiteSpaceCollapseMaker( string name ) : base( name )
         {
@@ -20,9 +20,9 @@ namespace Fonet.Fo.Properties
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "true", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "true", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

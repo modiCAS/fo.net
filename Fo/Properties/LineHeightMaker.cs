@@ -5,7 +5,7 @@ namespace Fonet.Fo.Properties
 {
     internal class LineHeightMaker : LengthProperty.Maker
     {
-        private static Hashtable s_htKeywords;
+        private static Hashtable _sHtKeywords;
 
         protected LineHeightMaker( string name ) : base( name )
         {
@@ -29,21 +29,21 @@ namespace Fonet.Fo.Properties
 
         public override Property Make( PropertyList propertyList )
         {
-            return Make( propertyList, "normal", propertyList.getParentFObj() );
+            return Make( propertyList, "normal", propertyList.GetParentFObj() );
         }
 
-        private static void initKeywords()
+        private static void InitKeywords()
         {
-            s_htKeywords = new Hashtable( 1 );
+            _sHtKeywords = new Hashtable( 1 );
 
-            s_htKeywords.Add( "normal", "1.2em" );
+            _sHtKeywords.Add( "normal", "1.2em" );
         }
 
         protected override string CheckValueKeywords( string keyword )
         {
-            if ( s_htKeywords == null )
-                initKeywords();
-            var value = (string)s_htKeywords[ keyword ];
+            if ( _sHtKeywords == null )
+                InitKeywords();
+            var value = (string)_sHtKeywords[ keyword ];
             if ( value == null )
                 return base.CheckValueKeywords( keyword );
             return value;
@@ -67,7 +67,7 @@ namespace Fonet.Fo.Properties
 
         public override IPercentBase GetPercentBase( FObj fo, PropertyList propertyList )
         {
-            return new LengthBase( fo, propertyList, LengthBase.FONTSIZE );
+            return new LengthBase( fo, propertyList, LengthBase.Fontsize );
         }
     }
 }

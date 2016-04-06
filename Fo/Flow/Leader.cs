@@ -8,7 +8,7 @@ namespace Fonet.Fo.Flow
         public Leader( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:leader";
+            Name = "fo:leader";
         }
 
         public new static FObj.Maker GetMaker()
@@ -23,56 +23,56 @@ namespace Fonet.Fo.Flow
             {
                 FonetDriver.ActiveDriver.FireFonetWarning(
                     "fo:leader must be a direct child of fo:block " );
-                return new Status( Status.OK );
+                return new Status( Status.Ok );
             }
             blockArea = (BlockArea)area;
 
-            AccessibilityProps mAccProps = propMgr.GetAccessibilityProps();
-            AuralProps mAurProps = propMgr.GetAuralProps();
-            BorderAndPadding bap = propMgr.GetBorderAndPadding();
-            BackgroundProps bProps = propMgr.GetBackgroundProps();
-            MarginInlineProps mProps = propMgr.GetMarginInlineProps();
-            RelativePositionProps mRelProps = propMgr.GetRelativePositionProps();
-            ColorType c = properties.GetProperty( "color" ).GetColorType();
+            AccessibilityProps mAccProps = PropMgr.GetAccessibilityProps();
+            AuralProps mAurProps = PropMgr.GetAuralProps();
+            BorderAndPadding bap = PropMgr.GetBorderAndPadding();
+            BackgroundProps bProps = PropMgr.GetBackgroundProps();
+            MarginInlineProps mProps = PropMgr.GetMarginInlineProps();
+            RelativePositionProps mRelProps = PropMgr.GetRelativePositionProps();
+            ColorType c = Properties.GetProperty( "color" ).GetColorType();
             float red = c.Red;
             float green = c.Green;
             float blue = c.Blue;
 
-            int leaderPattern = properties.GetProperty( "leader-pattern" ).GetEnum();
+            int leaderPattern = Properties.GetProperty( "leader-pattern" ).GetEnum();
             int leaderLengthOptimum =
-                properties.GetProperty( "leader-length.optimum" ).GetLength().MValue();
+                Properties.GetProperty( "leader-length.optimum" ).GetLength().MValue();
             int leaderLengthMinimum =
-                properties.GetProperty( "leader-length.minimum" ).GetLength().MValue();
-            Length maxlength = properties.GetProperty( "leader-length.maximum" ).GetLength();
+                Properties.GetProperty( "leader-length.minimum" ).GetLength().MValue();
+            Length maxlength = Properties.GetProperty( "leader-length.maximum" ).GetLength();
             int leaderLengthMaximum;
             if ( maxlength is PercentLength )
             {
-                leaderLengthMaximum = (int)( ( (PercentLength)maxlength ).value()
+                leaderLengthMaximum = (int)( ( (PercentLength)maxlength ).Value()
                     * area.getAllocationWidth() );
             }
             else
                 leaderLengthMaximum = maxlength.MValue();
             int ruleThickness =
-                properties.GetProperty( "rule-thickness" ).GetLength().MValue();
-            int ruleStyle = properties.GetProperty( "rule-style" ).GetEnum();
+                Properties.GetProperty( "rule-thickness" ).GetLength().MValue();
+            int ruleStyle = Properties.GetProperty( "rule-style" ).GetEnum();
             int leaderPatternWidth =
-                properties.GetProperty( "leader-pattern-width" ).GetLength().MValue();
+                Properties.GetProperty( "leader-pattern-width" ).GetLength().MValue();
             int leaderAlignment =
-                properties.GetProperty( "leader-alignment" ).GetEnum();
+                Properties.GetProperty( "leader-alignment" ).GetEnum();
 
-            string id = properties.GetProperty( "id" ).GetString();
+            string id = Properties.GetProperty( "id" ).GetString();
             blockArea.getIDReferences().InitializeID( id, blockArea );
 
             int succeeded = AddLeader( blockArea,
-                propMgr.GetFontState( area.getFontInfo() ),
+                PropMgr.GetFontState( area.getFontInfo() ),
                 red, green, blue, leaderPattern,
                 leaderLengthMinimum, leaderLengthOptimum,
                 leaderLengthMaximum, ruleThickness,
                 ruleStyle, leaderPatternWidth,
                 leaderAlignment );
             if ( succeeded == 1 )
-                return new Status( Status.OK );
-            return new Status( Status.AREA_FULL_SOME );
+                return new Status( Status.Ok );
+            return new Status( Status.AreaFullSome );
         }
 
         public int AddLeader( BlockArea ba, FontState fontState, float red,

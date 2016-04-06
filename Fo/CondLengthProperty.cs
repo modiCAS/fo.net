@@ -4,26 +4,26 @@ namespace Fonet.Fo
 {
     internal class CondLengthProperty : Property
     {
-        private readonly CondLength condLength;
+        private readonly CondLength _condLength;
 
         public CondLengthProperty( CondLength condLength )
         {
-            this.condLength = condLength;
+            this._condLength = condLength;
         }
 
         public override CondLength GetCondLength()
         {
-            return condLength;
+            return _condLength;
         }
 
         public override Length GetLength()
         {
-            return condLength.GetLength().GetLength();
+            return _condLength.GetLength().GetLength();
         }
 
         public override object GetObject()
         {
-            return condLength;
+            return _condLength;
         }
 
         internal class Maker : PropertyMaker

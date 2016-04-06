@@ -5,7 +5,7 @@ namespace Fonet.Pdf
 {
     public class PdfDictionary : PdfObject, IEnumerable
     {
-        protected Hashtable entries = new Hashtable();
+        protected Hashtable Entries = new Hashtable();
 
         public PdfDictionary()
         {
@@ -22,69 +22,69 @@ namespace Fonet.Pdf
             {
                 if ( key == null )
                     throw new ArgumentNullException( "key" );
-                return (PdfObject)entries[ key ];
+                return (PdfObject)Entries[ key ];
             }
             set
             {
                 if ( key == null )
                     throw new ArgumentNullException( "key" );
-                entries[ key ] = value;
+                Entries[ key ] = value;
             }
         }
 
         public ICollection Keys
         {
-            get { return entries.Keys; }
+            get { return Entries.Keys; }
         }
 
         public ICollection Values
         {
-            get { return entries.Values; }
+            get { return Entries.Values; }
         }
 
         public int Count
         {
-            get { return entries.Count; }
+            get { return Entries.Count; }
         }
 
         public IEnumerator GetEnumerator()
         {
-            return entries.GetEnumerator();
+            return Entries.GetEnumerator();
         }
 
         public void Add( PdfName key, PdfObject value )
         {
             if ( key == null )
                 throw new ArgumentNullException( "key" );
-            if ( entries.ContainsKey( key ) )
+            if ( Entries.ContainsKey( key ) )
                 throw new ArgumentException( "Already contains entry " + key );
 
-            entries.Add( key, value );
+            Entries.Add( key, value );
         }
 
         public void Clear()
         {
-            entries.Clear();
+            Entries.Clear();
         }
 
         public bool Contains( PdfName key )
         {
             if ( key == null )
                 throw new ArgumentNullException( "key" );
-            return entries.ContainsKey( key );
+            return Entries.ContainsKey( key );
         }
 
         public void Remove( PdfName key )
         {
             if ( key == null )
                 throw new ArgumentNullException( "key" );
-            entries.Remove( key );
+            Entries.Remove( key );
         }
 
         protected internal override void Write( PdfWriter writer )
         {
             writer.WriteKeywordLine( Keyword.DictionaryBegin );
-            foreach ( DictionaryEntry e in entries )
+            foreach ( DictionaryEntry e in Entries )
             {
                 writer.Write( (PdfName)e.Key );
                 writer.WriteSpace();

@@ -2,11 +2,11 @@ namespace Fonet.Fo.Properties
 {
     internal class SpanMaker : EnumProperty.Maker
     {
-        protected static readonly EnumProperty s_propNONE = new EnumProperty( Constants.NONE );
+        protected static readonly EnumProperty SPropNone = new EnumProperty( Constants.None );
 
-        protected static readonly EnumProperty s_propALL = new EnumProperty( Constants.ALL );
+        protected static readonly EnumProperty SPropAll = new EnumProperty( Constants.All );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected SpanMaker( string name ) : base( name )
         {
@@ -27,19 +27,19 @@ namespace Fonet.Fo.Properties
         public override Property CheckEnumValues( string value )
         {
             if ( value.Equals( "none" ) )
-                return s_propNONE;
+                return SPropNone;
 
             if ( value.Equals( "all" ) )
-                return s_propALL;
+                return SPropAll;
 
             return base.CheckEnumValues( value );
         }
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "none", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "none", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

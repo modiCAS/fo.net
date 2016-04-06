@@ -3,103 +3,103 @@ using Fonet.Layout;
 
 namespace Fonet.Fo
 {
-    internal abstract class FONode
+    internal abstract class FoNode
     {
         public const int MarkerStart = -1000;
 
         public const int MarkerBreakAfter = -1001;
 
-        protected string areaClass = AreaClass.UNASSIGNED;
+        protected string AreaClass = Fonet.Layout.AreaClass.UNASSIGNED;
 
-        public int areasGenerated = 0;
+        public int AreasGenerated = 0;
 
-        protected ArrayList children = new ArrayList();
+        protected ArrayList Children = new ArrayList();
 
-        protected int forcedStartOffset;
+        protected int ForcedStartOffset;
 
-        protected int forcedWidth;
+        protected int ForcedWidth;
 
-        protected bool isInTableCell;
+        protected bool IsInTableCell;
 
-        protected LinkSet linkSet;
+        protected LinkSet LinkSet;
 
-        protected int marker = MarkerStart;
+        protected int Marker = MarkerStart;
 
-        protected int orphans;
-        protected FObj parent;
+        protected int Orphans;
+        protected FObj Parent;
 
-        protected int widows;
+        protected int Widows;
 
-        protected FONode( FObj parent )
+        protected FoNode( FObj parent )
         {
-            this.parent = parent;
+            this.Parent = parent;
 
             if ( null != parent )
-                areaClass = parent.areaClass;
+                AreaClass = parent.AreaClass;
         }
 
         public virtual void SetIsInTableCell()
         {
-            isInTableCell = true;
-            foreach ( FONode child in children )
+            IsInTableCell = true;
+            foreach ( FoNode child in Children )
                 child.SetIsInTableCell();
         }
 
         public virtual void ForceStartOffset( int offset )
         {
-            forcedStartOffset = offset;
-            foreach ( FONode child in children )
+            ForcedStartOffset = offset;
+            foreach ( FoNode child in Children )
                 child.ForceStartOffset( offset );
         }
 
         public virtual void ForceWidth( int width )
         {
-            forcedWidth = width;
-            foreach ( FONode child in children )
+            ForcedWidth = width;
+            foreach ( FoNode child in Children )
                 child.ForceWidth( width );
         }
 
         public virtual void ResetMarker()
         {
-            marker = MarkerStart;
-            foreach ( FONode child in children )
+            Marker = MarkerStart;
+            foreach ( FoNode child in Children )
                 child.ResetMarker();
         }
 
         public void SetWidows( int wid )
         {
-            widows = wid;
+            Widows = wid;
         }
 
         public void SetOrphans( int orph )
         {
-            orphans = orph;
+            Orphans = orph;
         }
 
         public void RemoveAreas()
         {
         }
 
-        protected internal virtual void AddChild( FONode child )
+        protected internal virtual void AddChild( FoNode child )
         {
-            children.Add( child );
+            Children.Add( child );
         }
 
-        public FObj getParent()
+        public FObj GetParent()
         {
-            return parent;
+            return Parent;
         }
 
         public virtual void SetLinkSet( LinkSet linkSet )
         {
-            this.linkSet = linkSet;
-            foreach ( FONode child in children )
+            this.LinkSet = linkSet;
+            foreach ( FoNode child in Children )
                 child.SetLinkSet( linkSet );
         }
 
         public virtual LinkSet GetLinkSet()
         {
-            return linkSet;
+            return LinkSet;
         }
 
         public abstract Status Layout( Area area );
@@ -109,40 +109,40 @@ namespace Fonet.Fo
             return null;
         }
 
-        public virtual ArrayList getMarkerSnapshot( ArrayList snapshot )
+        public virtual ArrayList GetMarkerSnapshot( ArrayList snapshot )
         {
-            snapshot.Add( marker );
+            snapshot.Add( Marker );
 
-            if ( marker < 0 )
+            if ( Marker < 0 )
                 return snapshot;
-            if ( children.Count == 0 )
+            if ( Children.Count == 0 )
                 return snapshot;
-            return ( (FONode)children[ marker ] ).getMarkerSnapshot( snapshot );
+            return ( (FoNode)Children[ Marker ] ).GetMarkerSnapshot( snapshot );
         }
 
         public virtual void Rollback( ArrayList snapshot )
         {
-            marker = (int)snapshot[ 0 ];
+            Marker = (int)snapshot[ 0 ];
             snapshot.RemoveAt( 0 );
 
-            if ( marker == MarkerStart )
+            if ( Marker == MarkerStart )
             {
                 ResetMarker();
                 return;
             }
-            if ( marker == -1 || children.Count == 0 )
+            if ( Marker == -1 || Children.Count == 0 )
                 return;
 
-            if ( marker <= MarkerStart )
+            if ( Marker <= MarkerStart )
                 return;
 
-            int numChildren = children.Count;
-            for ( int i = marker + 1; i < numChildren; i++ )
+            int numChildren = Children.Count;
+            for ( int i = Marker + 1; i < numChildren; i++ )
             {
-                var fo = (FONode)children[ i ];
+                var fo = (FoNode)Children[ i ];
                 fo.ResetMarker();
             }
-            ( (FONode)children[ marker ] ).Rollback( snapshot );
+            ( (FoNode)Children[ Marker ] ).Rollback( snapshot );
         }
 
         public virtual bool MayPrecedeMarker()

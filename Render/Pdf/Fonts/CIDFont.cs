@@ -30,44 +30,44 @@ namespace Fonet.Render.Pdf.Fonts
         public abstract IDictionary CMapEntries { get; }
 
         /// <summary>
-        ///     Returns <see cref="PdfFontTypeEnum.CIDFont" />.
+        ///     Returns <see cref="PdfFontTypeEnum.CidFont" />.
         /// </summary>
         public override PdfFontTypeEnum Type
         {
-            get { return PdfFontTypeEnum.CIDFont; }
+            get { return PdfFontTypeEnum.CidFont; }
         }
 
         /// <summary>
         ///     Gets a string identifying the issuer of the character collections.
         /// </summary>
         /// <remarks>
-        ///     The default implementation returns <see cref="PdfCIDSystemInfo.DefaultRegistry" />.
+        ///     The default implementation returns <see cref="PdfCidSystemInfo.DefaultRegistry" />.
         /// </remarks>
         public virtual string Registry
         {
-            get { return PdfCIDSystemInfo.DefaultRegistry; }
+            get { return PdfCidSystemInfo.DefaultRegistry; }
         }
 
         /// <summary>
         ///     Gets a string that uniquely names the character collection.
         /// </summary>
         /// <remarks>
-        ///     The default implementation returns <see cref="PdfCIDSystemInfo.DefaultOrdering" />.
+        ///     The default implementation returns <see cref="PdfCidSystemInfo.DefaultOrdering" />.
         /// </remarks>
         public virtual string Ordering
         {
-            get { return PdfCIDSystemInfo.DefaultOrdering; }
+            get { return PdfCidSystemInfo.DefaultOrdering; }
         }
 
         /// <summary>
         ///     Gets the supplement number of the character collection.
         /// </summary>
         /// <remarks>
-        ///     The default implementation returns <see cref="PdfCIDSystemInfo.DefaultSupplement" />.
+        ///     The default implementation returns <see cref="PdfCidSystemInfo.DefaultSupplement" />.
         /// </remarks>
         public virtual int Supplement
         {
-            get { return PdfCIDSystemInfo.DefaultSupplement; }
+            get { return PdfCidSystemInfo.DefaultSupplement; }
         }
 
         /// <summary>

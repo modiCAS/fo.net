@@ -2,8 +2,8 @@ namespace Fonet.Fo.Properties
 {
     internal class RelativeAlign
     {
-        public const int BEFORE = Constants.BEFORE;
+        public const int Before = Constants.Before;
 
-        public const int BASELINE = Constants.BASELINE;
+        public const int Baseline = Constants.Baseline;
     }
 }

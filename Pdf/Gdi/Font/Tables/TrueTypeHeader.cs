@@ -11,7 +11,7 @@ namespace Fonet.Pdf.Gdi.Font
     /// </remarks>
     internal class TrueTypeHeader
     {
-        private IDictionary directoryEntries;
+        private IDictionary _directoryEntries;
 
         /// <summary>
         ///     Gets a DirectoryEntry object for the supplied table.
@@ -29,7 +29,7 @@ namespace Fonet.Pdf.Gdi.Font
             {
                 if ( !Contains( tableName ) )
                     throw new ArgumentException( "Cannot locate table " + tableName, "tableName" );
-                return (DirectoryEntry)directoryEntries[ tableName ];
+                return (DirectoryEntry)_directoryEntries[ tableName ];
             }
         }
 
@@ -38,7 +38,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public int Count
         {
-            get { return directoryEntries != null ? directoryEntries.Count : 0; }
+            get { return _directoryEntries != null ? _directoryEntries.Count : 0; }
         }
 
         protected internal void Read( FontFileStream stream )
@@ -52,7 +52,7 @@ namespace Fonet.Pdf.Gdi.Font
             // Skip searchRange, entrySelector and rangeShift entries (3 x ushort)
             stream.Skip( PrimitiveSizes.UShort * 3 );
 
-            directoryEntries = new Hashtable( numTables );
+            _directoryEntries = new Hashtable( numTables );
             for ( var i = 0; i < numTables; i++ )
             {
                 var entry = new DirectoryEntry(
@@ -61,7 +61,7 @@ namespace Fonet.Pdf.Gdi.Font
                     stream.ReadULong(), // Offset from beginning of TrueType font file. 
                     stream.ReadULong() // Length of this table. 
                     );
-                directoryEntries.Add( entry.TableName, entry );
+                _directoryEntries.Add( entry.TableName, entry );
             }
         }
 
@@ -73,7 +73,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// <returns></returns>
         public bool Contains( string tableName )
         {
-            return directoryEntries != null && directoryEntries.Contains( tableName );
+            return _directoryEntries != null && _directoryEntries.Contains( tableName );
         }
     }
 }

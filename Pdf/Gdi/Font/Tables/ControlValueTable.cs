@@ -8,7 +8,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// <summary>
         ///     List of N values referenceable by instructions.
         /// </summary>
-        private short[] values;
+        private short[] _values;
 
         /// <summary>
         ///     Creates an instance of the <see cref="ControlValueTable" /> class.
@@ -25,7 +25,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public int Count
         {
-            get { return values.Length; }
+            get { return _values.Length; }
         }
 
         /// <summary>
@@ -35,9 +35,9 @@ namespace Fonet.Pdf.Gdi.Font
         /// <param name="reader"></param>
         protected internal override void Read( FontFileReader reader )
         {
-            values = new short[ Entry.Length / PrimitiveSizes.FWord ];
-            for ( var i = 0; i < values.Length; i++ )
-                values[ i ] = reader.Stream.ReadFWord();
+            _values = new short[ Entry.Length / PrimitiveSizes.FWord ];
+            for ( var i = 0; i < _values.Length; i++ )
+                _values[ i ] = reader.Stream.ReadFWord();
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// <param name="writer"></param>
         protected internal override void Write( FontFileWriter writer )
         {
-            foreach ( short val in values )
+            foreach ( short val in _values )
                 writer.Stream.WriteFWord( val );
         }
     }

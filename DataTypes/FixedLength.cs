@@ -21,7 +21,7 @@ namespace Fonet.DataTypes
 
         protected void Convert( double dvalue, string unit )
         {
-            var assumed_resolution = 1;
+            var assumedResolution = 1;
 
             if ( unit.Equals( "in" ) )
                 dvalue = dvalue * 72;
@@ -35,7 +35,7 @@ namespace Fonet.DataTypes
             else if ( unit.Equals( "pc" ) )
                 dvalue = dvalue * 12;
             else if ( unit.Equals( "px" ) )
-                dvalue = dvalue * assumed_resolution;
+                dvalue = dvalue * assumedResolution;
             else
             {
                 dvalue = 0;

@@ -4,7 +4,7 @@ namespace Fonet.Fo.Properties
 {
     internal class FontSizeMaker : LengthProperty.Maker
     {
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected FontSizeMaker( string name ) : base( name )
         {
@@ -23,14 +23,14 @@ namespace Fonet.Fo.Properties
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "12pt", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "12pt", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
 
         public override IPercentBase GetPercentBase( FObj fo, PropertyList propertyList )
         {
-            return new LengthBase( fo, propertyList, LengthBase.INH_FONTSIZE );
+            return new LengthBase( fo, propertyList, LengthBase.InhFontsize );
         }
     }
 }

@@ -16,14 +16,14 @@ namespace Fonet.Pdf
         /// <summary>
         ///     This entries contained in this subsection.
         /// </summary>
-        private readonly ArrayList entries;
+        private readonly ArrayList _entries;
 
         /// <summary>
         ///     Creates a new blank sub-section, that initially contains no entries.
         /// </summary>
         internal XRefSubSection()
         {
-            entries = new ArrayList();
+            _entries = new ArrayList();
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace Fonet.Pdf
         /// </summary>
         internal void Add( PdfObjectId objectId, long offset )
         {
-            entries.Add( new Entry( objectId, offset ) );
+            _entries.Add( new Entry( objectId, offset ) );
         }
 
         /// <summary>
@@ -51,11 +51,11 @@ namespace Fonet.Pdf
             }
 
             // Sort the entries.
-            entries.Sort();
+            _entries.Sort();
 
             // Identify the first and last entries.
             uint first = 0;
-            uint last = ( (Entry)entries[ entries.Count - 1 ] ).objectId.ObjectNumber;
+            uint last = ( (Entry)_entries[ _entries.Count - 1 ] ).ObjectId.ObjectNumber;
 
             // Work out the number of entries based on the first and last object numbers.
             uint count = last - first + 1;
@@ -74,11 +74,11 @@ namespace Fonet.Pdf
             writer.WriteLine( bytes );
 
             // Output each entry.
-            foreach ( Entry entry in entries )
+            foreach ( Entry entry in _entries )
             {
                 bytes = Encoding.ASCII.GetBytes(
-                    string.Format( entryFormat, entry.offset,
-                        entry.objectId.GenerationNumber, "n" ) );
+                    string.Format( entryFormat, entry.Offset,
+                        entry.ObjectId.GenerationNumber, "n" ) );
                 writer.WriteLine( bytes );
             }
         }
@@ -90,28 +90,28 @@ namespace Fonet.Pdf
         {
             internal Entry( PdfObjectId objectId, long offset )
             {
-                this.objectId = objectId;
-                this.offset = offset;
+                this.ObjectId = objectId;
+                this.Offset = offset;
             }
 
             /// <summary>
             ///     The object number and generation number.
             /// </summary>
-            internal PdfObjectId objectId;
+            internal PdfObjectId ObjectId;
 
             /// <summary>
             ///     The number of bytes from the beginning of the file to
             ///     the beginning of the object.
             /// </summary>
-            internal readonly long offset;
+            internal readonly long Offset;
 
             /// <summary>
             ///     Implementation of IComparable.
             /// </summary>
             public int CompareTo( object obj )
             {
-                return objectId.ObjectNumber.CompareTo(
-                    ( (Entry)obj ).objectId.ObjectNumber );
+                return ObjectId.ObjectNumber.CompareTo(
+                    ( (Entry)obj ).ObjectId.ObjectNumber );
             }
         }
     }

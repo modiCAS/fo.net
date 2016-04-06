@@ -147,11 +147,11 @@ namespace Fonet.Render.Pdf.Fonts
         #region Implementation of Font members
 
         /// <summary>
-        ///     Returns <see cref="PdfFontSubTypeEnum.CIDFontType2" />.
+        ///     Returns <see cref="PdfFontSubTypeEnum.CidFontType2" />.
         /// </summary>
         public override PdfFontSubTypeEnum SubType
         {
-            get { return PdfFontSubTypeEnum.CIDFontType2; }
+            get { return PdfFontSubTypeEnum.CidFontType2; }
         }
 
         public override string FontName

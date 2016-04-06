@@ -8,22 +8,22 @@ namespace Fonet.Pdf
     ///     1 font format, whereas those in a Type 2 CIDFont are based on the
     ///     TrueType font format.
     /// </remarks>
-    public class PdfCIDFont : PdfDictionary
+    public class PdfCidFont : PdfDictionary
     {
-        public PdfCIDFont(
+        public PdfCidFont(
             PdfObjectId objectId, PdfFontSubTypeEnum subType, string baseFont )
             : base( objectId )
         {
             this[ PdfName.Names.Type ] = PdfName.Names.Font;
             this[ PdfName.Names.Subtype ] = new PdfName( subType.ToString() );
             this[ PdfName.Names.BaseFont ] = new PdfName( baseFont );
-            this[ PdfName.Names.DW ] = new PdfNumeric( 1000 );
-            this[ PdfName.Names.CIDToGIDMap ] = PdfName.Names.Identity;
+            this[ PdfName.Names.Dw ] = new PdfNumeric( 1000 );
+            this[ PdfName.Names.CidtoGidMap ] = PdfName.Names.Identity;
         }
 
-        public PdfCIDSystemInfo SystemInfo
+        public PdfCidSystemInfo SystemInfo
         {
-            set { this[ PdfName.Names.CIDSystemInfo ] = value; }
+            set { this[ PdfName.Names.CidSystemInfo ] = value; }
         }
 
         public PdfFontDescriptor Descriptor
@@ -33,7 +33,7 @@ namespace Fonet.Pdf
 
         public PdfNumeric DefaultWidth
         {
-            set { this[ PdfName.Names.DW ] = value; }
+            set { this[ PdfName.Names.Dw ] = value; }
         }
 
         public PdfWArray Widths

@@ -4,22 +4,22 @@ namespace Fonet.Fo.Properties
 {
     internal class LeaderLengthMaker : LengthRangeProperty.Maker
     {
-        private static readonly PropertyMaker s_MinimumMaker =
-            new SP_MinimumMaker( "leader-length.minimum" );
+        private static readonly PropertyMaker SMinimumMaker =
+            new SpMinimumMaker( "leader-length.minimum" );
 
-        private static readonly PropertyMaker s_OptimumMaker =
-            new SP_OptimumMaker( "leader-length.optimum" );
+        private static readonly PropertyMaker SOptimumMaker =
+            new SpOptimumMaker( "leader-length.optimum" );
 
-        private static readonly PropertyMaker s_MaximumMaker =
-            new SP_MaximumMaker( "leader-length.maximum" );
+        private static readonly PropertyMaker SMaximumMaker =
+            new SpMaximumMaker( "leader-length.maximum" );
 
 
-        private readonly PropertyMaker m_shorthandMaker;
+        private readonly PropertyMaker _mShorthandMaker;
 
         protected LeaderLengthMaker( string name )
             : base( name )
         {
-            m_shorthandMaker = GetSubpropMaker( "minimum" );
+            _mShorthandMaker = GetSubpropMaker( "minimum" );
         }
 
 
@@ -30,7 +30,7 @@ namespace Fonet.Fo.Properties
 
         public override Property CheckEnumValues( string value )
         {
-            return m_shorthandMaker.CheckEnumValues( value );
+            return _mShorthandMaker.CheckEnumValues( value );
         }
 
         protected override bool IsCompoundMaker()
@@ -41,13 +41,13 @@ namespace Fonet.Fo.Properties
         protected override PropertyMaker GetSubpropMaker( string subprop )
         {
             if ( subprop.Equals( "minimum" ) )
-                return s_MinimumMaker;
+                return SMinimumMaker;
 
             if ( subprop.Equals( "optimum" ) )
-                return s_OptimumMaker;
+                return SOptimumMaker;
 
             if ( subprop.Equals( "maximum" ) )
-                return s_MaximumMaker;
+                return SMaximumMaker;
 
             return base.GetSubpropMaker( subprop );
         }
@@ -67,7 +67,7 @@ namespace Fonet.Fo.Properties
 
         public override Property Make( PropertyList propertyList )
         {
-            return MakeCompound( propertyList, propertyList.getParentFObj() );
+            return MakeCompound( propertyList, propertyList.GetParentFObj() );
         }
 
 
@@ -112,7 +112,7 @@ namespace Fonet.Fo.Properties
             if ( p is LengthRangeProperty )
                 return p;
             if ( !( p is EnumProperty ) )
-                p = m_shorthandMaker.ConvertProperty( p, pList, fo );
+                p = _mShorthandMaker.ConvertProperty( p, pList, fo );
             if ( p != null )
             {
                 Property prop = MakeCompound( pList, fo );
@@ -133,42 +133,42 @@ namespace Fonet.Fo.Properties
 
         public override IPercentBase GetPercentBase( FObj fo, PropertyList propertyList )
         {
-            return new LengthBase( fo, propertyList, LengthBase.CONTAINING_BOX );
+            return new LengthBase( fo, propertyList, LengthBase.ContainingBox );
         }
 
-        private class SP_MinimumMaker : LengthProperty.Maker
+        private class SpMinimumMaker : LengthProperty.Maker
         {
-            protected internal SP_MinimumMaker( string sPropName ) : base( sPropName )
+            protected internal SpMinimumMaker( string sPropName ) : base( sPropName )
             {
             }
 
             public override IPercentBase GetPercentBase( FObj fo, PropertyList propertyList )
             {
-                return new LengthBase( fo, propertyList, LengthBase.CONTAINING_BOX );
+                return new LengthBase( fo, propertyList, LengthBase.ContainingBox );
             }
         }
 
-        private class SP_OptimumMaker : LengthProperty.Maker
+        private class SpOptimumMaker : LengthProperty.Maker
         {
-            protected internal SP_OptimumMaker( string sPropName ) : base( sPropName )
+            protected internal SpOptimumMaker( string sPropName ) : base( sPropName )
             {
             }
 
             public override IPercentBase GetPercentBase( FObj fo, PropertyList propertyList )
             {
-                return new LengthBase( fo, propertyList, LengthBase.CONTAINING_BOX );
+                return new LengthBase( fo, propertyList, LengthBase.ContainingBox );
             }
         }
 
-        private class SP_MaximumMaker : LengthProperty.Maker
+        private class SpMaximumMaker : LengthProperty.Maker
         {
-            protected internal SP_MaximumMaker( string sPropName ) : base( sPropName )
+            protected internal SpMaximumMaker( string sPropName ) : base( sPropName )
             {
             }
 
             public override IPercentBase GetPercentBase( FObj fo, PropertyList propertyList )
             {
-                return new LengthBase( fo, propertyList, LengthBase.CONTAINING_BOX );
+                return new LengthBase( fo, propertyList, LengthBase.ContainingBox );
             }
         }
     }

@@ -7,7 +7,7 @@ namespace Fonet.Pdf.Gdi.Font
     /// </summary>
     public class FontSubset
     {
-        private readonly FontFileReader reader;
+        private readonly FontFileReader _reader;
 
         /// <summary>
         ///     Creates a new instance of the FontSubset class.
@@ -15,7 +15,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// <param name="reader">TrueType font parser.</param>
         public FontSubset( FontFileReader reader )
         {
-            this.reader = reader;
+            this._reader = reader;
         }
 
         /// <summary>
@@ -23,13 +23,13 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public void Generate( MemoryStream output )
         {
-            HeaderTable head = reader.GetHeaderTable();
-            MaximumProfileTable maxp = reader.GetMaximumProfileTable();
-            HorizontalHeaderTable hhea = reader.GetHorizontalHeaderTable();
-            ControlValueTable cvt = reader.GetControlValueTable();
-            FontProgramTable fpgm = reader.GetFontProgramTable();
-            GlyfDataTable glyf = reader.GetGlyfDataTable();
-            ControlValueProgramTable prep = reader.GetControlValueProgramTable();
+            HeaderTable head = _reader.GetHeaderTable();
+            MaximumProfileTable maxp = _reader.GetMaximumProfileTable();
+            HorizontalHeaderTable hhea = _reader.GetHorizontalHeaderTable();
+            ControlValueTable cvt = _reader.GetControlValueTable();
+            FontProgramTable fpgm = _reader.GetFontProgramTable();
+            GlyfDataTable glyf = _reader.GetGlyfDataTable();
+            ControlValueProgramTable prep = _reader.GetControlValueProgramTable();
             IndexToLocationTable loca = CreateLocaTable( glyf );
             HorizontalMetricsTable hmtx = CreateHmtxTable( glyf );
 
@@ -55,14 +55,14 @@ namespace Fonet.Pdf.Gdi.Font
         private HorizontalMetricsTable CreateHmtxTable( GlyfDataTable glyfTable )
         {
             // Fetches horizontal metrics for all glyphs
-            HorizontalMetricsTable hmtxOld = reader.GetHorizontalMetricsTable();
+            HorizontalMetricsTable hmtxOld = _reader.GetHorizontalMetricsTable();
 
             var entry = new DirectoryEntry( TableNames.Hmtx );
             var hmtx =
                 new HorizontalMetricsTable( entry, glyfTable.Count );
 
             // Copy required horizontal metrics.
-            IndexMappings mappings = reader.IndexMappings;
+            IndexMappings mappings = _reader.IndexMappings;
             foreach ( int subsetIndex in mappings.SubsetIndices )
             {
                 int glyphIndex = mappings.GetGlyphIndex( subsetIndex );

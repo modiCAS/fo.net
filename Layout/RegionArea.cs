@@ -21,7 +21,7 @@ namespace Fonet.Layout
         public AreaContainer makeAreaContainer()
         {
             var area = new AreaContainer(
-                null, xPosition, yPosition, width, height, Position.ABSOLUTE );
+                null, xPosition, yPosition, width, height, Position.Absolute );
             area.setBackground( getBackground() );
             return area;
         }

@@ -29,7 +29,7 @@ namespace Fonet.Pdf
         /// <summary>
         ///     Sets the descendant font.
         /// </summary>
-        public PdfCIDFont Descendant
+        public PdfCidFont Descendant
         {
             set
             {

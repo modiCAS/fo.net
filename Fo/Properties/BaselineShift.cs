@@ -2,10 +2,10 @@ namespace Fonet.Fo.Properties
 {
     internal class BaselineShift
     {
-        public const int BASELINE = Constants.BASELINE;
+        public const int Baseline = Constants.Baseline;
 
-        public const int SUB = Constants.SUB;
+        public const int Sub = Constants.Sub;
 
-        public const int SUPER = Constants.SUPER;
+        public const int Super = Constants.Super;
     }
 }

@@ -4,62 +4,62 @@ namespace Fonet.DataTypes
 {
     internal class Keep : ICompoundDatatype
     {
-        private Property withinColumn;
-        private Property withinLine;
+        private Property _withinColumn;
+        private Property _withinLine;
 
-        private Property withinPage;
+        private Property _withinPage;
 
         public void SetComponent( string sCmpnName, Property cmpnValue,
             bool bIsDefault )
         {
             if ( sCmpnName.Equals( "within-line" ) )
-                setWithinLine( cmpnValue, bIsDefault );
+                SetWithinLine( cmpnValue, bIsDefault );
             else if ( sCmpnName.Equals( "within-column" ) )
-                setWithinColumn( cmpnValue, bIsDefault );
+                SetWithinColumn( cmpnValue, bIsDefault );
             else if ( sCmpnName.Equals( "within-page" ) )
-                setWithinPage( cmpnValue, bIsDefault );
+                SetWithinPage( cmpnValue, bIsDefault );
         }
 
         public Property GetComponent( string sCmpnName )
         {
             if ( sCmpnName.Equals( "within-line" ) )
-                return getWithinLine();
+                return GetWithinLine();
             if ( sCmpnName.Equals( "within-column" ) )
-                return getWithinColumn();
+                return GetWithinColumn();
             if ( sCmpnName.Equals( "within-page" ) )
-                return getWithinPage();
+                return GetWithinPage();
             return null;
         }
 
-        public void setWithinLine( Property withinLine, bool bIsDefault )
+        public void SetWithinLine( Property withinLine, bool bIsDefault )
         {
-            this.withinLine = withinLine;
+            this._withinLine = withinLine;
         }
 
-        protected void setWithinColumn( Property withinColumn,
+        protected void SetWithinColumn( Property withinColumn,
             bool bIsDefault )
         {
-            this.withinColumn = withinColumn;
+            this._withinColumn = withinColumn;
         }
 
-        public void setWithinPage( Property withinPage, bool bIsDefault )
+        public void SetWithinPage( Property withinPage, bool bIsDefault )
         {
-            this.withinPage = withinPage;
+            this._withinPage = withinPage;
         }
 
-        public Property getWithinLine()
+        public Property GetWithinLine()
         {
-            return withinLine;
+            return _withinLine;
         }
 
-        public Property getWithinColumn()
+        public Property GetWithinColumn()
         {
-            return withinColumn;
+            return _withinColumn;
         }
 
-        public Property getWithinPage()
+        public Property GetWithinPage()
         {
-            return withinPage;
+            return _withinPage;
         }
 
         public override string ToString()

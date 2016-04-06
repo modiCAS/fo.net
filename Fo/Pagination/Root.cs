@@ -4,17 +4,17 @@ namespace Fonet.Fo.Pagination
 {
     internal class Root : FObj
     {
-        private LayoutMasterSet layoutMasterSet;
+        private LayoutMasterSet _layoutMasterSet;
 
-        private readonly ArrayList pageSequences;
+        private readonly ArrayList _pageSequences;
 
-        private int runningPageNumberCounter;
+        private int _runningPageNumberCounter;
 
         protected internal Root( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:root";
-            pageSequences = new ArrayList();
+            Name = "fo:root";
+            _pageSequences = new ArrayList();
             if ( parent != null )
                 throw new FonetException( "root must be root element" );
         }
@@ -24,39 +24,39 @@ namespace Fonet.Fo.Pagination
             return new Maker();
         }
 
-        protected internal int getRunningPageNumberCounter()
+        protected internal int GetRunningPageNumberCounter()
         {
-            return runningPageNumberCounter;
+            return _runningPageNumberCounter;
         }
 
-        protected internal void setRunningPageNumberCounter( int count )
+        protected internal void SetRunningPageNumberCounter( int count )
         {
-            runningPageNumberCounter = count;
+            _runningPageNumberCounter = count;
         }
 
-        public int getPageSequenceCount()
+        public int GetPageSequenceCount()
         {
-            return pageSequences.Count;
+            return _pageSequences.Count;
         }
 
-        public PageSequence getSucceedingPageSequence( PageSequence current )
+        public PageSequence GetSucceedingPageSequence( PageSequence current )
         {
-            int currentIndex = pageSequences.IndexOf( current );
+            int currentIndex = _pageSequences.IndexOf( current );
             if ( currentIndex == -1 )
                 return null;
-            if ( currentIndex < pageSequences.Count - 1 )
-                return (PageSequence)pageSequences[ currentIndex + 1 ];
+            if ( currentIndex < _pageSequences.Count - 1 )
+                return (PageSequence)_pageSequences[ currentIndex + 1 ];
             return null;
         }
 
-        public LayoutMasterSet getLayoutMasterSet()
+        public LayoutMasterSet GetLayoutMasterSet()
         {
-            return layoutMasterSet;
+            return _layoutMasterSet;
         }
 
-        public void setLayoutMasterSet( LayoutMasterSet layoutMasterSet )
+        public void SetLayoutMasterSet( LayoutMasterSet layoutMasterSet )
         {
-            this.layoutMasterSet = layoutMasterSet;
+            this._layoutMasterSet = layoutMasterSet;
         }
 
         internal new class Maker : FObj.Maker

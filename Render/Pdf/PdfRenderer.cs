@@ -225,13 +225,13 @@ namespace Fonet.Render.Pdf
         {
             if ( options != null )
                 pdfDoc.SetOptions( options );
-            pdfDoc.outputHeader();
+            pdfDoc.OutputHeader();
         }
 
         public void StopRenderer()
         {
-            fontSetup.AddToResources( new PdfFontCreator( pdfDoc ), pdfDoc.getResources() );
-            pdfDoc.outputTrailer();
+            fontSetup.AddToResources( new PdfFontCreator( pdfDoc ), pdfDoc.GetResources() );
+            pdfDoc.OutputTrailer();
 
             pdfDoc = null;
             pdfResources = null;
@@ -270,13 +270,13 @@ namespace Fonet.Render.Pdf
             int saveY = currentYPosition;
             int saveX = currentAreaContainerXPosition;
 
-            if ( area.getPosition() == Position.ABSOLUTE )
+            if ( area.getPosition() == Position.Absolute )
             {
                 // Y position is computed assuming positive Y axis, adjust for negative postscript one
                 currentYPosition = area.GetYPosition();
                 currentAreaContainerXPosition = area.getXPosition();
             }
-            else if ( area.getPosition() == Position.RELATIVE )
+            else if ( area.getPosition() == Position.Relative )
             {
                 currentYPosition -= area.GetYPosition();
                 currentAreaContainerXPosition += area.getXPosition();
@@ -299,7 +299,7 @@ namespace Fonet.Render.Pdf
             foreach ( Box b in area.getMainReferenceArea().getChildren() )
                 b.render( this ); // span areas
 
-            if ( area.getPosition() != Position.STATIC )
+            if ( area.getPosition() != Position.Static )
             {
                 currentYPosition = saveY;
                 currentAreaContainerXPosition = saveX;
@@ -313,18 +313,18 @@ namespace Fonet.Render.Pdf
             int saveY = currentYPosition;
             int saveX = currentAreaContainerXPosition;
 
-            if ( area.getPosition() == Position.ABSOLUTE )
+            if ( area.getPosition() == Position.Absolute )
             {
                 // XPosition and YPosition give the content rectangle position
                 currentYPosition = area.GetYPosition();
                 currentAreaContainerXPosition = area.getXPosition();
             }
-            else if ( area.getPosition() == Position.RELATIVE )
+            else if ( area.getPosition() == Position.Relative )
             {
                 currentYPosition -= area.GetYPosition();
                 currentAreaContainerXPosition += area.getXPosition();
             }
-            else if ( area.getPosition() == Position.STATIC )
+            else if ( area.getPosition() == Position.Static )
             {
                 currentYPosition -= area.getPaddingTop()
                     + area.getBorderTopWidth();
@@ -339,7 +339,7 @@ namespace Fonet.Render.Pdf
             // Restore previous origin
             currentYPosition = saveY;
             currentAreaContainerXPosition = saveX;
-            if ( area.getPosition() == Position.STATIC )
+            if ( area.getPosition() == Position.Static )
                 currentYPosition -= area.GetHeight();
         }
 
@@ -533,31 +533,31 @@ namespace Fonet.Render.Pdf
             // TODO: why was this here? this.currentYPosition = this.currentYPosition;
             switch ( area.getAlign() )
             {
-            case TextAlign.START:
+            case TextAlign.Start:
                 break;
-            case TextAlign.END:
+            case TextAlign.End:
                 break;
-            case TextAlign.CENTER:
-            case TextAlign.JUSTIFY:
+            case TextAlign.Center:
+            case TextAlign.Justify:
                 break;
             }
             switch ( area.getVerticalAlign() )
             {
-            case VerticalAlign.BASELINE:
+            case VerticalAlign.Baseline:
                 break;
-            case VerticalAlign.MIDDLE:
+            case VerticalAlign.Middle:
                 break;
-            case VerticalAlign.SUB:
+            case VerticalAlign.Sub:
                 break;
-            case VerticalAlign.SUPER:
+            case VerticalAlign.Super:
                 break;
-            case VerticalAlign.TEXT_TOP:
+            case VerticalAlign.TextTop:
                 break;
-            case VerticalAlign.TEXT_BOTTOM:
+            case VerticalAlign.TextBottom:
                 break;
-            case VerticalAlign.TOP:
+            case VerticalAlign.Top:
                 break;
-            case VerticalAlign.BOTTOM:
+            case VerticalAlign.Bottom:
                 break;
             }
             CloseText();
@@ -568,9 +568,9 @@ namespace Fonet.Render.Pdf
             currentStream.Write( "q\n" );
             switch ( area.scalingMethod() )
             {
-            case Scaling.UNIFORM:
+            case Scaling.Uniform:
                 break;
-            case Scaling.NON_UNIFORM:
+            case Scaling.NonUniform:
                 break;
             }
             // if the overflow is auto (default), scroll or visible
@@ -578,11 +578,11 @@ namespace Fonet.Render.Pdf
             // is considered a printing medium.
             switch ( area.getOverflow() )
             {
-            case Overflow.VISIBLE:
-            case Overflow.SCROLL:
-            case Overflow.AUTO:
+            case Overflow.Visible:
+            case Overflow.Scroll:
+            case Overflow.Auto:
                 break;
-            case Overflow.HIDDEN:
+            case Overflow.Hidden:
                 break;
             }
 
@@ -709,7 +709,7 @@ namespace Fonet.Render.Pdf
                 if ( area.getPageNumberID() != null )
                 {
                     // This text is a page number, so resolve it
-                    s = idReferences.getPageNumber( area.getPageNumberID() );
+                    s = idReferences.GetPageNumber( area.getPageNumberID() );
                     if ( s == null )
                         s = string.Empty;
                 }
@@ -809,10 +809,10 @@ namespace Fonet.Render.Pdf
         public void Render( Page page )
         {
             idReferences = page.getIDReferences();
-            pdfResources = pdfDoc.getResources();
-            pdfDoc.setIDReferences( idReferences );
+            pdfResources = pdfDoc.GetResources();
+            pdfDoc.SetIDReferences( idReferences );
             RenderPage( page );
-            pdfDoc.output();
+            pdfDoc.Output();
         }
 
 
@@ -827,7 +827,7 @@ namespace Fonet.Render.Pdf
             BodyAreaContainer body;
             AreaContainer before, after, start, end;
 
-            currentStream = pdfDoc.makeContentStream();
+            currentStream = pdfDoc.MakeContentStream();
             body = page.getBody();
             before = page.getBefore();
             after = page.getAfter();
@@ -862,7 +862,7 @@ namespace Fonet.Render.Pdf
             float h = page.GetHeight();
             currentStream.Write( "ET\n" );
 
-            currentPage = pdfDoc.makePage(
+            currentPage = pdfDoc.MakePage(
                 pdfResources, currentStream,
                 Convert.ToInt32( Math.Round( w / 1000 ) ),
                 Convert.ToInt32( Math.Round( h / 1000 ) ), page );
@@ -870,7 +870,7 @@ namespace Fonet.Render.Pdf
             if ( page.hasLinks() || currentAnnotList != null )
             {
                 if ( currentAnnotList == null )
-                    currentAnnotList = pdfDoc.makeAnnotList();
+                    currentAnnotList = pdfDoc.MakeAnnotList();
                 currentPage.SetAnnotList( currentAnnotList );
 
                 ArrayList lsets = page.getLinkSets();
@@ -882,7 +882,7 @@ namespace Fonet.Render.Pdf
                     ArrayList rsets = linkSet.getRects();
                     foreach ( LinkedRectangle lrect in rsets )
                     {
-                        currentAnnotList.Add( pdfDoc.makeLink( lrect.getRectangle(),
+                        currentAnnotList.Add( pdfDoc.MakeLink( lrect.getRectangle(),
                             dest, linkType ).GetReference() );
                     }
                 }
@@ -907,16 +907,16 @@ namespace Fonet.Render.Pdf
             var rs = "";
             switch ( style )
             {
-            case RuleStyle.SOLID:
+            case RuleStyle.Solid:
                 rs = "[] 0 d ";
                 break;
-            case RuleStyle.DASHED:
+            case RuleStyle.Dashed:
                 rs = "[3 3] 0 d ";
                 break;
-            case RuleStyle.DOTTED:
+            case RuleStyle.Dotted:
                 rs = "[1 3] 0 d ";
                 break;
-            case RuleStyle.DOUBLE:
+            case RuleStyle.Double:
                 rs = "[] 0 d ";
                 break;
             default:
@@ -1009,19 +1009,19 @@ namespace Fonet.Render.Pdf
                 var repeatY = true;
                 switch ( props.backRepeat )
                 {
-                case BackgroundRepeat.REPEAT:
+                case BackgroundRepeat.Repeat:
                     break;
-                case BackgroundRepeat.REPEAT_X:
+                case BackgroundRepeat.RepeatX:
                     repeatY = false;
                     break;
-                case BackgroundRepeat.REPEAT_Y:
+                case BackgroundRepeat.RepeatY:
                     repeatX = false;
                     break;
-                case BackgroundRepeat.NO_REPEAT:
+                case BackgroundRepeat.NoRepeat:
                     repeatX = false;
                     repeatY = false;
                     break;
-                case BackgroundRepeat.INHERIT:
+                case BackgroundRepeat.Inherit:
                     break;
                 default:
                     FonetDriver.ActiveDriver.FireFonetWarning( "Ignoring invalid background-repeat property" );
@@ -1282,7 +1282,7 @@ namespace Fonet.Render.Pdf
             {
                 switch ( st )
                 {
-                case RuleStyle.DOUBLE:
+                case RuleStyle.Double:
                     AddLine( rx, ry, rx + w, ry, th / 3, st,
                         new PdfColor( area.getRed(), area.getGreen(),
                             area.getBlue() ) );
@@ -1291,14 +1291,14 @@ namespace Fonet.Render.Pdf
                         new PdfColor( area.getRed(), area.getGreen(),
                             area.getBlue() ) );
                     break;
-                case RuleStyle.GROOVE:
+                case RuleStyle.Groove:
                     AddLine( rx, ry, rx + w, ry, th / 2, st,
                         new PdfColor( area.getRed(), area.getGreen(),
                             area.getBlue() ) );
                     AddLine( rx, ry + th / 2, rx + w, ry + th / 2, th / 2, st,
                         new PdfColor( 255, 255, 255 ) );
                     break;
-                case RuleStyle.RIDGE:
+                case RuleStyle.Ridge:
                     AddLine( rx, ry, rx + w, ry, th / 2, st,
                         new PdfColor( 255, 255, 255 ) );
                     AddLine( rx, ry + th / 2, rx + w, ry + th / 2, th / 2, st,

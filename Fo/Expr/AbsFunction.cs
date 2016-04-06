@@ -12,7 +12,7 @@ namespace Fonet.Fo.Expr
             Numeric num = args[ 0 ].GetNumeric();
             if ( num == null )
                 throw new PropertyException( "Non numeric operand to abs function" );
-            return new NumericProperty( num.abs() );
+            return new NumericProperty( num.Abs() );
         }
     }
 }

@@ -2,8 +2,8 @@ namespace Fonet.Fo.Properties
 {
     internal class TableLayout
     {
-        public const int AUTO = Constants.AUTO;
+        public const int Auto = Constants.Auto;
 
-        public const int FIXED = Constants.FIXED;
+        public const int Fixed = Constants.Fixed;
     }
 }

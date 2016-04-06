@@ -10,7 +10,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// <summary>
         ///     The dictionary entry for this table.
         /// </summary>
-        private DirectoryEntry directoryEntry;
+        private DirectoryEntry _directoryEntry;
 
         /// <summary>
         ///     Class constructor
@@ -19,7 +19,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// <param name="entry">Table directory entry.</param>
         public FontTable( string tableName, DirectoryEntry entry )
         {
-            directoryEntry = entry;
+            _directoryEntry = entry;
         }
 
         /// <summary>
@@ -27,8 +27,8 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public DirectoryEntry Entry
         {
-            get { return directoryEntry; }
-            set { directoryEntry = value; }
+            get { return _directoryEntry; }
+            set { _directoryEntry = value; }
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </remarks>
         public string Name
         {
-            get { return directoryEntry.TableName; }
+            get { return _directoryEntry.TableName; }
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public uint Tag
         {
-            get { return directoryEntry.Tag; }
+            get { return _directoryEntry.Tag; }
         }
 
         /// <summary>

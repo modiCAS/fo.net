@@ -4,21 +4,21 @@ namespace Fonet.Fo
 {
     internal class KeepProperty : Property
     {
-        private readonly Keep keep;
+        private readonly Keep _keep;
 
         public KeepProperty( Keep keep )
         {
-            this.keep = keep;
+            this._keep = keep;
         }
 
         public override Keep GetKeep()
         {
-            return keep;
+            return _keep;
         }
 
         public override object GetObject()
         {
-            return keep;
+            return _keep;
         }
 
         internal class Maker : PropertyMaker

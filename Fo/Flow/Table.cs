@@ -7,50 +7,50 @@ namespace Fonet.Fo.Flow
 {
     internal class Table : FObj
     {
-        private const int MINCOLWIDTH = 10000;
+        private const int Mincolwidth = 10000;
 
-        private AreaContainer areaContainer;
+        private AreaContainer _areaContainer;
 
-        private bool bAutoLayout;
+        private bool _bAutoLayout;
 
-        private int bodyCount;
+        private int _bodyCount;
 
-        private int breakAfter;
+        private int _breakAfter;
 
-        private int breakBefore;
+        private int _breakBefore;
 
-        private readonly ArrayList columns = new ArrayList();
+        private readonly ArrayList _columns = new ArrayList();
 
-        private int contentWidth;
+        private int _contentWidth;
 
-        private int height;
+        private int _height;
 
-        private string id;
+        private string _id;
 
-        private LengthRange ipd;
+        private LengthRange _ipd;
 
-        private int maxIPD;
+        private int _maxIpd;
 
-        private int minIPD;
+        private int _minIpd;
 
-        private bool omitFooterAtBreak;
+        private bool _omitFooterAtBreak;
 
-        private bool omitHeaderAtBreak;
+        private bool _omitHeaderAtBreak;
 
-        private int optIPD;
+        private int _optIpd;
 
-        private int spaceAfter;
+        private int _spaceAfter;
 
-        private int spaceBefore;
+        private int _spaceBefore;
 
-        private TableFooter tableFooter;
+        private TableFooter _tableFooter;
 
-        private TableHeader tableHeader;
+        private TableHeader _tableHeader;
 
         public Table( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:table";
+            Name = "fo:table";
         }
 
         public new static FObj.Maker GetMaker()
@@ -60,265 +60,265 @@ namespace Fonet.Fo.Flow
 
         public override Status Layout( Area area )
         {
-            if ( marker == MarkerBreakAfter )
-                return new Status( Status.OK );
+            if ( Marker == MarkerBreakAfter )
+                return new Status( Status.Ok );
 
-            if ( marker == MarkerStart )
+            if ( Marker == MarkerStart )
             {
-                AccessibilityProps mAccProps = propMgr.GetAccessibilityProps();
-                AuralProps mAurProps = propMgr.GetAuralProps();
-                BorderAndPadding bap = propMgr.GetBorderAndPadding();
-                BackgroundProps bProps = propMgr.GetBackgroundProps();
-                MarginProps mProps = propMgr.GetMarginProps();
-                RelativePositionProps mRelProps = propMgr.GetRelativePositionProps();
+                AccessibilityProps mAccProps = PropMgr.GetAccessibilityProps();
+                AuralProps mAurProps = PropMgr.GetAuralProps();
+                BorderAndPadding bap = PropMgr.GetBorderAndPadding();
+                BackgroundProps bProps = PropMgr.GetBackgroundProps();
+                MarginProps mProps = PropMgr.GetMarginProps();
+                RelativePositionProps mRelProps = PropMgr.GetRelativePositionProps();
 
-                breakBefore = properties.GetProperty( "break-before" ).GetEnum();
-                breakAfter = properties.GetProperty( "break-after" ).GetEnum();
-                spaceBefore =
-                    properties.GetProperty( "space-before.optimum" ).GetLength().MValue();
-                spaceAfter =
-                    properties.GetProperty( "space-after.optimum" ).GetLength().MValue();
-                ipd =
-                    properties.GetProperty( "inline-progression-dimension" ).
+                _breakBefore = Properties.GetProperty( "break-before" ).GetEnum();
+                _breakAfter = Properties.GetProperty( "break-after" ).GetEnum();
+                _spaceBefore =
+                    Properties.GetProperty( "space-before.optimum" ).GetLength().MValue();
+                _spaceAfter =
+                    Properties.GetProperty( "space-after.optimum" ).GetLength().MValue();
+                _ipd =
+                    Properties.GetProperty( "inline-progression-dimension" ).
                         GetLengthRange();
-                height = properties.GetProperty( "height" ).GetLength().MValue();
-                bAutoLayout = properties.GetProperty( "table-layout" ).GetEnum() ==
-                    TableLayout.AUTO;
+                _height = Properties.GetProperty( "height" ).GetLength().MValue();
+                _bAutoLayout = Properties.GetProperty( "table-layout" ).GetEnum() ==
+                    TableLayout.Auto;
 
-                id = properties.GetProperty( "id" ).GetString();
+                _id = Properties.GetProperty( "id" ).GetString();
 
-                omitHeaderAtBreak =
-                    properties.GetProperty( "table-omit-header-at-break" ).GetEnum()
-                        == GenericBoolean.Enums.TRUE;
-                omitFooterAtBreak =
-                    properties.GetProperty( "table-omit-footer-at-break" ).GetEnum()
-                        == GenericBoolean.Enums.TRUE;
+                _omitHeaderAtBreak =
+                    Properties.GetProperty( "table-omit-header-at-break" ).GetEnum()
+                        == GenericBoolean.Enums.True;
+                _omitFooterAtBreak =
+                    Properties.GetProperty( "table-omit-footer-at-break" ).GetEnum()
+                        == GenericBoolean.Enums.True;
 
                 if ( area is BlockArea )
                     area.end();
-                if ( areaContainer
+                if ( _areaContainer
                     == null )
-                    area.getIDReferences().CreateID( id );
+                    area.getIDReferences().CreateID( _id );
 
-                marker = 0;
+                Marker = 0;
 
-                if ( breakBefore == GenericBreak.Enums.PAGE )
-                    return new Status( Status.FORCE_PAGE_BREAK );
+                if ( _breakBefore == GenericBreak.Enums.Page )
+                    return new Status( Status.ForcePageBreak );
 
-                if ( breakBefore == GenericBreak.Enums.ODD_PAGE )
-                    return new Status( Status.FORCE_PAGE_BREAK_ODD );
+                if ( _breakBefore == GenericBreak.Enums.OddPage )
+                    return new Status( Status.ForcePageBreakOdd );
 
-                if ( breakBefore == GenericBreak.Enums.EVEN_PAGE )
-                    return new Status( Status.FORCE_PAGE_BREAK_EVEN );
+                if ( _breakBefore == GenericBreak.Enums.EvenPage )
+                    return new Status( Status.ForcePageBreakEven );
             }
 
-            if ( spaceBefore != 0 && marker == 0 )
-                area.addDisplaySpace( spaceBefore );
+            if ( _spaceBefore != 0 && Marker == 0 )
+                area.addDisplaySpace( _spaceBefore );
 
-            if ( marker == 0 && areaContainer == null )
-                area.getIDReferences().ConfigureID( id, area );
+            if ( Marker == 0 && _areaContainer == null )
+                area.getIDReferences().ConfigureID( _id, area );
 
             int spaceLeft = area.spaceLeft();
-            areaContainer =
-                new AreaContainer( propMgr.GetFontState( area.getFontInfo() ), 0, 0,
+            _areaContainer =
+                new AreaContainer( PropMgr.GetFontState( area.getFontInfo() ), 0, 0,
                     area.getAllocationWidth(), area.spaceLeft(),
-                    Position.STATIC );
+                    Position.Static );
 
-            areaContainer.foCreator = this;
-            areaContainer.setPage( area.getPage() );
-            areaContainer.setParent( area );
-            areaContainer.setBackground( propMgr.GetBackgroundProps() );
-            areaContainer.setBorderAndPadding( propMgr.GetBorderAndPadding() );
-            areaContainer.start();
+            _areaContainer.foCreator = this;
+            _areaContainer.setPage( area.getPage() );
+            _areaContainer.setParent( area );
+            _areaContainer.setBackground( PropMgr.GetBackgroundProps() );
+            _areaContainer.setBorderAndPadding( PropMgr.GetBorderAndPadding() );
+            _areaContainer.start();
 
-            areaContainer.setAbsoluteHeight( area.getAbsoluteHeight() );
-            areaContainer.setIDReferences( area.getIDReferences() );
+            _areaContainer.setAbsoluteHeight( area.getAbsoluteHeight() );
+            _areaContainer.setIDReferences( area.getIDReferences() );
 
             var addedHeader = false;
             var addedFooter = false;
-            int numChildren = children.Count;
+            int numChildren = Children.Count;
 
-            if ( columns.Count == 0 )
+            if ( _columns.Count == 0 )
             {
-                FindColumns( areaContainer );
-                if ( bAutoLayout )
+                FindColumns( _areaContainer );
+                if ( _bAutoLayout )
                 {
                     FonetDriver.ActiveDriver.FireFonetWarning(
                         "table-layout=auto is not supported, using fixed!" );
                 }
-                contentWidth =
-                    CalcFixedColumnWidths( areaContainer.getAllocationWidth() );
+                _contentWidth =
+                    CalcFixedColumnWidths( _areaContainer.getAllocationWidth() );
             }
-            areaContainer.setAllocationWidth( contentWidth );
-            layoutColumns( areaContainer );
+            _areaContainer.setAllocationWidth( _contentWidth );
+            LayoutColumns( _areaContainer );
 
-            for ( int i = marker; i < numChildren; i++ )
+            for ( int i = Marker; i < numChildren; i++ )
             {
-                var fo = (FONode)children[ i ];
+                var fo = (FoNode)Children[ i ];
                 if ( fo is TableHeader )
                 {
-                    if ( columns.Count == 0 )
+                    if ( _columns.Count == 0 )
                     {
                         FonetDriver.ActiveDriver.FireFonetWarning(
                             "Current implementation of tables requires a table-column for each column, indicating column-width" );
-                        return new Status( Status.OK );
+                        return new Status( Status.Ok );
                     }
-                    tableHeader = (TableHeader)fo;
-                    tableHeader.SetColumns( columns );
+                    _tableHeader = (TableHeader)fo;
+                    _tableHeader.SetColumns( _columns );
                 }
                 else if ( fo is TableFooter )
                 {
-                    if ( columns.Count == 0 )
+                    if ( _columns.Count == 0 )
                     {
                         FonetDriver.ActiveDriver.FireFonetWarning(
                             "Current implementation of tables requires a table-column for each column, indicating column-width" );
-                        return new Status( Status.OK );
+                        return new Status( Status.Ok );
                     }
-                    tableFooter = (TableFooter)fo;
-                    tableFooter.SetColumns( columns );
+                    _tableFooter = (TableFooter)fo;
+                    _tableFooter.SetColumns( _columns );
                 }
                 else if ( fo is TableBody )
                 {
-                    if ( columns.Count == 0 )
+                    if ( _columns.Count == 0 )
                     {
                         FonetDriver.ActiveDriver.FireFonetWarning(
                             "Current implementation of tables requires a table-column for each column, indicating column-width" );
-                        return new Status( Status.OK );
+                        return new Status( Status.Ok );
                     }
                     Status status;
-                    if ( tableHeader != null && !addedHeader )
+                    if ( _tableHeader != null && !addedHeader )
                     {
                         if ( ( status =
-                            tableHeader.Layout( areaContainer ) ).isIncomplete() )
+                            _tableHeader.Layout( _areaContainer ) ).IsIncomplete() )
                         {
-                            tableHeader.ResetMarker();
-                            return new Status( Status.AREA_FULL_NONE );
+                            _tableHeader.ResetMarker();
+                            return new Status( Status.AreaFullNone );
                         }
                         addedHeader = true;
-                        tableHeader.ResetMarker();
+                        _tableHeader.ResetMarker();
                         area.setMaxHeight( area.getMaxHeight() - spaceLeft
-                            + areaContainer.getMaxHeight() );
+                            + _areaContainer.getMaxHeight() );
                     }
-                    if ( tableFooter != null && !omitFooterAtBreak
+                    if ( _tableFooter != null && !_omitFooterAtBreak
                         && !addedFooter )
                     {
                         if ( ( status =
-                            tableFooter.Layout( areaContainer ) ).isIncomplete() )
-                            return new Status( Status.AREA_FULL_NONE );
+                            _tableFooter.Layout( _areaContainer ) ).IsIncomplete() )
+                            return new Status( Status.AreaFullNone );
                         addedFooter = true;
-                        tableFooter.ResetMarker();
+                        _tableFooter.ResetMarker();
                     }
-                    fo.SetWidows( widows );
-                    fo.SetOrphans( orphans );
-                    ( (TableBody)fo ).SetColumns( columns );
+                    fo.SetWidows( Widows );
+                    fo.SetOrphans( Orphans );
+                    ( (TableBody)fo ).SetColumns( _columns );
 
-                    if ( ( status = fo.Layout( areaContainer ) ).isIncomplete() )
+                    if ( ( status = fo.Layout( _areaContainer ) ).IsIncomplete() )
                     {
-                        marker = i;
-                        if ( bodyCount == 0
-                            && status.getCode() == Status.AREA_FULL_NONE )
+                        Marker = i;
+                        if ( _bodyCount == 0
+                            && status.GetCode() == Status.AreaFullNone )
                         {
-                            if ( tableHeader != null )
-                                tableHeader.RemoveLayout( areaContainer );
-                            if ( tableFooter != null )
-                                tableFooter.RemoveLayout( areaContainer );
+                            if ( _tableHeader != null )
+                                _tableHeader.RemoveLayout( _areaContainer );
+                            if ( _tableFooter != null )
+                                _tableFooter.RemoveLayout( _areaContainer );
                             ResetMarker();
                         }
-                        if ( areaContainer.getContentHeight() > 0 )
+                        if ( _areaContainer.getContentHeight() > 0 )
                         {
-                            area.addChild( areaContainer );
-                            area.increaseHeight( areaContainer.GetHeight() );
-                            if ( omitHeaderAtBreak )
-                                tableHeader = null;
-                            if ( tableFooter != null && !omitFooterAtBreak )
+                            area.addChild( _areaContainer );
+                            area.increaseHeight( _areaContainer.GetHeight() );
+                            if ( _omitHeaderAtBreak )
+                                _tableHeader = null;
+                            if ( _tableFooter != null && !_omitFooterAtBreak )
                             {
-                                ( (TableBody)fo ).SetYPosition( tableFooter.GetYPosition() );
-                                tableFooter.SetYPosition( tableFooter.GetYPosition()
+                                ( (TableBody)fo ).SetYPosition( _tableFooter.GetYPosition() );
+                                _tableFooter.SetYPosition( _tableFooter.GetYPosition()
                                     + ( (TableBody)fo ).GetHeight() );
                             }
                             SetupColumnHeights();
-                            status = new Status( Status.AREA_FULL_SOME );
+                            status = new Status( Status.AreaFullSome );
                         }
                         return status;
                     }
-                    bodyCount++;
+                    _bodyCount++;
                     area.setMaxHeight( area.getMaxHeight() - spaceLeft
-                        + areaContainer.getMaxHeight() );
-                    if ( tableFooter != null && !omitFooterAtBreak )
+                        + _areaContainer.getMaxHeight() );
+                    if ( _tableFooter != null && !_omitFooterAtBreak )
                     {
-                        ( (TableBody)fo ).SetYPosition( tableFooter.GetYPosition() );
-                        tableFooter.SetYPosition( tableFooter.GetYPosition()
+                        ( (TableBody)fo ).SetYPosition( _tableFooter.GetYPosition() );
+                        _tableFooter.SetYPosition( _tableFooter.GetYPosition()
                             + ( (TableBody)fo ).GetHeight() );
                     }
                 }
             }
 
-            if ( tableFooter != null && omitFooterAtBreak )
+            if ( _tableFooter != null && _omitFooterAtBreak )
             {
-                if ( tableFooter.Layout( areaContainer ).isIncomplete() )
+                if ( _tableFooter.Layout( _areaContainer ).IsIncomplete() )
                 {
                     FonetDriver.ActiveDriver.FireFonetWarning(
                         "Footer could not fit on page, moving last body row to next page" );
-                    area.addChild( areaContainer );
-                    area.increaseHeight( areaContainer.GetHeight() );
-                    if ( omitHeaderAtBreak )
-                        tableHeader = null;
-                    tableFooter.RemoveLayout( areaContainer );
-                    tableFooter.ResetMarker();
-                    return new Status( Status.AREA_FULL_SOME );
+                    area.addChild( _areaContainer );
+                    area.increaseHeight( _areaContainer.GetHeight() );
+                    if ( _omitHeaderAtBreak )
+                        _tableHeader = null;
+                    _tableFooter.RemoveLayout( _areaContainer );
+                    _tableFooter.ResetMarker();
+                    return new Status( Status.AreaFullSome );
                 }
             }
 
-            if ( height != 0 )
-                areaContainer.SetHeight( height );
+            if ( _height != 0 )
+                _areaContainer.SetHeight( _height );
 
             SetupColumnHeights();
 
-            areaContainer.end();
-            area.addChild( areaContainer );
+            _areaContainer.end();
+            area.addChild( _areaContainer );
 
-            area.increaseHeight( areaContainer.GetHeight() );
+            area.increaseHeight( _areaContainer.GetHeight() );
 
-            if ( spaceAfter != 0 )
-                area.addDisplaySpace( spaceAfter );
+            if ( _spaceAfter != 0 )
+                area.addDisplaySpace( _spaceAfter );
 
             if ( area is BlockArea )
                 area.start();
 
-            if ( breakAfter == GenericBreak.Enums.PAGE )
+            if ( _breakAfter == GenericBreak.Enums.Page )
             {
-                marker = MarkerBreakAfter;
-                return new Status( Status.FORCE_PAGE_BREAK );
+                Marker = MarkerBreakAfter;
+                return new Status( Status.ForcePageBreak );
             }
 
-            if ( breakAfter == GenericBreak.Enums.ODD_PAGE )
+            if ( _breakAfter == GenericBreak.Enums.OddPage )
             {
-                marker = MarkerBreakAfter;
-                return new Status( Status.FORCE_PAGE_BREAK_ODD );
+                Marker = MarkerBreakAfter;
+                return new Status( Status.ForcePageBreakOdd );
             }
 
-            if ( breakAfter == GenericBreak.Enums.EVEN_PAGE )
+            if ( _breakAfter == GenericBreak.Enums.EvenPage )
             {
-                marker = MarkerBreakAfter;
-                return new Status( Status.FORCE_PAGE_BREAK_EVEN );
+                Marker = MarkerBreakAfter;
+                return new Status( Status.ForcePageBreakEven );
             }
 
-            return new Status( Status.OK );
+            return new Status( Status.Ok );
         }
 
         protected void SetupColumnHeights()
         {
-            foreach ( TableColumn c in columns )
+            foreach ( TableColumn c in _columns )
             {
                 if ( c != null )
-                    c.SetHeight( areaContainer.getContentHeight() );
+                    c.SetHeight( _areaContainer.getContentHeight() );
             }
         }
 
         private void FindColumns( Area areaContainer )
         {
             var nextColumnNumber = 1;
-            foreach ( FONode fo in children )
+            foreach ( FoNode fo in Children )
             {
                 if ( fo is TableColumn )
                 {
@@ -330,15 +330,15 @@ namespace Fonet.Fo.Flow
                         currentColumnNumber = nextColumnNumber;
                     for ( var j = 0; j < numColumnsRepeated; j++ )
                     {
-                        if ( currentColumnNumber < columns.Count )
+                        if ( currentColumnNumber < _columns.Count )
                         {
-                            if ( columns[ currentColumnNumber - 1 ] != null )
+                            if ( _columns[ currentColumnNumber - 1 ] != null )
                             {
                                 FonetDriver.ActiveDriver.FireFonetWarning(
                                     "More than one column object assigned to column " + currentColumnNumber );
                             }
                         }
-                        columns.Insert( currentColumnNumber - 1, c );
+                        _columns.Insert( currentColumnNumber - 1, c );
                         currentColumnNumber++;
                     }
                     nextColumnNumber = currentColumnNumber;
@@ -356,7 +356,7 @@ namespace Fonet.Fo.Flow
             var dUnitLength = 0.0;
             var tuMin = 100000.0;
 
-            foreach ( TableColumn c in columns )
+            foreach ( TableColumn c in _columns )
             {
                 if ( c == null )
                 {
@@ -377,14 +377,14 @@ namespace Fonet.Fo.Flow
                 nextColumnNumber++;
             }
 
-            SetIPD( dTblUnits > 0.0, maxAllocationWidth );
+            SetIpd( dTblUnits > 0.0, maxAllocationWidth );
             if ( dTblUnits > 0.0 )
             {
                 var iProportionalWidth = 0;
-                if ( optIPD > iFixedWidth )
-                    iProportionalWidth = optIPD - iFixedWidth;
-                else if ( maxIPD > iFixedWidth )
-                    iProportionalWidth = maxIPD - iFixedWidth;
+                if ( _optIpd > iFixedWidth )
+                    iProportionalWidth = _optIpd - iFixedWidth;
+                else if ( _maxIpd > iFixedWidth )
+                    iProportionalWidth = _maxIpd - iFixedWidth;
                 else
                     iProportionalWidth = maxAllocationWidth - iFixedWidth;
                 if ( iProportionalWidth > 0 )
@@ -394,35 +394,35 @@ namespace Fonet.Fo.Flow
                     FonetDriver.ActiveDriver.FireFonetWarning( string.Format(
                         "Sum of fixed column widths {0} greater than maximum available IPD {1}; no space for {2} propertional units",
                         iFixedWidth, maxAllocationWidth, dTblUnits ) );
-                    dUnitLength = MINCOLWIDTH / tuMin;
+                    dUnitLength = Mincolwidth / tuMin;
                 }
             }
             else
             {
                 int iTableWidth = iFixedWidth;
-                if ( minIPD > iFixedWidth )
+                if ( _minIpd > iFixedWidth )
                 {
-                    iTableWidth = minIPD;
-                    dWidthFactor = minIPD / (double)iFixedWidth;
+                    iTableWidth = _minIpd;
+                    dWidthFactor = _minIpd / (double)iFixedWidth;
                 }
-                else if ( maxIPD < iFixedWidth )
+                else if ( _maxIpd < iFixedWidth )
                 {
-                    if ( maxIPD != 0 )
+                    if ( _maxIpd != 0 )
                     {
                         FonetDriver.ActiveDriver.FireFonetWarning(
                             "Sum of fixed column widths " + iFixedWidth +
-                                " greater than maximum specified IPD " + maxIPD );
+                                " greater than maximum specified IPD " + _maxIpd );
                     }
                 }
-                else if ( optIPD != -1 && iFixedWidth != optIPD )
+                else if ( _optIpd != -1 && iFixedWidth != _optIpd )
                 {
                     FonetDriver.ActiveDriver.FireFonetWarning(
                         "Sum of fixed column widths " + iFixedWidth +
-                            " differs from specified optimum IPD " + optIPD );
+                            " differs from specified optimum IPD " + _optIpd );
                 }
             }
             var offset = 0;
-            foreach ( TableColumn c in columns )
+            foreach ( TableColumn c in _columns )
             {
                 if ( c != null )
                 {
@@ -445,9 +445,9 @@ namespace Fonet.Fo.Flow
             return offset;
         }
 
-        private void layoutColumns( Area tableArea )
+        private void LayoutColumns( Area tableArea )
         {
-            foreach ( TableColumn c in columns )
+            foreach ( TableColumn c in _columns )
             {
                 if ( c != null )
                     c.Layout( tableArea );
@@ -456,49 +456,49 @@ namespace Fonet.Fo.Flow
 
         public int GetAreaHeight()
         {
-            return areaContainer.GetHeight();
+            return _areaContainer.GetHeight();
         }
 
         public override int GetContentWidth()
         {
-            if ( areaContainer != null )
-                return areaContainer.getContentWidth();
+            if ( _areaContainer != null )
+                return _areaContainer.getContentWidth();
             return 0;
         }
 
-        private void SetIPD( bool bHasProportionalUnits, int maxAllocIPD )
+        private void SetIpd( bool bHasProportionalUnits, int maxAllocIpd )
         {
-            bool bMaxIsSpecified = !ipd.GetMaximum().GetLength().IsAuto();
+            bool bMaxIsSpecified = !_ipd.GetMaximum().GetLength().IsAuto();
             if ( bMaxIsSpecified )
-                maxIPD = ipd.GetMaximum().GetLength().MValue();
+                _maxIpd = _ipd.GetMaximum().GetLength().MValue();
             else
-                maxIPD = maxAllocIPD;
+                _maxIpd = maxAllocIpd;
 
-            if ( ipd.GetOptimum().GetLength().IsAuto() )
-                optIPD = -1;
+            if ( _ipd.GetOptimum().GetLength().IsAuto() )
+                _optIpd = -1;
             else
-                optIPD = ipd.GetMaximum().GetLength().MValue();
-            if ( ipd.GetMinimum().GetLength().IsAuto() )
-                minIPD = -1;
+                _optIpd = _ipd.GetMaximum().GetLength().MValue();
+            if ( _ipd.GetMinimum().GetLength().IsAuto() )
+                _minIpd = -1;
             else
-                minIPD = ipd.GetMinimum().GetLength().MValue();
-            if ( bHasProportionalUnits && optIPD < 0 )
+                _minIpd = _ipd.GetMinimum().GetLength().MValue();
+            if ( bHasProportionalUnits && _optIpd < 0 )
             {
-                if ( minIPD > 0 )
+                if ( _minIpd > 0 )
                 {
                     if ( bMaxIsSpecified )
-                        optIPD = ( minIPD + maxIPD ) / 2;
+                        _optIpd = ( _minIpd + _maxIpd ) / 2;
                     else
-                        optIPD = minIPD;
+                        _optIpd = _minIpd;
                 }
                 else if ( bMaxIsSpecified )
-                    optIPD = maxIPD;
+                    _optIpd = _maxIpd;
                 else
                 {
                     FonetDriver.ActiveDriver.FireFonetError(
                         "At least one of minimum, optimum, or maximum " +
                             "IPD must be specified on table." );
-                    optIPD = maxIPD;
+                    _optIpd = _maxIpd;
                 }
             }
         }

@@ -11,7 +11,7 @@ namespace Fonet.Layout
         public ColumnArea( FontState fontState, int xPosition, int yPosition,
             int allocationWidth, int maxHeight, int columnCount )
             : base( fontState, xPosition, yPosition,
-                allocationWidth, maxHeight, Position.ABSOLUTE )
+                allocationWidth, maxHeight, Position.Absolute )
         {
             maxColumns = columnCount;
             setAreaName( "normal-flow-ref.-area" );

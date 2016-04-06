@@ -2,15 +2,15 @@ namespace Fonet.Pdf.Gdi.Font
 {
     internal class GlyphReader
     {
-        private readonly DirectoryEntry glyfEntry;
-        private readonly IndexToLocationTable loca;
-        private readonly FontFileReader reader;
+        private readonly DirectoryEntry _glyfEntry;
+        private readonly IndexToLocationTable _loca;
+        private readonly FontFileReader _reader;
 
         public GlyphReader( FontFileReader reader )
         {
-            this.reader = reader;
-            glyfEntry = reader.GetDictionaryEntry( TableNames.Glyf );
-            loca = reader.GetIndexToLocationTable();
+            this._reader = reader;
+            _glyfEntry = reader.GetDictionaryEntry( TableNames.Glyf );
+            _loca = reader.GetIndexToLocationTable();
         }
 
         /// <summary>
@@ -18,13 +18,13 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public Glyph ReadGlyph( int glyphIndex )
         {
-            FontFileStream stream = reader.Stream;
+            FontFileStream stream = _reader.Stream;
 
             // Offset from beginning of font file
-            uint fileOffset = glyfEntry.Offset + loca[ glyphIndex ];
+            uint fileOffset = _glyfEntry.Offset + _loca[ glyphIndex ];
             long length = GetGlyphLength( glyphIndex );
 
-            var glyph = new Glyph( reader.IndexMappings.Map( glyphIndex ) );
+            var glyph = new Glyph( _reader.IndexMappings.Map( glyphIndex ) );
             if ( length != 0 )
             {
                 var glyphData = new byte[ length ];
@@ -67,7 +67,7 @@ namespace Fonet.Pdf.Gdi.Font
             {
                 short flags = stream.ReadShort();
                 long offset = stream.Position;
-                int subsetIndex = reader.IndexMappings.Map( stream.ReadShort() );
+                int subsetIndex = _reader.IndexMappings.Map( stream.ReadShort() );
 
                 glyph.AddChild( subsetIndex );
 
@@ -86,17 +86,17 @@ namespace Fonet.Pdf.Gdi.Font
                 if ( ( flags & BitMasks.WeHaveAScale ) > 0 )
                 {
                     // Skip scale
-                    skipBytes = PrimitiveSizes.F2DOT14;
+                    skipBytes = PrimitiveSizes.F2Dot14;
                 }
                 else if ( ( flags & BitMasks.WeHaveAnXAndYScale ) > 0 )
                 {
                     // Skip xscale and yscale
-                    skipBytes = PrimitiveSizes.F2DOT14 * 2;
+                    skipBytes = PrimitiveSizes.F2Dot14 * 2;
                 }
                 else if ( ( flags & BitMasks.WeHaveATwoByTwo ) > 0 )
                 {
                     // Skip xscale, scale01, scale10 and yscale
-                    skipBytes = PrimitiveSizes.F2DOT14 * 4;
+                    skipBytes = PrimitiveSizes.F2Dot14 * 4;
                 }
 
                 // Glyph instructions
@@ -120,12 +120,12 @@ namespace Fonet.Pdf.Gdi.Font
         /// <returns></returns>
         private long GetGlyphLength( int index )
         {
-            if ( index == loca.Count - 1 )
+            if ( index == _loca.Count - 1 )
             {
                 // Last glyph
-                return glyfEntry.Length - loca[ index ];
+                return _glyfEntry.Length - _loca[ index ];
             }
-            return loca[ index + 1 ] - loca[ index ];
+            return _loca[ index + 1 ] - _loca[ index ];
         }
     }
 

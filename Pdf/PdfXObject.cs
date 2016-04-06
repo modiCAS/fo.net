@@ -2,32 +2,27 @@ namespace Fonet.Pdf
 {
     public class PdfXObject : PdfStream
     {
-        private readonly byte[] objectData;
+        private readonly byte[] _objectData;
 
         public PdfXObject( byte[] objectData, PdfName name, PdfObjectId objectId )
             : base( objectId )
         {
-            this.objectData = objectData;
+            this._objectData = objectData;
             Name = name;
-            dictionary[ PdfName.Names.Type ] = PdfName.Names.XObject;
+            base.Dictionary[ PdfName.Names.Type ] = PdfName.Names.XObject;
         }
 
         public PdfName SubType
         {
-            get { return (PdfName)dictionary[ PdfName.Names.Subtype ]; }
-            set { dictionary[ PdfName.Names.Subtype ] = value; }
+            get { return (PdfName)base.Dictionary[ PdfName.Names.Subtype ]; }
+            set { base.Dictionary[ PdfName.Names.Subtype ] = value; }
         }
 
         public PdfName Name { get; private set; }
 
-        public PdfDictionary Dictionary
-        {
-            get { return dictionary; }
-        }
-
         protected internal override void Write( PdfWriter writer )
         {
-            data = objectData;
+            Data = _objectData;
             base.Write( writer );
         }
     }

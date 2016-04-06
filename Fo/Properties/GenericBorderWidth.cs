@@ -4,9 +4,9 @@ namespace Fonet.Fo.Properties
 {
     internal class GenericBorderWidth : LengthProperty.Maker
     {
-        private static Hashtable s_htKeywords;
+        private static Hashtable _sHtKeywords;
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected GenericBorderWidth( string name ) : base( name )
         {
@@ -41,22 +41,22 @@ namespace Fonet.Fo.Properties
             return p;
         }
 
-        private static void initKeywords()
+        private static void InitKeywords()
         {
-            s_htKeywords = new Hashtable( 3 );
+            _sHtKeywords = new Hashtable( 3 );
 
-            s_htKeywords.Add( "thin", "0.5pt" );
+            _sHtKeywords.Add( "thin", "0.5pt" );
 
-            s_htKeywords.Add( "medium", "1pt" );
+            _sHtKeywords.Add( "medium", "1pt" );
 
-            s_htKeywords.Add( "thick", "2pt" );
+            _sHtKeywords.Add( "thick", "2pt" );
         }
 
         protected override string CheckValueKeywords( string keyword )
         {
-            if ( s_htKeywords == null )
-                initKeywords();
-            var value = (string)s_htKeywords[ keyword ];
+            if ( _sHtKeywords == null )
+                InitKeywords();
+            var value = (string)_sHtKeywords[ keyword ];
             if ( value == null )
                 return base.CheckValueKeywords( keyword );
             return value;
@@ -64,9 +64,9 @@ namespace Fonet.Fo.Properties
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "0pt", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "0pt", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Fonet.Pdf
         public static readonly PdfVersion V11 = new PdfVersion( 1, 1 );
         public static readonly PdfVersion V10 = new PdfVersion( 1, 0 );
 
-        private byte[] header;
+        private byte[] _header;
 
         private PdfVersion( byte major, byte minor )
         {
@@ -22,12 +22,12 @@ namespace Fonet.Pdf
         {
             get
             {
-                if ( header == null )
+                if ( _header == null )
                 {
-                    header = Encoding.ASCII.GetBytes(
+                    _header = Encoding.ASCII.GetBytes(
                         string.Format( "%PDF-{0}.{1}", Major, Minor ) );
                 }
-                return header;
+                return _header;
             }
         }
 

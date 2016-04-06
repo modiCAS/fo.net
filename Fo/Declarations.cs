@@ -5,7 +5,7 @@ namespace Fonet.Fo
         protected Declarations( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:declarations";
+            Name = "fo:declarations";
         }
 
         public new static FObj.Maker GetMaker()

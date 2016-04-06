@@ -6,18 +6,18 @@ namespace Fonet.Fo.Flow
 {
     internal class TableColumn : FObj
     {
-        private AreaContainer areaContainer;
-        private int columnOffset;
-        private int columnWidth;
-        private Length columnWidthPropVal;
-        private int iColumnNumber;
-        private int numColumnsRepeated;
-        private bool setup;
+        private AreaContainer _areaContainer;
+        private int _columnOffset;
+        private int _columnWidth;
+        private Length _columnWidthPropVal;
+        private int _iColumnNumber;
+        private int _numColumnsRepeated;
+        private bool _setup;
 
         public TableColumn( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:table-column";
+            Name = "fo:table-column";
         }
 
         public new static FObj.Maker GetMaker()
@@ -27,88 +27,88 @@ namespace Fonet.Fo.Flow
 
         public Length GetColumnWidthAsLength()
         {
-            return columnWidthPropVal;
+            return _columnWidthPropVal;
         }
 
         public int GetColumnWidth()
         {
-            return columnWidth;
+            return _columnWidth;
         }
 
         public void SetColumnWidth( int columnWidth )
         {
-            this.columnWidth = columnWidth;
+            this._columnWidth = columnWidth;
         }
 
         public int GetColumnNumber()
         {
-            return iColumnNumber;
+            return _iColumnNumber;
         }
 
         public int GetNumColumnsRepeated()
         {
-            return numColumnsRepeated;
+            return _numColumnsRepeated;
         }
 
         public void DoSetup( Area area )
         {
-            BorderAndPadding bap = propMgr.GetBorderAndPadding();
-            BackgroundProps bProps = propMgr.GetBackgroundProps();
+            BorderAndPadding bap = PropMgr.GetBorderAndPadding();
+            BackgroundProps bProps = PropMgr.GetBackgroundProps();
 
-            iColumnNumber =
-                properties.GetProperty( "column-number" ).GetNumber().IntValue();
+            _iColumnNumber =
+                Properties.GetProperty( "column-number" ).GetNumber().IntValue();
 
-            numColumnsRepeated =
-                properties.GetProperty( "number-columns-repeated" ).GetNumber().IntValue();
+            _numColumnsRepeated =
+                Properties.GetProperty( "number-columns-repeated" ).GetNumber().IntValue();
 
-            columnWidthPropVal =
-                properties.GetProperty( "column-width" ).GetLength();
+            _columnWidthPropVal =
+                Properties.GetProperty( "column-width" ).GetLength();
 
-            columnWidth = columnWidthPropVal.MValue();
+            _columnWidth = _columnWidthPropVal.MValue();
 
-            string id = properties.GetProperty( "id" ).GetString();
+            string id = Properties.GetProperty( "id" ).GetString();
             area.getIDReferences().InitializeID( id, area );
 
-            setup = true;
+            _setup = true;
         }
 
         public override Status Layout( Area area )
         {
-            if ( marker == MarkerBreakAfter )
-                return new Status( Status.OK );
+            if ( Marker == MarkerBreakAfter )
+                return new Status( Status.Ok );
 
-            if ( marker == MarkerStart )
+            if ( Marker == MarkerStart )
             {
-                if ( !setup )
+                if ( !_setup )
                     DoSetup( area );
             }
-            if ( columnWidth > 0 )
+            if ( _columnWidth > 0 )
             {
-                areaContainer =
-                    new AreaContainer( propMgr.GetFontState( area.getFontInfo() ),
-                        columnOffset, 0, columnWidth,
-                        area.getContentHeight(), Position.RELATIVE );
-                areaContainer.foCreator = this;
-                areaContainer.setPage( area.getPage() );
-                areaContainer.setBorderAndPadding( propMgr.GetBorderAndPadding() );
-                areaContainer.setBackground( propMgr.GetBackgroundProps() );
-                areaContainer.SetHeight( area.GetHeight() );
-                area.addChild( areaContainer );
+                _areaContainer =
+                    new AreaContainer( PropMgr.GetFontState( area.getFontInfo() ),
+                        _columnOffset, 0, _columnWidth,
+                        area.getContentHeight(), Position.Relative );
+                _areaContainer.foCreator = this;
+                _areaContainer.setPage( area.getPage() );
+                _areaContainer.setBorderAndPadding( PropMgr.GetBorderAndPadding() );
+                _areaContainer.setBackground( PropMgr.GetBackgroundProps() );
+                _areaContainer.SetHeight( area.GetHeight() );
+                area.addChild( _areaContainer );
             }
-            return new Status( Status.OK );
+            return new Status( Status.Ok );
         }
 
         public void SetColumnOffset( int columnOffset )
         {
-            this.columnOffset = columnOffset;
+            this._columnOffset = columnOffset;
         }
 
         public void SetHeight( int height )
         {
-            if ( areaContainer != null )
+            if ( _areaContainer != null )
             {
-                areaContainer.setMaxHeight( height );
-                areaContainer.SetHeight( height );
+                _areaContainer.setMaxHeight( height );
+                _areaContainer.SetHeight( height );
             }
         }
 

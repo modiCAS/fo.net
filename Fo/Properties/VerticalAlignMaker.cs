@@ -2,23 +2,23 @@ namespace Fonet.Fo.Properties
 {
     internal class VerticalAlignMaker : EnumProperty.Maker
     {
-        protected static readonly EnumProperty s_propBASELINE = new EnumProperty( Constants.BASELINE );
+        protected static readonly EnumProperty SPropBaseline = new EnumProperty( Constants.Baseline );
 
-        protected static readonly EnumProperty s_propMIDDLE = new EnumProperty( Constants.MIDDLE );
+        protected static readonly EnumProperty SPropMiddle = new EnumProperty( Constants.Middle );
 
-        protected static readonly EnumProperty s_propSUB = new EnumProperty( Constants.SUB );
+        protected static readonly EnumProperty SPropSub = new EnumProperty( Constants.Sub );
 
-        protected static readonly EnumProperty s_propSUPER = new EnumProperty( Constants.SUPER );
+        protected static readonly EnumProperty SPropSuper = new EnumProperty( Constants.Super );
 
-        protected static readonly EnumProperty s_propTEXT_TOP = new EnumProperty( Constants.TEXT_TOP );
+        protected static readonly EnumProperty SPropTextTop = new EnumProperty( Constants.TextTop );
 
-        protected static readonly EnumProperty s_propTEXT_BOTTOM = new EnumProperty( Constants.TEXT_BOTTOM );
+        protected static readonly EnumProperty SPropTextBottom = new EnumProperty( Constants.TextBottom );
 
-        protected static readonly EnumProperty s_propTOP = new EnumProperty( Constants.TOP );
+        protected static readonly EnumProperty SPropTop = new EnumProperty( Constants.Top );
 
-        protected static readonly EnumProperty s_propBOTTOM = new EnumProperty( Constants.BOTTOM );
+        protected static readonly EnumProperty SPropBottom = new EnumProperty( Constants.Bottom );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected VerticalAlignMaker( string name ) : base( name )
         {
@@ -38,37 +38,37 @@ namespace Fonet.Fo.Properties
         public override Property CheckEnumValues( string value )
         {
             if ( value.Equals( "baseline" ) )
-                return s_propBASELINE;
+                return SPropBaseline;
 
             if ( value.Equals( "middle" ) )
-                return s_propMIDDLE;
+                return SPropMiddle;
 
             if ( value.Equals( "sub" ) )
-                return s_propSUB;
+                return SPropSub;
 
             if ( value.Equals( "super" ) )
-                return s_propSUPER;
+                return SPropSuper;
 
             if ( value.Equals( "text-top" ) )
-                return s_propTEXT_TOP;
+                return SPropTextTop;
 
             if ( value.Equals( "text-bottom" ) )
-                return s_propTEXT_BOTTOM;
+                return SPropTextBottom;
 
             if ( value.Equals( "top" ) )
-                return s_propTOP;
+                return SPropTop;
 
             if ( value.Equals( "bottom" ) )
-                return s_propBOTTOM;
+                return SPropBottom;
 
             return base.CheckEnumValues( value );
         }
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "baseline", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "baseline", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
     }
 }

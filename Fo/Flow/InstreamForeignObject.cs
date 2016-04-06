@@ -6,28 +6,28 @@ namespace Fonet.Fo.Flow
 {
     internal class InstreamForeignObject : FObj
     {
-        private ForeignObjectArea areaCurrent;
-        private int breakAfter;
+        private ForeignObjectArea _areaCurrent;
+        private int _breakAfter;
 
-        private int breakBefore;
-        private bool chauto;
-        private int contheight;
-        private int contwidth;
-        private bool cwauto;
-        private int endIndent;
-        private bool hauto;
-        private int height;
-        private int scaling;
-        private int spaceAfter;
-        private int spaceBefore;
-        private int startIndent;
-        private bool wauto;
-        private int width;
+        private int _breakBefore;
+        private bool _chauto;
+        private int _contheight;
+        private int _contwidth;
+        private bool _cwauto;
+        private int _endIndent;
+        private bool _hauto;
+        private int _height;
+        private int _scaling;
+        private int _spaceAfter;
+        private int _spaceBefore;
+        private int _startIndent;
+        private bool _wauto;
+        private int _width;
 
         public InstreamForeignObject( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:instream-foreign-object";
+            Name = "fo:instream-foreign-object";
         }
 
         public new static FObj.Maker GetMaker()
@@ -37,148 +37,148 @@ namespace Fonet.Fo.Flow
 
         public override Status Layout( Area area )
         {
-            if ( marker == MarkerBreakAfter )
-                return new Status( Status.OK );
+            if ( Marker == MarkerBreakAfter )
+                return new Status( Status.Ok );
 
-            if ( marker == MarkerStart )
+            if ( Marker == MarkerStart )
             {
-                AccessibilityProps mAccProps = propMgr.GetAccessibilityProps();
-                AuralProps mAurProps = propMgr.GetAuralProps();
-                BorderAndPadding bap = propMgr.GetBorderAndPadding();
-                BackgroundProps bProps = propMgr.GetBackgroundProps();
-                MarginInlineProps mProps = propMgr.GetMarginInlineProps();
-                RelativePositionProps mRelProps = propMgr.GetRelativePositionProps();
+                AccessibilityProps mAccProps = PropMgr.GetAccessibilityProps();
+                AuralProps mAurProps = PropMgr.GetAuralProps();
+                BorderAndPadding bap = PropMgr.GetBorderAndPadding();
+                BackgroundProps bProps = PropMgr.GetBackgroundProps();
+                MarginInlineProps mProps = PropMgr.GetMarginInlineProps();
+                RelativePositionProps mRelProps = PropMgr.GetRelativePositionProps();
 
-                string id = properties.GetProperty( "id" ).GetString();
-                int align = properties.GetProperty( "text-align" ).GetEnum();
-                int valign = properties.GetProperty( "vertical-align" ).GetEnum();
-                int overflow = properties.GetProperty( "overflow" ).GetEnum();
+                string id = Properties.GetProperty( "id" ).GetString();
+                int align = Properties.GetProperty( "text-align" ).GetEnum();
+                int valign = Properties.GetProperty( "vertical-align" ).GetEnum();
+                int overflow = Properties.GetProperty( "overflow" ).GetEnum();
 
-                breakBefore = properties.GetProperty( "break-before" ).GetEnum();
-                breakAfter = properties.GetProperty( "break-after" ).GetEnum();
-                width = properties.GetProperty( "width" ).GetLength().MValue();
-                height = properties.GetProperty( "height" ).GetLength().MValue();
-                contwidth =
-                    properties.GetProperty( "content-width" ).GetLength().MValue();
-                contheight =
-                    properties.GetProperty( "content-height" ).GetLength().MValue();
-                wauto = properties.GetProperty( "width" ).GetLength().IsAuto();
-                hauto = properties.GetProperty( "height" ).GetLength().IsAuto();
-                cwauto =
-                    properties.GetProperty( "content-width" ).GetLength().IsAuto();
-                chauto =
-                    properties.GetProperty( "content-height" ).GetLength().IsAuto();
+                _breakBefore = Properties.GetProperty( "break-before" ).GetEnum();
+                _breakAfter = Properties.GetProperty( "break-after" ).GetEnum();
+                _width = Properties.GetProperty( "width" ).GetLength().MValue();
+                _height = Properties.GetProperty( "height" ).GetLength().MValue();
+                _contwidth =
+                    Properties.GetProperty( "content-width" ).GetLength().MValue();
+                _contheight =
+                    Properties.GetProperty( "content-height" ).GetLength().MValue();
+                _wauto = Properties.GetProperty( "width" ).GetLength().IsAuto();
+                _hauto = Properties.GetProperty( "height" ).GetLength().IsAuto();
+                _cwauto =
+                    Properties.GetProperty( "content-width" ).GetLength().IsAuto();
+                _chauto =
+                    Properties.GetProperty( "content-height" ).GetLength().IsAuto();
 
-                startIndent =
-                    properties.GetProperty( "start-indent" ).GetLength().MValue();
-                endIndent =
-                    properties.GetProperty( "end-indent" ).GetLength().MValue();
-                spaceBefore =
-                    properties.GetProperty( "space-before.optimum" ).GetLength().MValue();
-                spaceAfter =
-                    properties.GetProperty( "space-after.optimum" ).GetLength().MValue();
+                _startIndent =
+                    Properties.GetProperty( "start-indent" ).GetLength().MValue();
+                _endIndent =
+                    Properties.GetProperty( "end-indent" ).GetLength().MValue();
+                _spaceBefore =
+                    Properties.GetProperty( "space-before.optimum" ).GetLength().MValue();
+                _spaceAfter =
+                    Properties.GetProperty( "space-after.optimum" ).GetLength().MValue();
 
-                scaling = properties.GetProperty( "scaling" ).GetEnum();
+                _scaling = Properties.GetProperty( "scaling" ).GetEnum();
 
                 area.getIDReferences().CreateID( id );
-                if ( areaCurrent == null )
+                if ( _areaCurrent == null )
                 {
-                    areaCurrent =
-                        new ForeignObjectArea( propMgr.GetFontState( area.getFontInfo() ),
+                    _areaCurrent =
+                        new ForeignObjectArea( PropMgr.GetFontState( area.getFontInfo() ),
                             area.getAllocationWidth() );
 
-                    areaCurrent.start();
-                    areaCurrent.SetWidth( width );
-                    areaCurrent.SetHeight( height );
-                    areaCurrent.SetContentWidth( contwidth );
-                    areaCurrent.setContentHeight( contheight );
-                    areaCurrent.setScaling( scaling );
-                    areaCurrent.setAlign( align );
-                    areaCurrent.setVerticalAlign( valign );
-                    areaCurrent.setOverflow( overflow );
-                    areaCurrent.setSizeAuto( wauto, hauto );
-                    areaCurrent.setContentSizeAuto( cwauto, chauto );
+                    _areaCurrent.start();
+                    _areaCurrent.SetWidth( _width );
+                    _areaCurrent.SetHeight( _height );
+                    _areaCurrent.SetContentWidth( _contwidth );
+                    _areaCurrent.setContentHeight( _contheight );
+                    _areaCurrent.setScaling( _scaling );
+                    _areaCurrent.setAlign( align );
+                    _areaCurrent.setVerticalAlign( valign );
+                    _areaCurrent.setOverflow( overflow );
+                    _areaCurrent.setSizeAuto( _wauto, _hauto );
+                    _areaCurrent.setContentSizeAuto( _cwauto, _chauto );
 
-                    areaCurrent.setPage( area.getPage() );
+                    _areaCurrent.setPage( area.getPage() );
 
-                    int numChildren = children.Count;
+                    int numChildren = Children.Count;
                     if ( numChildren > 1 )
                         throw new FonetException( "Only one child element is allowed in an instream-foreign-object" );
-                    if ( children.Count > 0 )
+                    if ( Children.Count > 0 )
                     {
-                        var fo = (FONode)children[ 0 ];
+                        var fo = (FoNode)Children[ 0 ];
                         Status status;
                         if ( ( status =
-                            fo.Layout( areaCurrent ) ).isIncomplete() )
+                            fo.Layout( _areaCurrent ) ).IsIncomplete() )
                             return status;
-                        areaCurrent.end();
+                        _areaCurrent.end();
                     }
                 }
 
-                marker = 0;
+                Marker = 0;
 
-                if ( breakBefore == GenericBreak.Enums.PAGE
-                    || spaceBefore + areaCurrent.getEffectiveHeight()
+                if ( _breakBefore == GenericBreak.Enums.Page
+                    || _spaceBefore + _areaCurrent.getEffectiveHeight()
                         > area.spaceLeft() )
-                    return new Status( Status.FORCE_PAGE_BREAK );
+                    return new Status( Status.ForcePageBreak );
 
-                if ( breakBefore == GenericBreak.Enums.ODD_PAGE )
-                    return new Status( Status.FORCE_PAGE_BREAK_ODD );
+                if ( _breakBefore == GenericBreak.Enums.OddPage )
+                    return new Status( Status.ForcePageBreakOdd );
 
-                if ( breakBefore == GenericBreak.Enums.EVEN_PAGE )
-                    return new Status( Status.FORCE_PAGE_BREAK_EVEN );
+                if ( _breakBefore == GenericBreak.Enums.EvenPage )
+                    return new Status( Status.ForcePageBreakEven );
             }
 
-            if ( areaCurrent == null )
-                return new Status( Status.OK );
+            if ( _areaCurrent == null )
+                return new Status( Status.Ok );
 
             if ( area is BlockArea )
             {
                 var ba = (BlockArea)area;
                 LineArea la = ba.getCurrentLineArea();
                 if ( la == null )
-                    return new Status( Status.AREA_FULL_NONE );
+                    return new Status( Status.AreaFullNone );
                 la.addPending();
-                if ( areaCurrent.getEffectiveWidth() > la.getRemainingWidth() )
+                if ( _areaCurrent.getEffectiveWidth() > la.getRemainingWidth() )
                 {
                     la = ba.createNextLineArea();
                     if ( la == null )
-                        return new Status( Status.AREA_FULL_NONE );
+                        return new Status( Status.AreaFullNone );
                 }
-                la.addInlineArea( areaCurrent, GetLinkSet() );
+                la.addInlineArea( _areaCurrent, GetLinkSet() );
             }
             else
             {
-                area.addChild( areaCurrent );
-                area.increaseHeight( areaCurrent.getEffectiveHeight() );
+                area.addChild( _areaCurrent );
+                area.increaseHeight( _areaCurrent.getEffectiveHeight() );
             }
 
-            if ( isInTableCell )
-                startIndent += forcedStartOffset;
+            if ( IsInTableCell )
+                _startIndent += ForcedStartOffset;
 
-            areaCurrent.setStartIndent( startIndent );
-            areaCurrent.setPage( area.getPage() );
+            _areaCurrent.setStartIndent( _startIndent );
+            _areaCurrent.setPage( area.getPage() );
 
-            if ( breakAfter == GenericBreak.Enums.PAGE )
+            if ( _breakAfter == GenericBreak.Enums.Page )
             {
-                marker = MarkerBreakAfter;
-                return new Status( Status.FORCE_PAGE_BREAK );
+                Marker = MarkerBreakAfter;
+                return new Status( Status.ForcePageBreak );
             }
 
-            if ( breakAfter == GenericBreak.Enums.ODD_PAGE )
+            if ( _breakAfter == GenericBreak.Enums.OddPage )
             {
-                marker = MarkerBreakAfter;
-                return new Status( Status.FORCE_PAGE_BREAK_ODD );
+                Marker = MarkerBreakAfter;
+                return new Status( Status.ForcePageBreakOdd );
             }
 
-            if ( breakAfter == GenericBreak.Enums.EVEN_PAGE )
+            if ( _breakAfter == GenericBreak.Enums.EvenPage )
             {
-                marker = MarkerBreakAfter;
-                return new Status( Status.FORCE_PAGE_BREAK_EVEN );
+                Marker = MarkerBreakAfter;
+                return new Status( Status.ForcePageBreakEven );
             }
 
-            areaCurrent = null;
-            return new Status( Status.OK );
+            _areaCurrent = null;
+            return new Status( Status.Ok );
         }
 
         internal new class Maker : FObj.Maker

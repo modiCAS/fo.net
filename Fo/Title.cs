@@ -8,7 +8,7 @@ namespace Fonet.Fo
         protected Title( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:title";
+            Name = "fo:title";
         }
 
         public new static FObj.Maker GetMaker()
@@ -18,15 +18,15 @@ namespace Fonet.Fo
 
         public override Status Layout( Area area )
         {
-            AccessibilityProps mAccProps = propMgr.GetAccessibilityProps();
-            AuralProps mAurProps = propMgr.GetAuralProps();
-            BorderAndPadding bap = propMgr.GetBorderAndPadding();
-            BackgroundProps bProps = propMgr.GetBackgroundProps();
-            FontState fontState = propMgr.GetFontState( area.getFontInfo() );
-            MarginInlineProps mProps = propMgr.GetMarginInlineProps();
+            AccessibilityProps mAccProps = PropMgr.GetAccessibilityProps();
+            AuralProps mAurProps = PropMgr.GetAuralProps();
+            BorderAndPadding bap = PropMgr.GetBorderAndPadding();
+            BackgroundProps bProps = PropMgr.GetBackgroundProps();
+            FontState fontState = PropMgr.GetFontState( area.getFontInfo() );
+            MarginInlineProps mProps = PropMgr.GetMarginInlineProps();
 
             Property prop;
-            prop = properties.GetProperty( "baseline-shift" );
+            prop = Properties.GetProperty( "baseline-shift" );
             if ( prop is LengthProperty )
             {
                 Length bShift = prop.GetLength();
@@ -35,12 +35,12 @@ namespace Fonet.Fo
             {
                 int bShift = prop.GetEnum();
             }
-            ColorType col = properties.GetProperty( "color" ).GetColorType();
-            Length lHeight = properties.GetProperty( "line-height" ).GetLength();
-            int lShiftAdj = properties.GetProperty(
+            ColorType col = Properties.GetProperty( "color" ).GetColorType();
+            Length lHeight = Properties.GetProperty( "line-height" ).GetLength();
+            int lShiftAdj = Properties.GetProperty(
                 "line-height-shift-adjustment" ).GetEnum();
-            int vis = properties.GetProperty( "visibility" ).GetEnum();
-            Length zIndex = properties.GetProperty( "z-index" ).GetLength();
+            int vis = Properties.GetProperty( "visibility" ).GetEnum();
+            Length zIndex = Properties.GetProperty( "z-index" ).GetLength();
 
             return base.Layout( area );
         }

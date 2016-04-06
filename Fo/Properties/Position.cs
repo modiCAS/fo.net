@@ -2,12 +2,12 @@ namespace Fonet.Fo.Properties
 {
     internal class Position
     {
-        public const int STATIC = Constants.STATIC;
+        public const int Static = Constants.Static;
 
-        public const int RELATIVE = Constants.RELATIVE;
+        public const int Relative = Constants.Relative;
 
-        public const int ABSOLUTE = Constants.ABSOLUTE;
+        public const int Absolute = Constants.Absolute;
 
-        public const int FIXED = Constants.FIXED;
+        public const int Fixed = Constants.Fixed;
     }
 }

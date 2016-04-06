@@ -4,7 +4,7 @@ namespace Fonet.Fo.Pagination
 {
     internal abstract class Region : FObj
     {
-        public const string PROP_REGION_NAME = "region-name";
+        public const string PropRegionName = "region-name";
 
         private readonly SimplePageMaster _layoutMaster;
         private string _regionName;
@@ -12,20 +12,20 @@ namespace Fonet.Fo.Pagination
         protected Region( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = GetElementName();
+            Name = GetElementName();
 
-            if ( null == properties.GetProperty( PROP_REGION_NAME ) )
-                setRegionName( GetDefaultRegionName() );
-            else if ( properties.GetProperty( PROP_REGION_NAME ).GetString().Equals( "" ) )
-                setRegionName( GetDefaultRegionName() );
+            if ( null == Properties.GetProperty( PropRegionName ) )
+                SetRegionName( GetDefaultRegionName() );
+            else if ( Properties.GetProperty( PropRegionName ).GetString().Equals( "" ) )
+                SetRegionName( GetDefaultRegionName() );
             else
             {
-                setRegionName( properties.GetProperty( PROP_REGION_NAME ).GetString() );
-                if ( isReserved( getRegionName() )
-                    && !getRegionName().Equals( GetDefaultRegionName() ) )
+                SetRegionName( Properties.GetProperty( PropRegionName ).GetString() );
+                if ( IsReserved( GetRegionName() )
+                    && !GetRegionName().Equals( GetDefaultRegionName() ) )
                 {
-                    throw new FonetException( PROP_REGION_NAME + " '" + _regionName
-                        + "' for " + name
+                    throw new FonetException( PropRegionName + " '" + _regionName
+                        + "' for " + Name
                         + " not permitted." );
                 }
             }
@@ -33,7 +33,7 @@ namespace Fonet.Fo.Pagination
             if ( parent.GetName().Equals( "fo:simple-page-master" ) )
             {
                 _layoutMaster = (SimplePageMaster)parent;
-                getPageMaster().addRegion( this );
+                GetPageMaster().AddRegion( this );
             }
             else
             {
@@ -54,22 +54,22 @@ namespace Fonet.Fo.Pagination
 
         public abstract string GetRegionClass();
 
-        public string getRegionName()
+        public string GetRegionName()
         {
             return _regionName;
         }
 
-        private void setRegionName( string name )
+        private void SetRegionName( string name )
         {
             _regionName = name;
         }
 
-        protected SimplePageMaster getPageMaster()
+        protected SimplePageMaster GetPageMaster()
         {
             return _layoutMaster;
         }
 
-        protected bool isReserved( string name )
+        protected bool IsReserved( string name )
         {
             return name.Equals( "xsl-region-before" )
                 || name.Equals( "xsl-region-start" )

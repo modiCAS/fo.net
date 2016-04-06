@@ -5,7 +5,7 @@ namespace Fonet.Fo.Flow
         public TableBody( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:table-body";
+            Name = "fo:table-body";
         }
 
         public new static FObj.Maker GetMaker()

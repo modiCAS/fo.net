@@ -2,11 +2,11 @@ namespace Fonet.Fo.Properties
 {
     internal class TableLayoutMaker : EnumProperty.Maker
     {
-        protected static readonly EnumProperty s_propAUTO = new EnumProperty( Constants.AUTO );
+        protected static readonly EnumProperty SPropAuto = new EnumProperty( Constants.Auto );
 
-        protected static readonly EnumProperty s_propFIXED = new EnumProperty( Constants.FIXED );
+        protected static readonly EnumProperty SPropFixed = new EnumProperty( Constants.Fixed );
 
-        private Property m_defaultProp;
+        private Property _mDefaultProp;
 
         protected TableLayoutMaker( string name ) : base( name )
         {
@@ -24,18 +24,18 @@ namespace Fonet.Fo.Properties
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( m_defaultProp == null )
-                m_defaultProp = Make( propertyList, "auto", propertyList.getParentFObj() );
-            return m_defaultProp;
+            if ( _mDefaultProp == null )
+                _mDefaultProp = Make( propertyList, "auto", propertyList.GetParentFObj() );
+            return _mDefaultProp;
         }
 
         public override Property CheckEnumValues( string value )
         {
             if ( value.Equals( "auto" ) )
-                return s_propAUTO;
+                return SPropAuto;
 
             if ( value.Equals( "fixed" ) )
-                return s_propFIXED;
+                return SPropFixed;
 
             return base.CheckEnumValues( value );
         }

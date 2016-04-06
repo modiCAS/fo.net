@@ -2,22 +2,22 @@ namespace Fonet.Pdf
 {
     public sealed class PdfNumeric : PdfObject
     {
-        private readonly decimal val;
+        private readonly decimal _val;
 
         public PdfNumeric( decimal val )
         {
-            this.val = val;
+            this._val = val;
         }
 
         public PdfNumeric( decimal val, PdfObjectId objectId )
             : base( objectId )
         {
-            this.val = val;
+            this._val = val;
         }
 
         protected internal override void Write( PdfWriter writer )
         {
-            writer.Write( val );
+            writer.Write( _val );
         }
     }
 }

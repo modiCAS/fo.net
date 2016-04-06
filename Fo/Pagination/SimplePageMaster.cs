@@ -6,31 +6,31 @@ namespace Fonet.Fo.Pagination
     internal class SimplePageMaster : FObj
     {
         private readonly Hashtable _regions;
-        private int afterHeight;
-        private bool afterPrecedence;
-        private int beforeHeight;
-        private bool beforePrecedence;
+        private int _afterHeight;
+        private bool _afterPrecedence;
+        private int _beforeHeight;
+        private bool _beforePrecedence;
 
-        private readonly LayoutMasterSet layoutMasterSet;
-        private readonly string masterName;
-        private PageMaster pageMaster;
+        private readonly LayoutMasterSet _layoutMasterSet;
+        private readonly string _masterName;
+        private PageMaster _pageMaster;
 
         protected SimplePageMaster( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
-            name = "fo:simple-page-master";
+            Name = "fo:simple-page-master";
 
             if ( parent.GetName().Equals( "fo:layout-master-set" ) )
             {
-                layoutMasterSet = (LayoutMasterSet)parent;
-                masterName = properties.GetProperty( "master-name" ).GetString();
-                if ( masterName == null )
+                _layoutMasterSet = (LayoutMasterSet)parent;
+                _masterName = Properties.GetProperty( "master-name" ).GetString();
+                if ( _masterName == null )
                 {
                     FonetDriver.ActiveDriver.FireFonetWarning(
                         "simple-page-master does not have a master-name and so is being ignored" );
                 }
                 else
-                    layoutMasterSet.addSimplePageMaster( this );
+                    _layoutMasterSet.AddSimplePageMaster( this );
             }
             else
             {
@@ -49,10 +49,10 @@ namespace Fonet.Fo.Pagination
         protected internal override void End()
         {
             int pageWidth =
-                properties.GetProperty( "page-width" ).GetLength().MValue();
+                Properties.GetProperty( "page-width" ).GetLength().MValue();
             int pageHeight =
-                properties.GetProperty( "page-height" ).GetLength().MValue();
-            MarginProps mProps = propMgr.GetMarginProps();
+                Properties.GetProperty( "page-height" ).GetLength().MValue();
+            MarginProps mProps = PropMgr.GetMarginProps();
 
             int contentRectangleXPosition = mProps.marginLeft;
             int contentRectangleYPosition = pageHeight - mProps.marginTop;
@@ -61,89 +61,89 @@ namespace Fonet.Fo.Pagination
             int contentRectangleHeight = pageHeight - mProps.marginTop
                 - mProps.marginBottom;
 
-            pageMaster = new PageMaster( pageWidth, pageHeight );
-            if ( getRegion( RegionBody.REGION_CLASS ) != null )
+            _pageMaster = new PageMaster( pageWidth, pageHeight );
+            if ( GetRegion( RegionBody.RegionClass ) != null )
             {
                 var body =
-                    (BodyRegionArea)getRegion( RegionBody.REGION_CLASS ).MakeRegionArea( contentRectangleXPosition,
+                    (BodyRegionArea)GetRegion( RegionBody.RegionClass ).MakeRegionArea( contentRectangleXPosition,
                         contentRectangleYPosition,
                         contentRectangleWidth,
                         contentRectangleHeight );
-                pageMaster.addBody( body );
+                _pageMaster.addBody( body );
             }
             else
             {
                 FonetDriver.ActiveDriver.FireFonetError(
                     "simple-page-master must have a region of class " +
-                        RegionBody.REGION_CLASS );
+                        RegionBody.RegionClass );
             }
 
-            if ( getRegion( RegionBefore.REGION_CLASS ) != null )
+            if ( GetRegion( RegionBefore.RegionClass ) != null )
             {
                 RegionArea before =
-                    getRegion( RegionBefore.REGION_CLASS ).MakeRegionArea( contentRectangleXPosition,
+                    GetRegion( RegionBefore.RegionClass ).MakeRegionArea( contentRectangleXPosition,
                         contentRectangleYPosition, contentRectangleWidth,
                         contentRectangleHeight );
-                pageMaster.addBefore( before );
-                beforePrecedence =
-                    ( (RegionBefore)getRegion( RegionBefore.REGION_CLASS ) ).getPrecedence();
-                beforeHeight = before.GetHeight();
+                _pageMaster.addBefore( before );
+                _beforePrecedence =
+                    ( (RegionBefore)GetRegion( RegionBefore.RegionClass ) ).GetPrecedence();
+                _beforeHeight = before.GetHeight();
             }
             else
-                beforePrecedence = false;
+                _beforePrecedence = false;
 
-            if ( getRegion( RegionAfter.REGION_CLASS ) != null )
+            if ( GetRegion( RegionAfter.RegionClass ) != null )
             {
                 RegionArea after =
-                    getRegion( RegionAfter.REGION_CLASS ).MakeRegionArea( contentRectangleXPosition,
+                    GetRegion( RegionAfter.RegionClass ).MakeRegionArea( contentRectangleXPosition,
                         contentRectangleYPosition, contentRectangleWidth,
                         contentRectangleHeight );
-                pageMaster.addAfter( after );
-                afterPrecedence =
-                    ( (RegionAfter)getRegion( RegionAfter.REGION_CLASS ) ).getPrecedence();
-                afterHeight = after.GetHeight();
+                _pageMaster.addAfter( after );
+                _afterPrecedence =
+                    ( (RegionAfter)GetRegion( RegionAfter.RegionClass ) ).GetPrecedence();
+                _afterHeight = after.GetHeight();
             }
             else
-                afterPrecedence = false;
+                _afterPrecedence = false;
 
-            if ( getRegion( RegionStart.REGION_CLASS ) != null )
+            if ( GetRegion( RegionStart.RegionClass ) != null )
             {
                 RegionArea start =
-                    ( (RegionStart)getRegion( RegionStart.REGION_CLASS ) ).MakeRegionArea( contentRectangleXPosition,
+                    ( (RegionStart)GetRegion( RegionStart.RegionClass ) ).MakeRegionArea( contentRectangleXPosition,
                         contentRectangleYPosition, contentRectangleWidth,
-                        contentRectangleHeight, beforePrecedence,
-                        afterPrecedence, beforeHeight, afterHeight );
-                pageMaster.addStart( start );
+                        contentRectangleHeight, _beforePrecedence,
+                        _afterPrecedence, _beforeHeight, _afterHeight );
+                _pageMaster.addStart( start );
             }
 
-            if ( getRegion( RegionEnd.REGION_CLASS ) != null )
+            if ( GetRegion( RegionEnd.RegionClass ) != null )
             {
                 RegionArea end =
-                    ( (RegionEnd)getRegion( RegionEnd.REGION_CLASS ) ).MakeRegionArea( contentRectangleXPosition,
+                    ( (RegionEnd)GetRegion( RegionEnd.RegionClass ) ).MakeRegionArea( contentRectangleXPosition,
                         contentRectangleYPosition, contentRectangleWidth,
-                        contentRectangleHeight, beforePrecedence,
-                        afterPrecedence, beforeHeight, afterHeight );
-                pageMaster.addEnd( end );
+                        contentRectangleHeight, _beforePrecedence,
+                        _afterPrecedence, _beforeHeight, _afterHeight );
+                _pageMaster.addEnd( end );
             }
         }
 
-        public PageMaster getPageMaster()
+        public PageMaster GetPageMaster()
         {
-            return pageMaster;
+            return _pageMaster;
         }
 
         public PageMaster GetNextPageMaster()
         {
-            return pageMaster;
+            return _pageMaster;
         }
 
         public string GetMasterName()
         {
-            return masterName;
+            return _masterName;
         }
 
 
-        protected internal void addRegion( Region region )
+        protected internal void AddRegion( Region region )
         {
             if ( _regions.ContainsKey( region.GetRegionClass() ) )
             {
@@ -154,21 +154,21 @@ namespace Fonet.Fo.Pagination
             _regions.Add( region.GetRegionClass(), region );
         }
 
-        protected internal Region getRegion( string regionClass )
+        protected internal Region GetRegion( string regionClass )
         {
             return (Region)_regions[ regionClass ];
         }
 
-        protected internal Hashtable getRegions()
+        protected internal Hashtable GetRegions()
         {
             return _regions;
         }
 
-        protected internal bool regionNameExists( string regionName )
+        protected internal bool RegionNameExists( string regionName )
         {
             foreach ( Region r in _regions.Values )
             {
-                if ( r.getRegionName().Equals( regionName ) )
+                if ( r.GetRegionName().Equals( regionName ) )
                     return true;
             }
             return false;

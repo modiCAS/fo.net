@@ -2,12 +2,12 @@ namespace Fonet.Fo.Properties
 {
     internal class DisplayAlign
     {
-        public const int BEFORE = Constants.BEFORE;
+        public const int Before = Constants.Before;
 
-        public const int AFTER = Constants.AFTER;
+        public const int After = Constants.After;
 
-        public const int CENTER = Constants.CENTER;
+        public const int Center = Constants.Center;
 
-        public const int AUTO = Constants.AUTO;
+        public const int Auto = Constants.Auto;
     }
 }

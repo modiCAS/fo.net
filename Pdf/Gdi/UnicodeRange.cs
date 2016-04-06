@@ -9,13 +9,13 @@ namespace Fonet.Pdf.Gdi
     /// </summary>
     internal class UnicodeRange
     {
-        private readonly GdiDeviceContent dc;
+        private readonly GdiDeviceContent _dc;
 
         /// <summary>
         ///     Array of glyph indices for each character represented by
         ///     this range begining at <see cref="Start" />.
         /// </summary>
-        private ushort[] indices;
+        private ushort[] _indices;
 
         /// <summary>
         ///     Class constructor.
@@ -27,7 +27,7 @@ namespace Fonet.Pdf.Gdi
         {
             if ( start > end )
                 throw new ArgumentException( "start cannot be greater than end" );
-            this.dc = dc;
+            this._dc = dc;
             Start = start;
             End = end;
         }
@@ -49,9 +49,9 @@ namespace Fonet.Pdf.Gdi
         /// <returns></returns>
         public ushort MapCharacter( char c )
         {
-            if ( indices == null )
+            if ( _indices == null )
                 LoadGlyphIndices();
-            return indices[ (ushort)( c - Start ) ];
+            return _indices[ (ushort)( c - Start ) ];
         }
 
         /// <summary>
@@ -61,8 +61,8 @@ namespace Fonet.Pdf.Gdi
         private void LoadGlyphIndices()
         {
             string characters = BuildString();
-            indices = new ushort[ characters.Length ];
-            LibWrapper.GetGlyphIndices( dc.Handle, characters, characters.Length, indices, 0 );
+            _indices = new ushort[ characters.Length ];
+            LibWrapper.GetGlyphIndices( _dc.Handle, characters, characters.Length, _indices, 0 );
         }
 
         private string BuildString()

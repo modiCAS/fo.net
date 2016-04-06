@@ -17,12 +17,12 @@ namespace Fonet.Pdf.Gdi.Font
         /// <summary>
         ///     The underlying stream.
         /// </summary>
-        private readonly FontFileStream stream;
+        private readonly FontFileStream _stream;
 
         /// <summary>
         ///     List of font tables to write.
         /// </summary>
-        private readonly IDictionary tables;
+        private readonly IDictionary _tables;
 
         /// <summary>
         ///     Creates a new instance of the <see cref="FontFileWriter" /> class
@@ -41,8 +41,8 @@ namespace Fonet.Pdf.Gdi.Font
                 throw new ArgumentNullException( "stream", "Supplied stream cannot be a null reference" );
             if ( !stream.CanWrite )
                 throw new ArgumentException( "The supplied stream is not writable", "stream" );
-            this.stream = new FontFileStream( stream );
-            tables = new Hashtable();
+            this._stream = new FontFileStream( stream );
+            _tables = new Hashtable();
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         public FontFileStream Stream
         {
-            get { return stream; }
+            get { return _stream; }
         }
 
         /// <summary>
@@ -66,9 +66,9 @@ namespace Fonet.Pdf.Gdi.Font
         /// <param name="table"></param>
         public void Write( FontTable table )
         {
-            if ( tables.Contains( table.Name ) )
+            if ( _tables.Contains( table.Name ) )
                 throw new ArgumentException( "Already written table '" + table.Name + "'" );
-            tables.Add( table.Name, table );
+            _tables.Add( table.Name, table );
         }
 
         /// <summary>
@@ -88,12 +88,12 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         private void WriteChecksumAdjustment()
         {
-            var head = (HeaderTable)tables[ TableNames.Head ];
+            var head = (HeaderTable)_tables[ TableNames.Head ];
 
             // Move to beginning of head table and skip the version no and 
             // font revision no fields.
-            stream.Position = head.Entry.Offset + 2 * PrimitiveSizes.Fixed;
-            stream.WriteULong( CalculateCheckSumAdjustment() );
+            _stream.Position = head.Entry.Offset + 2 * PrimitiveSizes.Fixed;
+            _stream.WriteULong( CalculateCheckSumAdjustment() );
         }
 
         /// <summary>
@@ -101,23 +101,23 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         private void WriteTables()
         {
-            foreach ( FontTable table in tables.Values )
+            foreach ( FontTable table in _tables.Values )
                 WriteFontTable( table );
         }
 
         private void WriteFontTable( FontTable table )
         {
             // Start position required to generate checksum and length
-            long startPosition = stream.SetRestorePoint();
+            long startPosition = _stream.SetRestorePoint();
 
             // FontTable subclass is responsible for writing itself
             table.Write( this );
 
             // Align table on 4-byte boundary
-            int padding = stream.Pad();
+            int padding = _stream.Pad();
 
             // Restore will reset stream position back to startPosition
-            long endPosition = stream.Restore();
+            long endPosition = _stream.Restore();
 
             // The table length not including the padding
             table.Entry.Length = (uint)( endPosition - startPosition - padding );
@@ -132,41 +132,41 @@ namespace Fonet.Pdf.Gdi.Font
         private void WriteOffsetTable()
         {
             // sfnt version (0x00010000 for version 1.0).
-            stream.WriteFixed( 0x00010000 );
+            _stream.WriteFixed( 0x00010000 );
 
             // numTables field
-            int numTables = tables.Count;
-            stream.WriteUShort( numTables );
+            int numTables = _tables.Count;
+            _stream.WriteUShort( numTables );
 
             // searchRange field ((Maximum power of 2 <= numTables) x 16)
             int maxPower = MaxPow2( numTables );
             int searchRange = maxPower * 16;
-            stream.WriteUShort( searchRange );
+            _stream.WriteUShort( searchRange );
 
             // entrySelector (Log2(maximum power of 2 <= numTables))
             var entrySelector = (int)Math.Log( maxPower, 2 );
-            stream.WriteUShort( entrySelector );
+            _stream.WriteUShort( entrySelector );
 
             // NumTables x 16-searchRange.
             int rangeShift = numTables * 16 - searchRange;
-            stream.WriteUShort( rangeShift );
+            _stream.WriteUShort( rangeShift );
         }
 
         private void WriteTableDirectory()
         {
-            stream.SetRestorePoint();
-            stream.Position = 0;
-            stream.Skip( OffsetTableSize );
+            _stream.SetRestorePoint();
+            _stream.Position = 0;
+            _stream.Skip( OffsetTableSize );
 
-            foreach ( FontTable table in tables.Values )
+            foreach ( FontTable table in _tables.Values )
             {
-                stream.WriteULong( table.Tag );
-                stream.WriteULong( table.Entry.CheckSum );
-                stream.WriteULong( table.Entry.Offset );
-                stream.WriteULong( table.Entry.Length );
+                _stream.WriteULong( table.Tag );
+                _stream.WriteULong( table.Entry.CheckSum );
+                _stream.WriteULong( table.Entry.Offset );
+                _stream.WriteULong( table.Entry.Length );
             }
 
-            stream.Restore();
+            _stream.Restore();
         }
 
         /// <summary>
@@ -175,7 +175,7 @@ namespace Fonet.Pdf.Gdi.Font
         /// </summary>
         private void SkipTableDirectory()
         {
-            stream.Skip( tables.Count * PrimitiveSizes.ULong * 4 );
+            _stream.Skip( _tables.Count * PrimitiveSizes.ULong * 4 );
         }
 
         /// <summary>
@@ -202,11 +202,11 @@ namespace Fonet.Pdf.Gdi.Font
         /// <returns></returns>
         private uint CalculateCheckSumAdjustment()
         {
-            long length = stream.SetRestorePoint();
+            long length = _stream.SetRestorePoint();
 
-            stream.Position = 0L;
+            _stream.Position = 0L;
             uint checkSum = 0xB1B0AFBA - CalculateCheckSum( length );
-            stream.Restore();
+            _stream.Restore();
 
             return checkSum;
         }
@@ -226,7 +226,7 @@ namespace Fonet.Pdf.Gdi.Font
             uint checkSum = 0;
             for ( long i = 0; i < numBytes; i += PrimitiveSizes.ULong )
             {
-                checkSum += stream.ReadULong();
+                checkSum += _stream.ReadULong();
                 if ( checkSum > 0xFFFFFFFF )
                     checkSum = checkSum - 0xFFFFFFFF;
             }

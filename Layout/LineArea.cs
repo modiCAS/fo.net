@@ -169,7 +169,7 @@ namespace Fonet.Layout
 
                     if ( prev == WHITESPACE )
                     {
-                        if ( whiteSpaceCollapse == GenericBoolean.Enums.FALSE )
+                        if ( whiteSpaceCollapse == GenericBoolean.Enums.False )
                         {
                             if ( isSpace( c ) )
                                 spaceWidth += getCharWidth( c );
@@ -259,7 +259,7 @@ namespace Fonet.Layout
 
                         spaceWidth = getCharWidth( c );
 
-                        if ( whiteSpaceCollapse == GenericBoolean.Enums.FALSE )
+                        if ( whiteSpaceCollapse == GenericBoolean.Enums.False )
                         {
                             if ( c == '\n' || c == '\u2028' )
                                 return i + 1;
@@ -271,7 +271,7 @@ namespace Fonet.Layout
                     }
                     else
                     {
-                        if ( whiteSpaceCollapse == GenericBoolean.Enums.FALSE )
+                        if ( whiteSpaceCollapse == GenericBoolean.Enums.False )
                         {
                             if ( isSpace( c ) )
                             {
@@ -309,7 +309,7 @@ namespace Fonet.Layout
                                 FonetDriver.ActiveDriver.FireFonetWarning(
                                     "Area contents overflows area" );
                             }
-                            if ( wrapOption == WrapOption.WRAP )
+                            if ( wrapOption == WrapOption.Wrap )
                                 return i;
                         }
                         prev = curr;
@@ -383,7 +383,7 @@ namespace Fonet.Layout
                     if ( finalWidth + spaceWidth + pendingWidth + wordWidth
                         > getContentWidth() )
                     {
-                        if ( wrapOption == WrapOption.WRAP )
+                        if ( wrapOption == WrapOption.Wrap )
                         {
                             if ( wordStart == start )
                             {
@@ -462,11 +462,11 @@ namespace Fonet.Layout
 
             switch ( leaderPattern )
             {
-            case LeaderPattern.SPACE:
+            case LeaderPattern.Space:
                 var spaceArea = new InlineSpace( leaderLength );
                 pendingAreas.Add( spaceArea );
                 break;
-            case LeaderPattern.RULE:
+            case LeaderPattern.Rule:
                 var leaderArea = new LeaderArea( fontState, red, green,
                     blue, "", leaderLength,
                     leaderPattern,
@@ -474,7 +474,7 @@ namespace Fonet.Layout
                 leaderArea.setYOffset( placementOffset );
                 pendingAreas.Add( leaderArea );
                 break;
-            case LeaderPattern.DOTS:
+            case LeaderPattern.Dots:
                 if ( leaderPatternWidth < dotWidth )
                     leaderPatternWidth = 0;
                 if ( leaderPatternWidth == 0 )
@@ -484,7 +484,7 @@ namespace Fonet.Layout
                 }
                 else
                 {
-                    if ( leaderAlignment == LeaderAlignment.REFERENCE_AREA )
+                    if ( leaderAlignment == LeaderAlignment.ReferenceArea )
                     {
                         int spaceBeforeLeader =
                             getLeaderAlignIndent( leaderLength,
@@ -519,7 +519,7 @@ namespace Fonet.Layout
                             * leaderPatternWidth ) );
                 }
                 break;
-            case LeaderPattern.USECONTENT:
+            case LeaderPattern.Usecontent:
                 FonetDriver.ActiveDriver.FireFonetError(
                     "leader-pattern=\"use-content\" not supported by this version of FO.NET" );
                 return;
@@ -552,20 +552,20 @@ namespace Fonet.Layout
 
             switch ( type )
             {
-            case TextAlign.START:
+            case TextAlign.Start:
                 padding = getContentWidth() - finalWidth;
                 endIndent += padding;
                 break;
-            case TextAlign.END:
+            case TextAlign.End:
                 padding = getContentWidth() - finalWidth;
                 startIndent += padding;
                 break;
-            case TextAlign.CENTER:
+            case TextAlign.Center:
                 padding = ( getContentWidth() - finalWidth ) / 2;
                 startIndent += padding;
                 endIndent += padding;
                 break;
-            case TextAlign.JUSTIFY:
+            case TextAlign.Justify:
                 var spaceCount = 0;
                 foreach ( Box b in children )
                 {
@@ -613,12 +613,12 @@ namespace Fonet.Layout
                     if ( ia.GetHeight() > maxHeight )
                         maxHeight = ia.GetHeight();
                     int vert = ia.getVerticalAlign();
-                    if ( vert == VerticalAlign.SUPER )
+                    if ( vert == VerticalAlign.Super )
                     {
                         int fh = fontState.Ascender;
                         ia.setYOffset( (int)( placementOffset - 2 * fh / 3.0 ) );
                     }
-                    else if ( vert == VerticalAlign.SUB )
+                    else if ( vert == VerticalAlign.Sub )
                     {
                         int fh = fontState.Ascender;
                         ia.setYOffset( (int)( placementOffset + 2 * fh / 3.0 ) );
@@ -807,10 +807,10 @@ namespace Fonet.Layout
             int width =
                 currentFontState.GetWidth( currentFontState.MapCharacter( data ) );
             if ( width > remainingWidth )
-                return Character.DOESNOT_FIT;
+                return Character.DoesnotFit;
             if ( char.IsWhiteSpace( data )
-                && whiteSpaceCollapse == GenericBoolean.Enums.TRUE )
-                return Character.OK;
+                && whiteSpaceCollapse == GenericBoolean.Enums.True )
+                return Character.Ok;
             ia = new WordArea( currentFontState, red, green,
                 blue, data.ToString(),
                 width );
@@ -827,7 +827,7 @@ namespace Fonet.Layout
                 pendingWidth += width;
                 prev = TEXT;
             }
-            return Character.OK;
+            return Character.Ok;
         }
 
         private void addMapWord( char startChar, StringBuilder wordBuf )

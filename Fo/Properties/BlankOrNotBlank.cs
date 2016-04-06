@@ -2,10 +2,10 @@ namespace Fonet.Fo.Properties
 {
     internal class BlankOrNotBlank
     {
-        public const int BLANK = Constants.BLANK;
+        public const int Blank = Constants.Blank;
 
-        public const int NOT_BLANK = Constants.NOT_BLANK;
+        public const int NotBlank = Constants.NotBlank;
 
-        public const int ANY = Constants.ANY;
+        public const int Any = Constants.Any;
     }
 }
