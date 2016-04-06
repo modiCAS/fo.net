@@ -3,9 +3,9 @@ using Fonet.Layout;
 
 namespace Fonet.Fo.Flow
 {
-    internal class Leader : FObjMixed
+    internal sealed class Leader : FObjMixed
     {
-        public Leader( FObj parent, PropertyList propertyList )
+        private Leader( FObj parent, PropertyList propertyList )
             : base( parent, propertyList )
         {
             Name = "fo:leader";
@@ -24,18 +24,19 @@ namespace Fonet.Fo.Flow
                     "fo:leader must be a direct child of fo:block " );
                 return new Status( Status.Ok );
             }
+
             var blockArea = (BlockArea)area;
 
-            AccessibilityProps mAccProps = PropMgr.GetAccessibilityProps();
-            AuralProps mAurProps = PropMgr.GetAuralProps();
-            BorderAndPadding bap = PropMgr.GetBorderAndPadding();
-            BackgroundProps bProps = PropMgr.GetBackgroundProps();
-            MarginInlineProps mProps = PropMgr.GetMarginInlineProps();
-            RelativePositionProps mRelProps = PropMgr.GetRelativePositionProps();
-            ColorType c = Properties.GetProperty( "color" ).GetColorType();
-            float red = c.Red;
-            float green = c.Green;
-            float blue = c.Blue;
+            AccessibilityProps accessibilityProps = PropMgr.GetAccessibilityProps();
+            AuralProps auralProps = PropMgr.GetAuralProps();
+            BorderAndPadding borderAndPadding = PropMgr.GetBorderAndPadding();
+            BackgroundProps backgroundProps = PropMgr.GetBackgroundProps();
+            MarginInlineProps marginInlineProps = PropMgr.GetMarginInlineProps();
+            RelativePositionProps relativePositionProps = PropMgr.GetRelativePositionProps();
+            ColorType colorType = Properties.GetProperty( "color" ).GetColorType();
+            float red = colorType.Red;
+            float green = colorType.Green;
+            float blue = colorType.Blue;
 
             int leaderPattern = Properties.GetProperty( "leader-pattern" ).GetEnum();
             int leaderLengthOptimum =
@@ -44,20 +45,21 @@ namespace Fonet.Fo.Flow
                 Properties.GetProperty( "leader-length.minimum" ).GetLength().MValue();
             Length maxlength = Properties.GetProperty( "leader-length.maximum" ).GetLength();
             int leaderLengthMaximum;
-            if ( maxlength is PercentLength )
+
+            var length = maxlength as PercentLength;
+            if ( length != null )
             {
-                leaderLengthMaximum = (int)( ( (PercentLength)maxlength ).Value()
-                    * area.GetAllocationWidth() );
+                leaderLengthMaximum = (int)( length.Value() * area.GetAllocationWidth() );
             }
             else
+            {
                 leaderLengthMaximum = maxlength.MValue();
-            int ruleThickness =
-                Properties.GetProperty( "rule-thickness" ).GetLength().MValue();
+            }
+
+            int ruleThickness = Properties.GetProperty( "rule-thickness" ).GetLength().MValue();
             int ruleStyle = Properties.GetProperty( "rule-style" ).GetEnum();
-            int leaderPatternWidth =
-                Properties.GetProperty( "leader-pattern-width" ).GetLength().MValue();
-            int leaderAlignment =
-                Properties.GetProperty( "leader-alignment" ).GetEnum();
+            int leaderPatternWidth = Properties.GetProperty( "leader-pattern-width" ).GetLength().MValue();
+            int leaderAlignment = Properties.GetProperty( "leader-alignment" ).GetEnum();
 
             string id = Properties.GetProperty( "id" ).GetString();
             blockArea.GetIDReferences().InitializeID( id, blockArea );
@@ -69,12 +71,10 @@ namespace Fonet.Fo.Flow
                 leaderLengthMaximum, ruleThickness,
                 ruleStyle, leaderPatternWidth,
                 leaderAlignment );
-            if ( succeeded == 1 )
-                return new Status( Status.Ok );
-            return new Status( Status.AreaFullSome );
+            return succeeded == 1 ? new Status( Status.Ok ) : new Status( Status.AreaFullSome );
         }
 
-        public int AddLeader( BlockArea ba, FontState fontState, float red,
+        private static int AddLeader( BlockArea ba, FontState fontState, float red,
             float green, float blue, int leaderPattern,
             int leaderLengthMinimum, int leaderLengthOptimum,
             int leaderLengthMaximum, int ruleThickness,
@@ -82,8 +82,7 @@ namespace Fonet.Fo.Flow
             int leaderAlignment )
         {
             LineArea la = ba.GetCurrentLineArea();
-            if ( la == null )
-                return -1;
+            if ( la == null ) return -1;
 
             la.ChangeFont( fontState );
             la.ChangeColor( red, green, blue );
@@ -97,8 +96,8 @@ namespace Fonet.Fo.Flow
             else
             {
                 la = ba.CreateNextLineArea();
-                if ( la == null )
-                    return -1;
+                if ( la == null ) return -1;
+
                 la.ChangeFont( fontState );
                 la.ChangeColor( red, green, blue );
 
@@ -122,7 +121,7 @@ namespace Fonet.Fo.Flow
             return 1;
         }
 
-        internal new class Maker : FObj.Maker
+        private new sealed class Maker : FObj.Maker
         {
             public override FObj Make( FObj parent, PropertyList propertyList )
             {
