@@ -2,7 +2,7 @@ namespace Fonet.Fo
 {
     internal struct Status
     {
-        private int code;
+        private readonly int code;
 
         public const int OK = 1;
         public const int AREA_FULL_NONE = 2;
@@ -13,32 +13,31 @@ namespace Fonet.Fo
         public const int FORCE_COLUMN_BREAK = 7;
         public const int KEEP_WITH_NEXT = 8;
 
-        public Status(int code)
+        public Status( int code )
         {
             this.code = code;
         }
 
         public int getCode()
         {
-            return this.code;
+            return code;
         }
 
         public bool isIncomplete()
         {
-            return ((this.code != OK) && (this.code != KEEP_WITH_NEXT));
+            return code != OK && code != KEEP_WITH_NEXT;
         }
 
         public bool laidOutNone()
         {
-            return (this.code == AREA_FULL_NONE);
+            return code == AREA_FULL_NONE;
         }
 
         public bool isPageBreak()
         {
-            return ((this.code == FORCE_PAGE_BREAK)
-                || (this.code == FORCE_PAGE_BREAK_EVEN)
-                || (this.code == FORCE_PAGE_BREAK_ODD));
+            return code == FORCE_PAGE_BREAK
+                || code == FORCE_PAGE_BREAK_EVEN
+                || code == FORCE_PAGE_BREAK_ODD;
         }
-
     }
 }

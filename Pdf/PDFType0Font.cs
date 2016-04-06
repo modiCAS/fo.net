@@ -10,20 +10,20 @@ namespace Fonet.Pdf
     /// </remarks>
     public class PdfType0Font : PdfFont
     {
-        public PdfType0Font(PdfObjectId objectId, string fontName, string baseFont)
-            : base(fontName, objectId)
+        public PdfType0Font( PdfObjectId objectId, string fontName, string baseFont )
+            : base( fontName, objectId )
         {
-            this[PdfName.Names.Subtype] = PdfName.Names.Type0;
-            this[PdfName.Names.BaseFont] = new PdfName(baseFont);
+            this[ PdfName.Names.Subtype ] = PdfName.Names.Type0;
+            this[ PdfName.Names.BaseFont ] = new PdfName( baseFont );
         }
 
         /// <summary>
-        ///     Sets the stream containing a CMap that maps character codes to 
+        ///     Sets the stream containing a CMap that maps character codes to
         ///     unicode values.
         /// </summary>
         public PdfCMap ToUnicode
         {
-            set { this[PdfName.Names.ToUnicode] = value.GetReference(); }
+            set { this[ PdfName.Names.ToUnicode ] = value.GetReference(); }
         }
 
         /// <summary>
@@ -33,10 +33,10 @@ namespace Fonet.Pdf
         {
             set
             {
-                PdfArray array = new PdfArray();
-                array.Add(value.GetReference());
+                var array = new PdfArray();
+                array.Add( value.GetReference() );
 
-                this[PdfName.Names.DescendantFonts] = array;
+                this[ PdfName.Names.DescendantFonts ] = array;
             }
         }
 
@@ -45,7 +45,7 @@ namespace Fonet.Pdf
         /// </summary>
         public PdfName Encoding
         {
-            set { this[PdfName.Names.Encoding] = value; }
+            set { this[ PdfName.Names.Encoding ] = value; }
         }
     }
 }

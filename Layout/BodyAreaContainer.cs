@@ -10,27 +10,27 @@ namespace Fonet.Layout
 {
     internal class BodyAreaContainer : Area
     {
+        private bool _isNewSpanArea;
+        private readonly int beforeFloatRefAreaHeight;
+        private readonly AreaContainer beforeFloatReferenceArea;
+        private readonly int columnCount;
+        private readonly int columnGap;
+        private readonly int footnoteRefAreaHeight;
+        private readonly AreaContainer footnoteReferenceArea;
+        private int footnoteState;
+        private int footnoteYPosition;
+        private readonly int mainRefAreaHeight;
+        private readonly AreaContainer mainReferenceArea;
+        private readonly int mainYPosition = 0;
+        private readonly int position;
         private int xPosition;
         private int yPosition;
-        private int position;
-        private int columnCount;
-        private int columnGap;
-        private AreaContainer mainReferenceArea;
-        private AreaContainer beforeFloatReferenceArea;
-        private AreaContainer footnoteReferenceArea;
-        private int mainRefAreaHeight;
-        private int beforeFloatRefAreaHeight;
-        private int footnoteRefAreaHeight;
-        private int mainYPosition = 0;
-        private int footnoteYPosition;
-        private bool _isNewSpanArea;
-        private int footnoteState = 0;
 
-        public BodyAreaContainer(FontState fontState, int xPosition,
-                                 int yPosition, int allocationWidth,
-                                 int maxHeight, int position, int columnCount,
-                                 int columnGap)
-            : base(fontState, allocationWidth, maxHeight)
+        public BodyAreaContainer( FontState fontState, int xPosition,
+            int yPosition, int allocationWidth,
+            int maxHeight, int position, int columnCount,
+            int columnGap )
+            : base( fontState, allocationWidth, maxHeight )
         {
             this.xPosition = xPosition;
             this.yPosition = yPosition;
@@ -42,31 +42,30 @@ namespace Fonet.Layout
             footnoteRefAreaHeight = 0;
             mainRefAreaHeight = maxHeight - beforeFloatRefAreaHeight
                 - footnoteRefAreaHeight;
-            beforeFloatReferenceArea = new AreaContainer(fontState, xPosition,
-                                                         yPosition, allocationWidth, beforeFloatRefAreaHeight,
-                                                         Position.ABSOLUTE);
-            beforeFloatReferenceArea.setAreaName("before-float-reference-area");
-            this.addChild(beforeFloatReferenceArea);
-            mainReferenceArea = new AreaContainer(fontState, xPosition,
-                                                  yPosition, allocationWidth,
-                                                  mainRefAreaHeight,
-                                                  Position.ABSOLUTE);
-            mainReferenceArea.setAreaName("main-reference-area");
-            this.addChild(mainReferenceArea);
+            beforeFloatReferenceArea = new AreaContainer( fontState, xPosition,
+                yPosition, allocationWidth, beforeFloatRefAreaHeight,
+                Position.ABSOLUTE );
+            beforeFloatReferenceArea.setAreaName( "before-float-reference-area" );
+            addChild( beforeFloatReferenceArea );
+            mainReferenceArea = new AreaContainer( fontState, xPosition,
+                yPosition, allocationWidth,
+                mainRefAreaHeight,
+                Position.ABSOLUTE );
+            mainReferenceArea.setAreaName( "main-reference-area" );
+            addChild( mainReferenceArea );
             int footnoteRefAreaYPosition = yPosition - mainRefAreaHeight;
-            footnoteReferenceArea = new AreaContainer(fontState, xPosition,
-                                                      footnoteRefAreaYPosition,
-                                                      allocationWidth,
-                                                      footnoteRefAreaHeight,
-                                                      Position.ABSOLUTE);
-            footnoteReferenceArea.setAreaName("footnote-reference-area");
-            this.addChild(footnoteReferenceArea);
-
+            footnoteReferenceArea = new AreaContainer( fontState, xPosition,
+                footnoteRefAreaYPosition,
+                allocationWidth,
+                footnoteRefAreaHeight,
+                Position.ABSOLUTE );
+            footnoteReferenceArea.setAreaName( "footnote-reference-area" );
+            addChild( footnoteReferenceArea );
         }
 
-        public override void render(PdfRenderer renderer)
+        public override void render( PdfRenderer renderer )
         {
-            renderer.RenderBodyAreaContainer(this);
+            renderer.RenderBodyAreaContainer( this );
         }
 
         public int getPosition()
@@ -79,7 +78,7 @@ namespace Fonet.Layout
             return xPosition + getPaddingLeft() + getBorderLeftWidth();
         }
 
-        public void setXPosition(int value)
+        public void setXPosition( int value )
         {
             xPosition = value;
         }
@@ -89,7 +88,7 @@ namespace Fonet.Layout
             return yPosition + getPaddingTop() + getBorderTopWidth();
         }
 
-        public void setYPosition(int value)
+        public void setYPosition( int value )
         {
             yPosition = value;
         }
@@ -109,9 +108,9 @@ namespace Fonet.Layout
             return footnoteReferenceArea;
         }
 
-        public override void setIDReferences(IDReferences idReferences)
+        public override void setIDReferences( IDReferences idReferences )
         {
-            mainReferenceArea.setIDReferences(idReferences);
+            mainReferenceArea.setIDReferences( idReferences );
         }
 
         public override IDReferences getIDReferences()
@@ -119,175 +118,135 @@ namespace Fonet.Layout
             return mainReferenceArea.getIDReferences();
         }
 
-        public AreaContainer getNextArea(FObj fo)
+        public AreaContainer getNextArea( FObj fo )
         {
             _isNewSpanArea = false;
 
             int span = Span.NONE;
-            if (fo is Block)
-            {
-                span = ((Block)fo).GetSpan();
-            }
-            else if (fo is BlockContainer)
-            {
-                span = ((BlockContainer)fo).GetSpan();
-            }
+            if ( fo is Block )
+                span = ( (Block)fo ).GetSpan();
+            else if ( fo is BlockContainer )
+                span = ( (BlockContainer)fo ).GetSpan();
 
-            if (this.mainReferenceArea.getChildren().Count == 0)
+            if ( mainReferenceArea.getChildren().Count == 0 )
             {
-                if (span == Span.ALL)
-                {
-                    return addSpanArea(1);
-                }
-                else
-                {
-                    return addSpanArea(columnCount);
-                }
+                if ( span == Span.ALL )
+                    return addSpanArea( 1 );
+                return addSpanArea( columnCount );
             }
 
-            ArrayList spanAreas = this.mainReferenceArea.getChildren();
-            SpanArea spanArea = (SpanArea)spanAreas[spanAreas.Count - 1];
+            ArrayList spanAreas = mainReferenceArea.getChildren();
+            var spanArea = (SpanArea)spanAreas[ spanAreas.Count - 1 ];
 
-            if ((span == Span.ALL) && (spanArea.getColumnCount() == 1))
-            {
+            if ( span == Span.ALL && spanArea.getColumnCount() == 1 )
                 return spanArea.getCurrentColumnArea();
-            }
-            else if ((span == Span.NONE)
-                && (spanArea.getColumnCount() == columnCount))
-            {
+            if ( span == Span.NONE
+                && spanArea.getColumnCount() == columnCount )
                 return spanArea.getCurrentColumnArea();
-            }
-            else if (span == Span.ALL)
-            {
-                return addSpanArea(1);
-            }
-            else if (span == Span.NONE)
-            {
-                return addSpanArea(columnCount);
-            }
-            else
-            {
-                throw new FonetException("BodyAreaContainer::getNextArea(): Span attribute messed up");
-            }
+            if ( span == Span.ALL )
+                return addSpanArea( 1 );
+            if ( span == Span.NONE )
+                return addSpanArea( columnCount );
+            throw new FonetException( "BodyAreaContainer::getNextArea(): Span attribute messed up" );
         }
 
-        private AreaContainer addSpanArea(int numColumns)
+        private AreaContainer addSpanArea( int numColumns )
         {
             resetHeights();
             int spanAreaYPosition = GetYPosition()
-                - this.mainReferenceArea.getContentHeight();
+                - mainReferenceArea.getContentHeight();
 
-            SpanArea spanArea = new SpanArea(fontState, getXPosition(),
-                                             spanAreaYPosition, allocationWidth,
-                                             GetRemainingHeight(), numColumns,
-                                             columnGap);
-            this.mainReferenceArea.addChild(spanArea);
-            spanArea.setPage(this.getPage());
-            this._isNewSpanArea = true;
+            var spanArea = new SpanArea( fontState, getXPosition(),
+                spanAreaYPosition, allocationWidth,
+                GetRemainingHeight(), numColumns,
+                columnGap );
+            mainReferenceArea.addChild( spanArea );
+            spanArea.setPage( getPage() );
+            _isNewSpanArea = true;
             return spanArea.getCurrentColumnArea();
         }
 
-        public bool isBalancingRequired(FObj fo)
+        public bool isBalancingRequired( FObj fo )
         {
-            if (this.mainReferenceArea.getChildren().Count == 0)
-            {
+            if ( mainReferenceArea.getChildren().Count == 0 )
                 return false;
-            }
 
-            ArrayList spanAreas = this.mainReferenceArea.getChildren();
-            SpanArea spanArea = (SpanArea)spanAreas[spanAreas.Count - 1];
+            ArrayList spanAreas = mainReferenceArea.getChildren();
+            var spanArea = (SpanArea)spanAreas[ spanAreas.Count - 1 ];
 
-            if (spanArea.isBalanced())
-            {
+            if ( spanArea.isBalanced() )
                 return false;
-            }
 
             int span = Span.NONE;
-            if (fo is Block)
-            {
-                span = ((Block)fo).GetSpan();
-            }
-            else if (fo is BlockContainer)
-            {
-                span = ((BlockContainer)fo).GetSpan();
-            }
+            if ( fo is Block )
+                span = ( (Block)fo ).GetSpan();
+            else if ( fo is BlockContainer )
+                span = ( (BlockContainer)fo ).GetSpan();
 
-            if ((span == Span.ALL) && (spanArea.getColumnCount() == 1))
-            {
+            if ( span == Span.ALL && spanArea.getColumnCount() == 1 )
                 return false;
-            }
-            else if ((span == Span.NONE)
-                && (spanArea.getColumnCount() == columnCount))
-            {
+            if ( span == Span.NONE
+                && spanArea.getColumnCount() == columnCount )
                 return false;
-            }
-            else if (span == Span.ALL)
-            {
+            if ( span == Span.ALL )
                 return true;
-            }
-            else if (span == Span.NONE)
-            {
+            if ( span == Span.NONE )
                 return false;
-            }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         public void resetSpanArea()
         {
-            ArrayList spanAreas = this.mainReferenceArea.getChildren();
-            SpanArea spanArea = (SpanArea)spanAreas[spanAreas.Count - 1];
+            ArrayList spanAreas = mainReferenceArea.getChildren();
+            var spanArea = (SpanArea)spanAreas[ spanAreas.Count - 1 ];
 
-            if (!spanArea.isBalanced())
+            if ( !spanArea.isBalanced() )
             {
                 int newHeight = spanArea.getTotalContentHeight()
                     / spanArea.getColumnCount();
                 newHeight += 2 * 15600;
 
-                this.mainReferenceArea.removeChild(spanArea);
+                mainReferenceArea.removeChild( spanArea );
                 resetHeights();
-                SpanArea newSpanArea = new SpanArea(fontState, getXPosition(),
-                                                    spanArea.GetYPosition(),
-                                                    allocationWidth, newHeight,
-                                                    spanArea.getColumnCount(),
-                                                    columnGap);
-                this.mainReferenceArea.addChild(newSpanArea);
-                newSpanArea.setPage(this.getPage());
+                var newSpanArea = new SpanArea( fontState, getXPosition(),
+                    spanArea.GetYPosition(),
+                    allocationWidth, newHeight,
+                    spanArea.getColumnCount(),
+                    columnGap );
+                mainReferenceArea.addChild( newSpanArea );
+                newSpanArea.setPage( getPage() );
                 newSpanArea.setIsBalanced();
-                this._isNewSpanArea = true;
+                _isNewSpanArea = true;
             }
             else
-            {
-                throw new Exception("Trying to balance balanced area");
-            }
+                throw new Exception( "Trying to balance balanced area" );
         }
 
         public int GetRemainingHeight()
         {
-            return this.mainReferenceArea.getMaxHeight()
-                - this.mainReferenceArea.getContentHeight();
+            return mainReferenceArea.getMaxHeight()
+                - mainReferenceArea.getContentHeight();
         }
 
         private void resetHeights()
         {
-            int totalHeight = 0;
-            foreach (SpanArea spanArea in mainReferenceArea.getChildren())
+            var totalHeight = 0;
+            foreach ( SpanArea spanArea in mainReferenceArea.getChildren() )
             {
                 int spanContentHeight = spanArea.getMaxContentHeight();
                 int spanMaxHeight = spanArea.getMaxHeight();
 
-                totalHeight += (spanContentHeight < spanMaxHeight)
-                    ? spanContentHeight : spanMaxHeight;
+                totalHeight += spanContentHeight < spanMaxHeight
+                    ? spanContentHeight
+                    : spanMaxHeight;
             }
-            mainReferenceArea.SetHeight(totalHeight);
+            mainReferenceArea.SetHeight( totalHeight );
         }
 
         public bool isLastColumn()
         {
-            ArrayList spanAreas = this.mainReferenceArea.getChildren();
-            SpanArea spanArea = (SpanArea)spanAreas[spanAreas.Count - 1];
+            ArrayList spanAreas = mainReferenceArea.getChildren();
+            var spanArea = (SpanArea)spanAreas[ spanAreas.Count - 1 ];
             return spanArea.isLastColumn();
         }
 
@@ -298,8 +257,8 @@ namespace Fonet.Layout
 
         public AreaContainer getCurrentColumnArea()
         {
-            ArrayList spanAreas = this.mainReferenceArea.getChildren();
-            SpanArea spanArea = (SpanArea)spanAreas[spanAreas.Count - 1];
+            ArrayList spanAreas = mainReferenceArea.getChildren();
+            var spanArea = (SpanArea)spanAreas[ spanAreas.Count - 1 ];
             return spanArea.getCurrentColumnArea();
         }
 
@@ -311,19 +270,17 @@ namespace Fonet.Layout
         public bool needsFootnoteAdjusting()
         {
             footnoteYPosition = footnoteReferenceArea.GetYPosition();
-            switch (footnoteState)
+            switch ( footnoteState )
             {
-                case 0:
-                    resetHeights();
-                    if (footnoteReferenceArea.GetHeight() > 0
-                        && mainYPosition + mainReferenceArea.GetHeight()
-                            > footnoteYPosition)
-                    {
-                        return true;
-                    }
-                    break;
-                case 1:
-                    break;
+            case 0:
+                resetHeights();
+                if ( footnoteReferenceArea.GetHeight() > 0
+                    && mainYPosition + mainReferenceArea.GetHeight()
+                        > footnoteYPosition )
+                    return true;
+                break;
+            case 1:
+                break;
             }
             return false;
         }
@@ -331,38 +288,37 @@ namespace Fonet.Layout
         public void adjustFootnoteArea()
         {
             footnoteState++;
-            if (footnoteState == 1)
+            if ( footnoteState == 1 )
             {
-                mainReferenceArea.setMaxHeight(footnoteReferenceArea.GetYPosition()
-                    - mainYPosition);
+                mainReferenceArea.setMaxHeight( footnoteReferenceArea.GetYPosition()
+                    - mainYPosition );
                 footnoteYPosition = footnoteReferenceArea.GetYPosition();
-                footnoteReferenceArea.setMaxHeight(footnoteReferenceArea.GetHeight());
+                footnoteReferenceArea.setMaxHeight( footnoteReferenceArea.GetHeight() );
 
-                foreach (object obj in footnoteReferenceArea.getChildren())
+                foreach ( object obj in footnoteReferenceArea.getChildren() )
                 {
-                    if (obj is Area)
+                    if ( obj is Area )
                     {
-                        Area childArea = (Area)obj;
-                        footnoteReferenceArea.removeChild(childArea);
+                        var childArea = (Area)obj;
+                        footnoteReferenceArea.removeChild( childArea );
                     }
                 }
 
-                getPage().setPendingFootnotes(null);
+                getPage().setPendingFootnotes( null );
             }
         }
 
-        protected static void resetMaxHeight(Area ar, int change)
+        protected static void resetMaxHeight( Area ar, int change )
         {
-            ar.setMaxHeight(change);
-            foreach (object obj in ar.getChildren())
+            ar.setMaxHeight( change );
+            foreach ( object obj in ar.getChildren() )
             {
-                if (obj is Area)
+                if ( obj is Area )
                 {
-                    Area childArea = (Area)obj;
-                    resetMaxHeight(childArea, change);
+                    var childArea = (Area)obj;
+                    resetMaxHeight( childArea, change );
                 }
             }
         }
-
     }
 }

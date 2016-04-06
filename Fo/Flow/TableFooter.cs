@@ -2,12 +2,10 @@ namespace Fonet.Fo.Flow
 {
     internal class TableFooter : AbstractTableBody
     {
-        new internal class Maker : FObj.Maker
+        public TableFooter( FObj parent, PropertyList propertyList )
+            : base( parent, propertyList )
         {
-            public override FObj Make(FObj parent, PropertyList propertyList)
-            {
-                return new TableFooter(parent, propertyList);
-            }
+            name = "fo:table-footer";
         }
 
         public override int GetYPosition()
@@ -15,20 +13,22 @@ namespace Fonet.Fo.Flow
             return areaContainer.GetCurrentYPosition() - spaceBefore;
         }
 
-        public override void SetYPosition(int value)
+        public override void SetYPosition( int value )
         {
-            areaContainer.setYPosition(value + 2 * spaceBefore);
+            areaContainer.setYPosition( value + 2 * spaceBefore );
         }
 
-        new public static FObj.Maker GetMaker()
+        public new static FObj.Maker GetMaker()
         {
-            return new TableFooter.Maker();
+            return new Maker();
         }
 
-        public TableFooter(FObj parent, PropertyList propertyList)
-            : base(parent, propertyList)
+        internal new class Maker : FObj.Maker
         {
-            this.name = "fo:table-footer";
+            public override FObj Make( FObj parent, PropertyList propertyList )
+            {
+                return new TableFooter( parent, propertyList );
+            }
         }
     }
 }

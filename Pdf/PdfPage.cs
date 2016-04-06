@@ -7,30 +7,29 @@ namespace Fonet.Pdf
             PdfContentStream contents,
             int pagewidth,
             int pageheight,
-            PdfObjectId objectId)
-            : base(objectId)
+            PdfObjectId objectId )
+            : base( objectId )
         {
-            this[PdfName.Names.Type] = PdfName.Names.Page;
-            this[PdfName.Names.Resources] = resources.GetReference();
-            this[PdfName.Names.Contents] = contents.GetReference();
+            this[ PdfName.Names.Type ] = PdfName.Names.Page;
+            this[ PdfName.Names.Resources ] = resources.GetReference();
+            this[ PdfName.Names.Contents ] = contents.GetReference();
 
-            PdfArray mediaBox = new PdfArray();
-            mediaBox.Add(new PdfNumeric(0));
-            mediaBox.Add(new PdfNumeric(0));
-            mediaBox.Add(new PdfNumeric(pagewidth));
-            mediaBox.Add(new PdfNumeric(pageheight));
-            this[PdfName.Names.MediaBox] = mediaBox;
+            var mediaBox = new PdfArray();
+            mediaBox.Add( new PdfNumeric( 0 ) );
+            mediaBox.Add( new PdfNumeric( 0 ) );
+            mediaBox.Add( new PdfNumeric( pagewidth ) );
+            mediaBox.Add( new PdfNumeric( pageheight ) );
+            this[ PdfName.Names.MediaBox ] = mediaBox;
         }
 
-        public void SetParent(PdfPageTree parent)
+        public void SetParent( PdfPageTree parent )
         {
-            this[PdfName.Names.Parent] = parent.GetReference();
+            this[ PdfName.Names.Parent ] = parent.GetReference();
         }
 
-        public void SetAnnotList(PdfAnnotList annotList)
+        public void SetAnnotList( PdfAnnotList annotList )
         {
-            this[PdfName.Names.Annots] = annotList.GetReference();
+            this[ PdfName.Names.Annots ] = annotList.GetReference();
         }
-
     }
 }

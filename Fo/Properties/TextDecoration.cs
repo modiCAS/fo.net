@@ -19,6 +19,5 @@ namespace Fonet.Fo.Properties
         public const int NO_LINE_THROUGH = Constants.NO_LINE_THROUGH;
 
         public const int NO_BLINK = Constants.NO_BLINK;
-
     }
 }

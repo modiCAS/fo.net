@@ -1,42 +1,34 @@
+using Fonet.DataTypes;
+using Fonet.Fo.Properties;
+using Fonet.Layout;
+
 namespace Fonet.Fo.Flow
 {
-    using Fonet.DataTypes;
-    using Fonet.Fo.Properties;
-    using Fonet.Layout;
-
     internal class Character : FObj
     {
         public const int OK = 0;
 
         public const int DOESNOT_FIT = 1;
 
-        public Character(FObj parent, PropertyList propertyList)
-            : base(parent, propertyList)
+        public Character( FObj parent, PropertyList propertyList )
+            : base( parent, propertyList )
         {
-            this.name = "fo:character";
+            name = "fo:character";
         }
 
-        new public static FObj.Maker GetMaker()
+        public new static FObj.Maker GetMaker()
         {
             return new Maker();
         }
 
-        new internal class Maker : FObj.Maker
-        {
-            public override FObj Make(FObj parent, PropertyList propertyList)
-            {
-                return new Character(parent, propertyList);
-            }
-        }
-
-        public override Status Layout(Area area)
+        public override Status Layout( Area area )
         {
             BlockArea blockArea;
-            if (!(area is BlockArea))
+            if ( !( area is BlockArea ) )
             {
                 FonetDriver.ActiveDriver.FireFonetWarning(
-                    "Currently Character can only be in a BlockArea");
-                return new Status(Status.OK);
+                    "Currently Character can only be in a BlockArea" );
+                return new Status( Status.OK );
             }
             blockArea = (BlockArea)area;
             bool textDecoration;
@@ -47,57 +39,57 @@ namespace Fonet.Fo.Flow
             HyphenationProps mHyphProps = propMgr.GetHyphenationProps();
             MarginInlineProps mProps = propMgr.GetMarginInlineProps();
             RelativePositionProps mRelProps = propMgr.GetRelativePositionProps();
-            ColorType c = this.properties.GetProperty("color").GetColorType();
+            ColorType c = properties.GetProperty( "color" ).GetColorType();
             float red = c.Red;
             float green = c.Green;
             float blue = c.Blue;
 
             int whiteSpaceCollapse =
-                this.properties.GetProperty("white-space-collapse").GetEnum();
-            int wrapOption = this.parent.properties.GetProperty("wrap-option").GetEnum();
+                properties.GetProperty( "white-space-collapse" ).GetEnum();
+            int wrapOption = parent.properties.GetProperty( "wrap-option" ).GetEnum();
 
-            int tmp = this.properties.GetProperty("text-decoration").GetEnum();
-            if (tmp == TextDecoration.UNDERLINE)
-            {
+            int tmp = properties.GetProperty( "text-decoration" ).GetEnum();
+            if ( tmp == TextDecoration.UNDERLINE )
                 textDecoration = true;
-            }
             else
-            {
                 textDecoration = false;
-            }
 
-            char characterValue = this.properties.GetProperty("character").GetCharacter();
-            string id = this.properties.GetProperty("id").GetString();
-            blockArea.getIDReferences().InitializeID(id, blockArea);
+            char characterValue = properties.GetProperty( "character" ).GetCharacter();
+            string id = properties.GetProperty( "id" ).GetString();
+            blockArea.getIDReferences().InitializeID( id, blockArea );
 
             LineArea la = blockArea.getCurrentLineArea();
-            if (la == null)
-            {
-                return new Status(Status.AREA_FULL_NONE);
-            }
-            la.changeFont(propMgr.GetFontState(area.getFontInfo()));
-            la.changeColor(red, green, blue);
-            la.changeWrapOption(wrapOption);
-            la.changeWhiteSpaceCollapse(whiteSpaceCollapse);
-            blockArea.setupLinkSet(this.GetLinkSet());
-            int result = la.addCharacter(characterValue, this.GetLinkSet(),
-                                         textDecoration);
-            if (result == Character.DOESNOT_FIT)
+            if ( la == null )
+                return new Status( Status.AREA_FULL_NONE );
+            la.changeFont( propMgr.GetFontState( area.getFontInfo() ) );
+            la.changeColor( red, green, blue );
+            la.changeWrapOption( wrapOption );
+            la.changeWhiteSpaceCollapse( whiteSpaceCollapse );
+            blockArea.setupLinkSet( GetLinkSet() );
+            int result = la.addCharacter( characterValue, GetLinkSet(),
+                textDecoration );
+            if ( result == DOESNOT_FIT )
             {
                 la = blockArea.createNextLineArea();
-                if (la == null)
-                {
-                    return new Status(Status.AREA_FULL_NONE);
-                }
-                la.changeFont(propMgr.GetFontState(area.getFontInfo()));
-                la.changeColor(red, green, blue);
-                la.changeWrapOption(wrapOption);
-                la.changeWhiteSpaceCollapse(whiteSpaceCollapse);
-                blockArea.setupLinkSet(this.GetLinkSet());
-                la.addCharacter(characterValue, this.GetLinkSet(),
-                                textDecoration);
+                if ( la == null )
+                    return new Status( Status.AREA_FULL_NONE );
+                la.changeFont( propMgr.GetFontState( area.getFontInfo() ) );
+                la.changeColor( red, green, blue );
+                la.changeWrapOption( wrapOption );
+                la.changeWhiteSpaceCollapse( whiteSpaceCollapse );
+                blockArea.setupLinkSet( GetLinkSet() );
+                la.addCharacter( characterValue, GetLinkSet(),
+                    textDecoration );
             }
-            return new Status(Status.OK);
+            return new Status( Status.OK );
+        }
+
+        internal new class Maker : FObj.Maker
+        {
+            public override FObj Make( FObj parent, PropertyList propertyList )
+            {
+                return new Character( parent, propertyList );
+            }
         }
     }
 }

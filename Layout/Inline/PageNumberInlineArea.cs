@@ -4,11 +4,10 @@ namespace Fonet.Layout.Inline
     {
         public PageNumberInlineArea(
             FontState fontState, float red, float green,
-            float blue, string refid, int width)
-            : base(fontState, red, green, blue, "?", width)
+            float blue, string refid, int width )
+            : base( fontState, red, green, blue, "?", width )
         {
-            this.pageNumberId = refid;
+            pageNumberId = refid;
         }
-
     }
 }

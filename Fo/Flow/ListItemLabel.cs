@@ -1,47 +1,45 @@
+using Fonet.Layout;
+
 namespace Fonet.Fo.Flow
 {
-    using Fonet.Layout;
-
     internal class ListItemLabel : FObj
     {
-        new internal class Maker : FObj.Maker
+        public ListItemLabel( FObj parent, PropertyList propertyList )
+            : base( parent, propertyList )
         {
-            public override FObj Make(FObj parent, PropertyList propertyList)
-            {
-                return new ListItemLabel(parent, propertyList);
-            }
+            name = "fo:list-item-label";
         }
 
-        new public static FObj.Maker GetMaker()
+        public new static FObj.Maker GetMaker()
         {
             return new Maker();
         }
 
-        public ListItemLabel(FObj parent, PropertyList propertyList)
-            : base(parent, propertyList)
+        public override Status Layout( Area area )
         {
-            this.name = "fo:list-item-label";
-        }
+            int numChildren = children.Count;
 
-        public override Status Layout(Area area)
-        {
-            int numChildren = this.children.Count;
-
-            if (numChildren != 1)
-            {
-                throw new FonetException("list-item-label must have exactly one block in this version of FO.NET");
-            }
+            if ( numChildren != 1 )
+                throw new FonetException( "list-item-label must have exactly one block in this version of FO.NET" );
 
             AccessibilityProps mAccProps = propMgr.GetAccessibilityProps();
-            string id = this.properties.GetProperty("id").GetString();
-            area.getIDReferences().InitializeID(id, area);
+            string id = properties.GetProperty( "id" ).GetString();
+            area.getIDReferences().InitializeID( id, area );
 
-            Block block = (Block)children[0];
+            var block = (Block)children[ 0 ];
 
             Status status;
-            status = block.Layout(area);
-            area.addDisplaySpace(-block.GetAreaHeight());
+            status = block.Layout( area );
+            area.addDisplaySpace( -block.GetAreaHeight() );
             return status;
+        }
+
+        internal new class Maker : FObj.Maker
+        {
+            public override FObj Make( FObj parent, PropertyList propertyList )
+            {
+                return new ListItemLabel( parent, propertyList );
+            }
         }
     }
 }

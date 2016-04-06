@@ -5,12 +5,16 @@ namespace Fonet.Fo.Properties
 {
     internal class LineHeightMaker : LengthProperty.Maker
     {
-        new public static PropertyMaker Maker(string propName)
+        private static Hashtable s_htKeywords;
+
+        protected LineHeightMaker( string name ) : base( name )
         {
-            return new LineHeightMaker(propName);
         }
 
-        protected LineHeightMaker(string name) : base(name) { }
+        public new static PropertyMaker Maker( string propName )
+        {
+            return new LineHeightMaker( propName );
+        }
 
 
         public override bool IsInherited()
@@ -23,59 +27,47 @@ namespace Fonet.Fo.Properties
             return true;
         }
 
-        public override Property Make(PropertyList propertyList)
+        public override Property Make( PropertyList propertyList )
         {
-            return Make(propertyList, "normal", propertyList.getParentFObj());
-
+            return Make( propertyList, "normal", propertyList.getParentFObj() );
         }
-
-        private static Hashtable s_htKeywords;
 
         private static void initKeywords()
         {
-            s_htKeywords = new Hashtable(1);
+            s_htKeywords = new Hashtable( 1 );
 
-            s_htKeywords.Add("normal", "1.2em");
-
+            s_htKeywords.Add( "normal", "1.2em" );
         }
 
-        protected override string CheckValueKeywords(string keyword)
+        protected override string CheckValueKeywords( string keyword )
         {
-            if (s_htKeywords == null)
-            {
+            if ( s_htKeywords == null )
                 initKeywords();
-            }
-            string value = (string)s_htKeywords[keyword];
-            if (value == null)
-            {
-                return base.CheckValueKeywords(keyword);
-            }
-            else
-            {
-                return value;
-            }
+            var value = (string)s_htKeywords[ keyword ];
+            if ( value == null )
+                return base.CheckValueKeywords( keyword );
+            return value;
         }
 
-        protected override Property ConvertPropertyDatatype(Property p, PropertyList propertyList, FObj fo)
+        protected override Property ConvertPropertyDatatype( Property p, PropertyList propertyList, FObj fo )
         {
             {
                 Number numval =
                     p.GetNumber();
-                if (numval != null)
+                if ( numval != null )
                 {
                     return new LengthProperty(
-                        new PercentLength(numval.DoubleValue(),
-                                          GetPercentBase(fo, propertyList)));
+                        new PercentLength( numval.DoubleValue(),
+                            GetPercentBase( fo, propertyList ) ) );
                 }
             }
 
-            return base.ConvertPropertyDatatype(p, propertyList, fo);
+            return base.ConvertPropertyDatatype( p, propertyList, fo );
         }
 
-        public override IPercentBase GetPercentBase(FObj fo, PropertyList propertyList)
+        public override IPercentBase GetPercentBase( FObj fo, PropertyList propertyList )
         {
-            return new LengthBase(fo, propertyList, LengthBase.FONTSIZE);
-
+            return new LengthBase( fo, propertyList, LengthBase.FONTSIZE );
         }
     }
 }

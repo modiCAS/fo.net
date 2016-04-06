@@ -1,55 +1,46 @@
+using Fonet.Fo.Properties;
+using Fonet.Layout;
+using Fonet.Layout.Inline;
+
 namespace Fonet.Fo.Flow
 {
-    using Fonet.Fo.Properties;
-    using Fonet.Layout;
-    using Fonet.Layout.Inline;
-
     internal class InstreamForeignObject : FObj
     {
-        new internal class Maker : FObj.Maker
+        private ForeignObjectArea areaCurrent;
+        private int breakAfter;
+
+        private int breakBefore;
+        private bool chauto;
+        private int contheight;
+        private int contwidth;
+        private bool cwauto;
+        private int endIndent;
+        private bool hauto;
+        private int height;
+        private int scaling;
+        private int spaceAfter;
+        private int spaceBefore;
+        private int startIndent;
+        private bool wauto;
+        private int width;
+
+        public InstreamForeignObject( FObj parent, PropertyList propertyList )
+            : base( parent, propertyList )
         {
-            public override FObj Make(FObj parent, PropertyList propertyList)
-            {
-                return new InstreamForeignObject(parent, propertyList);
-            }
+            name = "fo:instream-foreign-object";
         }
 
-        new public static FObj.Maker GetMaker()
+        public new static FObj.Maker GetMaker()
         {
             return new Maker();
         }
 
-        private int breakBefore;
-        private int breakAfter;
-        private int scaling;
-        private int width;
-        private int height;
-        private int contwidth;
-        private int contheight;
-        private bool wauto;
-        private bool hauto;
-        private bool cwauto;
-        private bool chauto;
-        private int spaceBefore;
-        private int spaceAfter;
-        private int startIndent;
-        private int endIndent;
-        private ForeignObjectArea areaCurrent;
-
-        public InstreamForeignObject(FObj parent, PropertyList propertyList)
-            : base(parent, propertyList)
+        public override Status Layout( Area area )
         {
-            this.name = "fo:instream-foreign-object";
-        }
+            if ( marker == MarkerBreakAfter )
+                return new Status( Status.OK );
 
-        public override Status Layout(Area area)
-        {
-            if (this.marker == MarkerBreakAfter)
-            {
-                return new Status(Status.OK);
-            }
-
-            if (this.marker == MarkerStart)
+            if ( marker == MarkerStart )
             {
                 AccessibilityProps mAccProps = propMgr.GetAccessibilityProps();
                 AuralProps mAurProps = propMgr.GetAuralProps();
@@ -58,154 +49,144 @@ namespace Fonet.Fo.Flow
                 MarginInlineProps mProps = propMgr.GetMarginInlineProps();
                 RelativePositionProps mRelProps = propMgr.GetRelativePositionProps();
 
-                string id = this.properties.GetProperty("id").GetString();
-                int align = this.properties.GetProperty("text-align").GetEnum();
-                int valign = this.properties.GetProperty("vertical-align").GetEnum();
-                int overflow = this.properties.GetProperty("overflow").GetEnum();
+                string id = properties.GetProperty( "id" ).GetString();
+                int align = properties.GetProperty( "text-align" ).GetEnum();
+                int valign = properties.GetProperty( "vertical-align" ).GetEnum();
+                int overflow = properties.GetProperty( "overflow" ).GetEnum();
 
-                this.breakBefore = this.properties.GetProperty("break-before").GetEnum();
-                this.breakAfter = this.properties.GetProperty("break-after").GetEnum();
-                this.width = this.properties.GetProperty("width").GetLength().MValue();
-                this.height = this.properties.GetProperty("height").GetLength().MValue();
-                this.contwidth =
-                    this.properties.GetProperty("content-width").GetLength().MValue();
-                this.contheight =
-                    this.properties.GetProperty("content-height").GetLength().MValue();
-                this.wauto = this.properties.GetProperty("width").GetLength().IsAuto();
-                this.hauto = this.properties.GetProperty("height").GetLength().IsAuto();
-                this.cwauto =
-                    this.properties.GetProperty("content-width").GetLength().IsAuto();
-                this.chauto =
-                    this.properties.GetProperty("content-height").GetLength().IsAuto();
+                breakBefore = properties.GetProperty( "break-before" ).GetEnum();
+                breakAfter = properties.GetProperty( "break-after" ).GetEnum();
+                width = properties.GetProperty( "width" ).GetLength().MValue();
+                height = properties.GetProperty( "height" ).GetLength().MValue();
+                contwidth =
+                    properties.GetProperty( "content-width" ).GetLength().MValue();
+                contheight =
+                    properties.GetProperty( "content-height" ).GetLength().MValue();
+                wauto = properties.GetProperty( "width" ).GetLength().IsAuto();
+                hauto = properties.GetProperty( "height" ).GetLength().IsAuto();
+                cwauto =
+                    properties.GetProperty( "content-width" ).GetLength().IsAuto();
+                chauto =
+                    properties.GetProperty( "content-height" ).GetLength().IsAuto();
 
-                this.startIndent =
-                    this.properties.GetProperty("start-indent").GetLength().MValue();
-                this.endIndent =
-                    this.properties.GetProperty("end-indent").GetLength().MValue();
-                this.spaceBefore =
-                    this.properties.GetProperty("space-before.optimum").GetLength().MValue();
-                this.spaceAfter =
-                    this.properties.GetProperty("space-after.optimum").GetLength().MValue();
+                startIndent =
+                    properties.GetProperty( "start-indent" ).GetLength().MValue();
+                endIndent =
+                    properties.GetProperty( "end-indent" ).GetLength().MValue();
+                spaceBefore =
+                    properties.GetProperty( "space-before.optimum" ).GetLength().MValue();
+                spaceAfter =
+                    properties.GetProperty( "space-after.optimum" ).GetLength().MValue();
 
-                this.scaling = this.properties.GetProperty("scaling").GetEnum();
+                scaling = properties.GetProperty( "scaling" ).GetEnum();
 
-                area.getIDReferences().CreateID(id);
-                if (this.areaCurrent == null)
+                area.getIDReferences().CreateID( id );
+                if ( areaCurrent == null )
                 {
-                    this.areaCurrent =
-                        new ForeignObjectArea(propMgr.GetFontState(area.getFontInfo()),
-                                              area.getAllocationWidth());
+                    areaCurrent =
+                        new ForeignObjectArea( propMgr.GetFontState( area.getFontInfo() ),
+                            area.getAllocationWidth() );
 
-                    this.areaCurrent.start();
-                    areaCurrent.SetWidth(this.width);
-                    areaCurrent.SetHeight(this.height);
-                    areaCurrent.SetContentWidth(this.contwidth);
-                    areaCurrent.setContentHeight(this.contheight);
-                    areaCurrent.setScaling(this.scaling);
-                    areaCurrent.setAlign(align);
-                    areaCurrent.setVerticalAlign(valign);
-                    areaCurrent.setOverflow(overflow);
-                    areaCurrent.setSizeAuto(wauto, hauto);
-                    areaCurrent.setContentSizeAuto(cwauto, chauto);
+                    areaCurrent.start();
+                    areaCurrent.SetWidth( width );
+                    areaCurrent.SetHeight( height );
+                    areaCurrent.SetContentWidth( contwidth );
+                    areaCurrent.setContentHeight( contheight );
+                    areaCurrent.setScaling( scaling );
+                    areaCurrent.setAlign( align );
+                    areaCurrent.setVerticalAlign( valign );
+                    areaCurrent.setOverflow( overflow );
+                    areaCurrent.setSizeAuto( wauto, hauto );
+                    areaCurrent.setContentSizeAuto( cwauto, chauto );
 
-                    areaCurrent.setPage(area.getPage());
+                    areaCurrent.setPage( area.getPage() );
 
-                    int numChildren = this.children.Count;
-                    if (numChildren > 1)
+                    int numChildren = children.Count;
+                    if ( numChildren > 1 )
+                        throw new FonetException( "Only one child element is allowed in an instream-foreign-object" );
+                    if ( children.Count > 0 )
                     {
-                        throw new FonetException("Only one child element is allowed in an instream-foreign-object");
-                    }
-                    if (this.children.Count > 0)
-                    {
-                        FONode fo = (FONode)children[0];
+                        var fo = (FONode)children[ 0 ];
                         Status status;
-                        if ((status =
-                            fo.Layout(this.areaCurrent)).isIncomplete())
-                        {
+                        if ( ( status =
+                            fo.Layout( areaCurrent ) ).isIncomplete() )
                             return status;
-                        }
-                        this.areaCurrent.end();
+                        areaCurrent.end();
                     }
                 }
 
-                this.marker = 0;
+                marker = 0;
 
-                if (breakBefore == BreakBefore.PAGE
-                    || ((spaceBefore + areaCurrent.getEffectiveHeight())
-                        > area.spaceLeft()))
-                {
-                    return new Status(Status.FORCE_PAGE_BREAK);
-                }
+                if ( breakBefore == GenericBreak.Enums.PAGE
+                    || spaceBefore + areaCurrent.getEffectiveHeight()
+                        > area.spaceLeft() )
+                    return new Status( Status.FORCE_PAGE_BREAK );
 
-                if (breakBefore == BreakBefore.ODD_PAGE)
-                {
-                    return new Status(Status.FORCE_PAGE_BREAK_ODD);
-                }
+                if ( breakBefore == GenericBreak.Enums.ODD_PAGE )
+                    return new Status( Status.FORCE_PAGE_BREAK_ODD );
 
-                if (breakBefore == BreakBefore.EVEN_PAGE)
-                {
-                    return new Status(Status.FORCE_PAGE_BREAK_EVEN);
-                }
+                if ( breakBefore == GenericBreak.Enums.EVEN_PAGE )
+                    return new Status( Status.FORCE_PAGE_BREAK_EVEN );
             }
 
-            if (this.areaCurrent == null)
-            {
-                return new Status(Status.OK);
-            }
+            if ( areaCurrent == null )
+                return new Status( Status.OK );
 
-            if (area is BlockArea)
+            if ( area is BlockArea )
             {
-                BlockArea ba = (BlockArea)area;
+                var ba = (BlockArea)area;
                 LineArea la = ba.getCurrentLineArea();
-                if (la == null)
-                {
-                    return new Status(Status.AREA_FULL_NONE);
-                }
+                if ( la == null )
+                    return new Status( Status.AREA_FULL_NONE );
                 la.addPending();
-                if (areaCurrent.getEffectiveWidth() > la.getRemainingWidth())
+                if ( areaCurrent.getEffectiveWidth() > la.getRemainingWidth() )
                 {
                     la = ba.createNextLineArea();
-                    if (la == null)
-                    {
-                        return new Status(Status.AREA_FULL_NONE);
-                    }
+                    if ( la == null )
+                        return new Status( Status.AREA_FULL_NONE );
                 }
-                la.addInlineArea(areaCurrent, GetLinkSet());
+                la.addInlineArea( areaCurrent, GetLinkSet() );
             }
             else
             {
-                area.addChild(areaCurrent);
-                area.increaseHeight(areaCurrent.getEffectiveHeight());
+                area.addChild( areaCurrent );
+                area.increaseHeight( areaCurrent.getEffectiveHeight() );
             }
 
-            if (this.isInTableCell)
-            {
+            if ( isInTableCell )
                 startIndent += forcedStartOffset;
+
+            areaCurrent.setStartIndent( startIndent );
+            areaCurrent.setPage( area.getPage() );
+
+            if ( breakAfter == GenericBreak.Enums.PAGE )
+            {
+                marker = MarkerBreakAfter;
+                return new Status( Status.FORCE_PAGE_BREAK );
             }
 
-            areaCurrent.setStartIndent(startIndent);
-            areaCurrent.setPage(area.getPage());
-
-            if (breakAfter == BreakAfter.PAGE)
+            if ( breakAfter == GenericBreak.Enums.ODD_PAGE )
             {
-                this.marker = MarkerBreakAfter;
-                return new Status(Status.FORCE_PAGE_BREAK);
+                marker = MarkerBreakAfter;
+                return new Status( Status.FORCE_PAGE_BREAK_ODD );
             }
 
-            if (breakAfter == BreakAfter.ODD_PAGE)
+            if ( breakAfter == GenericBreak.Enums.EVEN_PAGE )
             {
-                this.marker = MarkerBreakAfter;
-                return new Status(Status.FORCE_PAGE_BREAK_ODD);
-            }
-
-            if (breakAfter == BreakAfter.EVEN_PAGE)
-            {
-                this.marker = MarkerBreakAfter;
-                return new Status(Status.FORCE_PAGE_BREAK_EVEN);
+                marker = MarkerBreakAfter;
+                return new Status( Status.FORCE_PAGE_BREAK_EVEN );
             }
 
             areaCurrent = null;
-            return new Status(Status.OK);
+            return new Status( Status.OK );
+        }
+
+        internal new class Maker : FObj.Maker
+        {
+            public override FObj Make( FObj parent, PropertyList propertyList )
+            {
+                return new InstreamForeignObject( parent, propertyList );
+            }
         }
     }
 }

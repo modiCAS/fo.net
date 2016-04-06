@@ -4,45 +4,43 @@ namespace Fonet.Fo.Properties
 {
     internal class PaddingAfterMaker : GenericCondPadding
     {
-        new public static PropertyMaker Maker(string propName)
+        protected PaddingAfterMaker( string name ) : base( name )
         {
-            return new PaddingAfterMaker(propName);
         }
 
-        protected PaddingAfterMaker(string name) : base(name) { }
-
-
-        public override bool IsCorrespondingForced(PropertyList propertyList)
+        public new static PropertyMaker Maker( string propName )
         {
-            StringBuilder sbExpr = new StringBuilder();
+            return new PaddingAfterMaker( propName );
+        }
+
+
+        public override bool IsCorrespondingForced( PropertyList propertyList )
+        {
+            var sbExpr = new StringBuilder();
 
             sbExpr.Length = 0;
-            sbExpr.Append("padding-");
-            sbExpr.Append(propertyList.wmRelToAbs(PropertyList.AFTER));
+            sbExpr.Append( "padding-" );
+            sbExpr.Append( propertyList.wmRelToAbs( PropertyList.AFTER ) );
 
-            if (propertyList.GetExplicitProperty(sbExpr.ToString()) != null)
-            {
+            if ( propertyList.GetExplicitProperty( sbExpr.ToString() ) != null )
                 return true;
-            }
 
             return false;
         }
 
 
-        public override Property Compute(PropertyList propertyList)
+        public override Property Compute( PropertyList propertyList )
         {
             FObj parentFO = propertyList.getParentFObj();
-            StringBuilder sbExpr = new StringBuilder();
+            var sbExpr = new StringBuilder();
             Property p = null;
-            sbExpr.Append("padding-");
-            sbExpr.Append(propertyList.wmRelToAbs(PropertyList.AFTER));
+            sbExpr.Append( "padding-" );
+            sbExpr.Append( propertyList.wmRelToAbs( PropertyList.AFTER ) );
 
-            p = propertyList.GetExplicitOrShorthandProperty(sbExpr.ToString());
+            p = propertyList.GetExplicitOrShorthandProperty( sbExpr.ToString() );
 
-            if (p != null)
-            {
-                p = ConvertProperty(p, propertyList, parentFO);
-            }
+            if ( p != null )
+                p = ConvertProperty( p, propertyList, parentFO );
 
             return p;
         }
@@ -51,6 +49,5 @@ namespace Fonet.Fo.Properties
         {
             return "retain";
         }
-
     }
 }

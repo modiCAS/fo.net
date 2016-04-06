@@ -1,32 +1,32 @@
+using Fonet.Layout;
+
 namespace Fonet.Fo.Flow
 {
-    using Fonet.Layout;
-
     internal class MultiProperties : ToBeImplementedElement
     {
-        new internal class Maker : FObj.Maker
+        protected MultiProperties( FObj parent, PropertyList propertyList )
+            : base( parent, propertyList )
         {
-            public override FObj Make(FObj parent, PropertyList propertyList)
-            {
-                return new MultiProperties(parent, propertyList);
-            }
+            name = "fo:multi-properties";
         }
 
-        new public static FObj.Maker GetMaker()
+        public new static FObj.Maker GetMaker()
         {
             return new Maker();
         }
 
-        protected MultiProperties(FObj parent, PropertyList propertyList)
-            : base(parent, propertyList)
-        {
-            this.name = "fo:multi-properties";
-        }
-
-        public override Status Layout(Area area)
+        public override Status Layout( Area area )
         {
             AccessibilityProps mAccProps = propMgr.GetAccessibilityProps();
-            return base.Layout(area);
+            return base.Layout( area );
+        }
+
+        internal new class Maker : FObj.Maker
+        {
+            public override FObj Make( FObj parent, PropertyList propertyList )
+            {
+                return new MultiProperties( parent, propertyList );
+            }
         }
     }
 }

@@ -4,12 +4,16 @@ namespace Fonet.Fo.Properties
 {
     internal class EndsRowMaker : ToBeImplementedProperty.Maker
     {
-        new public static PropertyMaker Maker(string propName)
+        private Property m_defaultProp;
+
+        protected EndsRowMaker( string name ) : base( name )
         {
-            return new EndsRowMaker(propName);
         }
 
-        protected EndsRowMaker(string name) : base(name) { }
+        public new static PropertyMaker Maker( string propName )
+        {
+            return new EndsRowMaker( propName );
+        }
 
 
         public override bool IsInherited()
@@ -17,17 +21,11 @@ namespace Fonet.Fo.Properties
             return false;
         }
 
-        private Property m_defaultProp = null;
-
-        public override Property Make(PropertyList propertyList)
+        public override Property Make( PropertyList propertyList )
         {
-            if (m_defaultProp == null)
-            {
-                m_defaultProp = Make(propertyList, "false", propertyList.getParentFObj());
-            }
+            if ( m_defaultProp == null )
+                m_defaultProp = Make( propertyList, "false", propertyList.getParentFObj() );
             return m_defaultProp;
-
         }
-
     }
 }

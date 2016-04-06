@@ -2,18 +2,19 @@ namespace Fonet.Fo.Properties
 {
     internal class BorderLeftMaker : ListProperty.Maker
     {
-        new public static PropertyMaker Maker(string propName)
+        protected BorderLeftMaker( string name ) : base( name )
         {
-            return new BorderLeftMaker(propName);
         }
 
-        protected BorderLeftMaker(string name) : base(name) { }
+        public new static PropertyMaker Maker( string propName )
+        {
+            return new BorderLeftMaker( propName );
+        }
 
 
         public override bool IsInherited()
         {
             return false;
         }
-
     }
 }

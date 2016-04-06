@@ -5,6 +5,5 @@ namespace Fonet.Fo.Properties
         public const int WRAP = Constants.WRAP;
 
         public const int NO_WRAP = Constants.NO_WRAP;
-
     }
 }

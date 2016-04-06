@@ -8,16 +8,6 @@ namespace Fonet.Fo
     {
         private const string UNKNOWN = "UNKNOWN";
 
-        private string propName;
-
-        /// <summary>
-        ///     Return the name of the property whose value is being set.
-        /// </summary>
-        protected string PropName
-        {
-            get { return propName; }
-        }
-
         /// <summary>
         ///     Construct an instance of a PropertyMaker.
         /// </summary>
@@ -26,17 +16,22 @@ namespace Fonet.Fo
         /// </remarks>
         protected PropertyMaker()
         {
-            this.propName = UNKNOWN;
+            PropName = UNKNOWN;
         }
 
         /// <summary>
         ///     Construct an instance of a PropertyMaker for the given property.
         /// </summary>
         /// <param name="propName">The name of the property to be made.</param>
-        protected PropertyMaker(string propName)
+        protected PropertyMaker( string propName )
         {
-            this.propName = propName;
+            PropName = propName;
         }
+
+        /// <summary>
+        ///     Return the name of the property whose value is being set.
+        /// </summary>
+        protected string PropName { get; private set; }
 
         /// <summary>
         ///     Default implementation of isInherited.
@@ -49,7 +44,7 @@ namespace Fonet.Fo
 
         /// <summary>
         ///     Return a boolean indicating whether this property inherits the
-        ///     "specified" value rather than the "computed" value. The default is 
+        ///     "specified" value rather than the "computed" value. The default is
         ///     to inherit the "computed" value.
         /// </summary>
         /// <returns>If true, property inherits the value specified.</returns>
@@ -59,50 +54,50 @@ namespace Fonet.Fo
         }
 
         /// <summary>
-        ///     Return an object implementing the PercentBase interface.  This is 
-        ///     used to handle properties specified as a percentage of some "base 
-        ///     length", such as the content width of their containing box.  
+        ///     Return an object implementing the PercentBase interface.  This is
+        ///     used to handle properties specified as a percentage of some "base
+        ///     length", such as the content width of their containing box.
         ///     Overridden by subclasses which allow percent specifications. See
         ///     the documentation on properties.xsl for details.
         /// </summary>
         /// <param name="fo"></param>
         /// <param name="pl"></param>
         /// <returns></returns>
-        public virtual IPercentBase GetPercentBase(FObj fo, PropertyList pl)
+        public virtual IPercentBase GetPercentBase( FObj fo, PropertyList pl )
         {
             return null;
         }
 
         /// <summary>
-        ///     Return a Maker object which is used to set the values on components 
-        ///     of compound property types, such as "space".  Overridden by property 
+        ///     Return a Maker object which is used to set the values on components
+        ///     of compound property types, such as "space".  Overridden by property
         ///     maker subclasses which handle compound properties.
         /// </summary>
         /// <param name="subprop">
-        ///     The name of the component for which a Maker is to returned, for 
+        ///     The name of the component for which a Maker is to returned, for
         ///     example "optimum", if the FO attribute is space.optimum='10pt'.
         /// </param>
         /// <returns></returns>
-        protected virtual PropertyMaker GetSubpropMaker(string subprop)
+        protected virtual PropertyMaker GetSubpropMaker( string subprop )
         {
             return null;
         }
 
         /// <summary>
-        ///     Return a property value for the given component of a compound 
+        ///     Return a property value for the given component of a compound
         ///     property.
         /// </summary>
         /// <remarks>
-        ///     NOTE: this is only to ease porting when calls are made to 
+        ///     NOTE: this is only to ease porting when calls are made to
         ///     PropertyList.get() using a component name of a compound property,
-        ///     such as get("space.optimum"). 
+        ///     such as get("space.optimum").
         ///     The recommended technique is: get("space").getOptimum().
         ///     Overridden by property maker subclasses which handle compound properties.
         /// </remarks>
         /// <param name="p">A property value for a compound property type such as SpaceProperty.</param>
         /// <param name="subprop">The name of the component whose value is to be returned.</param>
         /// <returns></returns>
-        public virtual Property GetSubpropValue(Property p, string subprop)
+        public virtual Property GetSubpropValue( Property p, string subprop )
         {
             return null;
         }
@@ -112,7 +107,7 @@ namespace Fonet.Fo
         ///     value is already partially initialized, this method will modify it.
         /// </summary>
         /// <param name="baseProp">
-        ///     The Property object representing the compound property, such as 
+        ///     The Property object representing the compound property, such as
         ///     SpaceProperty.
         /// </param>
         /// <param name="partName">The name of the component whose value is specified.</param>
@@ -120,30 +115,26 @@ namespace Fonet.Fo
         /// <param name="value"></param>
         /// <param name="fo">The FO whose properties are being set.</param>
         /// <returns>A compound property object.</returns>
-        public Property Make(Property baseProp, string partName,
-                             PropertyList propertyList, string value,
-                             FObj fo)
+        public Property Make( Property baseProp, string partName,
+            PropertyList propertyList, string value,
+            FObj fo )
         {
-            if (baseProp == null)
+            if ( baseProp == null )
+                baseProp = MakeCompound( propertyList, fo );
+            PropertyMaker spMaker = GetSubpropMaker( partName );
+            if ( spMaker != null )
             {
-                baseProp = MakeCompound(propertyList, fo);
-            }
-            PropertyMaker spMaker = GetSubpropMaker(partName);
-            if (spMaker != null)
-            {
-                Property p = spMaker.Make(propertyList, value, fo);
-                if (p != null)
-                {
-                    return SetSubprop(baseProp, partName, p);
-                }
+                Property p = spMaker.Make( propertyList, value, fo );
+                if ( p != null )
+                    return SetSubprop( baseProp, partName, p );
             }
             return baseProp;
         }
 
         /// <summary>
         ///     Set a component in a compound property and return the modified
-        ///     compound property object.  This default implementation returns 
-        ///     the original base property without modifying it.  It is overridden 
+        ///     compound property object.  This default implementation returns
+        ///     the original base property without modifying it.  It is overridden
         ///     by property maker subclasses which handle compound properties.
         /// </summary>
         /// <param name="baseProp">
@@ -154,7 +145,7 @@ namespace Fonet.Fo
         ///     A Property object holding the specified value of the component to be set.
         /// </param>
         /// <returns>The modified compound property object.</returns>
-        protected virtual Property SetSubprop(Property baseProp, string partName, Property subProp)
+        protected virtual Property SetSubprop( Property baseProp, string partName, Property subProp )
         {
             return baseProp;
         }
@@ -166,77 +157,71 @@ namespace Fonet.Fo
         /// <param name="value">The attribute value.</param>
         /// <param name="fo">The current FO whose properties are being set.</param>
         /// <returns>The initialized Property object.</returns>
-        public virtual Property Make(PropertyList propertyList, string value, FObj fo)
+        public virtual Property Make( PropertyList propertyList, string value, FObj fo )
         {
             try
             {
                 Property pret = null;
                 string pvalue = value;
-                pret = CheckEnumValues(value);
-                if (pret == null)
+                pret = CheckEnumValues( value );
+                if ( pret == null )
                 {
-                    pvalue = CheckValueKeywords(value);
-                    Property p = PropertyParser.parse(pvalue,
-                                                      new PropertyInfo(this,
-                                                                       propertyList, fo));
-                    pret = ConvertProperty(p, propertyList, fo);
+                    pvalue = CheckValueKeywords( value );
+                    Property p = PropertyParser.parse( pvalue,
+                        new PropertyInfo( this,
+                            propertyList, fo ) );
+                    pret = ConvertProperty( p, propertyList, fo );
                 }
-                else if (IsCompoundMaker())
-                {
-                    pret = ConvertProperty(pret, propertyList, fo);
-                }
-                if (pret == null)
-                {
-                    throw new PropertyException("No conversion defined");
-                }
-                else if (InheritsSpecified())
-                {
+                else if ( IsCompoundMaker() )
+                    pret = ConvertProperty( pret, propertyList, fo );
+                if ( pret == null )
+                    throw new PropertyException( "No conversion defined" );
+                if ( InheritsSpecified() )
                     pret.SpecifiedValue = pvalue;
-                }
                 return pret;
             }
-            catch (PropertyException propEx)
+            catch ( PropertyException propEx )
             {
-                throw new FonetException("Error in " + propName + " property value '" + value + "': " + propEx.Message);
+                throw new FonetException( "Error in " + PropName + " property value '" + value + "': " + propEx.Message );
             }
         }
 
         public Property ConvertShorthandProperty(
-            PropertyList propertyList, Property prop, FObj fo)
+            PropertyList propertyList, Property prop, FObj fo )
         {
             Property pret = null;
             try
             {
-                pret = ConvertProperty(prop, propertyList, fo);
-                if (pret == null)
+                pret = ConvertProperty( prop, propertyList, fo );
+                if ( pret == null )
                 {
                     string sval = prop.GetNCname();
-                    if (sval != null)
+                    if ( sval != null )
                     {
-                        pret = CheckEnumValues(sval);
-                        if (pret == null)
+                        pret = CheckEnumValues( sval );
+                        if ( pret == null )
                         {
-                            String pvalue = CheckValueKeywords(sval);
-                            if (!pvalue.Equals(sval))
+                            string pvalue = CheckValueKeywords( sval );
+                            if ( !pvalue.Equals( sval ) )
                             {
                                 Property p =
-                                    PropertyParser.parse(pvalue,
-                                                         new PropertyInfo(this,
-                                                                          propertyList,
-                                                                          fo));
-                                pret = ConvertProperty(p, propertyList, fo);
+                                    PropertyParser.parse( pvalue,
+                                        new PropertyInfo( this,
+                                            propertyList,
+                                            fo ) );
+                                pret = ConvertProperty( p, propertyList, fo );
                             }
                         }
                     }
                 }
             }
-            catch (FonetException)
+            catch ( FonetException )
             {
             }
-            catch (PropertyException)
+            catch ( PropertyException )
             {
             }
-            if (pret != null)
+            if ( pret != null )
             {
             }
             return pret;
@@ -247,7 +232,7 @@ namespace Fonet.Fo
             return false;
         }
 
-        public virtual Property CheckEnumValues(string value)
+        public virtual Property CheckEnumValues( string value )
         {
             return null;
         }
@@ -264,10 +249,10 @@ namespace Fonet.Fo
         /// </summary>
         /// <param name="value">The string value of property attribute.</param>
         /// <returns>
-        ///     A string containging a parseable equivalent or null if the passed 
+        ///     A string containging a parseable equivalent or null if the passed
         ///     value isn't a keyword initializer for this Property.
         /// </returns>
-        protected virtual string CheckValueKeywords(string value)
+        protected virtual string CheckValueKeywords( string value )
         {
             return value;
         }
@@ -286,16 +271,16 @@ namespace Fonet.Fo
         ///     A Property of the correct type or null if the parsed value
         ///     can't be converted to the correct type.
         /// </returns>
-        public virtual Property ConvertProperty(Property p,
-                                                PropertyList propertyList,
-                                                FObj fo)
+        public virtual Property ConvertProperty( Property p,
+            PropertyList propertyList,
+            FObj fo )
         {
             return null;
         }
 
-        protected virtual Property ConvertPropertyDatatype(Property p,
-                                                           PropertyList propertyList,
-                                                           FObj fo)
+        protected virtual Property ConvertPropertyDatatype( Property p,
+            PropertyList propertyList,
+            FObj fo )
         {
             return null;
         }
@@ -305,7 +290,7 @@ namespace Fonet.Fo
         /// </summary>
         /// <param name="propertyList">The PropertyList object being built for this FO.</param>
         /// <returns></returns>
-        public virtual Property Make(PropertyList propertyList)
+        public virtual Property Make( PropertyList propertyList )
         {
             return null;
         }
@@ -319,8 +304,8 @@ namespace Fonet.Fo
         ///     A Property subclass object holding a "compound" property object
         ///     initialized to the default values for each component.
         /// </returns>
-        protected virtual Property MakeCompound(PropertyList propertyList,
-                                                FObj parentFO)
+        protected virtual Property MakeCompound( PropertyList propertyList,
+            FObj parentFO )
         {
             return null;
         }
@@ -333,30 +318,30 @@ namespace Fonet.Fo
         /// </summary>
         /// <param name="propertyList">The PropertyList for the FO.</param>
         /// <returns>
-        ///     Property A computed Property value or null if no rules are 
+        ///     Property A computed Property value or null if no rules are
         ///     specified (in foproperties.xml) to compute the value.
         /// </returns>
-        public virtual Property Compute(PropertyList propertyList)
+        public virtual Property Compute( PropertyList propertyList )
         {
-            if (InheritsSpecified())
+            if ( InheritsSpecified() )
             {
                 // recalculate based on last specified value
                 // Climb up propertylist and find last spec'd value
                 // NEED PROPNAME!!! get from Maker
                 Property specProp =
-                    propertyList.GetNearestSpecifiedProperty(propName);
-                if (specProp != null)
+                    propertyList.GetNearestSpecifiedProperty( PropName );
+                if ( specProp != null )
                 {
                     // Only need to do this if the value is relative.
-                    String specVal = specProp.SpecifiedValue;
-                    if (specVal != null)
+                    string specVal = specProp.SpecifiedValue;
+                    if ( specVal != null )
                     {
                         try
                         {
-                            return Make(propertyList, specVal,
-                                        propertyList.getParentFObj());
+                            return Make( propertyList, specVal,
+                                propertyList.getParentFObj() );
                         }
-                        catch (FonetException)
+                        catch ( FonetException )
                         {
                             return null;
                         }
@@ -366,19 +351,19 @@ namespace Fonet.Fo
             return null;
         }
 
-        public virtual bool IsCorrespondingForced(PropertyList propertyList)
+        public virtual bool IsCorrespondingForced( PropertyList propertyList )
         {
             return false;
         }
 
-        public virtual Property GetShorthand(PropertyList propertyList)
+        public virtual Property GetShorthand( PropertyList propertyList )
         {
             return null;
         }
 
-        public static PropertyMaker Maker(string propName)
+        public static PropertyMaker Maker( string propName )
         {
-            throw new Exception("This method should not be called.");
+            throw new Exception( "This method should not be called." );
         }
     }
 }

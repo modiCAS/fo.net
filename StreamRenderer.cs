@@ -1,65 +1,65 @@
+using System.Collections;
+using Fonet.Apps;
+using Fonet.DataTypes;
+using Fonet.Fo.Flow;
+using Fonet.Fo.Pagination;
+using Fonet.Layout;
+using Fonet.Render.Pdf;
+
 namespace Fonet
 {
-
-    using System.Collections;
-    using Fonet.Apps;
-    using Fonet.DataTypes;
-    using Fonet.Fo.Flow;
-    using Fonet.Fo.Pagination;
-    using Fonet.Layout;
-    using Fonet.Render.Pdf;
-
     /// <summary>
-    ///     This class acts as a bridge between the XML:FO parser and the 
-    ///     formatting/rendering classes. It will queue PageSequences up until 
-    ///     all the IDs required by them are satisfied, at which time it will 
+    ///     This class acts as a bridge between the XML:FO parser and the
+    ///     formatting/rendering classes. It will queue PageSequences up until
+    ///     all the IDs required by them are satisfied, at which time it will
     ///     render the pages.
-    ///     StreamRenderer is created by Driver and called from FOTreeBuilder 
+    ///     StreamRenderer is created by Driver and called from FOTreeBuilder
     ///     when a PageSequence is created, and AreaTree when a Page is formatted.
     /// </summary>
     internal class StreamRenderer
     {
-        /// <summary>
-        ///     Keep track of the number of pages rendered.
-        /// </summary>
-        private int pageCount = 0;
+        private PageSequence currentPageSequence;
 
-        /// <summary>
-        ///     The renderer being used.
-        /// </summary>
-        private PdfRenderer renderer;
-
-        /// <summary>
-        ///     The formatting results to be handed back to the caller.
-        /// </summary>
-        private FormattingResults results = new FormattingResults();
-
-        /// <summary>
-        ///     The FontInfo for this renderer.
-        /// </summary>
-        private FontInfo fontInfo = new FontInfo();
-
-        /// <summary>
-        ///     The list of pages waiting to be renderered.
-        /// </summary>
-        private ArrayList renderQueue = new ArrayList();
-
-        /// <summary>
-        ///     The current set of IDReferences, passed to the areatrees 
-        ///     and pages. This is used by the AreaTree as a single map of 
-        ///     all IDs.
-        /// </summary>
-        private IDReferences idReferences = new IDReferences();
+        private ArrayList currentPageSequenceMarkers;
 
         /// <summary>
         ///     The list of markers.
         /// </summary>
         private ArrayList documentMarkers;
 
-        private ArrayList currentPageSequenceMarkers;
-        private PageSequence currentPageSequence;
+        /// <summary>
+        ///     The FontInfo for this renderer.
+        /// </summary>
+        private readonly FontInfo fontInfo = new FontInfo();
 
-        public StreamRenderer(PdfRenderer renderer)
+        /// <summary>
+        ///     The current set of IDReferences, passed to the areatrees
+        ///     and pages. This is used by the AreaTree as a single map of
+        ///     all IDs.
+        /// </summary>
+        private readonly IDReferences idReferences = new IDReferences();
+
+        /// <summary>
+        ///     Keep track of the number of pages rendered.
+        /// </summary>
+        private int pageCount;
+
+        /// <summary>
+        ///     The renderer being used.
+        /// </summary>
+        private readonly PdfRenderer renderer;
+
+        /// <summary>
+        ///     The list of pages waiting to be renderered.
+        /// </summary>
+        private readonly ArrayList renderQueue = new ArrayList();
+
+        /// <summary>
+        ///     The formatting results to be handed back to the caller.
+        /// </summary>
+        private readonly FormattingResults results = new FormattingResults();
+
+        public StreamRenderer( PdfRenderer renderer )
         {
             this.renderer = renderer;
         }
@@ -71,14 +71,14 @@ namespace Fonet
 
         public FormattingResults getResults()
         {
-            return this.results;
+            return results;
         }
 
         public void StartRenderer()
         {
             pageCount = 0;
 
-            renderer.SetupFontInfo(fontInfo);
+            renderer.SetupFontInfo( fontInfo );
             renderer.StartRenderer();
         }
 
@@ -86,58 +86,54 @@ namespace Fonet
         {
             // Force the processing of any more queue elements, even if they 
             // are not resolved.
-            ProcessQueue(true);
+            ProcessQueue( true );
             renderer.StopRenderer();
         }
 
         /// <summary>
-        ///     Format the PageSequence. The PageSequence formats Pages and adds 
+        ///     Format the PageSequence. The PageSequence formats Pages and adds
         ///     them to the AreaTree, which subsequently calls the StreamRenderer
-        ///     instance (this) again to render the page.  At this time the page 
-        ///     might be printed or it might be queued. A page might not be 
-        ///     renderable immediately if the IDReferences are not all valid. In 
+        ///     instance (this) again to render the page.  At this time the page
+        ///     might be printed or it might be queued. A page might not be
+        ///     renderable immediately if the IDReferences are not all valid. In
         ///     this case we defer the rendering until they are all valid.
         /// </summary>
         /// <param name="pageSequence"></param>
-        public void Render(PageSequence pageSequence)
+        public void Render( PageSequence pageSequence )
         {
-            AreaTree a = new AreaTree(this);
-            a.setFontInfo(fontInfo);
+            var a = new AreaTree( this );
+            a.setFontInfo( fontInfo );
 
-            pageSequence.Format(a);
+            pageSequence.Format( a );
 
-            this.results.HaveFormattedPageSequence(pageSequence);
+            results.HaveFormattedPageSequence( pageSequence );
 
             FonetDriver.ActiveDriver.FireFonetInfo(
-                "Last page-sequence produced " + pageSequence.PageCount + " page(s).");
+                "Last page-sequence produced " + pageSequence.PageCount + " page(s)." );
         }
 
-        public void QueuePage(Page page)
+        public void QueuePage( Page page )
         {
             // Process markers
             PageSequence pageSequence = page.getPageSequence();
-            if (pageSequence != currentPageSequence)
+            if ( pageSequence != currentPageSequence )
             {
                 currentPageSequence = pageSequence;
                 currentPageSequenceMarkers = null;
             }
             ArrayList markers = page.getMarkers();
-            if (markers != null)
+            if ( markers != null )
             {
-                if (documentMarkers == null)
-                {
+                if ( documentMarkers == null )
                     documentMarkers = new ArrayList();
-                }
-                if (currentPageSequenceMarkers == null)
-                {
+                if ( currentPageSequenceMarkers == null )
                     currentPageSequenceMarkers = new ArrayList();
-                }
-                for (int i = 0; i < markers.Count; i++)
+                for ( var i = 0; i < markers.Count; i++ )
                 {
-                    Marker marker = (Marker)markers[i];
+                    var marker = (Marker)markers[ i ];
                     marker.releaseRegistryArea();
-                    currentPageSequenceMarkers.Add(marker);
-                    documentMarkers.Add(marker);
+                    currentPageSequenceMarkers.Add( marker );
+                    documentMarkers.Add( marker );
                 }
             }
 
@@ -145,107 +141,40 @@ namespace Fonet
             // Try to optimise on the common case that there are no pages pending 
             // and that all ID references are valid on the current pages. This 
             // short-cuts the pipeline and renders the area immediately.
-            if ((renderQueue.Count == 0) && idReferences.IsEveryIdValid())
-            {
-                renderer.Render(page);
-            }
+            if ( renderQueue.Count == 0 && idReferences.IsEveryIdValid() )
+                renderer.Render( page );
             else
-            {
-                AddToRenderQueue(page);
-            }
+                AddToRenderQueue( page );
 
             pageCount++;
         }
 
-        private void AddToRenderQueue(Page page)
+        private void AddToRenderQueue( Page page )
         {
-            RenderQueueEntry entry = new RenderQueueEntry(this, page);
-            renderQueue.Add(entry);
+            var entry = new RenderQueueEntry( this, page );
+            renderQueue.Add( entry );
 
             // The just-added entry could (possibly) resolve the waiting entries, 
             // so we try to process the queue now to see.
-            ProcessQueue(false);
+            ProcessQueue( false );
         }
 
         /// <summary>
-        ///     Try to process the queue from the first entry forward.  If an 
-        ///     entry can't be processed, then the queue can't move forward, 
+        ///     Try to process the queue from the first entry forward.  If an
+        ///     entry can't be processed, then the queue can't move forward,
         ///     so return.
         /// </summary>
         /// <param name="force"></param>
-        private void ProcessQueue(bool force)
+        private void ProcessQueue( bool force )
         {
-            while (renderQueue.Count > 0)
+            while ( renderQueue.Count > 0 )
             {
-                RenderQueueEntry entry = (RenderQueueEntry)renderQueue[0];
-                if ((!force) && (!entry.isResolved()))
-                {
+                var entry = (RenderQueueEntry)renderQueue[ 0 ];
+                if ( !force && !entry.isResolved() )
                     break;
-                }
 
-                renderer.Render(entry.getPage());
-                renderQueue.RemoveAt(0);
-            }
-        }
-
-        /// <summary>
-        ///     A RenderQueueEntry consists of the Page to be queued, plus a list 
-        ///     of outstanding ID references that need to be resolved before the 
-        ///     Page can be renderered.
-        /// </summary>
-        private class RenderQueueEntry
-        {
-            /// <summary>
-            ///     The Page that has outstanding ID references.
-            /// </summary>
-            private Page page;
-
-            private StreamRenderer outer;
-
-            /// <summary>
-            ///     A list of ID references (names).
-            /// </summary>
-            private ArrayList unresolvedIdReferences = new ArrayList();
-
-            public RenderQueueEntry(StreamRenderer outer, Page page)
-            {
-                this.outer = outer;
-                this.page = page;
-
-                foreach (object o in outer.idReferences.getInvalidElements())
-                {
-                    unresolvedIdReferences.Add(o);
-                }
-            }
-
-            public Page getPage()
-            {
-                return page;
-            }
-
-            /// <summary>
-            ///     See if the outstanding references are resolved in the current 
-            ///     copy of IDReferences.
-            /// </summary>
-            /// <returns></returns>
-            public bool isResolved()
-            {
-                if ((unresolvedIdReferences.Count == 0) || outer.idReferences.IsEveryIdValid())
-                {
-                    return true;
-                }
-
-                // See if any of the unresolved references are still unresolved.
-                foreach (string s in unresolvedIdReferences)
-                {
-                    if (!outer.idReferences.doesIDExist(s))
-                    {
-                        return false;
-                    }
-                }
-
-                unresolvedIdReferences.RemoveRange(0, unresolvedIdReferences.Count);
-                return true;
+                renderer.Render( entry.getPage() );
+                renderQueue.RemoveAt( 0 );
             }
         }
 
@@ -274,6 +203,61 @@ namespace Fonet
         public ArrayList GetCurrentPageSequenceMarkers()
         {
             return currentPageSequenceMarkers;
+        }
+
+        /// <summary>
+        ///     A RenderQueueEntry consists of the Page to be queued, plus a list
+        ///     of outstanding ID references that need to be resolved before the
+        ///     Page can be renderered.
+        /// </summary>
+        private class RenderQueueEntry
+        {
+            private readonly StreamRenderer outer;
+
+            /// <summary>
+            ///     The Page that has outstanding ID references.
+            /// </summary>
+            private readonly Page page;
+
+            /// <summary>
+            ///     A list of ID references (names).
+            /// </summary>
+            private readonly ArrayList unresolvedIdReferences = new ArrayList();
+
+            public RenderQueueEntry( StreamRenderer outer, Page page )
+            {
+                this.outer = outer;
+                this.page = page;
+
+                foreach ( object o in outer.idReferences.getInvalidElements() )
+                    unresolvedIdReferences.Add( o );
+            }
+
+            public Page getPage()
+            {
+                return page;
+            }
+
+            /// <summary>
+            ///     See if the outstanding references are resolved in the current
+            ///     copy of IDReferences.
+            /// </summary>
+            /// <returns></returns>
+            public bool isResolved()
+            {
+                if ( unresolvedIdReferences.Count == 0 || outer.idReferences.IsEveryIdValid() )
+                    return true;
+
+                // See if any of the unresolved references are still unresolved.
+                foreach ( string s in unresolvedIdReferences )
+                {
+                    if ( !outer.idReferences.doesIDExist( s ) )
+                        return false;
+                }
+
+                unresolvedIdReferences.RemoveRange( 0, unresolvedIdReferences.Count );
+                return true;
+            }
         }
     }
 }

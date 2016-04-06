@@ -11,6 +11,5 @@ namespace Fonet.Fo.Properties
         public const int NO_REPEAT = Constants.NO_REPEAT;
 
         public const int INHERIT = Constants.INHERIT;
-
     }
 }

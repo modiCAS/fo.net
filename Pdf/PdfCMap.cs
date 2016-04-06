@@ -4,29 +4,26 @@ using System.Collections;
 namespace Fonet.Pdf
 {
     /// <summary>
-    ///     Class that defines a mapping between character codes (CIDs) 
+    ///     Class that defines a mapping between character codes (CIDs)
     ///     to a character selector (Identity-H encoding)
     /// </summary>
     public class PdfCMap : PdfContentStream
     {
         public const string DefaultName = "Adobe-Identity-UCS";
 
+        private readonly SortedList ranges;
+
         private PdfCIDSystemInfo systemInfo;
 
-        private SortedList ranges;
-
-        public PdfCMap(PdfObjectId id)
-            : base(id)
+        public PdfCMap( PdfObjectId id )
+            : base( id )
         {
-            this.ranges = new SortedList();
+            ranges = new SortedList();
         }
 
         public PdfCIDSystemInfo SystemInfo
         {
-            set
-            {
-                this.systemInfo = value;
-            }
+            set { systemInfo = value; }
         }
 
         /// <summary>
@@ -36,13 +33,13 @@ namespace Fonet.Pdf
         ///     Both the key and value must be a ushort.
         /// </remarks>
         /// <param name="map"></param>
-        public void AddBfRanges(IDictionary map)
+        public void AddBfRanges( IDictionary map )
         {
-            foreach (DictionaryEntry entry in map)
+            foreach ( DictionaryEntry entry in map )
             {
                 AddBfRange(
-                    Convert.ToUInt16(entry.Key),
-                    Convert.ToUInt16(entry.Value));
+                    Convert.ToUInt16( entry.Key ),
+                    Convert.ToUInt16( entry.Value ) );
             }
         }
 
@@ -51,91 +48,87 @@ namespace Fonet.Pdf
         /// </summary>
         /// <param name="glyphIndex"></param>
         /// <param name="unicodeValue"></param>
-        public void AddBfRange(ushort glyphIndex, ushort unicodeValue)
+        public void AddBfRange( ushort glyphIndex, ushort unicodeValue )
         {
-            ranges.Add(glyphIndex, unicodeValue);
+            ranges.Add( glyphIndex, unicodeValue );
         }
 
         /// <summary>
         ///     Overriden to create CMap content stream.
         /// </summary>
         /// <param name="writer"></param>
-        protected internal override void Write(PdfWriter writer)
+        protected internal override void Write( PdfWriter writer )
         {
-            WriteLine("/CIDInit /ProcSet findresource begin");
-            WriteLine("12 dict begin");
-            WriteLine("begincmap");
-            WriteLine("/CIDSystemInfo");
-            WriteLine(systemInfo);
-            WriteLine("def");
-            WriteLine(String.Format("/CMapName /{0} def", DefaultName));
-            WriteLine("/CMapType 2 def");
+            WriteLine( "/CIDInit /ProcSet findresource begin" );
+            WriteLine( "12 dict begin" );
+            WriteLine( "begincmap" );
+            WriteLine( "/CIDSystemInfo" );
+            WriteLine( systemInfo );
+            WriteLine( "def" );
+            WriteLine( string.Format( "/CMapName /{0} def", DefaultName ) );
+            WriteLine( "/CMapType 2 def" );
 
             // No bfranges represents an error - we should really through an exception
-            if (ranges.Count > 0)
+            if ( ranges.Count > 0 )
             {
                 // Groups CMap entries into bfranges
                 BfEntryList groups = GroupCMapEntries();
 
                 // Write out the codespace ranges
-                WriteCodespaceRange(groups);
+                WriteCodespaceRange( groups );
 
                 // Write out GID to Unicode mappings
-                WriteBfChars(groups);
-                WriteBfRanges(groups);
+                WriteBfChars( groups );
+                WriteBfRanges( groups );
             }
 
-            WriteLine("endcmap");
-            WriteLine("CMapName currentdict /CMap defineresource pop");
-            WriteLine("end");
-            Write("end");
+            WriteLine( "endcmap" );
+            WriteLine( "CMapName currentdict /CMap defineresource pop" );
+            WriteLine( "end" );
+            Write( "end" );
 
-            base.Write(writer);
+            base.Write( writer );
         }
 
-        private void WriteCodespaceRange(BfEntryList entries)
+        private void WriteCodespaceRange( BfEntryList entries )
         {
-            BfEntry first = entries[0];
-            BfEntry last = entries[entries.Count - 1];
+            BfEntry first = entries[ 0 ];
+            BfEntry last = entries[ entries.Count - 1 ];
 
-            WriteLine("1 begincodespacerange");
-            WriteLine(String.Format("<{0:X4}> <{1:X4}>",
-                                    first.StartGlyphIndex, last.EndGlyphIndex));
-            WriteLine("endcodespacerange");
+            WriteLine( "1 begincodespacerange" );
+            WriteLine( string.Format( "<{0:X4}> <{1:X4}>",
+                first.StartGlyphIndex, last.EndGlyphIndex ) );
+            WriteLine( "endcodespacerange" );
         }
 
         /// <summary>
         ///     Writes the bfchar entries to the content stream in groups of 100.
         /// </summary>
         /// <param name="entries"></param>
-        private void WriteBfChars(BfEntryList entries)
+        private void WriteBfChars( BfEntryList entries )
         {
             // bfchar entries must be grouped in blocks of 100
             BfEntry[] charEntries = entries.Chars;
-            int numBlocks = (charEntries.Length / 100) + (((charEntries.Length % 100) > 0) ? 1 : 0);
+            int numBlocks = charEntries.Length / 100 + ( charEntries.Length % 100 > 0 ? 1 : 0 );
 
-            for (int i = 0; i < numBlocks; i++)
+            for ( var i = 0; i < numBlocks; i++ )
             {
-                int blockSize = 0;
-                if ((i + 1) == numBlocks)
-                {
-                    blockSize = charEntries.Length - (i * 100);
-                }
+                var blockSize = 0;
+                if ( i + 1 == numBlocks )
+                    blockSize = charEntries.Length - i * 100;
                 else
-                {
                     blockSize = 100;
-                }
 
-                WriteLine(String.Format("{0} beginbfchar", blockSize));
+                WriteLine( string.Format( "{0} beginbfchar", blockSize ) );
 
-                for (int j = 0; j < blockSize; j++)
+                for ( var j = 0; j < blockSize; j++ )
                 {
-                    BfEntry entry = charEntries[(i * 100) + j];
-                    WriteLine(String.Format("<{0:X4}> <{1:X4}>",
-                                            entry.StartGlyphIndex,
-                                            entry.UnicodeValue));
+                    BfEntry entry = charEntries[ i * 100 + j ];
+                    WriteLine( string.Format( "<{0:X4}> <{1:X4}>",
+                        entry.StartGlyphIndex,
+                        entry.UnicodeValue ) );
                 }
-                WriteLine("endbfchar");
+                WriteLine( "endbfchar" );
             }
         }
 
@@ -143,55 +136,51 @@ namespace Fonet.Pdf
         ///     Writes the bfrange entries to the content stream in groups of 100.
         /// </summary>
         /// <param name="entries"></param>
-        private void WriteBfRanges(BfEntryList entries)
+        private void WriteBfRanges( BfEntryList entries )
         {
             // bfrange entries must be grouped in blocks of 100
             BfEntry[] rangeEntries = entries.Ranges;
-            int numBlocks = (rangeEntries.Length / 100) + (((rangeEntries.Length % 100) > 0) ? 1 : 0);
+            int numBlocks = rangeEntries.Length / 100 + ( rangeEntries.Length % 100 > 0 ? 1 : 0 );
 
-            for (int i = 0; i < numBlocks; i++)
+            for ( var i = 0; i < numBlocks; i++ )
             {
-                int blockSize = 0;
-                if ((i + 1) == numBlocks)
-                {
-                    blockSize = rangeEntries.Length - (i * 100);
-                }
+                var blockSize = 0;
+                if ( i + 1 == numBlocks )
+                    blockSize = rangeEntries.Length - i * 100;
                 else
-                {
                     blockSize = 100;
-                }
 
-                WriteLine(String.Format("{0} beginbfrange", blockSize));
+                WriteLine( string.Format( "{0} beginbfrange", blockSize ) );
 
-                for (int j = 0; j < blockSize; j++)
+                for ( var j = 0; j < blockSize; j++ )
                 {
-                    BfEntry entry = rangeEntries[(i * 100) + j];
-                    WriteLine(String.Format("<{0:X4}> <{1:X4}> <{2:X4}>",
-                                            entry.StartGlyphIndex,
-                                            entry.EndGlyphIndex,
-                                            entry.UnicodeValue));
+                    BfEntry entry = rangeEntries[ i * 100 + j ];
+                    WriteLine( string.Format( "<{0:X4}> <{1:X4}> <{2:X4}>",
+                        entry.StartGlyphIndex,
+                        entry.EndGlyphIndex,
+                        entry.UnicodeValue ) );
                 }
-                WriteLine("endbfrange");
+                WriteLine( "endbfrange" );
             }
         }
 
         private BfEntryList GroupCMapEntries()
         {
             // List of grouped bfranges
-            BfEntryList groups = new BfEntryList();
+            var groups = new BfEntryList();
 
-            ushort prevGlyphIndex = (ushort)ranges.GetKey(0);
-            ushort prevUnicodeValue = (ushort)ranges[prevGlyphIndex];
-            BfEntry range = new BfEntry(prevGlyphIndex, prevUnicodeValue);
-            groups.Add(range);
+            var prevGlyphIndex = (ushort)ranges.GetKey( 0 );
+            var prevUnicodeValue = (ushort)ranges[ prevGlyphIndex ];
+            var range = new BfEntry( prevGlyphIndex, prevUnicodeValue );
+            groups.Add( range );
 
-            for (int i = 1; i < ranges.Count; i++)
+            for ( var i = 1; i < ranges.Count; i++ )
             {
-                ushort glyphIndex = (ushort)ranges.GetKey(i);
-                ushort unicodeValue = (ushort)ranges[glyphIndex];
+                var glyphIndex = (ushort)ranges.GetKey( i );
+                var unicodeValue = (ushort)ranges[ glyphIndex ];
 
-                if (unicodeValue == prevUnicodeValue + 1 &&
-                    glyphIndex == prevGlyphIndex + 1)
+                if ( unicodeValue == prevUnicodeValue + 1 &&
+                    glyphIndex == prevGlyphIndex + 1 )
                 {
                     // Contingous block - use existing range
                     range.IncrementEndIndex();
@@ -199,8 +188,8 @@ namespace Fonet.Pdf
                 else
                 {
                     // Non-contiguous block - start new range
-                    range = new BfEntry(glyphIndex, unicodeValue);
-                    groups.Add(range);
+                    range = new BfEntry( glyphIndex, unicodeValue );
+                    groups.Add( range );
                 }
 
                 prevGlyphIndex = glyphIndex;

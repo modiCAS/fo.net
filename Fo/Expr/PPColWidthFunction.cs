@@ -6,25 +6,17 @@ namespace Fonet.Fo.Expr
     {
         public override int NumArgs
         {
-            get
-            {
-                return 1;
-            }
+            get { return 1; }
         }
 
-        public override Property Eval(Property[] args, PropertyInfo pInfo)
+        public override Property Eval( Property[] args, PropertyInfo pInfo )
         {
-            Number d = args[0].GetNumber();
-            if (d == null)
-            {
-                throw new PropertyException("Non number operand to proportional-column-width function");
-            }
-            if (!pInfo.getPropertyList().GetElement().Equals("table-column"))
-            {
-                throw new PropertyException("proportional-column-width function may only be used on table-column FO");
-            }
-            return new LengthProperty(new TableColLength(d.DoubleValue()));
+            Number d = args[ 0 ].GetNumber();
+            if ( d == null )
+                throw new PropertyException( "Non number operand to proportional-column-width function" );
+            if ( !pInfo.getPropertyList().GetElement().Equals( "table-column" ) )
+                throw new PropertyException( "proportional-column-width function may only be used on table-column FO" );
+            return new LengthProperty( new TableColLength( d.DoubleValue() ) );
         }
-
     }
 }

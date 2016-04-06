@@ -4,12 +4,16 @@ namespace Fonet.Fo.Properties
 {
     internal class BorderAfterPrecedenceMaker : ToBeImplementedProperty.Maker
     {
-        new public static PropertyMaker Maker(string propName)
+        private Property m_defaultProp;
+
+        protected BorderAfterPrecedenceMaker( string name ) : base( name )
         {
-            return new BorderAfterPrecedenceMaker(propName);
         }
 
-        protected BorderAfterPrecedenceMaker(string name) : base(name) { }
+        public new static PropertyMaker Maker( string propName )
+        {
+            return new BorderAfterPrecedenceMaker( propName );
+        }
 
 
         public override bool IsInherited()
@@ -17,17 +21,11 @@ namespace Fonet.Fo.Properties
             return false;
         }
 
-        private Property m_defaultProp = null;
-
-        public override Property Make(PropertyList propertyList)
+        public override Property Make( PropertyList propertyList )
         {
-            if (m_defaultProp == null)
-            {
-                m_defaultProp = Make(propertyList, "none", propertyList.getParentFObj());
-            }
+            if ( m_defaultProp == null )
+                m_defaultProp = Make( propertyList, "none", propertyList.getParentFObj() );
             return m_defaultProp;
-
         }
-
     }
 }

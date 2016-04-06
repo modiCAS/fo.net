@@ -14,21 +14,15 @@ namespace Fonet.Layout
 
         public static string XSL_BEFORE_FLOAT = "xsl-before-float";
 
-        public static string setAreaClass(string areaClass)
+        public static string setAreaClass( string areaClass )
         {
-            if (areaClass.Equals(XSL_NORMAL) ||
-                areaClass.Equals(XSL_ABSOLUTE) ||
-                areaClass.Equals(XSL_FOOTNOTE) ||
-                areaClass.Equals(XSL_SIDE_FLOAT) ||
-                areaClass.Equals(XSL_BEFORE_FLOAT))
-            {
+            if ( areaClass.Equals( XSL_NORMAL ) ||
+                areaClass.Equals( XSL_ABSOLUTE ) ||
+                areaClass.Equals( XSL_FOOTNOTE ) ||
+                areaClass.Equals( XSL_SIDE_FLOAT ) ||
+                areaClass.Equals( XSL_BEFORE_FLOAT ) )
                 return areaClass;
-            }
-            else
-            {
-                throw new FonetException("Unknown area class '" + areaClass + "'");
-            }
+            throw new FonetException( "Unknown area class '" + areaClass + "'" );
         }
-
     }
 }

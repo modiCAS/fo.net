@@ -2,24 +2,19 @@ namespace Fonet.Layout
 {
     internal class TextState
     {
-        protected bool underlined;
-
-        protected bool overlined;
-
         protected bool linethrough;
 
-        public TextState()
-        {
-        }
+        protected bool overlined;
+        protected bool underlined;
 
         public bool getUnderlined()
         {
             return underlined;
         }
 
-        public void setUnderlined(bool ul)
+        public void setUnderlined( bool ul )
         {
-            this.underlined = ul;
+            underlined = ul;
         }
 
         public bool getOverlined()
@@ -27,9 +22,9 @@ namespace Fonet.Layout
             return overlined;
         }
 
-        public void setOverlined(bool ol)
+        public void setOverlined( bool ol )
         {
-            this.overlined = ol;
+            overlined = ol;
         }
 
         public bool getLineThrough()
@@ -37,10 +32,9 @@ namespace Fonet.Layout
             return linethrough;
         }
 
-        public void setLineThrough(bool lt)
+        public void setLineThrough( bool lt )
         {
-            this.linethrough = lt;
+            linethrough = lt;
         }
-
     }
 }

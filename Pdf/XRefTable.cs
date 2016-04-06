@@ -1,6 +1,5 @@
 namespace Fonet.Pdf
 {
-
     /// <summary>
     ///     A PDF file's cross-reference table.
     /// </summary>
@@ -13,22 +12,22 @@ namespace Fonet.Pdf
         /// <summary>
         ///     Right now we only support a single section.
         /// </summary>
-        private XRefSection section = new XRefSection();
+        private readonly XRefSection section = new XRefSection();
 
         /// <summary>
         ///     Adds an entry to the table.
         /// </summary>
-        public void Add(PdfObjectId objectId, long offset)
+        public void Add( PdfObjectId objectId, long offset )
         {
-            section.Add(objectId, offset);
+            section.Add( objectId, offset );
         }
 
         /// <summary>
         ///     Writes the cross reference table to the passed PDF writer.
         /// </summary>
-        public void Write(PdfWriter writer)
+        public void Write( PdfWriter writer )
         {
-            section.Write(writer);
+            section.Write( writer );
         }
     }
 }

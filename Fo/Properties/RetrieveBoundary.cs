@@ -7,6 +7,5 @@ namespace Fonet.Fo.Properties
         public const int PAGE_SEQUENCE = Constants.PAGE_SEQUENCE;
 
         public const int DOCUMENT = Constants.DOCUMENT;
-
     }
 }

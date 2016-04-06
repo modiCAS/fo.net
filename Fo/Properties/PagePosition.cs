@@ -9,6 +9,5 @@ namespace Fonet.Fo.Properties
         public const int REST = Constants.REST;
 
         public const int ANY = Constants.ANY;
-
     }
 }

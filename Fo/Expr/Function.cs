@@ -4,14 +4,10 @@ namespace Fonet.Fo.Expr
 {
     internal interface IFunction
     {
-        int NumArgs
-        {
-            get;
-        }
+        int NumArgs { get; }
 
         IPercentBase GetPercentBase();
 
-        Property Eval(Property[] args, PropertyInfo propInfo);
+        Property Eval( Property[] args, PropertyInfo propInfo );
     }
-
 }

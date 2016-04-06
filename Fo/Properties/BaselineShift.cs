@@ -7,6 +7,5 @@ namespace Fonet.Fo.Properties
         public const int SUB = Constants.SUB;
 
         public const int SUPER = Constants.SUPER;
-
     }
 }

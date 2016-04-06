@@ -13,56 +13,40 @@ namespace Fonet.Pdf
 
         private IList filters;
 
-        public PdfStream() { }
+        public PdfStream()
+        {
+        }
 
-        public PdfStream(PdfObjectId objectId) : base(objectId) { }
+        public PdfStream( PdfObjectId objectId ) : base( objectId )
+        {
+        }
 
-        public PdfStream(byte[] data)
+        public PdfStream( byte[] data )
         {
             this.data = data;
         }
 
-        public PdfStream(byte[] data, PdfObjectId objectId)
-            : base(objectId)
+        public PdfStream( byte[] data, PdfObjectId objectId )
+            : base( objectId )
         {
             this.data = data;
-        }
-
-        public void AddFilter(IFilter filter)
-        {
-            if (filter == null)
-            {
-                throw new ArgumentNullException("filter");
-            }
-            if (filters == null)
-            {
-                filters = new ArrayList();
-            }
-            filters.Add(filter);
         }
 
         private PdfObject FilterName
         {
             get
             {
-                if (!HasFilters)
-                {
+                if ( !HasFilters )
                     return PdfNull.Null;
-                }
-                else if (filters.Count == 1)
+                if ( filters.Count == 1 )
                 {
-                    IFilter filter = (IFilter)filters[0];
+                    var filter = (IFilter)filters[ 0 ];
                     return filter.Name;
                 }
-                else
-                {
-                    PdfArray names = new PdfArray();
-                    foreach (IFilter filter in filters)
-                    {
-                        names.Add(filter.Name);
-                    }
-                    return names;
-                }
+                var names = new PdfArray();
+                foreach ( IFilter filter in filters )
+                    names.Add( filter.Name );
+                return names;
             }
         }
 
@@ -70,24 +54,17 @@ namespace Fonet.Pdf
         {
             get
             {
-                if (!HasFilters)
-                {
+                if ( !HasFilters )
                     return PdfNull.Null;
-                }
-                else if (filters.Count == 1)
+                if ( filters.Count == 1 )
                 {
-                    IFilter filter = (IFilter)filters[0];
+                    var filter = (IFilter)filters[ 0 ];
                     return filter.DecodeParms;
                 }
-                else
-                {
-                    PdfArray decodeParams = new PdfArray();
-                    foreach (IFilter filter in filters)
-                    {
-                        decodeParams.Add(filter.DecodeParms);
-                    }
-                    return decodeParams;
-                }
+                var decodeParams = new PdfArray();
+                foreach ( IFilter filter in filters )
+                    decodeParams.Add( filter.DecodeParms );
+                return decodeParams;
             }
         }
 
@@ -95,14 +72,9 @@ namespace Fonet.Pdf
         {
             get
             {
-                if (filters != null)
-                {
+                if ( filters != null )
                     return filters.Count > 0;
-                }
-                else
-                {
-                    return false;
-                }
+                return false;
             }
         }
 
@@ -110,83 +82,75 @@ namespace Fonet.Pdf
         {
             get
             {
-                if (filters == null)
-                {
+                if ( filters == null )
                     return false;
-                }
-                foreach (IFilter filter in filters)
+                foreach ( IFilter filter in filters )
                 {
-                    if (filter.HasDecodeParams)
-                    {
+                    if ( filter.HasDecodeParams )
                         return true;
-                    }
                 }
                 return false;
             }
         }
 
-        private byte[] ApplyFilters(byte[] data)
+        public void AddFilter( IFilter filter )
         {
-            if (filters == null)
-            {
+            if ( filter == null )
+                throw new ArgumentNullException( "filter" );
+            if ( filters == null )
+                filters = new ArrayList();
+            filters.Add( filter );
+        }
+
+        private byte[] ApplyFilters( byte[] data )
+        {
+            if ( filters == null )
                 return data;
-            }
 
             byte[] encoded = data;
-            for (int x = filters.Count - 1; x >= 0; x--)
+            for ( int x = filters.Count - 1; x >= 0; x-- )
             {
-                IFilter filter = (IFilter)filters[x];
-                encoded = filter.Encode(encoded);
+                var filter = (IFilter)filters[ x ];
+                encoded = filter.Encode( encoded );
             }
             return encoded;
         }
 
-        protected internal override void Write(PdfWriter writer)
+        protected internal override void Write( PdfWriter writer )
         {
-            if (writer == null)
-            {
-                throw new ArgumentNullException("writer");
-            }
-            if (data == null)
-            {
-                throw new InvalidOperationException("No data for stream.");
-            }
+            if ( writer == null )
+                throw new ArgumentNullException( "writer" );
+            if ( data == null )
+                throw new InvalidOperationException( "No data for stream." );
 
             // Prepare the stream's data.
-            byte[] bytes = (byte[])data.Clone();
+            var bytes = (byte[])data.Clone();
 
             // Apply any filters.
-            if (HasFilters)
-            {
-                bytes = ApplyFilters(data);
-            }
+            if ( HasFilters )
+                bytes = ApplyFilters( data );
 
             // Encrypt the data if required.
             SecurityManager sm = writer.SecurityManager;
-            if (sm != null)
-            {
-                bytes = sm.Encrypt(bytes, writer.EnclosingIndirect.ObjectId);
-            }
+            if ( sm != null )
+                bytes = sm.Encrypt( bytes, writer.EnclosingIndirect.ObjectId );
 
             // Create the stream's dictionary.
-            dictionary[PdfName.Names.Length] = new PdfNumeric(bytes.Length);
-            if (HasFilters)
+            dictionary[ PdfName.Names.Length ] = new PdfNumeric( bytes.Length );
+            if ( HasFilters )
             {
-                dictionary[PdfName.Names.Filter] = FilterName;
-                if (HasDecodeParams)
-                {
-                    dictionary[PdfName.Names.DecodeParams] = FilterDecodeParms;
-                }
+                dictionary[ PdfName.Names.Filter ] = FilterName;
+                if ( HasDecodeParams )
+                    dictionary[ PdfName.Names.DecodeParams ] = FilterDecodeParms;
             }
 
             // Write out the dictionary.
-            writer.WriteLine(dictionary);
+            writer.WriteLine( dictionary );
 
             // Write out the stream data.
-            writer.WriteKeywordLine(Keyword.Stream);
-            writer.WriteLine(bytes);
-            writer.WriteKeyword(Keyword.EndStream);
+            writer.WriteKeywordLine( Keyword.Stream );
+            writer.WriteLine( bytes );
+            writer.WriteKeyword( Keyword.EndStream );
         }
-
     }
 }

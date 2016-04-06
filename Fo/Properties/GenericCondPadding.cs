@@ -2,12 +2,14 @@ namespace Fonet.Fo.Properties
 {
     internal class GenericCondPadding : GenericCondLength
     {
-        new public static PropertyMaker Maker(string propName)
+        protected GenericCondPadding( string name ) : base( name )
         {
-            return new GenericCondPadding(propName);
         }
 
-        protected GenericCondPadding(string name) : base(name) { }
+        public new static PropertyMaker Maker( string propName )
+        {
+            return new GenericCondPadding( propName );
+        }
 
 
         public override bool IsInherited()
@@ -19,6 +21,5 @@ namespace Fonet.Fo.Properties
         {
             return "0pt";
         }
-
     }
 }

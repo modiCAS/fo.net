@@ -1,98 +1,88 @@
+using System;
+using System.Collections;
+
 namespace Fonet.Layout
 {
-    using System;
-    using System.Collections;
-
     internal class FontInfo
     {
-        private Hashtable usedFonts;
-        private Hashtable triplets;
-        private Hashtable fonts;
+        private readonly Hashtable fonts;
+        private readonly Hashtable triplets;
+        private readonly Hashtable usedFonts;
 
         public FontInfo()
         {
-            this.triplets = new Hashtable();
-            this.fonts = new Hashtable();
-            this.usedFonts = new Hashtable();
+            triplets = new Hashtable();
+            fonts = new Hashtable();
+            usedFonts = new Hashtable();
         }
 
-        public void AddFontProperties(string name, string family, string style, string weight)
+        public void AddFontProperties( string name, string family, string style, string weight )
         {
-            string key = CreateFontKey(family, style, weight);
-            triplets.Add(key, name);
+            string key = CreateFontKey( family, style, weight );
+            triplets.Add( key, name );
         }
 
-        public void AddMetrics(string name, IFontMetric metrics)
+        public void AddMetrics( string name, IFontMetric metrics )
         {
-            fonts.Add(name, metrics);
+            fonts.Add( name, metrics );
         }
 
-        public string FontLookup(string family, string style, string weight)
+        public string FontLookup( string family, string style, string weight )
         {
-            return FontLookup(CreateFontKey(family, style, weight));
+            return FontLookup( CreateFontKey( family, style, weight ) );
         }
 
-        private string FontLookup(string key)
+        private string FontLookup( string key )
         {
-            string f = (string)triplets[key];
-            if (f == null)
+            var f = (string)triplets[ key ];
+            if ( f == null )
             {
-                int i = key.IndexOf(',');
-                string s = "any" + key.Substring(i);
-                f = (string)triplets[s];
-                if (f == null)
+                int i = key.IndexOf( ',' );
+                string s = "any" + key.Substring( i );
+                f = (string)triplets[ s ];
+                if ( f == null )
                 {
-                    f = (string)triplets["any,normal,normal"];
-                    if (f == null)
-                    {
-                        throw new FonetException("no default font defined by OutputConverter");
-                    }
+                    f = (string)triplets[ "any,normal,normal" ];
+                    if ( f == null )
+                        throw new FonetException( "no default font defined by OutputConverter" );
                     FonetDriver.ActiveDriver.FireFonetInfo(
-                        "Defaulted font to any,normal,normal");
+                        "Defaulted font to any,normal,normal" );
                 }
                 FonetDriver.ActiveDriver.FireFonetWarning(
-                    "Unknown font " + key + " so defaulted font to any");
+                    "Unknown font " + key + " so defaulted font to any" );
             }
 
-            usedFonts[f] = fonts[f];
+            usedFonts[ f ] = fonts[ f ];
             return f;
         }
 
-        private bool HasFont(string family, string style, string weight)
+        private bool HasFont( string family, string style, string weight )
         {
-            string key = CreateFontKey(family, style, weight);
-            return triplets.ContainsKey(key);
+            string key = CreateFontKey( family, style, weight );
+            return triplets.ContainsKey( key );
         }
 
-        public static string CreateFontKey(string family, string style, string weight)
+        public static string CreateFontKey( string family, string style, string weight )
         {
             int i;
             try
             {
-                if (weight != null && weight.Length > 0 && Char.IsNumber(weight, 0))
-                {
-                    i = Int32.Parse(weight);
-                }
+                if ( weight != null && weight.Length > 0 && char.IsNumber( weight, 0 ) )
+                    i = int.Parse( weight );
                 else
-                {
                     i = 0;
-                }
             }
-            catch (Exception)
+            catch ( Exception )
             {
                 i = 0;
             }
 
-            if (i > 600)
-            {
+            if ( i > 600 )
                 weight = "bold";
-            }
-            else if (i > 0)
-            {
+            else if ( i > 0 )
                 weight = "normal";
-            }
 
-            return String.Format("{0},{1},{2}", family, style, weight);
+            return string.Format( "{0},{1},{2}", family, style, weight );
         }
 
         public IDictionary GetFonts()
@@ -100,9 +90,9 @@ namespace Fonet.Layout
             return fonts;
         }
 
-        public IFontMetric GetFontByName(string fontName)
+        public IFontMetric GetFontByName( string fontName )
         {
-            return (IFontMetric)fonts[fontName];
+            return (IFontMetric)fonts[ fontName ];
         }
 
         public Hashtable GetUsedFonts()
@@ -110,11 +100,10 @@ namespace Fonet.Layout
             return usedFonts;
         }
 
-        public IFontMetric GetMetricsFor(string fontName)
+        public IFontMetric GetMetricsFor( string fontName )
         {
-            usedFonts[fontName] = fonts[fontName];
-            return (IFontMetric)fonts[fontName];
+            usedFonts[ fontName ] = fonts[ fontName ];
+            return (IFontMetric)fonts[ fontName ];
         }
-
     }
 }

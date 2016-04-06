@@ -6,18 +6,18 @@ namespace Fonet.Pdf
         ///     A unique object number.
         /// </param>
         /// <param name="fontName">
-        ///     The name by which the font is reference in the Font subdictionary 
+        ///     The name by which the font is reference in the Font subdictionary
         /// </param>
         /// <param name="baseFont">
         ///     The PostScript name of the font.
         /// </param>
-        public PdfTrueTypeFont(PdfObjectId objectId, string fontName, string baseFont)
-            : base(fontName, objectId)
+        public PdfTrueTypeFont( PdfObjectId objectId, string fontName, string baseFont )
+            : base( fontName, objectId )
         {
-            this[PdfName.Names.Subtype] = PdfName.Names.TrueType;
-            this[PdfName.Names.BaseFont] = new PdfName(baseFont);
-            this[PdfName.Names.FirstChar] = new PdfNumeric(0);
-            this[PdfName.Names.LastChar] = new PdfNumeric(255);
+            this[ PdfName.Names.Subtype ] = PdfName.Names.TrueType;
+            this[ PdfName.Names.BaseFont ] = new PdfName( baseFont );
+            this[ PdfName.Names.FirstChar ] = new PdfNumeric( 0 );
+            this[ PdfName.Names.LastChar ] = new PdfNumeric( 255 );
         }
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace Fonet.Pdf
         /// </summary>
         public PdfName Encoding
         {
-            set { this[PdfName.Names.Encoding] = value; }
+            set { this[ PdfName.Names.Encoding ] = value; }
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace Fonet.Pdf
         /// </summary>
         public PdfFontDescriptor Descriptor
         {
-            set { this[PdfName.Names.FontDescriptor] = value.GetReference(); }
+            set { this[ PdfName.Names.FontDescriptor ] = value.GetReference(); }
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Fonet.Pdf
         /// </value>
         public PdfNumeric FirstChar
         {
-            set { this[PdfName.Names.FirstChar] = value; }
+            set { this[ PdfName.Names.FirstChar ] = value; }
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace Fonet.Pdf
         /// </value>
         public PdfNumeric LastChar
         {
-            set { this[PdfName.Names.LastChar] = value; }
+            set { this[ PdfName.Names.LastChar ] = value; }
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace Fonet.Pdf
         /// </summary>
         public PdfArray Widths
         {
-            set { this[PdfName.Names.Widths] = value; }
+            set { this[ PdfName.Names.Widths ] = value; }
         }
     }
 }

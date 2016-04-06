@@ -2,22 +2,24 @@ namespace Fonet.Layout.Inline
 {
     internal abstract class InlineArea : Area
     {
-        private int yOffset = 0;
-        private int xOffset = 0;
-        protected int height = 0;
-        private int verticalAlign = 0;
+        protected int height;
+        protected bool lineThrough;
+        protected bool overlined;
         protected string pageNumberId = null;
-        private float red, green, blue;
-        protected bool underlined = false;
-        protected bool overlined = false;
-        protected bool lineThrough = false;
+        private readonly float red;
+        private readonly float green;
+        private readonly float blue;
+        protected bool underlined;
+        private int verticalAlign;
+        private int xOffset;
+        private int yOffset;
 
         public InlineArea(
             FontState fontState, int width, float red,
-            float green, float blue)
-            : base(fontState)
+            float green, float blue )
+            : base( fontState )
         {
-            this.contentRectangleWidth = width;
+            contentRectangleWidth = width;
             this.red = red;
             this.green = green;
             this.blue = blue;
@@ -25,57 +27,57 @@ namespace Fonet.Layout.Inline
 
         public float getBlue()
         {
-            return this.blue;
+            return blue;
         }
 
         public float getGreen()
         {
-            return this.green;
+            return green;
         }
 
         public float getRed()
         {
-            return this.red;
+            return red;
         }
 
-        public override void SetHeight(int height)
+        public override void SetHeight( int height )
         {
             this.height = height;
         }
 
         public override int GetHeight()
         {
-            return this.height;
+            return height;
         }
 
-        public virtual void setVerticalAlign(int align)
+        public virtual void setVerticalAlign( int align )
         {
-            this.verticalAlign = align;
+            verticalAlign = align;
         }
 
         public virtual int getVerticalAlign()
         {
-            return this.verticalAlign;
+            return verticalAlign;
         }
 
-        public void setYOffset(int yOffset)
+        public void setYOffset( int yOffset )
         {
             this.yOffset = yOffset;
         }
 
         public int getYOffset()
         {
-            return this.yOffset;
+            return yOffset;
         }
 
-        public void setXOffset(int xOffset)
+        public void setXOffset( int xOffset )
         {
             this.xOffset = xOffset;
         }
 
         public virtual int getXOffset()
         {
-            return this.xOffset;
+            return xOffset;
         }
 
         public string getPageNumberID()
@@ -83,35 +85,34 @@ namespace Fonet.Layout.Inline
             return pageNumberId;
         }
 
-        public void setUnderlined(bool ul)
+        public void setUnderlined( bool ul )
         {
-            this.underlined = ul;
+            underlined = ul;
         }
 
         public bool getUnderlined()
         {
-            return this.underlined;
+            return underlined;
         }
 
-        public void setOverlined(bool ol)
+        public void setOverlined( bool ol )
         {
-            this.overlined = ol;
+            overlined = ol;
         }
 
         public bool getOverlined()
         {
-            return this.overlined;
+            return overlined;
         }
 
-        public void setLineThrough(bool lt)
+        public void setLineThrough( bool lt )
         {
-            this.lineThrough = lt;
+            lineThrough = lt;
         }
 
         public bool getLineThrough()
         {
-            return this.lineThrough;
+            return lineThrough;
         }
-
     }
 }

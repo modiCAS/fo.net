@@ -2,38 +2,36 @@ namespace Fonet.Fo.Properties
 {
     internal class MaxHeightMaker : LengthProperty.Maker
     {
-        protected static readonly EnumProperty s_propNONE = new EnumProperty(Constants.NONE);
+        protected static readonly EnumProperty s_propNONE = new EnumProperty( Constants.NONE );
 
-        private Property m_defaultProp = null;
+        private Property m_defaultProp;
 
-        new public static PropertyMaker Maker(string propName)
+        protected MaxHeightMaker( string name ) : base( name )
         {
-            return new MaxHeightMaker(propName);
         }
 
-        protected MaxHeightMaker(string name) : base(name) { }
+        public new static PropertyMaker Maker( string propName )
+        {
+            return new MaxHeightMaker( propName );
+        }
 
         public override bool IsInherited()
         {
             return false;
         }
 
-        public override Property CheckEnumValues(string value)
+        public override Property CheckEnumValues( string value )
         {
-            if (value.Equals("none"))
-            {
+            if ( value.Equals( "none" ) )
                 return s_propNONE;
-            }
 
-            return base.CheckEnumValues(value);
+            return base.CheckEnumValues( value );
         }
 
-        public override Property Make(PropertyList propertyList)
+        public override Property Make( PropertyList propertyList )
         {
-            if (m_defaultProp == null)
-            {
-                m_defaultProp = Make(propertyList, "none", propertyList.getParentFObj());
-            }
+            if ( m_defaultProp == null )
+                m_defaultProp = Make( propertyList, "none", propertyList.getParentFObj() );
             return m_defaultProp;
         }
     }

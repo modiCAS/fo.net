@@ -1,7 +1,7 @@
+using System.Collections;
+
 namespace Fonet.DataTypes
 {
-    using System.Collections;
-
     internal class LinearCombinationLength : Length
     {
         protected ArrayList factors;
@@ -13,23 +13,23 @@ namespace Fonet.DataTypes
             lengths = new ArrayList();
         }
 
-        public void AddTerm(double factor, Length length)
+        public void AddTerm( double factor, Length length )
         {
-            factors.Add(factor);
-            lengths.Add(length);
+            factors.Add( factor );
+            lengths.Add( length );
         }
 
         public override void ComputeValue()
         {
-            int result = 0;
+            var result = 0;
             int numFactors = factors.Count;
-            for (int i = 0; i < numFactors; ++i)
+            for ( var i = 0; i < numFactors; ++i )
             {
-                double d = (double)factors[i];
-                Length l = (Length)lengths[i];
-                result += (int)(d * l.MValue());
+                var d = (double)factors[ i ];
+                var l = (Length)lengths[ i ];
+                result += (int)( d * l.MValue() );
             }
-            SetComputedValue(result);
+            SetComputedValue( result );
         }
     }
 }

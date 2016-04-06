@@ -5,12 +5,16 @@ namespace Fonet.Fo.Properties
 {
     internal class LeaderPatternWidthMaker : LengthProperty.Maker
     {
-        new public static PropertyMaker Maker(string propName)
+        private static Hashtable s_htKeywords;
+
+        protected LeaderPatternWidthMaker( string name ) : base( name )
         {
-            return new LeaderPatternWidthMaker(propName);
         }
 
-        protected LeaderPatternWidthMaker(string name) : base(name) { }
+        public new static PropertyMaker Maker( string propName )
+        {
+            return new LeaderPatternWidthMaker( propName );
+        }
 
 
         public override bool IsInherited()
@@ -18,42 +22,31 @@ namespace Fonet.Fo.Properties
             return true;
         }
 
-        public override Property Make(PropertyList propertyList)
+        public override Property Make( PropertyList propertyList )
         {
-            return Make(propertyList, "use-font-metrics", propertyList.getParentFObj());
-
+            return Make( propertyList, "use-font-metrics", propertyList.getParentFObj() );
         }
-
-        private static Hashtable s_htKeywords;
 
         private static void initKeywords()
         {
-            s_htKeywords = new Hashtable(1);
+            s_htKeywords = new Hashtable( 1 );
 
-            s_htKeywords.Add("use-font-metrics", "0pt");
-
+            s_htKeywords.Add( "use-font-metrics", "0pt" );
         }
 
-        protected override string CheckValueKeywords(string keyword)
+        protected override string CheckValueKeywords( string keyword )
         {
-            if (s_htKeywords == null)
-            {
+            if ( s_htKeywords == null )
                 initKeywords();
-            }
-            string value = (string)s_htKeywords[keyword];
-            if (value == null)
-            {
-                return base.CheckValueKeywords(keyword);
-            }
-            else
-            {
-                return value;
-            }
+            var value = (string)s_htKeywords[ keyword ];
+            if ( value == null )
+                return base.CheckValueKeywords( keyword );
+            return value;
         }
 
-        public override IPercentBase GetPercentBase(FObj fo, PropertyList propertyList)
+        public override IPercentBase GetPercentBase( FObj fo, PropertyList propertyList )
         {
-            return new LengthBase(fo, propertyList, LengthBase.CONTAINING_BOX);
+            return new LengthBase( fo, propertyList, LengthBase.CONTAINING_BOX );
         }
     }
 }

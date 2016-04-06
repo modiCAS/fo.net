@@ -1,49 +1,38 @@
+using Fonet.Fo;
+
 namespace Fonet.DataTypes
 {
-    using Fonet.Fo;
-
     internal class LengthPair : ICompoundDatatype
     {
-        private Property ipd;
         private Property bpd;
+        private Property ipd;
 
-        public void SetComponent(string sCmpnName, Property cmpnValue,
-                                 bool bIsDefault)
+        public void SetComponent( string sCmpnName, Property cmpnValue,
+            bool bIsDefault )
         {
-            if (sCmpnName.Equals("block-progression-direction"))
-            {
+            if ( sCmpnName.Equals( "block-progression-direction" ) )
                 bpd = cmpnValue;
-            }
-            else if (sCmpnName.Equals("inline-progression-direction"))
-            {
+            else if ( sCmpnName.Equals( "inline-progression-direction" ) )
                 ipd = cmpnValue;
-            }
         }
 
-        public Property GetComponent(string sCmpnName)
+        public Property GetComponent( string sCmpnName )
         {
-            if (sCmpnName.Equals("block-progression-direction"))
-            {
+            if ( sCmpnName.Equals( "block-progression-direction" ) )
                 return GetBPD();
-            }
-            else if (sCmpnName.Equals("inline-progression-direction"))
-            {
+            if ( sCmpnName.Equals( "inline-progression-direction" ) )
                 return GetIPD();
-            }
-            else
-            {
-                return null;
-            }
+            return null;
         }
 
         public Property GetIPD()
         {
-            return this.ipd;
+            return ipd;
         }
 
         public Property GetBPD()
         {
-            return this.bpd;
+            return bpd;
         }
     }
 }

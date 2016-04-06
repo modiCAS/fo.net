@@ -4,28 +4,27 @@ namespace Fonet.Fo.Properties
 {
     internal class TargetProcessingContextMaker : ToBeImplementedProperty.Maker
     {
-        new public static PropertyMaker Maker(string propName)
+        private Property m_defaultProp;
+
+        protected TargetProcessingContextMaker( string name ) : base( name )
         {
-            return new TargetProcessingContextMaker(propName);
         }
 
-        protected TargetProcessingContextMaker(string name) : base(name) { }
+        public new static PropertyMaker Maker( string propName )
+        {
+            return new TargetProcessingContextMaker( propName );
+        }
 
         public override bool IsInherited()
         {
             return false;
         }
 
-        private Property m_defaultProp = null;
-
-        public override Property Make(PropertyList propertyList)
+        public override Property Make( PropertyList propertyList )
         {
-            if (m_defaultProp == null)
-            {
-                m_defaultProp = Make(propertyList, "document-root", propertyList.getParentFObj());
-            }
+            if ( m_defaultProp == null )
+                m_defaultProp = Make( propertyList, "document-root", propertyList.getParentFObj() );
             return m_defaultProp;
         }
-
     }
 }

@@ -5,6 +5,5 @@ namespace Fonet.Fo.Properties
         public const int AUTO = Constants.AUTO;
 
         public const int FIXED = Constants.FIXED;
-
     }
 }

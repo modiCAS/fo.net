@@ -1,31 +1,31 @@
+using Fonet.Layout;
+
 namespace Fonet.Fo.Flow
 {
-    using Fonet.Layout;
-
     internal class Float : ToBeImplementedElement
     {
-        new internal class Maker : FObj.Maker
+        protected Float( FObj parent, PropertyList propertyList )
+            : base( parent, propertyList )
         {
-            public override FObj Make(FObj parent, PropertyList propertyList)
-            {
-                return new Float(parent, propertyList);
-            }
+            name = "fo:float";
         }
 
-        new public static FObj.Maker GetMaker()
+        public new static FObj.Maker GetMaker()
         {
             return new Maker();
         }
 
-        protected Float(FObj parent, PropertyList propertyList)
-            : base(parent, propertyList)
+        public override Status Layout( Area area )
         {
-            this.name = "fo:float";
+            return base.Layout( area );
         }
 
-        public override Status Layout(Area area)
+        internal new class Maker : FObj.Maker
         {
-            return base.Layout(area);
+            public override FObj Make( FObj parent, PropertyList propertyList )
+            {
+                return new Float( parent, propertyList );
+            }
         }
     }
 }

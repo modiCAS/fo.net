@@ -1,7 +1,7 @@
+using System.Collections.Specialized;
+
 namespace Fonet.Pdf.Security
 {
-    using System.Collections.Specialized;
-
     public class SecurityOptions
     {
         /// <summary>
@@ -10,19 +10,19 @@ namespace Fonet.Pdf.Security
         protected string ownerPassword;
 
         /// <summary>
-        ///     The user password 
-        /// </summary>
-        protected string userPassword;
-
-        /// <summary>
-        ///     Collection of flags describing permissions granted to user who opens 
+        ///     Collection of flags describing permissions granted to user who opens
         ///     a file with the user password.
         /// </summary>
         /// <remarks>
         ///     The given initial value zero's out first two bits.
         ///     The PDF specification dictates that these entries must be 0.
         /// </remarks>
-        protected BitVector32 permissions = new BitVector32(-4);
+        protected BitVector32 permissions = new BitVector32( -4 );
+
+        /// <summary>
+        ///     The user password
+        /// </summary>
+        protected string userPassword;
 
         /// <summary>
         ///     Returns the owner password as a string.
@@ -32,14 +32,8 @@ namespace Fonet.Pdf.Security
         /// </value>
         public string OwnerPassword
         {
-            get
-            {
-                return ownerPassword;
-            }
-            set
-            {
-                ownerPassword = value;
-            }
+            get { return ownerPassword; }
+            set { ownerPassword = value; }
         }
 
         /// <summary>
@@ -50,14 +44,8 @@ namespace Fonet.Pdf.Security
         /// </value>
         public string UserPassword
         {
-            get
-            {
-                return userPassword;
-            }
-            set
-            {
-                userPassword = value;
-            }
+            get { return userPassword; }
+            set { userPassword = value; }
         }
 
         /// <summary>
@@ -66,63 +54,56 @@ namespace Fonet.Pdf.Security
         /// <value>
         ///     The default access priviliges are:
         ///     <ul>
-        ///     <li>Printing disallowed</li>
-        ///     <li>Modifications disallowed</li>
-        ///     <li>Copy and Paste disallowed</li>
-        ///     <li>Addition or modification of annotation/form fields disallowed</li>
+        ///         <li>Printing disallowed</li>
+        ///         <li>Modifications disallowed</li>
+        ///         <li>Copy and Paste disallowed</li>
+        ///         <li>Addition or modification of annotation/form fields disallowed</li>
         ///     </ul>
-        ///     To override any of these priviliges see the <see cref="EnablePrinting"/>,
-        ///     <see cref="EnableChanging"/>, <see cref="EnableCopying"/>, 
-        ///     <see cref="EnableAdding"/> methods
+        ///     To override any of these priviliges see the <see cref="EnablePrinting" />,
+        ///     <see cref="EnableChanging" />, <see cref="EnableCopying" />,
+        ///     <see cref="EnableAdding" /> methods
         /// </value>
         public int Permissions
         {
-            get
-            {
-                return permissions.Data;
-            }
-            set
-            {
-                permissions = new BitVector32(value);
-            }
+            get { return permissions.Data; }
+            set { permissions = new BitVector32( value ); }
         }
 
         /// <summary>
         ///     Enables or disables printing.
         /// </summary>
         /// <param name="enable">If true enables printing otherwise false</param>
-        public void EnablePrinting(bool enable)
+        public void EnablePrinting( bool enable )
         {
-            permissions[4] = enable;
+            permissions[ 4 ] = enable;
         }
 
         /// <summary>
-        ///     Enable or disable changing the document other than by adding or 
+        ///     Enable or disable changing the document other than by adding or
         ///     changing text notes and AcroForm fields.
         /// </summary>
         /// <param name="enable"></param>
-        public void EnableChanging(bool enable)
+        public void EnableChanging( bool enable )
         {
-            permissions[8] = enable;
+            permissions[ 8 ] = enable;
         }
 
         /// <summary>
         ///     Enable or disable copying of text and graphics from the document.
         /// </summary>
         /// <param name="enable"></param>
-        public void EnableCopying(bool enable)
+        public void EnableCopying( bool enable )
         {
-            permissions[16] = enable;
+            permissions[ 16 ] = enable;
         }
 
         /// <summary>
         ///     Enable or disable adding and changing text notes and AcroForm fields.
         /// </summary>
         /// <param name="enable"></param>
-        public void EnableAdding(bool enable)
+        public void EnableAdding( bool enable )
         {
-            permissions[32] = enable;
+            permissions[ 32 ] = enable;
         }
-
     }
 }

@@ -2,12 +2,16 @@ namespace Fonet.Fo.Properties
 {
     internal class LetterSpacingMaker : LengthProperty.Maker
     {
-        new public static PropertyMaker Maker(string propName)
+        private Property m_defaultProp;
+
+        protected LetterSpacingMaker( string name ) : base( name )
         {
-            return new LetterSpacingMaker(propName);
         }
 
-        protected LetterSpacingMaker(string name) : base(name) { }
+        public new static PropertyMaker Maker( string propName )
+        {
+            return new LetterSpacingMaker( propName );
+        }
 
 
         public override bool IsInherited()
@@ -15,17 +19,11 @@ namespace Fonet.Fo.Properties
             return true;
         }
 
-        private Property m_defaultProp = null;
-
-        public override Property Make(PropertyList propertyList)
+        public override Property Make( PropertyList propertyList )
         {
-            if (m_defaultProp == null)
-            {
-                m_defaultProp = Make(propertyList, "0pt", propertyList.getParentFObj());
-            }
+            if ( m_defaultProp == null )
+                m_defaultProp = Make( propertyList, "0pt", propertyList.getParentFObj() );
             return m_defaultProp;
-
         }
-
     }
 }

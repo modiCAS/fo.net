@@ -9,6 +9,5 @@ namespace Fonet.Fo.Properties
         public const int START = Constants.START;
 
         public const int JUSTIFY = Constants.JUSTIFY;
-
     }
 }

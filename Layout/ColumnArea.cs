@@ -8,18 +8,18 @@ namespace Fonet.Layout
         private int columnIndex;
         private int maxColumns;
 
-        public ColumnArea(FontState fontState, int xPosition, int yPosition,
-                          int allocationWidth, int maxHeight, int columnCount)
-            : base(fontState, xPosition, yPosition,
-                   allocationWidth, maxHeight, Position.ABSOLUTE)
+        public ColumnArea( FontState fontState, int xPosition, int yPosition,
+            int allocationWidth, int maxHeight, int columnCount )
+            : base( fontState, xPosition, yPosition,
+                allocationWidth, maxHeight, Position.ABSOLUTE )
         {
-            this.maxColumns = columnCount;
-            this.setAreaName("normal-flow-ref.-area");
+            maxColumns = columnCount;
+            setAreaName( "normal-flow-ref.-area" );
         }
 
-        public override void render(PdfRenderer renderer)
+        public override void render( PdfRenderer renderer )
         {
-            renderer.RenderAreaContainer(this);
+            renderer.RenderAreaContainer( this );
         }
 
         public override void end()
@@ -40,16 +40,15 @@ namespace Fonet.Layout
             return columnIndex;
         }
 
-        public void setColumnIndex(int columnIndex)
+        public void setColumnIndex( int columnIndex )
         {
             this.columnIndex = columnIndex;
         }
 
         public void incrementSpanIndex()
         {
-            SpanArea span = (SpanArea)this.parent;
-            span.setCurrentColumn(span.getCurrentColumn() + 1);
+            var span = (SpanArea)parent;
+            span.setCurrentColumn( span.getCurrentColumn() + 1 );
         }
-
     }
 }

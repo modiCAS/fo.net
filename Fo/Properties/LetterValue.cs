@@ -7,6 +7,5 @@ namespace Fonet.Fo.Properties
         public const int TRADITIONAL = Constants.TRADITIONAL;
 
         public const int AUTO = Constants.AUTO;
-
     }
 }

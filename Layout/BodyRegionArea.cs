@@ -8,21 +8,21 @@ namespace Fonet.Layout
         private int columnGap;
 
         public BodyRegionArea(
-            int xPosition, int yPosition, int width, int height)
-            : base(xPosition, yPosition, width, height)
+            int xPosition, int yPosition, int width, int height )
+            : base( xPosition, yPosition, width, height )
         {
         }
 
         public BodyAreaContainer makeBodyAreaContainer()
         {
-            BodyAreaContainer area = new BodyAreaContainer(
+            var area = new BodyAreaContainer(
                 null, xPosition, yPosition, width,
-                height, Position.ABSOLUTE, columnCount, columnGap);
-            area.setBackground(getBackground());
+                height, Position.ABSOLUTE, columnCount, columnGap );
+            area.setBackground( getBackground() );
             return area;
         }
 
-        public void setColumnCount(int columnCount)
+        public void setColumnCount( int columnCount )
         {
             this.columnCount = columnCount;
         }
@@ -32,7 +32,7 @@ namespace Fonet.Layout
             return columnCount;
         }
 
-        public void setColumnGap(int columnGap)
+        public void setColumnGap( int columnGap )
         {
             this.columnGap = columnGap;
         }
@@ -41,6 +41,5 @@ namespace Fonet.Layout
         {
             return columnGap;
         }
-
     }
 }

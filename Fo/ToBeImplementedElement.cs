@@ -4,12 +4,14 @@ namespace Fonet.Fo
 {
     internal class ToBeImplementedElement : FObj
     {
-        protected ToBeImplementedElement(FObj parent, PropertyList propertyList)
-            : base(parent, propertyList) { }
-
-        public override Status Layout(Area area)
+        protected ToBeImplementedElement( FObj parent, PropertyList propertyList )
+            : base( parent, propertyList )
         {
-            return new Status(Status.OK);
+        }
+
+        public override Status Layout( Area area )
+        {
+            return new Status( Status.OK );
         }
     }
 }

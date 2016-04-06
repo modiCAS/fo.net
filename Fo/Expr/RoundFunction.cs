@@ -7,27 +7,19 @@ namespace Fonet.Fo.Expr
     {
         public override int NumArgs
         {
-            get
-            {
-                return 1;
-            }
+            get { return 1; }
         }
 
-        public override Property Eval(Property[] args, PropertyInfo pInfo)
+        public override Property Eval( Property[] args, PropertyInfo pInfo )
         {
-            Number dbl = args[0].GetNumber();
-            if (dbl == null)
-            {
-                throw new PropertyException("Non number operand to round function");
-            }
+            Number dbl = args[ 0 ].GetNumber();
+            if ( dbl == null )
+                throw new PropertyException( "Non number operand to round function" );
             double n = dbl.DoubleValue();
-            double r = Math.Floor(n + 0.5);
-            if (r == 0.0 && n < 0.0)
-            {
+            double r = Math.Floor( n + 0.5 );
+            if ( r == 0.0 && n < 0.0 )
                 r = -r;
-            }
-            return new NumberProperty(r);
+            return new NumberProperty( r );
         }
-
     }
 }

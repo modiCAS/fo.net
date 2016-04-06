@@ -1,40 +1,28 @@
+using Fonet.Fo;
+using Fonet.Fo.Properties;
+
 namespace Fonet.DataTypes
 {
-    using Fonet.Fo;
-    using Fonet.Fo.Properties;
-
     internal class CondLength : ICompoundDatatype
     {
+        private Property conditionality;
         private Property length;
 
-        private Property conditionality;
-
-        public void SetComponent(string sCmpnName, Property cmpnValue, bool bIsDefault)
+        public void SetComponent( string sCmpnName, Property cmpnValue, bool bIsDefault )
         {
-            if (sCmpnName.Equals("length"))
-            {
+            if ( sCmpnName.Equals( "length" ) )
                 length = cmpnValue;
-            }
-            else if (sCmpnName.Equals("conditionality"))
-            {
+            else if ( sCmpnName.Equals( "conditionality" ) )
                 conditionality = cmpnValue;
-            }
         }
 
-        public Property GetComponent(string sCmpnName)
+        public Property GetComponent( string sCmpnName )
         {
-            if (sCmpnName.Equals("length"))
-            {
+            if ( sCmpnName.Equals( "length" ) )
                 return length;
-            }
-            else if (sCmpnName.Equals("conditionality"))
-            {
+            if ( sCmpnName.Equals( "conditionality" ) )
                 return conditionality;
-            }
-            else
-            {
-                return null;
-            }
+            return null;
         }
 
         public Property GetConditionality()

@@ -1,29 +1,21 @@
+using Fonet.Layout;
+
 namespace Fonet.Fo.Flow
 {
-    using Fonet.Layout;
-
     internal class InitialPropertySet : ToBeImplementedElement
     {
-        new internal class Maker : FObj.Maker
+        protected InitialPropertySet( FObj parent, PropertyList propertyList )
+            : base( parent, propertyList )
         {
-            public override FObj Make(FObj parent, PropertyList propertyList)
-            {
-                return new InitialPropertySet(parent, propertyList);
-            }
+            name = "fo:initial-property-set";
         }
 
-        new public static FObj.Maker GetMaker()
+        public new static FObj.Maker GetMaker()
         {
             return new Maker();
         }
 
-        protected InitialPropertySet(FObj parent, PropertyList propertyList)
-            : base(parent, propertyList)
-        {
-            this.name = "fo:initial-property-set";
-        }
-
-        public override Status Layout(Area area)
+        public override Status Layout( Area area )
         {
             AccessibilityProps mAccProps = propMgr.GetAccessibilityProps();
             AuralProps mAurProps = propMgr.GetAuralProps();
@@ -31,7 +23,15 @@ namespace Fonet.Fo.Flow
             BackgroundProps bProps = propMgr.GetBackgroundProps();
             RelativePositionProps mRelProps = propMgr.GetRelativePositionProps();
 
-            return base.Layout(area);
+            return base.Layout( area );
+        }
+
+        internal new class Maker : FObj.Maker
+        {
+            public override FObj Make( FObj parent, PropertyList propertyList )
+            {
+                return new InitialPropertySet( parent, propertyList );
+            }
         }
     }
 }

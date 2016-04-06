@@ -1,13 +1,15 @@
 using System.Runtime.InteropServices;
 
-namespace Fonet.Pdf.Gdi {
+namespace Fonet.Pdf.Gdi
+{
     /// <summary>
-    ///     The TEXTMETRIC structure contains basic information about a physical 
-    ///     font.  All sizes are specified in logical units; that is, they depend 
-    ///     on the current mapping mode of the display context. 
+    ///     The TEXTMETRIC structure contains basic information about a physical
+    ///     font.  All sizes are specified in logical units; that is, they depend
+    ///     on the current mapping mode of the display context.
     /// </summary>
-    [StructLayout(LayoutKind.Sequential, CharSet=CharSet.Auto)]
-    internal struct TextMetric {
+    [StructLayout( LayoutKind.Sequential, CharSet = CharSet.Auto )]
+    internal struct TextMetric
+    {
         public int tmHeight;
         public int tmAscent;
         public int tmDescent;

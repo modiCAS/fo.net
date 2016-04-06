@@ -2,38 +2,25 @@ using Fonet.Fo.Expr;
 
 namespace Fonet.DataTypes
 {
-
     internal class PercentLength : Length
     {
+        private readonly double factor;
 
-        private double factor;
-        private IPercentBase lbase = null;
-
-        public PercentLength(double factor) : this(factor, null)
+        public PercentLength( double factor ) : this( factor, null )
         {
         }
 
-        public PercentLength(double factor, IPercentBase lbase)
+        public PercentLength( double factor, IPercentBase lbase )
         {
             this.factor = factor;
-            this.lbase = lbase;
+            BaseLength = lbase;
         }
 
-        public IPercentBase BaseLength
-        {
-            get
-            {
-                return lbase;
-            }
-            set
-            {
-                this.lbase = value;
-            }
-        }
+        public IPercentBase BaseLength { get; set; }
 
         public override void ComputeValue()
         {
-            SetComputedValue((int)(factor * (double)lbase.GetBaseLength()));
+            SetComputedValue( (int)( factor * BaseLength.GetBaseLength() ) );
         }
 
         public double value()
@@ -43,12 +30,12 @@ namespace Fonet.DataTypes
 
         public override string ToString()
         {
-            return (factor * 100.0).ToString() + "%";
+            return factor * 100.0 + "%";
         }
 
         public override Numeric AsNumeric()
         {
-            return new Numeric(this);
+            return new Numeric( this );
         }
     }
 }

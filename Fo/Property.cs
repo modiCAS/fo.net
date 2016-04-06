@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using Fonet.DataTypes;
 using Fonet.Fo.Expr;
@@ -7,13 +6,7 @@ namespace Fonet.Fo
 {
     internal class Property
     {
-        private string specVal;
-
-        public string SpecifiedValue
-        {
-            get { return specVal; }
-            set { specVal = value; }
-        }
+        public string SpecifiedValue { get; set; }
 
         public virtual Length GetLength()
         {
@@ -85,10 +78,10 @@ namespace Fonet.Fo
             return null;
         }
 
-        public virtual String GetString()
+        public virtual string GetString()
         {
             object o = GetObject();
-            return (o == null) ? null : o.ToString();
+            return o == null ? null : o.ToString();
         }
     }
 }

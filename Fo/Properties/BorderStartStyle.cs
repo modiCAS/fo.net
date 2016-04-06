@@ -1,5 +1,7 @@
 namespace Fonet.Fo.Properties
 {
     internal class BorderStartStyle
-        : GenericBorderStyle.Enums { }
+        : GenericBorderStyle.Enums
+    {
+    }
 }

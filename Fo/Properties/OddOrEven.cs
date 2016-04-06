@@ -7,6 +7,5 @@ namespace Fonet.Fo.Properties
         public const int EVEN = Constants.EVEN;
 
         public const int ANY = Constants.ANY;
-
     }
 }

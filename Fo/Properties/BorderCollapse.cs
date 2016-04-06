@@ -5,6 +5,5 @@ namespace Fonet.Fo.Properties
         public const int SEPARATE = Constants.SEPARATE;
 
         public const int COLLAPSE = Constants.COLLAPSE;
-
     }
 }

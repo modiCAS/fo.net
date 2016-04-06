@@ -1,34 +1,54 @@
 using System.Collections;
 
-namespace Fonet.Pdf.Gdi.Font {
+namespace Fonet.Pdf.Gdi.Font
+{
     /// <summary>
-    ///     Utility class that stores a list of glyph indices and their 
+    ///     Utility class that stores a list of glyph indices and their
     ///     asociated subset indices.
     /// </summary>
-    public class IndexMappings {
+    public class IndexMappings
+    {
         /// <summary>
         ///     Maps a glyph index to a subset index.
         /// </summary>
-        private SortedList glyphToSubset;
+        private readonly SortedList glyphToSubset;
 
         /// <summary>
         ///     Maps a subset index to glyph index.
         /// </summary>
-        private SortedList subsetToGlyph;
+        private readonly SortedList subsetToGlyph;
 
         /// <summary>
         ///     Class constructor.
         /// </summary>
-        public IndexMappings() {
-            this.glyphToSubset = new SortedList();
-            this.subsetToGlyph = new SortedList();
+        public IndexMappings()
+        {
+            glyphToSubset = new SortedList();
+            subsetToGlyph = new SortedList();
         }
 
         /// <summary>
         ///     Gets the number of glyph to subset index mappings.
         /// </summary>
-        public int Count {
+        public int Count
+        {
             get { return glyphToSubset.Count; }
+        }
+
+        /// <summary>
+        ///     Gets a list of glyph indices sorted in ascending order.
+        /// </summary>
+        public IList GlyphIndices
+        {
+            get { return new ArrayList( glyphToSubset.Keys ); }
+        }
+
+        /// <summary>
+        ///     Gets a list of subset indices sorted in ascending order.
+        /// </summary>
+        public IList SubsetIndices
+        {
+            get { return new ArrayList( subsetToGlyph.Keys ); }
         }
 
         /// <summary>
@@ -36,38 +56,40 @@ namespace Fonet.Pdf.Gdi.Font {
         /// </summary>
         /// <param name="glyphIndex"></param>
         /// <returns></returns>
-        public bool HasMapping(int glyphIndex) {
-            return glyphToSubset.Contains(glyphIndex);
+        public bool HasMapping( int glyphIndex )
+        {
+            return glyphToSubset.Contains( glyphIndex );
         }
 
         /// <summary>
-        ///     Returns the subset index for <i>glyphIndex</i>.  If a subset 
+        ///     Returns the subset index for <i>glyphIndex</i>.  If a subset
         ///     index does not exist for <i>glyphIndex</i> one is generated.
         /// </summary>
         /// <param name="glyphIndex"></param>
         /// <returns>A subset index.</returns>
-        public int Map(int glyphIndex) {
-            int subsetIndex = 0;
-            if (glyphToSubset.Contains(glyphIndex)) {
-                subsetIndex = (int) glyphToSubset[glyphIndex];
-            }
-            else {
+        public int Map( int glyphIndex )
+        {
+            var subsetIndex = 0;
+            if ( glyphToSubset.Contains( glyphIndex ) )
+                subsetIndex = (int)glyphToSubset[ glyphIndex ];
+            else
+            {
                 subsetIndex = glyphToSubset.Count;
-                glyphToSubset.Add(glyphIndex, subsetIndex);
-                subsetToGlyph.Add(subsetIndex, glyphIndex);
+                glyphToSubset.Add( glyphIndex, subsetIndex );
+                subsetToGlyph.Add( subsetIndex, glyphIndex );
             }
             return subsetIndex;
         }
 
         /// <summary>
-        ///     Adds the list of supplied glyph indices to the index mappings using 
+        ///     Adds the list of supplied glyph indices to the index mappings using
         ///     the next available subset index for each glyph index.
         /// </summary>
         /// <param name="glyphIndices"></param>
-        public void Add(params int[] glyphIndices) {
-            foreach (int index in glyphIndices) {
-                Map(index);
-            }
+        public void Add( params int[] glyphIndices )
+        {
+            foreach ( int index in glyphIndices )
+                Map( index );
         }
 
         /// <summary>
@@ -77,10 +99,10 @@ namespace Fonet.Pdf.Gdi.Font {
         /// <returns>
         ///     A glyph index or <b>-1</b> if a glyph to subset mapping does not exist.
         /// </returns>
-        public int GetSubsetIndex(int glyphIndex) {
-            if (glyphToSubset.Contains(glyphIndex)) {
-                return (int) glyphToSubset[glyphIndex];
-            }
+        public int GetSubsetIndex( int glyphIndex )
+        {
+            if ( glyphToSubset.Contains( glyphIndex ) )
+                return (int)glyphToSubset[ glyphIndex ];
             return -1;
         }
 
@@ -91,25 +113,11 @@ namespace Fonet.Pdf.Gdi.Font {
         /// <returns>
         ///     A subset index or <b>-1</b> if a subset to glyph mapping does not exist.
         /// </returns>
-        public int GetGlyphIndex(int subsetIndex) {
-            if (subsetToGlyph.Contains(subsetIndex)) {
-                return (int) subsetToGlyph[subsetIndex];
-            }
+        public int GetGlyphIndex( int subsetIndex )
+        {
+            if ( subsetToGlyph.Contains( subsetIndex ) )
+                return (int)subsetToGlyph[ subsetIndex ];
             return -1;
-        }
-
-        /// <summary>
-        ///     Gets a list of glyph indices sorted in ascending order.
-        /// </summary>
-        public IList GlyphIndices {
-            get { return new ArrayList(glyphToSubset.Keys); }
-        }
-
-        /// <summary>
-        ///     Gets a list of subset indices sorted in ascending order.
-        /// </summary>
-        public IList SubsetIndices {
-            get { return new ArrayList(subsetToGlyph.Keys); }
         }
     }
 }

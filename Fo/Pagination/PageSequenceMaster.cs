@@ -1,67 +1,55 @@
+using System.Collections;
+
 namespace Fonet.Fo.Pagination
 {
-    using System.Collections;
-
     internal class PageSequenceMaster : FObj
     {
-        new internal class Maker : FObj.Maker
+        private readonly LayoutMasterSet layoutMasterSet;
+
+        private readonly ArrayList subSequenceSpecifiers;
+
+        protected PageSequenceMaster( FObj parent, PropertyList propertyList )
+            : base( parent, propertyList )
         {
-            public override FObj Make(FObj parent, PropertyList propertyList)
+            name = "fo:page-sequence-master";
+
+            subSequenceSpecifiers = new ArrayList();
+
+            if ( parent.GetName().Equals( "fo:layout-master-set" ) )
             {
-                return new PageSequenceMaster(parent, propertyList);
+                layoutMasterSet = (LayoutMasterSet)parent;
+                string pm = properties.GetProperty( "master-name" ).GetString();
+                if ( pm == null )
+                {
+                    FonetDriver.ActiveDriver.FireFonetWarning(
+                        "page-sequence-master does not have a page-master-name and so is being ignored" );
+                }
+                else
+                    layoutMasterSet.addPageSequenceMaster( pm, this );
+            }
+            else
+            {
+                throw new FonetException( "fo:page-sequence-master must be child "
+                    + "of fo:layout-master-set, not "
+                    + parent.GetName() );
             }
         }
 
-        new public static FObj.Maker GetMaker()
+        public new static FObj.Maker GetMaker()
         {
             return new Maker();
         }
 
-        private LayoutMasterSet layoutMasterSet;
-
-        private ArrayList subSequenceSpecifiers;
-
-        protected PageSequenceMaster(FObj parent, PropertyList propertyList)
-            : base(parent, propertyList)
+        protected internal void AddSubsequenceSpecifier( SubSequenceSpecifier pageMasterReference )
         {
-            this.name = "fo:page-sequence-master";
-
-            subSequenceSpecifiers = new ArrayList();
-
-            if (parent.GetName().Equals("fo:layout-master-set"))
-            {
-                this.layoutMasterSet = (LayoutMasterSet)parent;
-                string pm = this.properties.GetProperty("master-name").GetString();
-                if (pm == null)
-                {
-                    FonetDriver.ActiveDriver.FireFonetWarning(
-                        "page-sequence-master does not have a page-master-name and so is being ignored");
-                }
-                else
-                {
-                    this.layoutMasterSet.addPageSequenceMaster(pm, this);
-                }
-            }
-            else
-            {
-                throw new FonetException("fo:page-sequence-master must be child "
-                    + "of fo:layout-master-set, not "
-                    + parent.GetName());
-            }
+            subSequenceSpecifiers.Add( pageMasterReference );
         }
 
-        protected internal void AddSubsequenceSpecifier(SubSequenceSpecifier pageMasterReference)
+        protected internal SubSequenceSpecifier getSubSequenceSpecifier( int sequenceNumber )
         {
-            subSequenceSpecifiers.Add(pageMasterReference);
-        }
-
-        protected internal SubSequenceSpecifier getSubSequenceSpecifier(int sequenceNumber)
-        {
-            if (sequenceNumber >= 0
-                && sequenceNumber < GetSubSequenceSpecifierCount())
-            {
-                return (SubSequenceSpecifier)subSequenceSpecifiers[sequenceNumber];
-            }
+            if ( sequenceNumber >= 0
+                && sequenceNumber < GetSubSequenceSpecifierCount() )
+                return (SubSequenceSpecifier)subSequenceSpecifiers[ sequenceNumber ];
             return null;
         }
 
@@ -72,9 +60,15 @@ namespace Fonet.Fo.Pagination
 
         public void Reset()
         {
-            foreach (SubSequenceSpecifier s in subSequenceSpecifiers)
-            {
+            foreach ( SubSequenceSpecifier s in subSequenceSpecifiers )
                 s.Reset();
+        }
+
+        internal new class Maker : FObj.Maker
+        {
+            public override FObj Make( FObj parent, PropertyList propertyList )
+            {
+                return new PageSequenceMaster( parent, propertyList );
             }
         }
     }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using Fonet.DataTypes;
 using Fonet.Layout;
@@ -7,12 +6,22 @@ namespace Fonet.Fo
 {
     internal class FObj : FONode
     {
-        internal class Maker
+        private Hashtable markerClassNames;
+
+        protected string name;
+
+        public PropertyList properties;
+
+        protected PropertyManager propMgr;
+
+        protected FObj( FObj parent, PropertyList propertyList )
+            : base( parent )
         {
-            public virtual FObj Make(FObj parent, PropertyList propertyList)
-            {
-                return new FObj(parent, propertyList);
-            }
+            properties = propertyList;
+            propertyList.FObj = this;
+            propMgr = MakePropertyManager( propertyList );
+            name = "default FO";
+            SetWritingMode();
         }
 
         public static Maker GetMaker()
@@ -20,37 +29,19 @@ namespace Fonet.Fo
             return new Maker();
         }
 
-        public PropertyList properties;
-
-        protected PropertyManager propMgr;
-
-        protected string name;
-
-        private Hashtable markerClassNames;
-
-        protected FObj(FObj parent, PropertyList propertyList)
-            : base(parent)
+        protected PropertyManager MakePropertyManager( PropertyList propertyList )
         {
-            this.properties = propertyList;
-            propertyList.FObj = this;
-            this.propMgr = MakePropertyManager(propertyList);
-            this.name = "default FO";
-            SetWritingMode();
+            return new PropertyManager( propertyList );
         }
 
-        protected PropertyManager MakePropertyManager(PropertyList propertyList)
-        {
-            return new PropertyManager(propertyList);
-        }
-
-        protected internal virtual void AddCharacters(char[] data, int start, int length)
+        protected internal virtual void AddCharacters( char[] data, int start, int length )
         {
             // ignore
         }
 
-        public override Status Layout(Area area)
+        public override Status Layout( Area area )
         {
-            return new Status(Status.OK);
+            return new Status( Status.OK );
         }
 
         public string GetName()
@@ -68,9 +59,9 @@ namespace Fonet.Fo
             // do nothing by default
         }
 
-        public override Property GetProperty(string name)
+        public override Property GetProperty( string name )
         {
-            return (properties.GetProperty(name));
+            return properties.GetProperty( name );
         }
 
         public virtual int GetContentWidth()
@@ -78,22 +69,18 @@ namespace Fonet.Fo
             return 0;
         }
 
-        public virtual void RemoveID(IDReferences idReferences)
+        public virtual void RemoveID( IDReferences idReferences )
         {
-            if (((FObj)this).properties.GetProperty("id") == null
-                || ((FObj)this).properties.GetProperty("id").GetString() == null)
-            {
+            if ( properties.GetProperty( "id" ) == null
+                || properties.GetProperty( "id" ).GetString() == null )
                 return;
-            }
-            idReferences.RemoveID(((FObj)this).properties.GetProperty("id").GetString());
-            int numChildren = this.children.Count;
-            for (int i = 0; i < numChildren; i++)
+            idReferences.RemoveID( properties.GetProperty( "id" ).GetString() );
+            int numChildren = children.Count;
+            for ( var i = 0; i < numChildren; i++ )
             {
-                FONode child = (FONode)children[i];
-                if ((child is FObj))
-                {
-                    ((FObj)child).RemoveID(idReferences);
-                }
+                var child = (FONode)children[ i ];
+                if ( child is FObj )
+                    ( (FObj)child ).RemoveID( idReferences );
             }
         }
 
@@ -106,45 +93,48 @@ namespace Fonet.Fo
         {
             FObj p;
             FObj parent;
-            for (p = this;
-                !p.GeneratesReferenceAreas() && (parent = p.getParent()) != null;
-                p = parent)
-            {
+            for ( p = this;
+                !p.GeneratesReferenceAreas() && ( parent = p.getParent() ) != null;
+                p = parent )
                 ;
-            }
-            this.properties.SetWritingMode(p.GetProperty("writing-mode").GetEnum());
+            properties.SetWritingMode( p.GetProperty( "writing-mode" ).GetEnum() );
         }
 
-        public void AddMarker(string markerClassName)
+        public void AddMarker( string markerClassName )
         {
-            if (children != null)
+            if ( children != null )
             {
-                for (int i = 0; i < children.Count; i++)
+                for ( var i = 0; i < children.Count; i++ )
                 {
-                    FONode child = (FONode)children[i];
-                    if (!child.MayPrecedeMarker())
+                    var child = (FONode)children[ i ];
+                    if ( !child.MayPrecedeMarker() )
                     {
                         throw new FonetException(
-                            String.Format("A fo:marker must be an initial child of '{0}'", GetName()));
+                            string.Format( "A fo:marker must be an initial child of '{0}'", GetName() ) );
                     }
                 }
             }
-            if (markerClassNames == null)
+            if ( markerClassNames == null )
             {
                 markerClassNames = new Hashtable();
-                markerClassNames.Add(markerClassName, String.Empty);
+                markerClassNames.Add( markerClassName, string.Empty );
             }
-            else if (!markerClassNames.ContainsKey(markerClassName))
-            {
-                markerClassNames.Add(markerClassName, String.Empty);
-            }
+            else if ( !markerClassNames.ContainsKey( markerClassName ) )
+                markerClassNames.Add( markerClassName, string.Empty );
             else
             {
                 throw new FonetException(
-                    String.Format("marker-class-name '{0}' already exists for this parent",
-                                  markerClassName));
+                    string.Format( "marker-class-name '{0}' already exists for this parent",
+                        markerClassName ) );
             }
         }
 
+        internal class Maker
+        {
+            public virtual FObj Make( FObj parent, PropertyList propertyList )
+            {
+                return new FObj( parent, propertyList );
+            }
+        }
     }
 }

@@ -4,34 +4,25 @@ namespace Fonet.Pdf.Filter
     {
         public LzwFilter()
         {
-            throw new UnsupportedFilterException("LZWDecode");
+            throw new UnsupportedFilterException( "LZWDecode" );
         }
 
         public PdfObject Name
         {
-            get
-            {
-                return PdfName.Names.LZWDecode;
-            }
+            get { return PdfName.Names.LZWDecode; }
         }
 
         public PdfObject DecodeParms
         {
-            get
-            {
-                return PdfNull.Null;
-            }
+            get { return PdfNull.Null; }
         }
 
         public bool HasDecodeParams
         {
-            get
-            {
-                return false;
-            }
+            get { return false; }
         }
 
-        public byte[] Encode(byte[] data)
+        public byte[] Encode( byte[] data )
         {
             return data;
         }

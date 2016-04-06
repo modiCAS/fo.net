@@ -1,8 +1,10 @@
 using System.Runtime.InteropServices;
 
-namespace Fonet.Pdf.Gdi {
-    [StructLayout(LayoutKind.Sequential, CharSet=CharSet.Auto)]
-    internal struct NewTextMetric {
+namespace Fonet.Pdf.Gdi
+{
+    [StructLayout( LayoutKind.Sequential, CharSet = CharSet.Auto )]
+    internal struct NewTextMetric
+    {
         public long tmHeight;
         public long tmAscent;
         public long tmDescent;
@@ -28,5 +30,4 @@ namespace Fonet.Pdf.Gdi {
         public uint ntmCellHeight;
         public uint ntmAvgWidth;
     }
-
 }

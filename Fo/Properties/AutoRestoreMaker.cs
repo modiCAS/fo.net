@@ -4,12 +4,16 @@ namespace Fonet.Fo.Properties
 {
     internal class AutoRestoreMaker : ToBeImplementedProperty.Maker
     {
-        new public static PropertyMaker Maker(string propName)
+        private Property m_defaultProp;
+
+        protected AutoRestoreMaker( string name ) : base( name )
         {
-            return new AutoRestoreMaker(propName);
         }
 
-        protected AutoRestoreMaker(string name) : base(name) { }
+        public new static PropertyMaker Maker( string propName )
+        {
+            return new AutoRestoreMaker( propName );
+        }
 
 
         public override bool IsInherited()
@@ -17,14 +21,10 @@ namespace Fonet.Fo.Properties
             return true;
         }
 
-        private Property m_defaultProp = null;
-
-        public override Property Make(PropertyList propertyList)
+        public override Property Make( PropertyList propertyList )
         {
-            if (m_defaultProp == null)
-            {
-                m_defaultProp = Make(propertyList, "false", propertyList.getParentFObj());
-            }
+            if ( m_defaultProp == null )
+                m_defaultProp = Make( propertyList, "false", propertyList.getParentFObj() );
             return m_defaultProp;
         }
     }

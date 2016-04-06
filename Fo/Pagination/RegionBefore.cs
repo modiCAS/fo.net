@@ -5,45 +5,37 @@ namespace Fonet.Fo.Pagination
 {
     internal class RegionBefore : Region
     {
-        new internal class Maker : FObj.Maker
+        public const string REGION_CLASS = "before";
+
+        private readonly int precedence;
+
+        protected RegionBefore( FObj parent, PropertyList propertyList )
+            : base( parent, propertyList )
         {
-            public override FObj Make(FObj parent, PropertyList propertyList)
-            {
-                return new RegionBefore(parent, propertyList);
-            }
+            precedence = properties.GetProperty( "precedence" ).GetEnum();
         }
 
-        new public static FObj.Maker GetMaker()
+        public new static FObj.Maker GetMaker()
         {
             return new Maker();
         }
 
-        public const string REGION_CLASS = "before";
 
-        private int precedence;
-
-        protected RegionBefore(FObj parent, PropertyList propertyList)
-            : base(parent, propertyList)
-        {
-            precedence = this.properties.GetProperty("precedence").GetEnum();
-        }
-
-
-        public override RegionArea MakeRegionArea(int allocationRectangleXPosition,
-                                                  int allocationRectangleYPosition,
-                                                  int allocationRectangleWidth,
-                                                  int allocationRectangleHeight)
+        public override RegionArea MakeRegionArea( int allocationRectangleXPosition,
+            int allocationRectangleYPosition,
+            int allocationRectangleWidth,
+            int allocationRectangleHeight )
         {
             BorderAndPadding bap = propMgr.GetBorderAndPadding();
             BackgroundProps bProps = propMgr.GetBackgroundProps();
-            int extent = this.properties.GetProperty("extent").GetLength().MValue();
+            int extent = properties.GetProperty( "extent" ).GetLength().MValue();
 
-            RegionArea area = new RegionArea(
+            var area = new RegionArea(
                 allocationRectangleXPosition,
                 allocationRectangleYPosition,
                 allocationRectangleWidth,
-                extent);
-            area.setBackground(bProps);
+                extent );
+            area.setBackground( bProps );
 
             return area;
         }
@@ -66,8 +58,15 @@ namespace Fonet.Fo.Pagination
 
         public bool getPrecedence()
         {
-            return (precedence == Precedence.TRUE ? true : false);
+            return precedence == Precedence.TRUE ? true : false;
         }
 
+        internal new class Maker : FObj.Maker
+        {
+            public override FObj Make( FObj parent, PropertyList propertyList )
+            {
+                return new RegionBefore( parent, propertyList );
+            }
+        }
     }
 }

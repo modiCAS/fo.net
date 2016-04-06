@@ -11,20 +11,18 @@ namespace Fonet.Pdf
         public const int DefaultSupplement = 0;
 
         public PdfCIDSystemInfo()
-            : base()
         {
-            this[PdfName.Names.Registry] = new PdfString(DefaultRegistry);
-            this[PdfName.Names.Ordering] = new PdfString(DefaultOrdering);
-            this[PdfName.Names.Supplement] = new PdfNumeric(DefaultSupplement);
+            this[ PdfName.Names.Registry ] = new PdfString( DefaultRegistry );
+            this[ PdfName.Names.Ordering ] = new PdfString( DefaultOrdering );
+            this[ PdfName.Names.Supplement ] = new PdfNumeric( DefaultSupplement );
         }
 
         public PdfCIDSystemInfo(
-            string registry, string ordering, int supplement)
-            : base()
+            string registry, string ordering, int supplement )
         {
-            this[PdfName.Names.Registry] = new PdfString(registry);
-            this[PdfName.Names.Ordering] = new PdfString(ordering);
-            this[PdfName.Names.Supplement] = new PdfNumeric(supplement);
+            this[ PdfName.Names.Registry ] = new PdfString( registry );
+            this[ PdfName.Names.Ordering ] = new PdfString( ordering );
+            this[ PdfName.Names.Supplement ] = new PdfNumeric( supplement );
         }
     }
 }

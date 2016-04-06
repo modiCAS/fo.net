@@ -3,46 +3,31 @@ using System.Collections;
 namespace Fonet.Pdf
 {
     /// <summary>
-    ///     A collection of <see cref="BfEntry"/> instances.
+    ///     A collection of <see cref="BfEntry" /> instances.
     /// </summary>
     internal class BfEntryList : IEnumerable
     {
-        private ArrayList entries = new ArrayList();
+        private readonly ArrayList entries = new ArrayList();
 
         /// <summary>
-        ///     Adds the supplied <see cref="BfEntry"/> to the end of the collection.
+        ///     Gets the <see cref="BfEntry" /> at <i>index</i>.
         /// </summary>
-        /// <param name="entry"></param>
-        public void Add(BfEntry entry)
+        public BfEntry this[ int index ]
         {
-            entries.Add(entry);
+            get { return (BfEntry)entries[ index ]; }
         }
 
         /// <summary>
-        ///     Gets the <see cref="BfEntry"/> at <i>index</i>.
-        /// </summary>
-        public BfEntry this[int index]
-        {
-            get
-            {
-                return (BfEntry)entries[index];
-            }
-        }
-
-        /// <summary>
-        ///     Gets the number of <see cref="BfEntry"/> objects contained by this 
-        ///     <see cref="BfEntryList"/>
+        ///     Gets the number of <see cref="BfEntry" /> objects contained by this
+        ///     <see cref="BfEntryList" />
         /// </summary>
         public int Count
         {
-            get
-            {
-                return entries.Count;
-            }
+            get { return entries.Count; }
         }
 
         /// <summary>
-        ///     Returns the number of <see cref="BfEntry"/> instances that 
+        ///     Returns the number of <see cref="BfEntry" /> instances that
         ///     represent bfrange's
         /// </summary>
         /// <returns></returns>
@@ -50,66 +35,55 @@ namespace Fonet.Pdf
         {
             get
             {
-                int count = 0;
-                foreach (BfEntry entry in entries)
+                var count = 0;
+                foreach ( BfEntry entry in entries )
                 {
-                    if (entry.IsRange)
-                    {
+                    if ( entry.IsRange )
                         count++;
-                    }
                 }
                 return count;
             }
         }
 
         /// <summary>
-        ///     
         /// </summary>
         public BfEntry[] Ranges
         {
             get
             {
-                ArrayList ranges = new ArrayList(NumRanges);
-                foreach (BfEntry entry in this)
+                var ranges = new ArrayList( NumRanges );
+                foreach ( BfEntry entry in this )
                 {
-                    if (entry.IsRange)
-                    {
-                        ranges.Add(entry);
-                    }
+                    if ( entry.IsRange )
+                        ranges.Add( entry );
                 }
-                return (BfEntry[])ranges.ToArray(typeof(BfEntry));
+                return (BfEntry[])ranges.ToArray( typeof( BfEntry ) );
             }
         }
 
         /// <summary>
-        ///     Returns the number of <see cref="BfEntry"/> instances that 
+        ///     Returns the number of <see cref="BfEntry" /> instances that
         ///     represent bfchar's
         /// </summary>
         /// <returns></returns>
         public int NumChars
         {
-            get
-            {
-                return (entries.Count - NumRanges);
-            }
+            get { return entries.Count - NumRanges; }
         }
 
         /// <summary>
-        ///     
         /// </summary>
         public BfEntry[] Chars
         {
             get
             {
-                ArrayList chars = new ArrayList(NumChars);
-                foreach (BfEntry entry in this)
+                var chars = new ArrayList( NumChars );
+                foreach ( BfEntry entry in this )
                 {
-                    if (entry.IsChar)
-                    {
-                        chars.Add(entry);
-                    }
+                    if ( entry.IsChar )
+                        chars.Add( entry );
                 }
-                return (BfEntry[])chars.ToArray(typeof(BfEntry));
+                return (BfEntry[])chars.ToArray( typeof( BfEntry ) );
             }
         }
 
@@ -120,30 +94,59 @@ namespace Fonet.Pdf
         /// <returns></returns>
         public IEnumerator GetEnumerator()
         {
-            return ArrayList.ReadOnly(entries).GetEnumerator();
+            return ArrayList.ReadOnly( entries ).GetEnumerator();
+        }
+
+        /// <summary>
+        ///     Adds the supplied <see cref="BfEntry" /> to the end of the collection.
+        /// </summary>
+        /// <param name="entry"></param>
+        public void Add( BfEntry entry )
+        {
+            entries.Add( entry );
         }
     }
 
     /// <summary>
-    ///     A <see cref="BfEntry"/> class can represent either a bfrange 
+    ///     A <see cref="BfEntry" /> class can represent either a bfrange
     ///     or bfchar.
     /// </summary>
     internal class BfEntry
     {
-        private ushort startIndex;
-        private ushort endIndex;
-        private ushort unicodeValue;
-
         /// <summary>
         ///     Class cosntructor.
         /// </summary>
         /// <param name="startIndex"></param>
         /// <param name="unicodeValue"></param>
-        public BfEntry(ushort startIndex, ushort unicodeValue)
+        public BfEntry( ushort startIndex, ushort unicodeValue )
         {
-            this.startIndex = startIndex;
-            this.endIndex = startIndex;
-            this.unicodeValue = unicodeValue;
+            StartGlyphIndex = startIndex;
+            EndGlyphIndex = startIndex;
+            UnicodeValue = unicodeValue;
+        }
+
+        public ushort StartGlyphIndex { get; private set; }
+
+        public ushort EndGlyphIndex { get; private set; }
+
+        public ushort UnicodeValue { get; private set; }
+
+        /// <summary>
+        ///     Returns <b>true</b> if this BfEntry represents a glyph range, i.e.
+        ///     the start index is not equal to the end index.
+        /// </summary>
+        public bool IsRange
+        {
+            get { return StartGlyphIndex != EndGlyphIndex; }
+        }
+
+        /// <summary>
+        ///     Returns <b>true</b> if this BfEntry represents a bfchar entry, i.e.
+        ///     the start index is equal to the end index.
+        /// </summary>
+        public bool IsChar
+        {
+            get { return !IsRange; }
         }
 
         /// <summary>
@@ -154,55 +157,7 @@ namespace Fonet.Pdf
         /// </remarks>
         public void IncrementEndIndex()
         {
-            endIndex++;
-        }
-
-        public ushort StartGlyphIndex
-        {
-            get
-            {
-                return startIndex;
-            }
-        }
-
-        public ushort EndGlyphIndex
-        {
-            get
-            {
-                return endIndex;
-            }
-        }
-
-        public ushort UnicodeValue
-        {
-            get
-            {
-                return unicodeValue;
-            }
-        }
-
-        /// <summary>
-        ///     Returns <b>true</b> if this BfEntry represents a glyph range, i.e.
-        ///     the start index is not equal to the end index.
-        /// </summary>
-        public bool IsRange
-        {
-            get
-            {
-                return (startIndex != endIndex);
-            }
-        }
-
-        /// <summary>
-        ///     Returns <b>true</b> if this BfEntry represents a bfchar entry, i.e.
-        ///     the start index is equal to the end index.
-        /// </summary>
-        public bool IsChar
-        {
-            get
-            {
-                return (!IsRange);
-            }
+            EndGlyphIndex++;
         }
     }
 }

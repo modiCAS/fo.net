@@ -4,34 +4,25 @@ namespace Fonet.Pdf.Filter
     {
         public Jbig2Filter()
         {
-            throw new UnsupportedFilterException("JBIG2Decode");
+            throw new UnsupportedFilterException( "JBIG2Decode" );
         }
 
         public PdfObject Name
         {
-            get
-            {
-                return PdfName.Names.JBIG2Decode;
-            }
+            get { return PdfName.Names.JBIG2Decode; }
         }
 
         public PdfObject DecodeParms
         {
-            get
-            {
-                return PdfNull.Null;
-            }
+            get { return PdfNull.Null; }
         }
 
         public bool HasDecodeParams
         {
-            get
-            {
-                return false;
-            }
+            get { return false; }
         }
 
-        public byte[] Encode(byte[] data)
+        public byte[] Encode( byte[] data )
         {
             return data;
         }

@@ -11,46 +11,40 @@ namespace Fonet.Pdf
         {
         }
 
-        public PdfDictionary(PdfObjectId objectId)
-            : base(objectId)
+        public PdfDictionary( PdfObjectId objectId )
+            : base( objectId )
         {
         }
 
-        public void Add(PdfName key, PdfObject value)
+        public PdfObject this[ PdfName key ]
         {
-            if (key == null)
+            get
             {
-                throw new ArgumentNullException("key");
+                if ( key == null )
+                    throw new ArgumentNullException( "key" );
+                return (PdfObject)entries[ key ];
             }
-            if (entries.ContainsKey(key))
+            set
             {
-                throw new ArgumentException("Already contains entry " + key);
+                if ( key == null )
+                    throw new ArgumentNullException( "key" );
+                entries[ key ] = value;
             }
-
-            entries.Add(key, value);
         }
 
-        public void Clear()
+        public ICollection Keys
         {
-            entries.Clear();
+            get { return entries.Keys; }
         }
 
-        public bool Contains(PdfName key)
+        public ICollection Values
         {
-            if (key == null)
-            {
-                throw new ArgumentNullException("key");
-            }
-            return entries.ContainsKey(key);
+            get { return entries.Values; }
         }
 
-        public void Remove(PdfName key)
+        public int Count
         {
-            if (key == null)
-            {
-                throw new ArgumentNullException("key");
-            }
-            entries.Remove(key);
+            get { return entries.Count; }
         }
 
         public IEnumerator GetEnumerator()
@@ -58,61 +52,45 @@ namespace Fonet.Pdf
             return entries.GetEnumerator();
         }
 
-        public PdfObject this[PdfName key]
+        public void Add( PdfName key, PdfObject value )
         {
-            get
-            {
-                if (key == null)
-                {
-                    throw new ArgumentNullException("key");
-                }
-                return (PdfObject)entries[key];
-            }
-            set
-            {
-                if (key == null)
-                {
-                    throw new ArgumentNullException("key");
-                }
-                entries[key] = value;
-            }
+            if ( key == null )
+                throw new ArgumentNullException( "key" );
+            if ( entries.ContainsKey( key ) )
+                throw new ArgumentException( "Already contains entry " + key );
+
+            entries.Add( key, value );
         }
 
-        public ICollection Keys
+        public void Clear()
         {
-            get
-            {
-                return entries.Keys;
-            }
+            entries.Clear();
         }
 
-        public ICollection Values
+        public bool Contains( PdfName key )
         {
-            get
-            {
-                return entries.Values;
-            }
+            if ( key == null )
+                throw new ArgumentNullException( "key" );
+            return entries.ContainsKey( key );
         }
 
-        public int Count
+        public void Remove( PdfName key )
         {
-            get
-            {
-                return entries.Count;
-            }
+            if ( key == null )
+                throw new ArgumentNullException( "key" );
+            entries.Remove( key );
         }
 
-        protected internal override void Write(PdfWriter writer)
+        protected internal override void Write( PdfWriter writer )
         {
-            writer.WriteKeywordLine(Keyword.DictionaryBegin);
-            foreach (DictionaryEntry e in entries)
+            writer.WriteKeywordLine( Keyword.DictionaryBegin );
+            foreach ( DictionaryEntry e in entries )
             {
-                writer.Write((PdfName)e.Key);
+                writer.Write( (PdfName)e.Key );
                 writer.WriteSpace();
-                writer.WriteLine((PdfObject)e.Value);
+                writer.WriteLine( (PdfObject)e.Value );
             }
-            writer.WriteKeyword(Keyword.DictionaryEnd);
+            writer.WriteKeyword( Keyword.DictionaryEnd );
         }
-
     }
 }

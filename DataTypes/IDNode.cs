@@ -1,62 +1,54 @@
+using Fonet.Pdf;
+
 namespace Fonet.DataTypes
 {
-    using Fonet.Pdf;
-
     internal class IDNode
     {
-        private string idValue;
-
-        private PdfObjectReference internalLinkGoToPageReference;
+        private readonly string idValue;
 
         private PdfGoTo internalLinkGoTo;
 
-        private int pageNumber = -1;
-        private int xPosition = 0;
-        private int yPosition = 0;
+        private PdfObjectReference internalLinkGoToPageReference;
 
-        internal IDNode(string idValue)
+        private int pageNumber = -1;
+        private int xPosition;
+        private int yPosition;
+
+        internal IDNode( string idValue )
         {
             this.idValue = idValue;
         }
 
-        internal void SetPageNumber(int number)
+        internal void SetPageNumber( int number )
         {
             pageNumber = number;
         }
 
         public string GetPageNumber()
         {
-            return (pageNumber != -1) ? pageNumber.ToString() : null;
+            return pageNumber != -1 ? pageNumber.ToString() : null;
         }
 
-        internal void CreateInternalLinkGoTo(PdfObjectId objectId)
+        internal void CreateInternalLinkGoTo( PdfObjectId objectId )
         {
-            if (internalLinkGoToPageReference == null)
-            {
-                internalLinkGoTo = new PdfGoTo(null, objectId);
-            }
+            if ( internalLinkGoToPageReference == null )
+                internalLinkGoTo = new PdfGoTo( null, objectId );
             else
-            {
-                internalLinkGoTo = new PdfGoTo(internalLinkGoToPageReference, objectId);
-            }
+                internalLinkGoTo = new PdfGoTo( internalLinkGoToPageReference, objectId );
 
-            if (xPosition != 0)
+            if ( xPosition != 0 )
             {
                 internalLinkGoTo.X = xPosition;
                 internalLinkGoTo.Y = yPosition;
             }
         }
 
-        internal void SetInternalLinkGoToPageReference(PdfObjectReference pageReference)
+        internal void SetInternalLinkGoToPageReference( PdfObjectReference pageReference )
         {
-            if (internalLinkGoTo != null)
-            {
+            if ( internalLinkGoTo != null )
                 internalLinkGoTo.PageReference = pageReference;
-            }
             else
-            {
                 internalLinkGoToPageReference = pageReference;
-            }
         }
 
         internal string GetInternalLinkGoToReference()
@@ -79,9 +71,9 @@ namespace Fonet.DataTypes
             return internalLinkGoTo != null;
         }
 
-        internal void SetPosition(int x, int y)
+        internal void SetPosition( int x, int y )
         {
-            if (internalLinkGoTo != null)
+            if ( internalLinkGoTo != null )
             {
                 internalLinkGoTo.X = x;
                 internalLinkGoTo.Y = y;

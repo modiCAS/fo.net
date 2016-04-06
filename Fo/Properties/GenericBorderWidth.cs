@@ -4,12 +4,18 @@ namespace Fonet.Fo.Properties
 {
     internal class GenericBorderWidth : LengthProperty.Maker
     {
-        new public static PropertyMaker Maker(string propName)
+        private static Hashtable s_htKeywords;
+
+        private Property m_defaultProp;
+
+        protected GenericBorderWidth( string name ) : base( name )
         {
-            return new GenericBorderWidth(propName);
         }
 
-        protected GenericBorderWidth(string name) : base(name) { }
+        public new static PropertyMaker Maker( string propName )
+        {
+            return new GenericBorderWidth( propName );
+        }
 
 
         public override bool IsInherited()
@@ -17,65 +23,50 @@ namespace Fonet.Fo.Properties
             return false;
         }
 
-        public override Property GetShorthand(PropertyList propertyList)
+        public override Property GetShorthand( PropertyList propertyList )
         {
             Property p = null;
             ListProperty listprop;
 
-            if (p == null)
+            if ( p == null )
             {
-                listprop = (ListProperty)propertyList.GetExplicitProperty("border-width");
-                if (listprop != null)
+                listprop = (ListProperty)propertyList.GetExplicitProperty( "border-width" );
+                if ( listprop != null )
                 {
-                    IShorthandParser shparser = new BoxPropShorthandParser(listprop);
-                    p = shparser.GetValueForProperty(PropName, this, propertyList);
+                    IShorthandParser shparser = new BoxPropShorthandParser( listprop );
+                    p = shparser.GetValueForProperty( PropName, this, propertyList );
                 }
             }
 
             return p;
         }
 
-        private static Hashtable s_htKeywords;
-
         private static void initKeywords()
         {
-            s_htKeywords = new Hashtable(3);
+            s_htKeywords = new Hashtable( 3 );
 
-            s_htKeywords.Add("thin", "0.5pt");
+            s_htKeywords.Add( "thin", "0.5pt" );
 
-            s_htKeywords.Add("medium", "1pt");
+            s_htKeywords.Add( "medium", "1pt" );
 
-            s_htKeywords.Add("thick", "2pt");
-
+            s_htKeywords.Add( "thick", "2pt" );
         }
 
-        protected override string CheckValueKeywords(string keyword)
+        protected override string CheckValueKeywords( string keyword )
         {
-            if (s_htKeywords == null)
-            {
+            if ( s_htKeywords == null )
                 initKeywords();
-            }
-            string value = (string)s_htKeywords[keyword];
-            if (value == null)
-            {
-                return base.CheckValueKeywords(keyword);
-            }
-            else
-            {
-                return value;
-            }
+            var value = (string)s_htKeywords[ keyword ];
+            if ( value == null )
+                return base.CheckValueKeywords( keyword );
+            return value;
         }
 
-        private Property m_defaultProp = null;
-
-        public override Property Make(PropertyList propertyList)
+        public override Property Make( PropertyList propertyList )
         {
-            if (m_defaultProp == null)
-            {
-                m_defaultProp = Make(propertyList, "0pt", propertyList.getParentFObj());
-            }
+            if ( m_defaultProp == null )
+                m_defaultProp = Make( propertyList, "0pt", propertyList.getParentFObj() );
             return m_defaultProp;
-
         }
     }
 }

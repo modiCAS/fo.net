@@ -8,75 +8,75 @@ namespace Fonet.Layout
 {
     internal abstract class Area : Box
     {
-        protected FontState fontState;
-        protected BorderAndPadding bp = null;
-        protected ArrayList children = new ArrayList();
-        protected int maxHeight;
-        protected int currentHeight = 0;
-        protected int tableCellXOffset = 0;
-        private int absoluteYTop = 0;
-        protected int contentRectangleWidth;
+        protected bool _isFirst;
+        protected bool _isLast;
+        private int absoluteYTop;
         protected int allocationWidth;
-        protected Page page;
-        protected BackgroundProps background;
-        private IDReferences idReferences;
-        protected ArrayList markers;
-        protected FObj generatedBy;
-        protected Hashtable returnedBy;
         protected string areaClass = null;
-        protected bool _isFirst = false;
-        protected bool _isLast = false;
+        protected BackgroundProps background;
+        protected BorderAndPadding bp;
+        protected ArrayList children = new ArrayList();
+        protected int contentRectangleWidth;
+        protected int currentHeight;
 
         public FObj foCreator;
+        protected FontState fontState;
+        protected FObj generatedBy;
+        private IDReferences idReferences;
+        protected ArrayList markers;
+        protected int maxHeight;
+        protected Page page;
+        protected Hashtable returnedBy;
+        protected int tableCellXOffset;
 
-        public Area(FontState fontState)
+        public Area( FontState fontState )
         {
-            setFontState(fontState);
-            this.markers = new ArrayList();
-            this.returnedBy = new Hashtable();
+            setFontState( fontState );
+            markers = new ArrayList();
+            returnedBy = new Hashtable();
         }
 
-        public Area(FontState fontState, int allocationWidth, int maxHeight)
+        public Area( FontState fontState, int allocationWidth, int maxHeight )
         {
-            setFontState(fontState);
+            setFontState( fontState );
             this.allocationWidth = allocationWidth;
-            this.contentRectangleWidth = allocationWidth;
+            contentRectangleWidth = allocationWidth;
             this.maxHeight = maxHeight;
-            this.markers = new ArrayList();
-            this.returnedBy = new Hashtable();
+            markers = new ArrayList();
+            returnedBy = new Hashtable();
         }
 
-        private void setFontState(FontState fontState)
+        private void setFontState( FontState fontState )
         {
             this.fontState = fontState;
         }
 
-        public void addChild(Box child)
+        public void addChild( Box child )
         {
-            this.children.Add(child);
+            children.Add( child );
             child.parent = this;
         }
 
-        public void addChildAtStart(Box child)
+        public void addChildAtStart( Box child )
         {
-            this.children.Insert(0, child);
+            children.Insert( 0, child );
             child.parent = this;
         }
 
-        public void addDisplaySpace(int size)
+        public void addDisplaySpace( int size )
         {
-            this.addChild(new DisplaySpace(size));
-            this.currentHeight += size;
+            addChild( new DisplaySpace( size ) );
+            currentHeight += size;
         }
 
-        public void addInlineSpace(int size)
+        public void addInlineSpace( int size )
         {
-            this.addChild(new InlineSpace(size));
+            addChild( new InlineSpace( size ) );
         }
 
         public FontInfo getFontInfo()
         {
-            return this.page.getFontInfo();
+            return page.getFontInfo();
         }
 
         public virtual void end()
@@ -85,35 +85,33 @@ namespace Fonet.Layout
 
         public int getAllocationWidth()
         {
-            return this.allocationWidth;
+            return allocationWidth;
         }
 
-        public void setAllocationWidth(int w)
+        public void setAllocationWidth( int w )
         {
-            this.allocationWidth = w;
-            this.contentRectangleWidth = this.allocationWidth;
+            allocationWidth = w;
+            contentRectangleWidth = allocationWidth;
         }
 
         public ArrayList getChildren()
         {
-            return this.children;
+            return children;
         }
 
         public bool hasChildren()
         {
-            return (this.children.Count != 0);
+            return children.Count != 0;
         }
 
         public bool hasNonSpaceChildren()
         {
-            if (this.children.Count > 0)
+            if ( children.Count > 0 )
             {
-                foreach (object child in children)
+                foreach ( object child in children )
                 {
-                    if (!(child is DisplaySpace))
-                    {
+                    if ( !( child is DisplaySpace ) )
                         return true;
-                    }
                 }
             }
             return false;
@@ -126,73 +124,73 @@ namespace Fonet.Layout
 
         public FontState GetFontState()
         {
-            return this.fontState;
+            return fontState;
         }
 
         public virtual int getContentHeight()
         {
-            return this.currentHeight;
+            return currentHeight;
         }
 
         public virtual int GetHeight()
         {
-            return this.currentHeight + getPaddingTop() + getPaddingBottom()
+            return currentHeight + getPaddingTop() + getPaddingBottom()
                 + getBorderTopWidth() + getBorderBottomWidth();
         }
 
         public int getMaxHeight()
         {
-            return this.maxHeight;
+            return maxHeight;
         }
 
         public Page getPage()
         {
-            return this.page;
+            return page;
         }
 
         public BackgroundProps getBackground()
         {
-            return this.background;
+            return background;
         }
 
         public int getPaddingTop()
         {
-            return (bp == null ? 0 : bp.getPaddingTop(false));
+            return bp == null ? 0 : bp.getPaddingTop( false );
         }
 
         public int getPaddingLeft()
         {
-            return (bp == null ? 0 : bp.getPaddingLeft(false));
+            return bp == null ? 0 : bp.getPaddingLeft( false );
         }
 
         public int getPaddingBottom()
         {
-            return (bp == null ? 0 : bp.getPaddingBottom(false));
+            return bp == null ? 0 : bp.getPaddingBottom( false );
         }
 
         public int getPaddingRight()
         {
-            return (bp == null ? 0 : bp.getPaddingRight(false));
+            return bp == null ? 0 : bp.getPaddingRight( false );
         }
 
         public int getBorderTopWidth()
         {
-            return (bp == null ? 0 : bp.getBorderTopWidth(false));
+            return bp == null ? 0 : bp.getBorderTopWidth( false );
         }
 
         public int getBorderRightWidth()
         {
-            return (bp == null ? 0 : bp.getBorderRightWidth(false));
+            return bp == null ? 0 : bp.getBorderRightWidth( false );
         }
 
         public int getBorderLeftWidth()
         {
-            return (bp == null ? 0 : bp.getBorderLeftWidth(false));
+            return bp == null ? 0 : bp.getBorderLeftWidth( false );
         }
 
         public int getBorderBottomWidth()
         {
-            return (bp == null ? 0 : bp.getBorderBottomWidth(false));
+            return bp == null ? 0 : bp.getBorderBottomWidth( false );
         }
 
         public int getTableCellXOffset()
@@ -200,7 +198,7 @@ namespace Fonet.Layout
             return tableCellXOffset;
         }
 
-        public void setTableCellXOffset(int offset)
+        public void setTableCellXOffset( int offset )
         {
             tableCellXOffset = offset;
         }
@@ -210,44 +208,44 @@ namespace Fonet.Layout
             return absoluteYTop + getPaddingTop() + getBorderTopWidth() + currentHeight;
         }
 
-        public void setAbsoluteHeight(int value)
+        public void setAbsoluteHeight( int value )
         {
             absoluteYTop = value;
         }
 
-        public void increaseHeight(int amount)
+        public void increaseHeight( int amount )
         {
-            this.currentHeight += amount;
+            currentHeight += amount;
         }
 
-        public void removeChild(Area area)
+        public void removeChild( Area area )
         {
-            this.currentHeight -= area.GetHeight();
-            this.children.Remove(area);
+            currentHeight -= area.GetHeight();
+            children.Remove( area );
         }
 
-        public void removeChild(DisplaySpace spacer)
+        public void removeChild( DisplaySpace spacer )
         {
-            this.currentHeight -= spacer.getSize();
-            this.children.Remove(spacer);
+            currentHeight -= spacer.getSize();
+            children.Remove( spacer );
         }
 
         public void remove()
         {
-            this.parent.removeChild(this);
+            parent.removeChild( this );
         }
 
-        public virtual void setPage(Page page)
+        public virtual void setPage( Page page )
         {
             this.page = page;
         }
 
-        public void setBackground(BackgroundProps bg)
+        public void setBackground( BackgroundProps bg )
         {
-            this.background = bg;
+            background = bg;
         }
 
-        public void setBorderAndPadding(BorderAndPadding bp)
+        public void setBorderAndPadding( BorderAndPadding bp )
         {
             this.bp = bp;
         }
@@ -261,36 +259,32 @@ namespace Fonet.Layout
         {
         }
 
-        public virtual void SetHeight(int height)
+        public virtual void SetHeight( int height )
         {
             int prevHeight = currentHeight;
-            if (height > currentHeight)
-            {
+            if ( height > currentHeight )
                 currentHeight = height;
-            }
 
-            if (currentHeight > getMaxHeight())
-            {
+            if ( currentHeight > getMaxHeight() )
                 currentHeight = getMaxHeight();
-            }
         }
 
-        public void setMaxHeight(int height)
+        public void setMaxHeight( int height )
         {
-            this.maxHeight = height;
+            maxHeight = height;
         }
 
         public Area getParent()
         {
-            return this.parent;
+            return parent;
         }
 
-        public void setParent(Area parent)
+        public void setParent( Area parent )
         {
             this.parent = parent;
         }
 
-        public virtual void setIDReferences(IDReferences idReferences)
+        public virtual void setIDReferences( IDReferences idReferences )
         {
             this.idReferences = idReferences;
         }
@@ -302,16 +296,14 @@ namespace Fonet.Layout
 
         public FObj getfoCreator()
         {
-            return this.foCreator;
+            return foCreator;
         }
 
         public AreaContainer getNearestAncestorAreaContainer()
         {
-            Area area = this.getParent();
-            while (area != null && !(area is AreaContainer))
-            {
+            Area area = getParent();
+            while ( area != null && !( area is AreaContainer ) )
                 area = area.getParent();
-            }
             return (AreaContainer)area;
         }
 
@@ -320,22 +312,20 @@ namespace Fonet.Layout
             return bp;
         }
 
-        public void addMarker(Marker marker)
+        public void addMarker( Marker marker )
         {
-            markers.Add(marker);
+            markers.Add( marker );
         }
 
-        public void addMarkers(ArrayList markers)
+        public void addMarkers( ArrayList markers )
         {
-            foreach (object o in markers)
-            {
-                this.markers.Add(o);
-            }
+            foreach ( object o in markers )
+                this.markers.Add( o );
         }
 
-        public void addLineagePair(FObj fo, int areaPosition)
+        public void addLineagePair( FObj fo, int areaPosition )
         {
-            returnedBy.Add(fo, areaPosition);
+            returnedBy.Add( fo, areaPosition );
         }
 
         public ArrayList getMarkers()
@@ -343,7 +333,7 @@ namespace Fonet.Layout
             return markers;
         }
 
-        public void setGeneratedBy(FObj generatedBy)
+        public void setGeneratedBy( FObj generatedBy )
         {
             this.generatedBy = generatedBy;
         }
@@ -353,7 +343,7 @@ namespace Fonet.Layout
             return generatedBy;
         }
 
-        public void isFirst(bool isFirst)
+        public void isFirst( bool isFirst )
         {
             _isFirst = isFirst;
         }
@@ -363,7 +353,7 @@ namespace Fonet.Layout
             return _isFirst;
         }
 
-        public void isLast(bool isLast)
+        public void isLast( bool isLast )
         {
             _isLast = isLast;
         }

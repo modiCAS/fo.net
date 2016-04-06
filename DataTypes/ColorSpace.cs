@@ -13,90 +13,67 @@ namespace Fonet.DataTypes
         private byte[] iccProfile;
         private int numComponents;
 
-        public ColorSpace(int theColorSpace)
+        public ColorSpace( int theColorSpace )
         {
-            this.currentColorSpace = theColorSpace;
-            this.hasICCProfile = false;
-            this.numComponents = this.CalculateNumComponents();
+            currentColorSpace = theColorSpace;
+            hasICCProfile = false;
+            numComponents = CalculateNumComponents();
         }
 
-        public void SetColorSpace(int theColorSpace)
+        public void SetColorSpace( int theColorSpace )
         {
-            this.currentColorSpace = theColorSpace;
-            this.numComponents = this.CalculateNumComponents();
+            currentColorSpace = theColorSpace;
+            numComponents = CalculateNumComponents();
         }
 
         public bool HasICCProfile()
         {
-            return this.hasICCProfile;
+            return hasICCProfile;
         }
 
         public byte[] GetICCProfile()
         {
-            if (this.hasICCProfile)
-            {
-                return this.iccProfile;
-            }
-            else
-            {
-                return new byte[0];
-            }
+            if ( hasICCProfile )
+                return iccProfile;
+            return new byte[ 0 ];
         }
 
-        public void SetICCProfile(byte[] iccProfile)
+        public void SetICCProfile( byte[] iccProfile )
         {
             this.iccProfile = iccProfile;
-            this.hasICCProfile = true;
+            hasICCProfile = true;
         }
 
         public int GetColorSpace()
         {
-            return this.currentColorSpace;
+            return currentColorSpace;
         }
 
         public int GetNumComponents()
         {
-            return this.numComponents;
+            return numComponents;
         }
 
         public string GetColorSpacePDFString()
         {
-            if (this.currentColorSpace == DeviceRgb)
-            {
+            if ( currentColorSpace == DeviceRgb )
                 return "DeviceRGB";
-            }
-            else if (this.currentColorSpace == DeviceCmyk)
-            {
+            if ( currentColorSpace == DeviceCmyk )
                 return "DeviceCMYK";
-            }
-            else if (this.currentColorSpace == DeviceGray)
-            {
+            if ( currentColorSpace == DeviceGray )
                 return "DeviceGray";
-            }
-            else
-            {
-                return "DeviceRGB";
-            }
+            return "DeviceRGB";
         }
 
         private int CalculateNumComponents()
         {
-            if (this.currentColorSpace == DeviceGray)
-            {
+            if ( currentColorSpace == DeviceGray )
                 return 1;
-            }
-            else if (this.currentColorSpace == DeviceRgb)
-            {
+            if ( currentColorSpace == DeviceRgb )
                 return 3;
-            }
-            else if (this.currentColorSpace == DeviceCmyk)
-            {
+            if ( currentColorSpace == DeviceCmyk )
                 return 4;
-            }
-            else
-            {
-                return 0;
-            }
+            return 0;
         }
     }
 }

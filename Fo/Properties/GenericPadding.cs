@@ -2,12 +2,16 @@ namespace Fonet.Fo.Properties
 {
     internal class GenericPadding : LengthProperty.Maker
     {
-        new public static PropertyMaker Maker(string propName)
+        private Property m_defaultProp;
+
+        protected GenericPadding( string name ) : base( name )
         {
-            return new GenericPadding(propName);
         }
 
-        protected GenericPadding(string name) : base(name) { }
+        public new static PropertyMaker Maker( string propName )
+        {
+            return new GenericPadding( propName );
+        }
 
 
         public override bool IsInherited()
@@ -15,35 +19,29 @@ namespace Fonet.Fo.Properties
             return false;
         }
 
-        public override Property GetShorthand(PropertyList propertyList)
+        public override Property GetShorthand( PropertyList propertyList )
         {
             Property p = null;
             ListProperty listprop;
 
-            if (p == null)
+            if ( p == null )
             {
-                listprop = (ListProperty)propertyList.GetExplicitProperty("padding");
-                if (listprop != null)
+                listprop = (ListProperty)propertyList.GetExplicitProperty( "padding" );
+                if ( listprop != null )
                 {
-                    IShorthandParser shparser = new BoxPropShorthandParser(listprop);
-                    p = shparser.GetValueForProperty(PropName, this, propertyList);
+                    IShorthandParser shparser = new BoxPropShorthandParser( listprop );
+                    p = shparser.GetValueForProperty( PropName, this, propertyList );
                 }
             }
 
             return p;
         }
 
-        private Property m_defaultProp = null;
-
-        public override Property Make(PropertyList propertyList)
+        public override Property Make( PropertyList propertyList )
         {
-            if (m_defaultProp == null)
-            {
-                m_defaultProp = Make(propertyList, "0pt", propertyList.getParentFObj());
-            }
+            if ( m_defaultProp == null )
+                m_defaultProp = Make( propertyList, "0pt", propertyList.getParentFObj() );
             return m_defaultProp;
-
         }
-
     }
 }

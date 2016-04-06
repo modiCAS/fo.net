@@ -1,36 +1,28 @@
+using Fonet.DataTypes;
+using Fonet.Fo.Properties;
+using Fonet.Layout;
+
 namespace Fonet.Fo.Flow
 {
-    using Fonet.DataTypes;
-    using Fonet.Fo.Properties;
-    using Fonet.Layout;
-
     internal class TableColumn : FObj
     {
-        private Length columnWidthPropVal;
-        private int columnWidth;
-        private int columnOffset;
-        private int numColumnsRepeated;
-        private int iColumnNumber;
-        private bool setup = false;
         private AreaContainer areaContainer;
+        private int columnOffset;
+        private int columnWidth;
+        private Length columnWidthPropVal;
+        private int iColumnNumber;
+        private int numColumnsRepeated;
+        private bool setup;
 
-        new internal class Maker : FObj.Maker
+        public TableColumn( FObj parent, PropertyList propertyList )
+            : base( parent, propertyList )
         {
-            public override FObj Make(FObj parent, PropertyList propertyList)
-            {
-                return new TableColumn(parent, propertyList);
-            }
+            name = "fo:table-column";
         }
 
-        new public static FObj.Maker GetMaker()
+        public new static FObj.Maker GetMaker()
         {
             return new Maker();
-        }
-
-        public TableColumn(FObj parent, PropertyList propertyList)
-            : base(parent, propertyList)
-        {
-            this.name = "fo:table-column";
         }
 
         public Length GetColumnWidthAsLength()
@@ -43,7 +35,7 @@ namespace Fonet.Fo.Flow
             return columnWidth;
         }
 
-        public void SetColumnWidth(int columnWidth)
+        public void SetColumnWidth( int columnWidth )
         {
             this.columnWidth = columnWidth;
         }
@@ -58,69 +50,73 @@ namespace Fonet.Fo.Flow
             return numColumnsRepeated;
         }
 
-        public void DoSetup(Area area)
+        public void DoSetup( Area area )
         {
             BorderAndPadding bap = propMgr.GetBorderAndPadding();
             BackgroundProps bProps = propMgr.GetBackgroundProps();
 
-            this.iColumnNumber =
-                this.properties.GetProperty("column-number").GetNumber().IntValue();
+            iColumnNumber =
+                properties.GetProperty( "column-number" ).GetNumber().IntValue();
 
-            this.numColumnsRepeated =
-                this.properties.GetProperty("number-columns-repeated").GetNumber().IntValue();
+            numColumnsRepeated =
+                properties.GetProperty( "number-columns-repeated" ).GetNumber().IntValue();
 
-            this.columnWidthPropVal =
-                this.properties.GetProperty("column-width").GetLength();
+            columnWidthPropVal =
+                properties.GetProperty( "column-width" ).GetLength();
 
-            this.columnWidth = columnWidthPropVal.MValue();
+            columnWidth = columnWidthPropVal.MValue();
 
-            string id = this.properties.GetProperty("id").GetString();
-            area.getIDReferences().InitializeID(id, area);
+            string id = properties.GetProperty( "id" ).GetString();
+            area.getIDReferences().InitializeID( id, area );
 
             setup = true;
         }
 
-        public override Status Layout(Area area)
+        public override Status Layout( Area area )
         {
-            if (this.marker == MarkerBreakAfter)
-            {
-                return new Status(Status.OK);
-            }
+            if ( marker == MarkerBreakAfter )
+                return new Status( Status.OK );
 
-            if (this.marker == MarkerStart)
+            if ( marker == MarkerStart )
             {
-                if (!setup)
-                {
-                    DoSetup(area);
-                }
+                if ( !setup )
+                    DoSetup( area );
             }
-            if (columnWidth > 0)
+            if ( columnWidth > 0 )
             {
-                this.areaContainer =
-                    new AreaContainer(propMgr.GetFontState(area.getFontInfo()),
-                                      columnOffset, 0, columnWidth,
-                                      area.getContentHeight(), Position.RELATIVE);
+                areaContainer =
+                    new AreaContainer( propMgr.GetFontState( area.getFontInfo() ),
+                        columnOffset, 0, columnWidth,
+                        area.getContentHeight(), Position.RELATIVE );
                 areaContainer.foCreator = this;
-                areaContainer.setPage(area.getPage());
-                areaContainer.setBorderAndPadding(propMgr.GetBorderAndPadding());
-                areaContainer.setBackground(propMgr.GetBackgroundProps());
-                areaContainer.SetHeight(area.GetHeight());
-                area.addChild(areaContainer);
+                areaContainer.setPage( area.getPage() );
+                areaContainer.setBorderAndPadding( propMgr.GetBorderAndPadding() );
+                areaContainer.setBackground( propMgr.GetBackgroundProps() );
+                areaContainer.SetHeight( area.GetHeight() );
+                area.addChild( areaContainer );
             }
-            return new Status(Status.OK);
+            return new Status( Status.OK );
         }
 
-        public void SetColumnOffset(int columnOffset)
+        public void SetColumnOffset( int columnOffset )
         {
             this.columnOffset = columnOffset;
         }
 
-        public void SetHeight(int height)
+        public void SetHeight( int height )
         {
-            if (areaContainer != null)
+            if ( areaContainer != null )
             {
-                areaContainer.setMaxHeight(height);
-                areaContainer.SetHeight(height);
+                areaContainer.setMaxHeight( height );
+                areaContainer.SetHeight( height );
+            }
+        }
+
+        internal new class Maker : FObj.Maker
+        {
+            public override FObj Make( FObj parent, PropertyList propertyList )
+            {
+                return new TableColumn( parent, propertyList );
             }
         }
     }

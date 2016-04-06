@@ -1,36 +1,34 @@
+using Fonet.Render.Pdf;
+
 namespace Fonet.Layout.Inline
 {
-    using Fonet.Render.Pdf;
-
     internal class ForeignObjectArea : InlineArea
     {
-        protected int xOffset = 0;
-        protected int align;
-        protected int valign;
-        protected int scaling;
-        protected Area foreignObject;
-        protected int cheight;
-        protected int cwidth;
-        protected int awidth;
         protected int aheight;
-        protected int width;
-        private bool wauto;
-        private bool hauto;
-        private bool cwauto;
+        protected int align;
+        protected int awidth;
         private bool chauto;
+        protected int cheight;
+        private bool cwauto;
+        protected int cwidth;
+        protected Area foreignObject;
+        private bool hauto;
         private int overflow;
+        protected int scaling;
+        protected int valign;
+        private bool wauto;
+        protected int width;
+        protected int xOffset;
 
-        public ForeignObjectArea(FontState fontState, int width)
-            : base(fontState, width, 0, 0, 0)
+        public ForeignObjectArea( FontState fontState, int width )
+            : base( fontState, width, 0, 0, 0 )
         {
         }
 
-        public override void render(PdfRenderer renderer)
+        public override void render( PdfRenderer renderer )
         {
-            if (foreignObject != null)
-            {
-                renderer.RenderForeignObjectArea(this);
-            }
+            if ( foreignObject != null )
+                renderer.RenderForeignObjectArea( this );
         }
 
         public override int getContentWidth()
@@ -50,15 +48,15 @@ namespace Fonet.Layout.Inline
 
         public override int getXOffset()
         {
-            return this.xOffset;
+            return xOffset;
         }
 
-        public void setStartIndent(int startIndent)
+        public void setStartIndent( int startIndent )
         {
             xOffset = startIndent;
         }
 
-        public void setObject(Area fobject)
+        public void setObject( Area fobject )
         {
             foreignObject = fobject;
         }
@@ -68,13 +66,13 @@ namespace Fonet.Layout.Inline
             return foreignObject;
         }
 
-        public void setSizeAuto(bool wa, bool ha)
+        public void setSizeAuto( bool wa, bool ha )
         {
             wauto = wa;
             hauto = ha;
         }
 
-        public void setContentSizeAuto(bool wa, bool ha)
+        public void setContentSizeAuto( bool wa, bool ha )
         {
             cwauto = wa;
             chauto = ha;
@@ -90,72 +88,72 @@ namespace Fonet.Layout.Inline
             return chauto;
         }
 
-        public void setAlign(int align)
+        public void setAlign( int align )
         {
             this.align = align;
         }
 
         public int getAlign()
         {
-            return this.align;
+            return align;
         }
 
-        public override void setVerticalAlign(int align)
+        public override void setVerticalAlign( int align )
         {
-            this.valign = align;
+            valign = align;
         }
 
         public override int getVerticalAlign()
         {
-            return this.valign;
+            return valign;
         }
 
-        public void setOverflow(int o)
+        public void setOverflow( int o )
         {
-            this.overflow = o;
+            overflow = o;
         }
 
         public int getOverflow()
         {
-            return this.overflow;
+            return overflow;
         }
 
-        public override void SetHeight(int height)
+        public override void SetHeight( int height )
         {
             this.height = height;
         }
 
-        public void SetWidth(int width)
+        public void SetWidth( int width )
         {
             this.width = width;
         }
 
-        public void setContentHeight(int cheight)
+        public void setContentHeight( int cheight )
         {
             this.cheight = cheight;
         }
 
-        public void SetContentWidth(int cwidth)
+        public void SetContentWidth( int cwidth )
         {
             this.cwidth = cwidth;
         }
 
-        public void setScaling(int scaling)
+        public void setScaling( int scaling )
         {
             this.scaling = scaling;
         }
 
         public int scalingMethod()
         {
-            return this.scaling;
+            return scaling;
         }
 
-        public void setIntrinsicWidth(int w)
+        public void setIntrinsicWidth( int w )
         {
             awidth = w;
         }
 
-        public void setIntrinsicHeight(int h)
+        public void setIntrinsicHeight( int h )
         {
             aheight = h;
         }
@@ -172,41 +170,24 @@ namespace Fonet.Layout.Inline
 
         public int getEffectiveHeight()
         {
-            if (this.hauto)
+            if ( hauto )
             {
-                if (this.chauto)
-                {
+                if ( chauto )
                     return aheight;
-                }
-                else
-                {
-                    return this.cheight;
-                }
+                return cheight;
             }
-            else
-            {
-                return this.height;
-            }
+            return height;
         }
 
         public int getEffectiveWidth()
         {
-            if (this.wauto)
+            if ( wauto )
             {
-                if (this.cwauto)
-                {
+                if ( cwauto )
                     return awidth;
-                }
-                else
-                {
-                    return this.cwidth;
-                }
+                return cwidth;
             }
-            else
-            {
-                return this.width;
-            }
+            return width;
         }
-
     }
 }

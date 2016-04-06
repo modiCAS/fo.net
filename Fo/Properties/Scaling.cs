@@ -5,6 +5,5 @@ namespace Fonet.Fo.Properties
         public const int UNIFORM = Constants.UNIFORM;
 
         public const int NON_UNIFORM = Constants.NON_UNIFORM;
-
     }
 }

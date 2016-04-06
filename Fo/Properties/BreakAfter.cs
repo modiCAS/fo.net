@@ -1,5 +1,7 @@
 namespace Fonet.Fo.Properties
 {
     internal class BreakAfter
-        : GenericBreak.Enums { }
+        : GenericBreak.Enums
+    {
+    }
 }

@@ -1,43 +1,43 @@
+using Fonet.Fo.Properties;
+using Fonet.Render.Pdf;
+
 namespace Fonet.Layout
 {
-    using Fonet.Fo.Properties;
-    using Fonet.Render.Pdf;
-
     internal class SpanArea : AreaContainer
     {
-        private int columnCount;
+        private bool _isBalanced;
+        private readonly int columnCount;
+        private int columnGap;
         private int currentColumn = 1;
-        private int columnGap = 0;
-        private bool _isBalanced = false;
 
-        public SpanArea(FontState fontState, int xPosition, int yPosition,
-                        int allocationWidth, int maxHeight, int columnCount,
-                        int columnGap) :
-            base(fontState, xPosition, yPosition, allocationWidth, maxHeight,
-                                 Position.ABSOLUTE)
+        public SpanArea( FontState fontState, int xPosition, int yPosition,
+            int allocationWidth, int maxHeight, int columnCount,
+            int columnGap ) :
+                base( fontState, xPosition, yPosition, allocationWidth, maxHeight,
+                    Position.ABSOLUTE )
         {
-            this.contentRectangleWidth = allocationWidth;
+            contentRectangleWidth = allocationWidth;
             this.columnCount = columnCount;
             this.columnGap = columnGap;
 
-            int columnWidth = (allocationWidth - columnGap * (columnCount - 1))
+            int columnWidth = ( allocationWidth - columnGap * ( columnCount - 1 ) )
                 / columnCount;
-            for (int columnIndex = 0; columnIndex < columnCount; columnIndex++)
+            for ( var columnIndex = 0; columnIndex < columnCount; columnIndex++ )
             {
-                int colXPosition = (xPosition
-                    + columnIndex * (columnWidth + columnGap));
+                int colXPosition = xPosition
+                    + columnIndex * ( columnWidth + columnGap );
                 int colYPosition = yPosition;
-                ColumnArea colArea = new ColumnArea(fontState, colXPosition,
-                                                    colYPosition, columnWidth,
-                                                    maxHeight, columnCount);
-                addChild(colArea);
-                colArea.setColumnIndex(columnIndex + 1);
+                var colArea = new ColumnArea( fontState, colXPosition,
+                    colYPosition, columnWidth,
+                    maxHeight, columnCount );
+                addChild( colArea );
+                colArea.setColumnIndex( columnIndex + 1 );
             }
         }
 
-        public override void render(PdfRenderer renderer)
+        public override void render( PdfRenderer renderer )
         {
-            renderer.RenderSpanArea(this);
+            renderer.RenderSpanArea( this );
         }
 
         public override void end()
@@ -63,21 +63,17 @@ namespace Fonet.Layout
             return currentColumn;
         }
 
-        public void setCurrentColumn(int currentColumn)
+        public void setCurrentColumn( int currentColumn )
         {
-            if (currentColumn <= columnCount)
-            {
+            if ( currentColumn <= columnCount )
                 this.currentColumn = currentColumn;
-            }
             else
-            {
                 this.currentColumn = columnCount;
-            }
         }
 
         public AreaContainer getCurrentColumnArea()
         {
-            return (AreaContainer)getChildren()[currentColumn - 1];
+            return (AreaContainer)getChildren()[ currentColumn - 1 ];
         }
 
         public bool isBalanced()
@@ -92,39 +88,33 @@ namespace Fonet.Layout
 
         public int getTotalContentHeight()
         {
-            int totalContentHeight = 0;
-            foreach (AreaContainer ac in getChildren())
-            {
+            var totalContentHeight = 0;
+            foreach ( AreaContainer ac in getChildren() )
                 totalContentHeight += ac.getContentHeight();
-            }
             return totalContentHeight;
         }
 
         public int getMaxContentHeight()
         {
-            int maxContentHeight = 0;
-            foreach (AreaContainer nextElm in getChildren())
+            var maxContentHeight = 0;
+            foreach ( AreaContainer nextElm in getChildren() )
             {
-                if (nextElm.getContentHeight() > maxContentHeight)
-                {
+                if ( nextElm.getContentHeight() > maxContentHeight )
                     maxContentHeight = nextElm.getContentHeight();
-                }
             }
             return maxContentHeight;
         }
 
-        public override void setPage(Page page)
+        public override void setPage( Page page )
         {
             this.page = page;
-            foreach (AreaContainer ac in getChildren())
-            {
-                ac.setPage(page);
-            }
+            foreach ( AreaContainer ac in getChildren() )
+                ac.setPage( page );
         }
 
         public bool isLastColumn()
         {
-            return (currentColumn == columnCount);
+            return currentColumn == columnCount;
         }
     }
 }

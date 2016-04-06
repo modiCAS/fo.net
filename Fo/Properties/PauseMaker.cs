@@ -4,12 +4,16 @@ namespace Fonet.Fo.Properties
 {
     internal class PauseMaker : ToBeImplementedProperty.Maker
     {
-        new public static PropertyMaker Maker(string propName)
+        private Property m_defaultProp;
+
+        protected PauseMaker( string name ) : base( name )
         {
-            return new PauseMaker(propName);
         }
 
-        protected PauseMaker(string name) : base(name) { }
+        public new static PropertyMaker Maker( string propName )
+        {
+            return new PauseMaker( propName );
+        }
 
 
         public override bool IsInherited()
@@ -17,17 +21,11 @@ namespace Fonet.Fo.Properties
             return false;
         }
 
-        private Property m_defaultProp = null;
-
-        public override Property Make(PropertyList propertyList)
+        public override Property Make( PropertyList propertyList )
         {
-            if (m_defaultProp == null)
-            {
-                m_defaultProp = Make(propertyList, "", propertyList.getParentFObj());
-            }
+            if ( m_defaultProp == null )
+                m_defaultProp = Make( propertyList, "", propertyList.getParentFObj() );
             return m_defaultProp;
-
         }
-
     }
 }

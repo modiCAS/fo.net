@@ -7,6 +7,5 @@ namespace Fonet.Fo.Properties
         public const int NOT_BLANK = Constants.NOT_BLANK;
 
         public const int ANY = Constants.ANY;
-
     }
 }

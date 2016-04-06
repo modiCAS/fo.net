@@ -1,56 +1,49 @@
+using Fonet.Fo.Properties;
+using Fonet.Layout;
+
 namespace Fonet.Fo.Flow
 {
-    using Fonet.Fo.Properties;
-    using Fonet.Layout;
-
     internal class TableCell : FObj
     {
-        new internal class Maker : FObj.Maker
+        private bool bDone;
+        protected int beforeOffset;
+        protected int borderHeight;
+        protected bool bRelativeAlign;
+        private bool bSepBorders = true;
+        private AreaContainer cellArea;
+        protected int height;
+        private int iColNumber = -1;
+
+        private string id;
+        private int m_borderSeparation;
+        protected int minCellHeight;
+        private int numColumnsSpanned;
+        private int numRowsSpanned;
+        protected int startAdjust;
+        protected int startOffset;
+        protected int top;
+        protected int verticalAlign;
+        protected int width;
+        protected int widthAdjust;
+
+        public TableCell( FObj parent, PropertyList propertyList )
+            : base( parent, propertyList )
         {
-            public override FObj Make(FObj parent, PropertyList propertyList)
-            {
-                return new TableCell(parent, propertyList);
-            }
+            name = "fo:table-cell";
+            DoSetup();
         }
 
-        new public static FObj.Maker GetMaker()
+        public new static FObj.Maker GetMaker()
         {
             return new Maker();
         }
 
-        private string id;
-        private int numColumnsSpanned;
-        private int numRowsSpanned;
-        private int iColNumber = -1;
-        protected int startOffset;
-        protected int width;
-        protected int beforeOffset = 0;
-        protected int startAdjust = 0;
-        protected int widthAdjust = 0;
-        protected int borderHeight = 0;
-        protected int minCellHeight = 0;
-        protected int height = 0;
-        protected int top;
-        protected int verticalAlign;
-        protected bool bRelativeAlign = false;
-        private bool bSepBorders = true;
-        private bool bDone = false;
-        private int m_borderSeparation = 0;
-        private AreaContainer cellArea;
-
-        public TableCell(FObj parent, PropertyList propertyList)
-            : base(parent, propertyList)
-        {
-            this.name = "fo:table-cell";
-            DoSetup();
-        }
-
-        public void SetStartOffset(int offset)
+        public void SetStartOffset( int offset )
         {
             startOffset = offset;
         }
 
-        public void SetWidth(int width)
+        public void SetWidth( int width )
         {
             this.width = width;
         }
@@ -78,128 +71,108 @@ namespace Fonet.Fo.Flow
             BackgroundProps bProps = propMgr.GetBackgroundProps();
             RelativePositionProps mRelProps = propMgr.GetRelativePositionProps();
 
-            this.iColNumber =
-                properties.GetProperty("column-number").GetNumber().IntValue();
-            if (iColNumber < 0)
-            {
+            iColNumber =
+                properties.GetProperty( "column-number" ).GetNumber().IntValue();
+            if ( iColNumber < 0 )
                 iColNumber = 0;
-            }
-            this.numColumnsSpanned =
-                this.properties.GetProperty("number-columns-spanned").GetNumber().IntValue();
-            if (numColumnsSpanned < 1)
-            {
+            numColumnsSpanned =
+                properties.GetProperty( "number-columns-spanned" ).GetNumber().IntValue();
+            if ( numColumnsSpanned < 1 )
                 numColumnsSpanned = 1;
-            }
-            this.numRowsSpanned =
-                this.properties.GetProperty("number-rows-spanned").GetNumber().IntValue();
-            if (numRowsSpanned < 1)
-            {
+            numRowsSpanned =
+                properties.GetProperty( "number-rows-spanned" ).GetNumber().IntValue();
+            if ( numRowsSpanned < 1 )
                 numRowsSpanned = 1;
-            }
 
-            this.id = this.properties.GetProperty("id").GetString();
+            id = properties.GetProperty( "id" ).GetString();
 
-            bSepBorders = (this.properties.GetProperty("border-collapse").GetEnum()
-                == BorderCollapse.SEPARATE);
+            bSepBorders = properties.GetProperty( "border-collapse" ).GetEnum()
+                == BorderCollapse.SEPARATE;
 
-            CalcBorders(propMgr.GetBorderAndPadding());
+            CalcBorders( propMgr.GetBorderAndPadding() );
 
-            verticalAlign = this.properties.GetProperty("display-align").GetEnum();
-            if (verticalAlign == DisplayAlign.AUTO)
+            verticalAlign = properties.GetProperty( "display-align" ).GetEnum();
+            if ( verticalAlign == DisplayAlign.AUTO )
             {
                 bRelativeAlign = true;
-                verticalAlign = this.properties.GetProperty("relative-align").GetEnum();
+                verticalAlign = properties.GetProperty( "relative-align" ).GetEnum();
             }
             else
-            {
                 bRelativeAlign = false;
-            }
 
-            this.minCellHeight =
-                this.properties.GetProperty("height").GetLength().MValue();
+            minCellHeight =
+                properties.GetProperty( "height" ).GetLength().MValue();
         }
 
 
-        public override Status Layout(Area area)
+        public override Status Layout( Area area )
         {
             int originalAbsoluteHeight = area.getAbsoluteHeight();
-            if (this.marker == MarkerBreakAfter)
+            if ( marker == MarkerBreakAfter )
+                return new Status( Status.OK );
+
+            if ( marker == MarkerStart )
             {
-                return new Status(Status.OK);
+                area.getIDReferences().CreateID( id );
+
+                marker = 0;
+                bDone = false;
             }
 
-            if (this.marker == MarkerStart)
-            {
-
-                area.getIDReferences().CreateID(id);
-
-                this.marker = 0;
-                this.bDone = false;
-            }
-
-            if (marker == 0)
-            {
-                area.getIDReferences().ConfigureID(id, area);
-            }
+            if ( marker == 0 )
+                area.getIDReferences().ConfigureID( id, area );
 
             int spaceLeft = area.spaceLeft() - m_borderSeparation;
-            this.cellArea =
-                new AreaContainer(propMgr.GetFontState(area.getFontInfo()),
-                                  startOffset + startAdjust, beforeOffset,
-                                  width - widthAdjust, spaceLeft,
-                                  Position.RELATIVE);
+            cellArea =
+                new AreaContainer( propMgr.GetFontState( area.getFontInfo() ),
+                    startOffset + startAdjust, beforeOffset,
+                    width - widthAdjust, spaceLeft,
+                    Position.RELATIVE );
 
             cellArea.foCreator = this;
-            cellArea.setPage(area.getPage());
-            cellArea.setParent(area);
+            cellArea.setPage( area.getPage() );
+            cellArea.setParent( area );
             cellArea.setBorderAndPadding(
-                (BorderAndPadding)propMgr.GetBorderAndPadding().Clone());
-            cellArea.setBackground(propMgr.GetBackgroundProps());
+                (BorderAndPadding)propMgr.GetBorderAndPadding().Clone() );
+            cellArea.setBackground( propMgr.GetBackgroundProps() );
             cellArea.start();
 
-            cellArea.setAbsoluteHeight(area.getAbsoluteHeight());
-            cellArea.setIDReferences(area.getIDReferences());
-            cellArea.setTableCellXOffset(startOffset + startAdjust);
+            cellArea.setAbsoluteHeight( area.getAbsoluteHeight() );
+            cellArea.setIDReferences( area.getIDReferences() );
+            cellArea.setTableCellXOffset( startOffset + startAdjust );
 
-            int numChildren = this.children.Count;
-            for (int i = this.marker; bDone == false && i < numChildren; i++)
+            int numChildren = children.Count;
+            for ( int i = marker; bDone == false && i < numChildren; i++ )
             {
-                FObj fo = (FObj)children[i];
+                var fo = (FObj)children[ i ];
                 fo.SetIsInTableCell();
-                fo.ForceWidth(width);
+                fo.ForceWidth( width );
 
-                this.marker = i;
+                marker = i;
 
                 Status status;
-                if ((status = fo.Layout(cellArea)).isIncomplete())
+                if ( ( status = fo.Layout( cellArea ) ).isIncomplete() )
                 {
-                    if ((i == 0) && (status.getCode() == Status.AREA_FULL_NONE))
-                    {
-                        return new Status(Status.AREA_FULL_NONE);
-                    }
-                    else
-                    {
-                        area.addChild(cellArea);
-                        return new Status(Status.AREA_FULL_SOME);
-                    }
+                    if ( i == 0 && status.getCode() == Status.AREA_FULL_NONE )
+                        return new Status( Status.AREA_FULL_NONE );
+                    area.addChild( cellArea );
+                    return new Status( Status.AREA_FULL_SOME );
                 }
 
-                area.setMaxHeight(area.getMaxHeight() - spaceLeft
-                    + this.cellArea.getMaxHeight());
+                area.setMaxHeight( area.getMaxHeight() - spaceLeft
+                    + cellArea.getMaxHeight() );
             }
-            this.bDone = true;
+            bDone = true;
             cellArea.end();
-            area.addChild(cellArea);
+            area.addChild( cellArea );
 
-            if (minCellHeight > cellArea.getContentHeight())
-            {
-                cellArea.SetHeight(minCellHeight);
-            }
+            if ( minCellHeight > cellArea.getContentHeight() )
+                cellArea.SetHeight( minCellHeight );
 
             height = cellArea.GetHeight();
             top = cellArea.GetCurrentYPosition();
 
-            return new Status(Status.OK);
+            return new Status( Status.OK );
         }
 
         public int GetHeight()
@@ -207,74 +180,79 @@ namespace Fonet.Fo.Flow
             return cellArea.GetHeight() + m_borderSeparation - borderHeight;
         }
 
-        public void SetRowHeight(int h)
+        public void SetRowHeight( int h )
         {
             int delta = h - GetHeight();
-            if (bRelativeAlign)
-            {
-                cellArea.increaseHeight(delta);
-            }
-            else if (delta > 0)
+            if ( bRelativeAlign )
+                cellArea.increaseHeight( delta );
+            else if ( delta > 0 )
             {
                 BorderAndPadding cellBP = cellArea.GetBorderAndPadding();
-                switch (verticalAlign)
+                switch ( verticalAlign )
                 {
-                    case DisplayAlign.CENTER:
-                        cellArea.shiftYPosition(delta / 2);
-                        cellBP.setPaddingLength(BorderAndPadding.TOP,
-                                                cellBP.getPaddingTop(false)
-                                                    + delta / 2);
-                        cellBP.setPaddingLength(BorderAndPadding.BOTTOM,
-                                                cellBP.getPaddingBottom(false)
-                                                    + delta - delta / 2);
-                        break;
-                    case DisplayAlign.AFTER:
-                        cellBP.setPaddingLength(BorderAndPadding.TOP,
-                                                cellBP.getPaddingTop(false) + delta);
-                        cellArea.shiftYPosition(delta);
-                        break;
-                    case DisplayAlign.BEFORE:
-                        cellBP.setPaddingLength(BorderAndPadding.BOTTOM,
-                                                cellBP.getPaddingBottom(false)
-                                                    + delta);
-                        break;
-                    default:
-                        break;
+                case DisplayAlign.CENTER:
+                    cellArea.shiftYPosition( delta / 2 );
+                    cellBP.setPaddingLength( BorderAndPadding.TOP,
+                        cellBP.getPaddingTop( false )
+                            + delta / 2 );
+                    cellBP.setPaddingLength( BorderAndPadding.BOTTOM,
+                        cellBP.getPaddingBottom( false )
+                            + delta - delta / 2 );
+                    break;
+                case DisplayAlign.AFTER:
+                    cellBP.setPaddingLength( BorderAndPadding.TOP,
+                        cellBP.getPaddingTop( false ) + delta );
+                    cellArea.shiftYPosition( delta );
+                    break;
+                case DisplayAlign.BEFORE:
+                    cellBP.setPaddingLength( BorderAndPadding.BOTTOM,
+                        cellBP.getPaddingBottom( false )
+                            + delta );
+                    break;
+                default:
+                    break;
                 }
             }
         }
 
-        private void CalcBorders(BorderAndPadding bp)
+        private void CalcBorders( BorderAndPadding bp )
         {
-            if (this.bSepBorders)
+            if ( bSepBorders )
             {
                 int iSep =
-                    properties.GetProperty("border-separation.inline-progression-direction").GetLength().MValue();
-                this.startAdjust = iSep / 2 + bp.getBorderLeftWidth(false)
-                    + bp.getPaddingLeft(false);
-                this.widthAdjust = startAdjust + iSep - iSep / 2
-                    + bp.getBorderRightWidth(false)
-                    + bp.getPaddingRight(false);
+                    properties.GetProperty( "border-separation.inline-progression-direction" ).GetLength().MValue();
+                startAdjust = iSep / 2 + bp.getBorderLeftWidth( false )
+                    + bp.getPaddingLeft( false );
+                widthAdjust = startAdjust + iSep - iSep / 2
+                    + bp.getBorderRightWidth( false )
+                    + bp.getPaddingRight( false );
                 m_borderSeparation =
-                    properties.GetProperty("border-separation.block-progression-direction").GetLength().MValue();
-                this.beforeOffset = m_borderSeparation / 2
-                    + bp.getBorderTopWidth(false)
-                    + bp.getPaddingTop(false);
-
+                    properties.GetProperty( "border-separation.block-progression-direction" ).GetLength().MValue();
+                beforeOffset = m_borderSeparation / 2
+                    + bp.getBorderTopWidth( false )
+                    + bp.getPaddingTop( false );
             }
             else
             {
-                int borderStart = bp.getBorderLeftWidth(false);
-                int borderEnd = bp.getBorderRightWidth(false);
-                int borderBefore = bp.getBorderTopWidth(false);
-                int borderAfter = bp.getBorderBottomWidth(false);
+                int borderStart = bp.getBorderLeftWidth( false );
+                int borderEnd = bp.getBorderRightWidth( false );
+                int borderBefore = bp.getBorderTopWidth( false );
+                int borderAfter = bp.getBorderBottomWidth( false );
 
-                this.startAdjust = borderStart / 2 + bp.getPaddingLeft(false);
+                startAdjust = borderStart / 2 + bp.getPaddingLeft( false );
 
-                this.widthAdjust = startAdjust + borderEnd / 2
-                    + bp.getPaddingRight(false);
-                this.beforeOffset = borderBefore / 2 + bp.getPaddingTop(false);
-                this.borderHeight = (borderBefore + borderAfter) / 2;
+                widthAdjust = startAdjust + borderEnd / 2
+                    + bp.getPaddingRight( false );
+                beforeOffset = borderBefore / 2 + bp.getPaddingTop( false );
+                borderHeight = ( borderBefore + borderAfter ) / 2;
+            }
+        }
+
+        internal new class Maker : FObj.Maker
+        {
+            public override FObj Make( FObj parent, PropertyList propertyList )
+            {
+                return new TableCell( parent, propertyList );
             }
         }
     }

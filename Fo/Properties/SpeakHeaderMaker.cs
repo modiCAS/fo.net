@@ -4,12 +4,16 @@ namespace Fonet.Fo.Properties
 {
     internal class SpeakHeaderMaker : ToBeImplementedProperty.Maker
     {
-        new public static PropertyMaker Maker(string propName)
+        private Property m_defaultProp;
+
+        protected SpeakHeaderMaker( string name ) : base( name )
         {
-            return new SpeakHeaderMaker(propName);
         }
 
-        protected SpeakHeaderMaker(string name) : base(name) { }
+        public new static PropertyMaker Maker( string propName )
+        {
+            return new SpeakHeaderMaker( propName );
+        }
 
 
         public override bool IsInherited()
@@ -17,17 +21,11 @@ namespace Fonet.Fo.Properties
             return true;
         }
 
-        private Property m_defaultProp = null;
-
-        public override Property Make(PropertyList propertyList)
+        public override Property Make( PropertyList propertyList )
         {
-            if (m_defaultProp == null)
-            {
-                m_defaultProp = Make(propertyList, "once", propertyList.getParentFObj());
-            }
+            if ( m_defaultProp == null )
+                m_defaultProp = Make( propertyList, "once", propertyList.getParentFObj() );
             return m_defaultProp;
-
         }
-
     }
 }

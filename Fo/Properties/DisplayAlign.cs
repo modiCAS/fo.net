@@ -9,6 +9,5 @@ namespace Fonet.Fo.Properties
         public const int CENTER = Constants.CENTER;
 
         public const int AUTO = Constants.AUTO;
-
     }
 }

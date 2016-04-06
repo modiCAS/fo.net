@@ -11,14 +11,10 @@ namespace Fonet.Layout
 
         public FonetImage backImage = null;
 
-        public int backRepeat = 0;
-
         public Length backPosHorizontal = null;
 
         public Length backPosVertical = null;
 
-        public BackgroundProps()
-        {
-        }
+        public int backRepeat = 0;
     }
 }

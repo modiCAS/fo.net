@@ -11,32 +11,28 @@ namespace Fonet.Pdf
     /// </remarks>
     public class PdfDocument
     {
-        private PdfWriter writer;
-
-        private PdfVersion version = PdfVersion.V14;
-
         private FileIdentifier fileId = new FileIdentifier();
-
-        private PdfCatalog catalog;
-
-        private PdfPageTree pages;
 
         private uint nextObjectNumber = 1;
 
-        public PdfDocument(Stream stream) : this(new PdfWriter(stream)) { }
+        private PdfVersion version = PdfVersion.V14;
 
-        public PdfDocument(PdfWriter writer)
+        public PdfDocument( Stream stream ) : this( new PdfWriter( stream ) )
         {
-            this.writer = writer;
-            this.catalog = new PdfCatalog(NextObjectId());
-            this.pages = new PdfPageTree(NextObjectId());
-            this.catalog.Pages = pages;
+        }
+
+        public PdfDocument( PdfWriter writer )
+        {
+            Writer = writer;
+            Catalog = new PdfCatalog( NextObjectId() );
+            Pages = new PdfPageTree( NextObjectId() );
+            Catalog.Pages = Pages;
         }
 
         public PdfVersion Version
         {
             get { return version; }
-            set { this.version = value; }
+            set { version = value; }
         }
 
         public FileIdentifier FileIdentifier
@@ -47,39 +43,29 @@ namespace Fonet.Pdf
 
         public SecurityOptions SecurityOptions
         {
-            set { writer.SecurityManager = new SecurityManager(value, fileId); }
+            set { Writer.SecurityManager = new SecurityManager( value, fileId ); }
         }
 
-        public PdfCatalog Catalog
-        {
-            get { return catalog; }
-        }
+        public PdfCatalog Catalog { get; private set; }
 
-        public PdfPageTree Pages
-        {
-            get { return pages; }
-        }
-
-        public PdfObjectId NextObjectId()
-        {
-            return new PdfObjectId(nextObjectNumber++, 0);
-        }
+        public PdfPageTree Pages { get; private set; }
 
         public uint ObjectCount
         {
             get { return nextObjectNumber - 1; }
         }
 
-        public PdfWriter Writer
+        public PdfWriter Writer { get; private set; }
+
+        public PdfObjectId NextObjectId()
         {
-            get { return this.writer; }
+            return new PdfObjectId( nextObjectNumber++, 0 );
         }
 
         public void WriteHeader()
         {
-            writer.WriteHeader(version);
-            writer.WriteBinaryComment();
+            Writer.WriteHeader( version );
+            Writer.WriteBinaryComment();
         }
-
     }
 }

@@ -6,64 +6,60 @@ namespace Fonet.Layout
 {
     internal class BlockArea : Area
     {
-        protected int startIndent;
-        protected int endIndent;
-        protected int textIndent;
-        protected int lineHeight;
-        protected int halfLeading;
         protected int align;
         protected int alignLastLine;
         protected LineArea currentLineArea;
         protected LinkSet currentLinkSet;
-        protected bool hasLines = false;
+        protected int endIndent;
+        protected int halfLeading;
+        protected bool hasLines;
         protected HyphenationProps hyphProps;
-        protected ArrayList pendingFootnotes = null;
+        protected int lineHeight;
+        protected ArrayList pendingFootnotes;
+        protected int startIndent;
+        protected int textIndent;
 
-        public BlockArea(FontState fontState, int allocationWidth, int maxHeight,
-                         int startIndent, int endIndent, int textIndent,
-                         int align, int alignLastLine, int lineHeight)
-            : base(fontState, allocationWidth, maxHeight)
+        public BlockArea( FontState fontState, int allocationWidth, int maxHeight,
+            int startIndent, int endIndent, int textIndent,
+            int align, int alignLastLine, int lineHeight )
+            : base( fontState, allocationWidth, maxHeight )
         {
             this.startIndent = startIndent;
             this.endIndent = endIndent;
             this.textIndent = textIndent;
-            this.contentRectangleWidth = allocationWidth - startIndent
+            contentRectangleWidth = allocationWidth - startIndent
                 - endIndent;
             this.align = align;
             this.alignLastLine = alignLastLine;
             this.lineHeight = lineHeight;
 
-            if (fontState != null)
-            {
-                this.halfLeading = (lineHeight - fontState.FontSize) / 2;
-            }
+            if ( fontState != null )
+                halfLeading = ( lineHeight - fontState.FontSize ) / 2;
         }
 
-        public override void render(PdfRenderer renderer)
+        public override void render( PdfRenderer renderer )
         {
-            renderer.RenderBlockArea(this);
+            renderer.RenderBlockArea( this );
         }
 
-        protected void addLineArea(LineArea la)
+        protected void addLineArea( LineArea la )
         {
-            if (!la.isEmpty())
+            if ( !la.isEmpty() )
             {
                 la.verticalAlign();
-                this.addDisplaySpace(this.halfLeading);
+                addDisplaySpace( halfLeading );
                 int size = la.GetHeight();
-                this.addChild(la);
-                this.increaseHeight(size);
-                this.addDisplaySpace(this.halfLeading);
+                addChild( la );
+                increaseHeight( size );
+                addDisplaySpace( halfLeading );
             }
-            if (pendingFootnotes != null)
+            if ( pendingFootnotes != null )
             {
-                foreach (FootnoteBody fb in pendingFootnotes)
+                foreach ( FootnoteBody fb in pendingFootnotes )
                 {
                     Page page = getPage();
-                    if (!Footnote.LayoutFootnote(page, fb, this))
-                    {
-                        page.addPendingFootnote(fb);
-                    }
+                    if ( !Footnote.LayoutFootnote( page, fb, this ) )
+                        page.addPendingFootnote( fb );
                 }
                 pendingFootnotes = null;
             }
@@ -71,59 +67,55 @@ namespace Fonet.Layout
 
         public LineArea getCurrentLineArea()
         {
-            if (currentHeight + lineHeight > maxHeight)
-            {
+            if ( currentHeight + lineHeight > maxHeight )
                 return null;
-            }
-            this.currentLineArea.changeHyphenation(hyphProps);
-            this.hasLines = true;
-            return this.currentLineArea;
+            currentLineArea.changeHyphenation( hyphProps );
+            hasLines = true;
+            return currentLineArea;
         }
 
         public LineArea createNextLineArea()
         {
-            if (this.hasLines)
+            if ( hasLines )
             {
-                this.currentLineArea.align(this.align);
-                this.addLineArea(this.currentLineArea);
+                currentLineArea.align( align );
+                addLineArea( currentLineArea );
             }
-            this.currentLineArea = new LineArea(fontState, lineHeight,
-                                                halfLeading, allocationWidth,
-                                                startIndent, endIndent,
-                                                currentLineArea);
-            this.currentLineArea.changeHyphenation(hyphProps);
-            if (currentHeight + lineHeight > maxHeight)
-            {
+            currentLineArea = new LineArea( fontState, lineHeight,
+                halfLeading, allocationWidth,
+                startIndent, endIndent,
+                currentLineArea );
+            currentLineArea.changeHyphenation( hyphProps );
+            if ( currentHeight + lineHeight > maxHeight )
                 return null;
-            }
-            return this.currentLineArea;
+            return currentLineArea;
         }
 
-        public void setupLinkSet(LinkSet ls)
+        public void setupLinkSet( LinkSet ls )
         {
-            if (ls != null)
+            if ( ls != null )
             {
-                this.currentLinkSet = ls;
-                ls.setYOffset(currentHeight);
+                currentLinkSet = ls;
+                ls.setYOffset( currentHeight );
             }
         }
 
         public override void end()
         {
-            if (this.hasLines)
+            if ( hasLines )
             {
-                this.currentLineArea.addPending();
-                this.currentLineArea.align(this.alignLastLine);
-                this.addLineArea(this.currentLineArea);
+                currentLineArea.addPending();
+                currentLineArea.align( alignLastLine );
+                addLineArea( currentLineArea );
             }
         }
 
         public override void start()
         {
-            currentLineArea = new LineArea(fontState, lineHeight, halfLeading,
-                                           allocationWidth,
-                                           startIndent + textIndent, endIndent,
-                                           null);
+            currentLineArea = new LineArea( fontState, lineHeight, halfLeading,
+                allocationWidth,
+                startIndent + textIndent, endIndent,
+                null );
         }
 
         public int getEndIndent()
@@ -136,19 +128,19 @@ namespace Fonet.Layout
             return startIndent;
         }
 
-        public void setIndents(int startIndent, int endIndent)
+        public void setIndents( int startIndent, int endIndent )
         {
             this.startIndent = startIndent;
             this.endIndent = endIndent;
-            this.contentRectangleWidth = allocationWidth - startIndent
+            contentRectangleWidth = allocationWidth - startIndent
                 - endIndent;
         }
 
         public override int spaceLeft()
         {
             return maxHeight - currentHeight -
-                (getPaddingTop() + getPaddingBottom()
-                    + getBorderTopWidth() + getBorderBottomWidth());
+                ( getPaddingTop() + getPaddingBottom()
+                    + getBorderTopWidth() + getBorderBottomWidth() );
         }
 
         public int getHalfLeading()
@@ -156,19 +148,16 @@ namespace Fonet.Layout
             return halfLeading;
         }
 
-        public void setHyphenation(HyphenationProps hyphProps)
+        public void setHyphenation( HyphenationProps hyphProps )
         {
             this.hyphProps = hyphProps;
         }
 
-        public void addFootnote(FootnoteBody fb)
+        public void addFootnote( FootnoteBody fb )
         {
-            if (pendingFootnotes == null)
-            {
+            if ( pendingFootnotes == null )
                 pendingFootnotes = new ArrayList();
-            }
-            pendingFootnotes.Add(fb);
+            pendingFootnotes.Add( fb );
         }
-
     }
 }

@@ -2,19 +2,19 @@ namespace Fonet.DataTypes
 {
     internal class Number
     {
-        private decimal value;
+        private readonly decimal value;
 
-        public Number(int n)
+        public Number( int n )
         {
             value = n;
         }
 
-        public Number(decimal n)
+        public Number( decimal n )
         {
             value = n;
         }
 
-        public Number(double n)
+        public Number( double n )
         {
             value = (decimal)n;
         }

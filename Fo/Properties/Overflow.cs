@@ -9,6 +9,5 @@ namespace Fonet.Fo.Properties
         public const int SCROLL = Constants.SCROLL;
 
         public const int AUTO = Constants.AUTO;
-
     }
 }

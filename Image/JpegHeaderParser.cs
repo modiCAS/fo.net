@@ -1,13 +1,13 @@
+using System;
+using System.IO;
+using System.Text;
+using Fonet.DataTypes;
+
 namespace Fonet.Image
 {
-    using System;
-    using System.IO;
-    using System.Text;
-    using Fonet.DataTypes;
-
     /// <summary>
-    /// Parses the contents of a JPEG image header to infer the colour 
-    /// space and bits per pixel.
+    ///     Parses the contents of a JPEG image header to infer the colour
+    ///     space and bits per pixel.
     /// </summary>
     internal sealed class JpegParser
     {
@@ -39,14 +39,9 @@ namespace Fonet.Image
         public const string ICC_PROFILE = "ICC_PROFILE\0";
 
         /// <summary>
-        ///     JPEG image data
-        /// </summary>
-        private MemoryStream ms;
-
-        /// <summary>
         ///     Contains number of bitplanes, color space and optional ICC Profile
         /// </summary>
-        private JpegInfo headerInfo;
+        private readonly JpegInfo headerInfo;
 
         /// <summary>
         ///     Raw ICC Profile
@@ -54,99 +49,95 @@ namespace Fonet.Image
         private MemoryStream iccProfileData;
 
         /// <summary>
+        ///     JPEG image data
+        /// </summary>
+        private readonly MemoryStream ms;
+
+        /// <summary>
         ///     Class constructor.
         /// </summary>
         /// <param name="data"></param>
-        public JpegParser(byte[] data)
+        public JpegParser( byte[] data )
         {
-            this.ms = new MemoryStream(data);
-            this.headerInfo = new JpegInfo();
+            ms = new MemoryStream( data );
+            headerInfo = new JpegInfo();
         }
 
         public JpegInfo Parse()
         {
             // File must begin with SOI marker
-            if (ReadFirstMarker() != M_SOI)
-            {
-                throw new InvalidOperationException("Expected SOI marker first");
-            }
+            if ( ReadFirstMarker() != M_SOI )
+                throw new InvalidOperationException( "Expected SOI marker first" );
 
-            while (ms.Position < ms.Length)
+            while ( ms.Position < ms.Length )
             {
                 int marker = ReadNextMarker();
-                switch (marker)
+                switch ( marker )
                 {
-                    case M_SOF0: // Baseline
-                    case M_SOF1: // Extended sequential, Huffman
-                    case M_SOF2: // Progressive, Huffman
-                    case M_SOF3: // Lossless, Huffman
-                    case M_SOF5: // Differential sequential, Huffman
-                    case M_SOF6: // Differential progressive, Huffman
-                    case M_SOF7: // Differential lossless, Huffman
-                    case M_SOF9: // Extended sequential, Huffman
-                    case M_SOF10: // Progressive, arithmetic
-                    case M_SOF11: // Lossless, arithmetic
-                    case M_SOF13: // Differential sequential, arithmetic
-                    case M_SOF14: // Differential progressive, arithmetic
-                    case M_SOF15: // Differential lossless, arithmetic
-                        ReadHeader();
-                        break;
-                    case M_APP2: // ICC Profile
-                        ReadICCProfile();
-                        break;
+                case M_SOF0: // Baseline
+                case M_SOF1: // Extended sequential, Huffman
+                case M_SOF2: // Progressive, Huffman
+                case M_SOF3: // Lossless, Huffman
+                case M_SOF5: // Differential sequential, Huffman
+                case M_SOF6: // Differential progressive, Huffman
+                case M_SOF7: // Differential lossless, Huffman
+                case M_SOF9: // Extended sequential, Huffman
+                case M_SOF10: // Progressive, arithmetic
+                case M_SOF11: // Lossless, arithmetic
+                case M_SOF13: // Differential sequential, arithmetic
+                case M_SOF14: // Differential progressive, arithmetic
+                case M_SOF15: // Differential lossless, arithmetic
+                    ReadHeader();
+                    break;
+                case M_APP2: // ICC Profile
+                    ReadICCProfile();
+                    break;
 
-                    default:
-                        SkipVariable();
-                        break;
+                default:
+                    SkipVariable();
+                    break;
                 }
             }
 
-            if (iccProfileData != null)
-            {
-                headerInfo.SetICCProfile(iccProfileData.ToArray());
-            }
+            if ( iccProfileData != null )
+                headerInfo.SetICCProfile( iccProfileData.ToArray() );
 
             return headerInfo;
         }
 
         private void ReadICCProfile()
         {
-            if (iccProfileData == null)
-            {
+            if ( iccProfileData == null )
                 iccProfileData = new MemoryStream();
-            }
 
             // Length of entire block in bytes
             int length = ReadInt();
 
             // Should be the string constant "ICC_PROFILE"
-            string iccProfile = ReadString(12);
-            if (!iccProfile.Equals(ICC_PROFILE))
-            {
-                throw new Exception("Missing ICC_PROFILE identifier in APP2 block");
-            }
+            string iccProfile = ReadString( 12 );
+            if ( !iccProfile.Equals( ICC_PROFILE ) )
+                throw new Exception( "Missing ICC_PROFILE identifier in APP2 block" );
 
             ReadByte(); // Sequence number of block
             ReadByte(); // Total number of markers
 
             // Accumulate profile data in temporary memory stream
-            byte[] profileData = new Byte[length - 16];
-            ms.Read(profileData, 0, profileData.Length);
+            var profileData = new byte[ length - 16 ];
+            ms.Read( profileData, 0, profileData.Length );
 
-            iccProfileData.Write(profileData, 0, profileData.Length);
+            iccProfileData.Write( profileData, 0, profileData.Length );
         }
 
         /// <summary>
-        ///     
         /// </summary>
         private void ReadHeader()
         {
             ReadInt(); // Length of block
 
-            headerInfo.SetBitsPerSample(ReadByte());
-            headerInfo.SetHeight(ReadInt());
-            headerInfo.SetWidth(ReadInt());
-            headerInfo.SetNumColourComponents(ReadByte());
+            headerInfo.SetBitsPerSample( ReadByte() );
+            headerInfo.SetHeight( ReadInt() );
+            headerInfo.SetWidth( ReadInt() );
+            headerInfo.SetNumColourComponents( ReadByte() );
         }
 
         /// <summary>
@@ -155,7 +146,7 @@ namespace Fonet.Image
         /// <returns></returns>
         private int ReadInt()
         {
-            return (ReadByte() << 8) + ReadByte();
+            return ( ReadByte() << 8 ) + ReadByte();
         }
 
         /// <summary>
@@ -168,24 +159,24 @@ namespace Fonet.Image
         }
 
         /// <summary>
-        ///     Reads the specified number of bytes from theunderlying stream 
+        ///     Reads the specified number of bytes from theunderlying stream
         ///     and converts them to a string using the ASCII encoding.
         /// </summary>
         /// <param name="numBytes"></param>
         /// <returns></returns>
-        private string ReadString(int numBytes)
+        private string ReadString( int numBytes )
         {
-            byte[] name = new byte[numBytes];
-            ms.Read(name, 0, name.Length);
+            var name = new byte[ numBytes ];
+            ms.Read( name, 0, name.Length );
 
-            return Encoding.ASCII.GetString(name);
+            return Encoding.ASCII.GetString( name );
         }
 
         /// <summary>
         ///     Reads the initial marker which should be SOI.
         /// </summary>
         /// <remarks>
-        ///     After invoking this method the stream will point to the location 
+        ///     After invoking this method the stream will point to the location
         ///     immediately after the fiorst marker.
         /// </remarks>
         /// <returns></returns>
@@ -193,10 +184,8 @@ namespace Fonet.Image
         {
             int b1 = ms.ReadByte();
             int b2 = ms.ReadByte();
-            if (b1 != 0xFF || b2 != M_SOI)
-            {
-                throw new InvalidOperationException("Not a JPEG file");
-            }
+            if ( b1 != 0xFF || b2 != M_SOI )
+                throw new InvalidOperationException( "Not a JPEG file" );
 
             return b2;
         }
@@ -209,16 +198,15 @@ namespace Fonet.Image
         {
             // Skip stream contents until we reach a FF tag
             int b = ms.ReadByte();
-            while (b != 0xFF)
-            {
+            while ( b != 0xFF )
                 b = ms.ReadByte();
-            }
 
             // Skip any FF padding bytes
             do
             {
                 b = ms.ReadByte();
-            } while (b == 0xFF);
+            }
+            while ( b == 0xFF );
 
             return b;
         }
@@ -231,110 +219,74 @@ namespace Fonet.Image
             int length = ReadInt();
 
             // Length includes itself, therefore it must be at least 2
-            if (length < 2)
-            {
-                throw new InvalidOperationException("Invalid JPEG marker length");
-            }
+            if ( length < 2 )
+                throw new InvalidOperationException( "Invalid JPEG marker length" );
 
             // Skip all parameters
-            ms.Seek(length - 2, SeekOrigin.Current);
+            ms.Seek( length - 2, SeekOrigin.Current );
         }
     }
 
     internal class JpegInfo
     {
         private int colourSpace = ColorSpace.DeviceUnknown;
-        private int bitsPerSample;
-        private int width;
-        private int height;
-        private byte[] profileData;
 
-        internal void SetNumColourComponents(int colourComponents)
-        {
-            // Translate number of colur components into a ColourSpace constant
-            switch (colourComponents)
-            {
-                case 1:
-                    this.colourSpace = ColorSpace.DeviceGray;
-                    break;
-                case 3:
-                    this.colourSpace = ColorSpace.DeviceRgb;
-                    break;
-                case 4:
-                    this.colourSpace = ColorSpace.DeviceCmyk;
-                    break;
-                default:
-                    this.colourSpace = ColorSpace.DeviceUnknown;
-                    break;
-            }
-        }
-
-        internal void SetBitsPerSample(int bitsPerSample)
-        {
-            this.bitsPerSample = bitsPerSample;
-        }
-
-        internal void SetWidth(int width)
-        {
-            this.width = width;
-        }
-
-        internal void SetHeight(int height)
-        {
-            this.height = height;
-        }
-
-        internal void SetICCProfile(byte[] profileData)
-        {
-            this.profileData = profileData;
-        }
-
-        public byte[] ICCProfileData
-        {
-            get
-            {
-                return profileData;
-            }
-        }
+        public byte[] ICCProfileData { get; private set; }
 
         public bool HasICCProfile
         {
-            get
-            {
-                return (profileData != null);
-            }
+            get { return ICCProfileData != null; }
         }
 
         public int ColourSpace
         {
-            get
+            get { return colourSpace; }
+        }
+
+        public int BitsPerSample { get; private set; }
+
+        public int Width { get; private set; }
+
+        public int Height { get; private set; }
+
+        internal void SetNumColourComponents( int colourComponents )
+        {
+            // Translate number of colur components into a ColourSpace constant
+            switch ( colourComponents )
             {
-                return colourSpace;
+            case 1:
+                colourSpace = ColorSpace.DeviceGray;
+                break;
+            case 3:
+                colourSpace = ColorSpace.DeviceRgb;
+                break;
+            case 4:
+                colourSpace = ColorSpace.DeviceCmyk;
+                break;
+            default:
+                colourSpace = ColorSpace.DeviceUnknown;
+                break;
             }
         }
 
-        public int BitsPerSample
+        internal void SetBitsPerSample( int bitsPerSample )
         {
-            get
-            {
-                return bitsPerSample;
-            }
+            BitsPerSample = bitsPerSample;
         }
 
-        public int Width
+        internal void SetWidth( int width )
         {
-            get
-            {
-                return width;
-            }
+            Width = width;
         }
 
-        public int Height
+        internal void SetHeight( int height )
         {
-            get
-            {
-                return height;
-            }
+            Height = height;
+        }
+
+        internal void SetICCProfile( byte[] profileData )
+        {
+            ICCProfileData = profileData;
         }
     }
 }

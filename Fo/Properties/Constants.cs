@@ -181,6 +181,5 @@ namespace Fonet.Fo.Properties
         public const int REPEAT_Y = 89;
 
         public const int NO_REPEAT = 90;
-
     }
 }

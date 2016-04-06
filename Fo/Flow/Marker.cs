@@ -1,76 +1,65 @@
+using Fonet.Layout;
+
 namespace Fonet.Fo.Flow
 {
-    using Fonet.Layout;
-
     internal class Marker : FObjMixed
     {
-        private string markerClassName;
-
-        private Area registryArea;
-
         private bool isFirst;
 
         private bool isLast;
+        private readonly string markerClassName;
 
-        new internal class Maker : FObj.Maker
+        private Area registryArea;
+
+        public Marker( FObj parent, PropertyList propertyList )
+            : base( parent, propertyList )
         {
-            public override FObj Make(FObj parent, PropertyList propertyList)
+            name = "fo:marker";
+
+            markerClassName =
+                properties.GetProperty( "marker-class-name" ).GetString();
+            ts = propMgr.getTextDecoration( parent );
+
+            try
             {
-                return new Marker(parent, propertyList);
+                parent.AddMarker( markerClassName );
+            }
+            catch ( FonetException )
+            {
             }
         }
 
-        new public static FObj.Maker GetMaker()
+        public new static FObj.Maker GetMaker()
         {
             return new Maker();
         }
 
-        public Marker(FObj parent, PropertyList propertyList)
-            : base(parent, propertyList)
+        public override Status Layout( Area area )
         {
-            this.name = "fo:marker";
-
-            this.markerClassName =
-                this.properties.GetProperty("marker-class-name").GetString();
-            ts = propMgr.getTextDecoration(parent);
-
-            try
-            {
-                parent.AddMarker(this.markerClassName);
-            }
-            catch (FonetException)
-            {
-            }
+            registryArea = area;
+            area.getPage().registerMarker( this );
+            return new Status( Status.OK );
         }
 
-        public override Status Layout(Area area)
+        public Status LayoutMarker( Area area )
         {
-            this.registryArea = area;
-            area.getPage().registerMarker(this);
-            return new Status(Status.OK);
-        }
+            if ( marker == MarkerStart )
+                marker = 0;
 
-        public Status LayoutMarker(Area area)
-        {
-            if (this.marker == MarkerStart)
+            int numChildren = children.Count;
+            for ( int i = marker; i < numChildren; i++ )
             {
-                this.marker = 0;
-            }
-
-            int numChildren = this.children.Count;
-            for (int i = this.marker; i < numChildren; i++)
-            {
-                FONode fo = (FONode)children[i];
+                var fo = (FONode)children[ i ];
 
                 Status status;
-                if ((status = fo.Layout(area)).isIncomplete())
+                if ( ( status = fo.Layout( area ) ).isIncomplete() )
                 {
-                    this.marker = i;
+                    marker = i;
                     return status;
                 }
             }
 
-            return new Status(Status.OK);
+            return new Status( Status.OK );
         }
 
         public string GetMarkerClassName()
@@ -92,24 +81,30 @@ namespace Fonet.Fo.Flow
 
         public void resetMarker()
         {
-            if (registryArea != null)
+            if ( registryArea != null )
             {
                 Page page = registryArea.getPage();
-                if (page != null)
-                {
-                    page.unregisterMarker(this);
-                }
+                if ( page != null )
+                    page.unregisterMarker( this );
             }
         }
 
         public void resetMarkerContent()
         {
-            base.ResetMarker();
+            ResetMarker();
         }
 
         public override bool MayPrecedeMarker()
         {
             return true;
+        }
+
+        internal new class Maker : FObj.Maker
+        {
+            public override FObj Make( FObj parent, PropertyList propertyList )
+            {
+                return new Marker( parent, propertyList );
+            }
         }
     }
 }

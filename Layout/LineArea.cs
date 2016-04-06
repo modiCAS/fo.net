@@ -1,94 +1,88 @@
+using System;
+using System.Collections;
+using System.Drawing;
+using System.Text;
+using Fonet.Fo.Flow;
+using Fonet.Fo.Properties;
+using Fonet.Layout.Inline;
+using Fonet.Render.Pdf;
+using Fonet.Util;
+
 namespace Fonet.Layout
 {
-    using System;
-    using System.Collections;
-    using System.Drawing;
-    using System.Text;
-    using Fonet.Fo.Flow;
-    using Fonet.Fo.Properties;
-    using Fonet.Layout.Inline;
-    using Fonet.Render.Pdf;
-    using Fonet.Util;
-
     internal class LineArea : Area
     {
-        protected int lineHeight;
-        protected int halfLeading;
-        protected int nominalFontSize;
-        protected int nominalGlyphHeight;
-        protected int allocationHeight;
-        protected int startIndent;
-        protected int endIndent;
-        private int placementOffset;
-        private FontState currentFontState;
-        private float red, green, blue;
-        private int wrapOption;
-        private int whiteSpaceCollapse;
-        private int vAlign;
-        private HyphenationProps hyphProps;
-        protected int finalWidth = 0;
-        protected int embeddedLinkStart = 0;
         protected const int NOTHING = 0;
         protected const int WHITESPACE = 1;
         protected const int TEXT = 2;
         protected const int MULTIBYTECHAR = 3;
-        protected int prev = NOTHING;
-        protected int spaceWidth = 0;
+        protected int allocationHeight;
+        private FontState currentFontState;
+        protected int embeddedLinkStart;
+        protected int endIndent;
+        protected int finalWidth;
+        protected int halfLeading;
+        private HyphenationProps hyphProps;
+        protected int lineHeight;
+        protected int nominalFontSize;
+        protected int nominalGlyphHeight;
         protected ArrayList pendingAreas = new ArrayList();
-        protected int pendingWidth = 0;
-        protected bool prevUlState = false;
-        protected bool prevOlState = false;
-        protected bool prevLTState = false;
+        protected int pendingWidth;
+        private readonly int placementOffset;
+        protected int prev = NOTHING;
+        protected bool prevLTState;
+        protected bool prevOlState;
+        protected bool prevUlState;
+        private float red, green, blue;
+        protected int spaceWidth;
+        protected int startIndent;
+        private int vAlign;
+        private int whiteSpaceCollapse;
+        private int wrapOption;
 
-        public LineArea(FontState fontState, int lineHeight, int halfLeading,
-                        int allocationWidth, int startIndent, int endIndent,
-                        LineArea prevLineArea)
-            : base(fontState)
+        public LineArea( FontState fontState, int lineHeight, int halfLeading,
+            int allocationWidth, int startIndent, int endIndent,
+            LineArea prevLineArea )
+            : base( fontState )
         {
-            this.currentFontState = fontState;
+            currentFontState = fontState;
             this.lineHeight = lineHeight;
-            this.nominalFontSize = fontState.FontSize;
-            this.nominalGlyphHeight = fontState.Ascender - fontState.Descender;
+            nominalFontSize = fontState.FontSize;
+            nominalGlyphHeight = fontState.Ascender - fontState.Descender;
 
-            this.placementOffset = fontState.Ascender;
-            this.contentRectangleWidth = allocationWidth - startIndent
+            placementOffset = fontState.Ascender;
+            contentRectangleWidth = allocationWidth - startIndent
                 - endIndent;
             this.fontState = fontState;
 
-            this.allocationHeight = this.nominalGlyphHeight;
-            this.halfLeading = this.lineHeight - this.allocationHeight;
+            allocationHeight = nominalGlyphHeight;
+            this.halfLeading = this.lineHeight - allocationHeight;
 
             this.startIndent = startIndent;
             this.endIndent = endIndent;
 
-            if (prevLineArea != null)
+            if ( prevLineArea != null )
             {
                 IEnumerator e = prevLineArea.pendingAreas.GetEnumerator();
                 Box b = null;
-                bool eatMoreSpace = true;
-                int eatenWidth = 0;
+                var eatMoreSpace = true;
+                var eatenWidth = 0;
 
-                while (eatMoreSpace)
+                while ( eatMoreSpace )
                 {
-                    if (e.MoveNext())
+                    if ( e.MoveNext() )
                     {
                         b = (Box)e.Current;
-                        if (b is InlineSpace)
+                        if ( b is InlineSpace )
                         {
-                            InlineSpace isp = (InlineSpace)b;
-                            if (isp.isEatable())
-                            {
+                            var isp = (InlineSpace)b;
+                            if ( isp.isEatable() )
                                 eatenWidth += isp.getSize();
-                            }
                             else
-                            {
                                 eatMoreSpace = false;
-                            }
                         }
                         else
-                        {
                             eatMoreSpace = false;
-                        }
                     }
                     else
                     {
@@ -97,175 +91,152 @@ namespace Fonet.Layout
                     }
                 }
 
-                while (b != null)
+                while ( b != null )
                 {
-                    pendingAreas.Add(b);
-                    if (e.MoveNext())
-                    {
+                    pendingAreas.Add( b );
+                    if ( e.MoveNext() )
                         b = (Box)e.Current;
-                    }
                     else
-                    {
                         b = null;
-                    }
                 }
                 pendingWidth = prevLineArea.getPendingWidth() - eatenWidth;
             }
         }
 
-        public override void render(PdfRenderer renderer)
+        public override void render( PdfRenderer renderer )
         {
-            renderer.RenderLineArea(this);
+            renderer.RenderLineArea( this );
         }
 
-        public int addPageNumberCitation(string refid, LinkSet ls)
+        public int addPageNumberCitation( string refid, LinkSet ls )
         {
-            int width = currentFontState.GetWidth(currentFontState.MapCharacter(' '));
+            int width = currentFontState.GetWidth( currentFontState.MapCharacter( ' ' ) );
 
 
-            PageNumberInlineArea pia = new PageNumberInlineArea(currentFontState,
-                                                                this.red, this.green, this.blue, refid, width);
+            var pia = new PageNumberInlineArea( currentFontState,
+                red, green, blue, refid, width );
 
-            pia.setYOffset(placementOffset);
-            pendingAreas.Add(pia);
+            pia.setYOffset( placementOffset );
+            pendingAreas.Add( pia );
             pendingWidth += width;
             prev = TEXT;
 
             return -1;
         }
 
-        public int addText(char[] odata, int start, int end, LinkSet ls,
-                           TextState textState)
+        public int addText( char[] odata, int start, int end, LinkSet ls,
+            TextState textState )
         {
-            if (start == -1)
-            {
+            if ( start == -1 )
                 return -1;
-            }
-            bool overrun = false;
+            var overrun = false;
 
             int wordStart = start;
-            int wordLength = 0;
-            int wordWidth = 0;
-            int whitespaceWidth = getCharWidth(' ');
+            var wordLength = 0;
+            var wordWidth = 0;
+            int whitespaceWidth = getCharWidth( ' ' );
 
-            char[] data = new char[odata.Length];
-            char[] dataCopy = new char[odata.Length];
-            Array.Copy(odata, data, odata.Length);
-            Array.Copy(odata, dataCopy, odata.Length);
+            var data = new char[ odata.Length ];
+            var dataCopy = new char[ odata.Length ];
+            Array.Copy( odata, data, odata.Length );
+            Array.Copy( odata, dataCopy, odata.Length );
 
-            bool isText = false;
-            bool isMultiByteChar = false;
+            var isText = false;
+            var isMultiByteChar = false;
 
-            for (int i = start; i < end; i++)
+            for ( int i = start; i < end; i++ )
             {
                 int charWidth;
-                char c = data[i];
-                if (!(isSpace(c) || (c == '\n') || (c == '\r') || (c == '\t')
-                    || (c == '\u2028')))
+                char c = data[ i ];
+                if ( !( isSpace( c ) || c == '\n' || c == '\r' || c == '\t'
+                    || c == '\u2028' ) )
                 {
-                    charWidth = getCharWidth(c);
+                    charWidth = getCharWidth( c );
                     isText = true;
-                    isMultiByteChar = (c > 127);
-                    if (charWidth <= 0 && c != '\u200B' && c != '\uFEFF')
-                    {
+                    isMultiByteChar = c > 127;
+                    if ( charWidth <= 0 && c != '\u200B' && c != '\uFEFF' )
                         charWidth = whitespaceWidth;
-                    }
                 }
                 else
                 {
-                    if ((c == '\n') || (c == '\r') || (c == '\t'))
-                    {
+                    if ( c == '\n' || c == '\r' || c == '\t' )
                         charWidth = whitespaceWidth;
-                    }
                     else
-                    {
-                        charWidth = getCharWidth(c);
-                    }
+                        charWidth = getCharWidth( c );
 
                     isText = false;
                     isMultiByteChar = false;
 
-                    if (prev == WHITESPACE)
+                    if ( prev == WHITESPACE )
                     {
-                        if (this.whiteSpaceCollapse == WhiteSpaceCollapse.FALSE)
+                        if ( whiteSpaceCollapse == GenericBoolean.Enums.FALSE )
                         {
-                            if (isSpace(c))
+                            if ( isSpace( c ) )
+                                spaceWidth += getCharWidth( c );
+                            else if ( c == '\n' || c == '\u2028' )
                             {
-                                spaceWidth += getCharWidth(c);
-                            }
-                            else if (c == '\n' || c == '\u2028')
-                            {
-                                if (spaceWidth > 0)
+                                if ( spaceWidth > 0 )
                                 {
-                                    InlineSpace isp = new InlineSpace(spaceWidth);
-                                    isp.setUnderlined(textState.getUnderlined());
-                                    isp.setOverlined(textState.getOverlined());
-                                    isp.setLineThrough(textState.getLineThrough());
-                                    addChild(isp);
+                                    var isp = new InlineSpace( spaceWidth );
+                                    isp.setUnderlined( textState.getUnderlined() );
+                                    isp.setOverlined( textState.getOverlined() );
+                                    isp.setLineThrough( textState.getLineThrough() );
+                                    addChild( isp );
                                     finalWidth += spaceWidth;
                                     spaceWidth = 0;
                                 }
                                 return i + 1;
                             }
-                            else if (c == '\t')
-                            {
+                            else if ( c == '\t' )
                                 spaceWidth += 8 * whitespaceWidth;
-                            }
                         }
-                        else if (c == '\u2028')
+                        else if ( c == '\u2028' )
                         {
-                            if (spaceWidth > 0)
+                            if ( spaceWidth > 0 )
                             {
-                                InlineSpace isp = new InlineSpace(spaceWidth);
-                                isp.setUnderlined(textState.getUnderlined());
-                                isp.setOverlined(textState.getOverlined());
-                                isp.setLineThrough(textState.getLineThrough());
-                                addChild(isp);
+                                var isp = new InlineSpace( spaceWidth );
+                                isp.setUnderlined( textState.getUnderlined() );
+                                isp.setOverlined( textState.getOverlined() );
+                                isp.setLineThrough( textState.getLineThrough() );
+                                addChild( isp );
                                 finalWidth += spaceWidth;
                                 spaceWidth = 0;
                             }
                             return i + 1;
                         }
-
                     }
-                    else if (prev == TEXT || prev == MULTIBYTECHAR)
+                    else if ( prev == TEXT || prev == MULTIBYTECHAR )
                     {
-                        if (spaceWidth > 0)
+                        if ( spaceWidth > 0 )
                         {
-                            InlineSpace isp = new InlineSpace(spaceWidth);
-                            if (prevUlState)
-                            {
-                                isp.setUnderlined(textState.getUnderlined());
-                            }
-                            if (prevOlState)
-                            {
-                                isp.setOverlined(textState.getOverlined());
-                            }
-                            if (prevLTState)
-                            {
-                                isp.setLineThrough(textState.getLineThrough());
-                            }
-                            addChild(isp);
+                            var isp = new InlineSpace( spaceWidth );
+                            if ( prevUlState )
+                                isp.setUnderlined( textState.getUnderlined() );
+                            if ( prevOlState )
+                                isp.setOverlined( textState.getOverlined() );
+                            if ( prevLTState )
+                                isp.setLineThrough( textState.getLineThrough() );
+                            addChild( isp );
                             finalWidth += spaceWidth;
                             spaceWidth = 0;
                         }
 
                         IEnumerator e = pendingAreas.GetEnumerator();
-                        while (e.MoveNext())
+                        while ( e.MoveNext() )
                         {
-                            Box box = (Box)e.Current;
-                            if (box is InlineArea)
+                            var box = (Box)e.Current;
+                            if ( box is InlineArea )
                             {
-                                if (ls != null)
+                                if ( ls != null )
                                 {
-                                    Rectangle lr =
-                                        new Rectangle(finalWidth, 0,
-                                                      ((InlineArea)box).getContentWidth(),
-                                                      fontState.FontSize);
-                                    ls.addRect(lr, this, (InlineArea)box);
+                                    var lr =
+                                        new Rectangle( finalWidth, 0,
+                                            ( (InlineArea)box ).getContentWidth(),
+                                            fontState.FontSize );
+                                    ls.addRect( lr, this, (InlineArea)box );
                                 }
                             }
-                            addChild(box);
+                            addChild( box );
                         }
 
                         finalWidth += pendingWidth;
@@ -273,10 +244,10 @@ namespace Fonet.Layout
                         pendingWidth = 0;
                         pendingAreas = new ArrayList();
 
-                        if (wordLength > 0)
+                        if ( wordLength > 0 )
                         {
-                            addSpacedWord(new String(data, wordStart, wordLength),
-                                          ls, finalWidth, 0, textState, false);
+                            addSpacedWord( new string( data, wordStart, wordLength ),
+                                ls, finalWidth, 0, textState, false );
                             finalWidth += wordWidth;
 
                             wordWidth = 0;
@@ -286,120 +257,101 @@ namespace Fonet.Layout
 
                         embeddedLinkStart = 0;
 
-                        spaceWidth = getCharWidth(c);
+                        spaceWidth = getCharWidth( c );
 
-                        if (this.whiteSpaceCollapse == WhiteSpaceCollapse.FALSE)
+                        if ( whiteSpaceCollapse == GenericBoolean.Enums.FALSE )
                         {
-                            if (c == '\n' || c == '\u2028')
-                            {
+                            if ( c == '\n' || c == '\u2028' )
                                 return i + 1;
-                            }
-                            else if (c == '\t')
-                            {
+                            if ( c == '\t' )
                                 spaceWidth = whitespaceWidth;
-                            }
                         }
-                        else if (c == '\u2028')
-                        {
+                        else if ( c == '\u2028' )
                             return i + 1;
-                        }
                     }
                     else
                     {
-                        if (this.whiteSpaceCollapse == WhiteSpaceCollapse.FALSE)
+                        if ( whiteSpaceCollapse == GenericBoolean.Enums.FALSE )
                         {
-                            if (isSpace(c))
+                            if ( isSpace( c ) )
                             {
                                 prev = WHITESPACE;
-                                spaceWidth = getCharWidth(c);
+                                spaceWidth = getCharWidth( c );
                             }
-                            else if (c == '\n')
+                            else if ( c == '\n' )
                             {
-                                InlineSpace isp = new InlineSpace(spaceWidth);
-                                addChild(isp);
+                                var isp = new InlineSpace( spaceWidth );
+                                addChild( isp );
                                 return i + 1;
                             }
-                            else if (c == '\t')
+                            else if ( c == '\t' )
                             {
                                 prev = WHITESPACE;
                                 spaceWidth = 8 * whitespaceWidth;
                             }
-
                         }
                         else
-                        {
                             wordStart++;
-                        }
                     }
-
                 }
 
-                if (isText)
+                if ( isText )
                 {
-
                     int curr = isMultiByteChar ? MULTIBYTECHAR : TEXT;
-                    if (prev == WHITESPACE)
+                    if ( prev == WHITESPACE )
                     {
                         wordWidth = charWidth;
-                        if ((finalWidth + spaceWidth + wordWidth)
-                            > this.getContentWidth())
+                        if ( finalWidth + spaceWidth + wordWidth
+                            > getContentWidth() )
                         {
-                            if (overrun)
+                            if ( overrun )
                             {
                                 FonetDriver.ActiveDriver.FireFonetWarning(
-                                    "Area contents overflows area");
+                                    "Area contents overflows area" );
                             }
-                            if (this.wrapOption == WrapOption.WRAP)
-                            {
+                            if ( wrapOption == WrapOption.WRAP )
                                 return i;
-                            }
                         }
                         prev = curr;
                         wordStart = i;
                         wordLength = 1;
                     }
-                    else if (prev == TEXT || prev == MULTIBYTECHAR)
+                    else if ( prev == TEXT || prev == MULTIBYTECHAR )
                     {
-                        if (prev == TEXT && curr == TEXT || !canBreakMidWord())
+                        if ( prev == TEXT && curr == TEXT || !canBreakMidWord() )
                         {
                             wordLength++;
                             wordWidth += charWidth;
                         }
                         else
                         {
-                            InlineSpace isp = new InlineSpace(spaceWidth);
-                            if (prevUlState)
-                            {
-                                isp.setUnderlined(textState.getUnderlined());
-                            }
-                            if (prevOlState)
-                            {
-                                isp.setOverlined(textState.getOverlined());
-                            }
-                            if (prevLTState)
-                            {
-                                isp.setLineThrough(textState.getLineThrough());
-                            }
-                            addChild(isp);
+                            var isp = new InlineSpace( spaceWidth );
+                            if ( prevUlState )
+                                isp.setUnderlined( textState.getUnderlined() );
+                            if ( prevOlState )
+                                isp.setOverlined( textState.getOverlined() );
+                            if ( prevLTState )
+                                isp.setLineThrough( textState.getLineThrough() );
+                            addChild( isp );
                             finalWidth += spaceWidth;
                             spaceWidth = 0;
 
                             IEnumerator e = pendingAreas.GetEnumerator();
-                            while (e.MoveNext())
+                            while ( e.MoveNext() )
                             {
-                                Box box = (Box)e.Current;
-                                if (box is InlineArea)
+                                var box = (Box)e.Current;
+                                if ( box is InlineArea )
                                 {
-                                    if (ls != null)
+                                    if ( ls != null )
                                     {
-                                        Rectangle lr =
-                                            new Rectangle(finalWidth, 0,
-                                                          ((InlineArea)box).getContentWidth(),
-                                                          fontState.FontSize);
-                                        ls.addRect(lr, this, (InlineArea)box);
+                                        var lr =
+                                            new Rectangle( finalWidth, 0,
+                                                ( (InlineArea)box ).getContentWidth(),
+                                                fontState.FontSize );
+                                        ls.addRect( lr, this, (InlineArea)box );
                                     }
                                 }
-                                addChild(box);
+                                addChild( box );
                             }
 
                             finalWidth += pendingWidth;
@@ -407,10 +359,10 @@ namespace Fonet.Layout
                             pendingWidth = 0;
                             pendingAreas = new ArrayList();
 
-                            if (wordLength > 0)
+                            if ( wordLength > 0 )
                             {
-                                addSpacedWord(new String(data, wordStart, wordLength),
-                                              ls, finalWidth, 0, textState, false);
+                                addSpacedWord( new string( data, wordStart, wordLength ),
+                                    ls, finalWidth, 0, textState, false );
                                 finalWidth += wordWidth;
                             }
                             spaceWidth = 0;
@@ -428,170 +380,149 @@ namespace Fonet.Layout
                         wordWidth = charWidth;
                     }
 
-                    if ((finalWidth + spaceWidth + pendingWidth + wordWidth)
-                        > this.getContentWidth())
+                    if ( finalWidth + spaceWidth + pendingWidth + wordWidth
+                        > getContentWidth() )
                     {
-                        if (this.wrapOption == WrapOption.WRAP)
+                        if ( wrapOption == WrapOption.WRAP )
                         {
-                            if (wordStart == start)
+                            if ( wordStart == start )
                             {
                                 overrun = true;
-                                if (finalWidth > 0)
-                                {
+                                if ( finalWidth > 0 )
                                     return wordStart;
-                                }
                             }
                             else
-                            {
                                 return wordStart;
-                            }
-
                         }
                     }
                 }
             }
 
-            if (prev == TEXT || prev == MULTIBYTECHAR)
+            if ( prev == TEXT || prev == MULTIBYTECHAR )
             {
-                if (spaceWidth > 0)
+                if ( spaceWidth > 0 )
                 {
-                    InlineSpace pis = new InlineSpace(spaceWidth);
-                    pis.setEatable(true);
-                    if (prevUlState)
-                    {
-                        pis.setUnderlined(textState.getUnderlined());
-                    }
-                    if (prevOlState)
-                    {
-                        pis.setOverlined(textState.getOverlined());
-                    }
-                    if (prevLTState)
-                    {
-                        pis.setLineThrough(textState.getLineThrough());
-                    }
-                    pendingAreas.Add(pis);
+                    var pis = new InlineSpace( spaceWidth );
+                    pis.setEatable( true );
+                    if ( prevUlState )
+                        pis.setUnderlined( textState.getUnderlined() );
+                    if ( prevOlState )
+                        pis.setOverlined( textState.getOverlined() );
+                    if ( prevLTState )
+                        pis.setLineThrough( textState.getLineThrough() );
+                    pendingAreas.Add( pis );
                     pendingWidth += spaceWidth;
                     spaceWidth = 0;
                 }
 
-                addSpacedWord(new String(data, wordStart, wordLength), ls,
-                              finalWidth + pendingWidth,
-                              spaceWidth, textState, true);
+                addSpacedWord( new string( data, wordStart, wordLength ), ls,
+                    finalWidth + pendingWidth,
+                    spaceWidth, textState, true );
 
                 embeddedLinkStart += wordWidth;
                 wordWidth = 0;
             }
 
-            if (overrun)
+            if ( overrun )
             {
                 FonetDriver.ActiveDriver.FireFonetWarning(
-                    "Area contents overflows area");
+                    "Area contents overflows area" );
             }
             return -1;
         }
 
-        public void AddLeader(int leaderPattern, int leaderLengthMinimum,
-                              int leaderLengthOptimum, int leaderLengthMaximum,
-                              int ruleStyle, int ruleThickness,
-                              int leaderPatternWidth, int leaderAlignment)
+        public void AddLeader( int leaderPattern, int leaderLengthMinimum,
+            int leaderLengthOptimum, int leaderLengthMaximum,
+            int ruleStyle, int ruleThickness,
+            int leaderPatternWidth, int leaderAlignment )
         {
             WordArea leaderPatternArea;
-            int leaderLength = 0;
-            char dotIndex = '.';
+            var leaderLength = 0;
+            var dotIndex = '.';
             int dotWidth =
-                currentFontState.GetWidth(currentFontState.MapCharacter(dotIndex));
-            char whitespaceIndex = ' ';
+                currentFontState.GetWidth( currentFontState.MapCharacter( dotIndex ) );
+            var whitespaceIndex = ' ';
             int whitespaceWidth =
-                currentFontState.GetWidth(currentFontState.MapCharacter(whitespaceIndex));
+                currentFontState.GetWidth( currentFontState.MapCharacter( whitespaceIndex ) );
 
-            int remainingWidth = this.getRemainingWidth();
+            int remainingWidth = getRemainingWidth();
 
-            if ((remainingWidth <= leaderLengthOptimum)
-                || (remainingWidth <= leaderLengthMaximum))
-            {
+            if ( remainingWidth <= leaderLengthOptimum
+                || remainingWidth <= leaderLengthMaximum )
                 leaderLength = remainingWidth;
-            }
-            else if ((remainingWidth > leaderLengthOptimum)
-                && (remainingWidth > leaderLengthMaximum))
-            {
+            else if ( remainingWidth > leaderLengthOptimum
+                && remainingWidth > leaderLengthMaximum )
                 leaderLength = leaderLengthMaximum;
-            }
-            else if ((leaderLengthOptimum > leaderLengthMaximum)
-                && (leaderLengthOptimum < remainingWidth))
-            {
+            else if ( leaderLengthOptimum > leaderLengthMaximum
+                && leaderLengthOptimum < remainingWidth )
                 leaderLength = leaderLengthOptimum;
-            }
 
-            if (leaderLength <= 0)
-            {
+            if ( leaderLength <= 0 )
                 return;
-            }
 
-            switch (leaderPattern)
+            switch ( leaderPattern )
             {
-                case LeaderPattern.SPACE:
-                    InlineSpace spaceArea = new InlineSpace(leaderLength);
-                    pendingAreas.Add(spaceArea);
-                    break;
-                case LeaderPattern.RULE:
-                    LeaderArea leaderArea = new LeaderArea(fontState, red, green,
-                                                           blue, "", leaderLength,
-                                                           leaderPattern,
-                                                           ruleThickness, ruleStyle);
-                    leaderArea.setYOffset(placementOffset);
-                    pendingAreas.Add(leaderArea);
-                    break;
-                case LeaderPattern.DOTS:
-                    if (leaderPatternWidth < dotWidth)
+            case LeaderPattern.SPACE:
+                var spaceArea = new InlineSpace( leaderLength );
+                pendingAreas.Add( spaceArea );
+                break;
+            case LeaderPattern.RULE:
+                var leaderArea = new LeaderArea( fontState, red, green,
+                    blue, "", leaderLength,
+                    leaderPattern,
+                    ruleThickness, ruleStyle );
+                leaderArea.setYOffset( placementOffset );
+                pendingAreas.Add( leaderArea );
+                break;
+            case LeaderPattern.DOTS:
+                if ( leaderPatternWidth < dotWidth )
+                    leaderPatternWidth = 0;
+                if ( leaderPatternWidth == 0 )
+                {
+                    pendingAreas.Add( buildSimpleLeader( dotIndex,
+                        leaderLength ) );
+                }
+                else
+                {
+                    if ( leaderAlignment == LeaderAlignment.REFERENCE_AREA )
                     {
-                        leaderPatternWidth = 0;
-                    }
-                    if (leaderPatternWidth == 0)
-                    {
-                        pendingAreas.Add(this.buildSimpleLeader(dotIndex,
-                                                                leaderLength));
-                    }
-                    else
-                    {
-                        if (leaderAlignment == LeaderAlignment.REFERENCE_AREA)
+                        int spaceBeforeLeader =
+                            getLeaderAlignIndent( leaderLength,
+                                leaderPatternWidth );
+                        if ( spaceBeforeLeader != 0 )
                         {
-                            int spaceBeforeLeader =
-                                this.getLeaderAlignIndent(leaderLength,
-                                                          leaderPatternWidth);
-                            if (spaceBeforeLeader != 0)
-                            {
-                                pendingAreas.Add(new InlineSpace(spaceBeforeLeader,
-                                                                 false));
-                                pendingWidth += spaceBeforeLeader;
-                                leaderLength -= spaceBeforeLeader;
-                            }
+                            pendingAreas.Add( new InlineSpace( spaceBeforeLeader,
+                                false ) );
+                            pendingWidth += spaceBeforeLeader;
+                            leaderLength -= spaceBeforeLeader;
                         }
-
-                        InlineSpace spaceBetweenDots =
-                            new InlineSpace(leaderPatternWidth - dotWidth, false);
-
-                        leaderPatternArea = new WordArea(currentFontState, this.red,
-                                                         this.green, this.blue,
-                                                         ".", dotWidth);
-                        leaderPatternArea.setYOffset(placementOffset);
-                        int dotsFactor =
-                            (int)Math.Floor(((double)leaderLength)
-                                / ((double)leaderPatternWidth));
-
-                        for (int i = 0; i < dotsFactor; i++)
-                        {
-                            pendingAreas.Add(leaderPatternArea);
-                            pendingAreas.Add(spaceBetweenDots);
-                        }
-                        pendingAreas.Add(new InlineSpace(leaderLength
-                            - dotsFactor
-                                * leaderPatternWidth));
                     }
-                    break;
-                case LeaderPattern.USECONTENT:
-                    FonetDriver.ActiveDriver.FireFonetError(
-                        "leader-pattern=\"use-content\" not supported by this version of FO.NET");
-                    return;
+
+                    var spaceBetweenDots =
+                        new InlineSpace( leaderPatternWidth - dotWidth, false );
+
+                    leaderPatternArea = new WordArea( currentFontState, red,
+                        green, blue,
+                        ".", dotWidth );
+                    leaderPatternArea.setYOffset( placementOffset );
+                    var dotsFactor =
+                        (int)Math.Floor( leaderLength
+                            / (double)leaderPatternWidth );
+
+                    for ( var i = 0; i < dotsFactor; i++ )
+                    {
+                        pendingAreas.Add( leaderPatternArea );
+                        pendingAreas.Add( spaceBetweenDots );
+                    }
+                    pendingAreas.Add( new InlineSpace( leaderLength
+                        - dotsFactor
+                            * leaderPatternWidth ) );
+                }
+                break;
+            case LeaderPattern.USECONTENT:
+                FonetDriver.ActiveDriver.FireFonetError(
+                    "leader-pattern=\"use-content\" not supported by this version of FO.NET" );
+                return;
             }
             pendingWidth += leaderLength;
             prev = TEXT;
@@ -599,17 +530,15 @@ namespace Fonet.Layout
 
         public void addPending()
         {
-            if (spaceWidth > 0)
+            if ( spaceWidth > 0 )
             {
-                addChild(new InlineSpace(spaceWidth));
+                addChild( new InlineSpace( spaceWidth ) );
                 finalWidth += spaceWidth;
                 spaceWidth = 0;
             }
 
-            foreach (Box box in pendingAreas)
-            {
-                addChild(box);
-            }
+            foreach ( Box box in pendingAreas )
+                addChild( box );
 
             finalWidth += pendingWidth;
 
@@ -617,127 +546,111 @@ namespace Fonet.Layout
             pendingAreas = new ArrayList();
         }
 
-        public void align(int type)
+        public void align( int type )
         {
-            int padding = 0;
+            var padding = 0;
 
-            switch (type)
+            switch ( type )
             {
-                case TextAlign.START:
-                    padding = this.getContentWidth() - finalWidth;
-                    endIndent += padding;
-                    break;
-                case TextAlign.END:
-                    padding = this.getContentWidth() - finalWidth;
-                    startIndent += padding;
-                    break;
-                case TextAlign.CENTER:
-                    padding = (this.getContentWidth() - finalWidth) / 2;
-                    startIndent += padding;
-                    endIndent += padding;
-                    break;
-                case TextAlign.JUSTIFY:
-                    int spaceCount = 0;
-                    foreach (Box b in children)
+            case TextAlign.START:
+                padding = getContentWidth() - finalWidth;
+                endIndent += padding;
+                break;
+            case TextAlign.END:
+                padding = getContentWidth() - finalWidth;
+                startIndent += padding;
+                break;
+            case TextAlign.CENTER:
+                padding = ( getContentWidth() - finalWidth ) / 2;
+                startIndent += padding;
+                endIndent += padding;
+                break;
+            case TextAlign.JUSTIFY:
+                var spaceCount = 0;
+                foreach ( Box b in children )
+                {
+                    if ( b is InlineSpace )
                     {
-                        if (b is InlineSpace)
+                        var space = (InlineSpace)b;
+                        if ( space.getResizeable() )
+                            spaceCount++;
+                    }
+                }
+                if ( spaceCount > 0 )
+                    padding = ( getContentWidth() - finalWidth ) / spaceCount;
+                else
+                    padding = 0;
+                spaceCount = 0;
+                foreach ( Box b in children )
+                {
+                    if ( b is InlineSpace )
+                    {
+                        var space = (InlineSpace)b;
+                        if ( space.getResizeable() )
                         {
-                            InlineSpace space = (InlineSpace)b;
-                            if (space.getResizeable())
-                            {
-                                spaceCount++;
-                            }
+                            space.setSize( space.getSize() + padding );
+                            spaceCount++;
                         }
                     }
-                    if (spaceCount > 0)
-                    {
-                        padding = (this.getContentWidth() - finalWidth) / spaceCount;
-                    }
-                    else
-                    {
-                        padding = 0;
-                    }
-                    spaceCount = 0;
-                    foreach (Box b in children)
-                    {
-                        if (b is InlineSpace)
-                        {
-                            InlineSpace space = (InlineSpace)b;
-                            if (space.getResizeable())
-                            {
-                                space.setSize(space.getSize() + padding);
-                                spaceCount++;
-                            }
-                        }
-                        else if (b is InlineArea)
-                        {
-                            ((InlineArea)b).setXOffset(spaceCount * padding);
-                        }
-
-                    }
-                    break;
+                    else if ( b is InlineArea )
+                        ( (InlineArea)b ).setXOffset( spaceCount * padding );
+                }
+                break;
             }
         }
 
         public void verticalAlign()
         {
-            int superHeight = -this.placementOffset;
-            int maxHeight = this.allocationHeight;
-            foreach (Box b in children)
+            int superHeight = -placementOffset;
+            int maxHeight = allocationHeight;
+            foreach ( Box b in children )
             {
-                if (b is InlineArea)
+                if ( b is InlineArea )
                 {
-                    InlineArea ia = (InlineArea)b;
-                    if (ia is WordArea)
-                    {
-                        ia.setYOffset(placementOffset);
-                    }
-                    if (ia.GetHeight() > maxHeight)
-                    {
+                    var ia = (InlineArea)b;
+                    if ( ia is WordArea )
+                        ia.setYOffset( placementOffset );
+                    if ( ia.GetHeight() > maxHeight )
                         maxHeight = ia.GetHeight();
-                    }
                     int vert = ia.getVerticalAlign();
-                    if (vert == VerticalAlign.SUPER)
+                    if ( vert == VerticalAlign.SUPER )
                     {
                         int fh = fontState.Ascender;
-                        ia.setYOffset((int)(placementOffset - (2 * fh / 3.0)));
+                        ia.setYOffset( (int)( placementOffset - 2 * fh / 3.0 ) );
                     }
-                    else if (vert == VerticalAlign.SUB)
+                    else if ( vert == VerticalAlign.SUB )
                     {
                         int fh = fontState.Ascender;
-                        ia.setYOffset((int)(placementOffset + (2 * fh / 3.0)));
+                        ia.setYOffset( (int)( placementOffset + 2 * fh / 3.0 ) );
                     }
-                }
-                else
-                {
                 }
             }
-            this.allocationHeight = maxHeight;
+            allocationHeight = maxHeight;
         }
 
-        public void changeColor(float red, float green, float blue)
+        public void changeColor( float red, float green, float blue )
         {
             this.red = red;
             this.green = green;
             this.blue = blue;
         }
 
-        public void changeFont(FontState fontState)
+        public void changeFont( FontState fontState )
         {
-            this.currentFontState = fontState;
+            currentFontState = fontState;
         }
 
-        public void changeWhiteSpaceCollapse(int whiteSpaceCollapse)
+        public void changeWhiteSpaceCollapse( int whiteSpaceCollapse )
         {
             this.whiteSpaceCollapse = whiteSpaceCollapse;
         }
 
-        public void changeWrapOption(int wrapOption)
+        public void changeWrapOption( int wrapOption )
         {
             this.wrapOption = wrapOption;
         }
 
-        public void changeVerticalAlign(int vAlign)
+        public void changeVerticalAlign( int vAlign )
         {
             this.vAlign = vAlign;
         }
@@ -749,12 +662,12 @@ namespace Fonet.Layout
 
         public override int GetHeight()
         {
-            return this.allocationHeight;
+            return allocationHeight;
         }
 
         public int getPlacementOffset()
         {
-            return this.placementOffset;
+            return placementOffset;
         }
 
         public int getStartIndent()
@@ -764,7 +677,7 @@ namespace Fonet.Layout
 
         public bool isEmpty()
         {
-            return !(pendingAreas.Count > 0 || children.Count > 0);
+            return !( pendingAreas.Count > 0 || children.Count > 0 );
         }
 
         public ArrayList getPendingAreas()
@@ -777,52 +690,50 @@ namespace Fonet.Layout
             return pendingWidth;
         }
 
-        public void setPendingAreas(ArrayList areas)
+        public void setPendingAreas( ArrayList areas )
         {
             pendingAreas = areas;
         }
 
-        public void setPendingWidth(int width)
+        public void setPendingWidth( int width )
         {
             pendingWidth = width;
         }
 
-        public void changeHyphenation(HyphenationProps hyphProps)
+        public void changeHyphenation( HyphenationProps hyphProps )
         {
             this.hyphProps = hyphProps;
         }
 
-        private InlineArea buildSimpleLeader(char c, int leaderLength)
+        private InlineArea buildSimpleLeader( char c, int leaderLength )
         {
-            int width = this.currentFontState.GetWidth(currentFontState.MapCharacter(c));
-            if (width == 0)
+            int width = currentFontState.GetWidth( currentFontState.MapCharacter( c ) );
+            if ( width == 0 )
             {
                 FonetDriver.ActiveDriver.FireFonetError(
-                    "char '" + c + "' has width 0. Using width 100 instead.");
+                    "char '" + c + "' has width 0. Using width 100 instead." );
                 width = 100;
             }
-            int factor = (int)Math.Floor((decimal)leaderLength / width);
-            char[] leaderChars = new char[factor];
-            for (int i = 0; i < factor; i++)
-            {
-                leaderChars[i] = c;
-            }
-            WordArea leaderPatternArea = new WordArea(currentFontState, this.red,
-                                                      this.green, this.blue,
-                                                      new String(leaderChars),
-                                                      leaderLength);
-            leaderPatternArea.setYOffset(placementOffset);
+            var factor = (int)Math.Floor( (decimal)leaderLength / width );
+            var leaderChars = new char[ factor ];
+            for ( var i = 0; i < factor; i++ )
+                leaderChars[ i ] = c;
+            var leaderPatternArea = new WordArea( currentFontState, red,
+                green, blue,
+                new string( leaderChars ),
+                leaderLength );
+            leaderPatternArea.setYOffset( placementOffset );
             return leaderPatternArea;
         }
 
-        private int getLeaderAlignIndent(int leaderLength,
-                                         int leaderPatternWidth)
+        private int getLeaderAlignIndent( int leaderLength,
+            int leaderPatternWidth )
         {
             double position = getCurrentXPosition();
-            double nextRepeatedLeaderPatternCycle = Math.Ceiling(position
-                / leaderPatternWidth);
+            double nextRepeatedLeaderPatternCycle = Math.Ceiling( position
+                / leaderPatternWidth );
             double difference =
-                (leaderPatternWidth * nextRepeatedLeaderPatternCycle) - position;
+                leaderPatternWidth * nextRepeatedLeaderPatternCycle - position;
             return (int)difference;
         }
 
@@ -831,254 +742,199 @@ namespace Fonet.Layout
             return finalWidth + spaceWidth + startIndent + pendingWidth;
         }
 
-        private string getHyphenationWord(char[] characters, int wordStart)
+        private string getHyphenationWord( char[] characters, int wordStart )
         {
-            bool wordendFound = false;
-            int counter = 0;
-            char[] newWord = new char[characters.Length];
-            while ((!wordendFound)
-                && ((wordStart + counter) < characters.Length))
+            var wordendFound = false;
+            var counter = 0;
+            var newWord = new char[ characters.Length ];
+            while ( !wordendFound
+                && wordStart + counter < characters.Length )
             {
-                char tk = characters[wordStart + counter];
-                if (Char.IsLetter(tk))
+                char tk = characters[ wordStart + counter ];
+                if ( char.IsLetter( tk ) )
                 {
-                    newWord[counter] = tk;
+                    newWord[ counter ] = tk;
                     counter++;
                 }
                 else
-                {
                     wordendFound = true;
-                }
             }
-            return new String(newWord, 0, counter);
+            return new string( newWord, 0, counter );
         }
 
-        private int getWordWidth(string word)
+        private int getWordWidth( string word )
         {
-            if (word == null)
-            {
+            if ( word == null )
                 return 0;
-            }
-            int width = 0;
-            foreach (char c in word)
-            {
-                width += getCharWidth(c);
-            }
+            var width = 0;
+            foreach ( char c in word )
+                width += getCharWidth( c );
             return width;
         }
 
         public int getRemainingWidth()
         {
-            return this.getContentWidth() + startIndent - this.getCurrentXPosition();
+            return getContentWidth() + startIndent - getCurrentXPosition();
         }
 
-        public void setLinkSet(LinkSet ls)
+        public void setLinkSet( LinkSet ls )
         {
         }
 
-        public void addInlineArea(InlineArea box, LinkSet ls)
+        public void addInlineArea( InlineArea box, LinkSet ls )
         {
             addPending();
-            addChild(box);
-            if (ls != null)
+            addChild( box );
+            if ( ls != null )
             {
-                Rectangle lr = new Rectangle(finalWidth, 0, box.getContentWidth(), box.getContentHeight());
-                ls.addRect(lr, this, box);
+                var lr = new Rectangle( finalWidth, 0, box.getContentWidth(), box.getContentHeight() );
+                ls.addRect( lr, this, box );
             }
             prev = TEXT;
             finalWidth += box.getContentWidth();
         }
 
-        public void addInlineSpace(InlineSpace isp, int spaceWidth)
+        public void addInlineSpace( InlineSpace isp, int spaceWidth )
         {
-            addChild(isp);
+            addChild( isp );
             finalWidth += spaceWidth;
         }
 
-        public int addCharacter(char data, LinkSet ls, bool ul)
+        public int addCharacter( char data, LinkSet ls, bool ul )
         {
             WordArea ia = null;
-            int remainingWidth = this.getRemainingWidth();
+            int remainingWidth = getRemainingWidth();
             int width =
-                this.currentFontState.GetWidth(currentFontState.MapCharacter(data));
-            if (width > remainingWidth)
-            {
+                currentFontState.GetWidth( currentFontState.MapCharacter( data ) );
+            if ( width > remainingWidth )
                 return Character.DOESNOT_FIT;
-            }
-            else
-            {
-                if (Char.IsWhiteSpace(data)
-                    && whiteSpaceCollapse == WhiteSpaceCollapse.TRUE)
-                {
-                    return Character.OK;
-                }
-                ia = new WordArea(currentFontState, this.red, this.green,
-                                  this.blue, data.ToString(),
-                                  width);
-                ia.setYOffset(placementOffset);
-                ia.setUnderlined(ul);
-                pendingAreas.Add(ia);
-                if (Char.IsWhiteSpace(data))
-                {
-                    this.spaceWidth = +width;
-                    prev = LineArea.WHITESPACE;
-                }
-                else
-                {
-                    pendingWidth += width;
-                    prev = LineArea.TEXT;
-                }
+            if ( char.IsWhiteSpace( data )
+                && whiteSpaceCollapse == GenericBoolean.Enums.TRUE )
                 return Character.OK;
-            }
-        }
-
-        private void addMapWord(char startChar, StringBuilder wordBuf)
-        {
-            StringBuilder mapBuf = new StringBuilder(wordBuf.Length);
-            for (int i = 0; i < wordBuf.Length; i++)
+            ia = new WordArea( currentFontState, red, green,
+                blue, data.ToString(),
+                width );
+            ia.setYOffset( placementOffset );
+            ia.setUnderlined( ul );
+            pendingAreas.Add( ia );
+            if ( char.IsWhiteSpace( data ) )
             {
-                mapBuf.Append(currentFontState.MapCharacter(wordBuf[i]));
-            }
-
-            addWord(startChar, mapBuf);
-        }
-
-        private void addWord(char startChar, StringBuilder wordBuf)
-        {
-            string word = (wordBuf != null) ? wordBuf.ToString() : "";
-            WordArea hia;
-            int startCharWidth = getCharWidth(startChar);
-
-            if (isAnySpace(startChar))
-            {
-                this.addChild(new InlineSpace(startCharWidth));
+                spaceWidth = +width;
+                prev = WHITESPACE;
             }
             else
             {
-                hia = new WordArea(currentFontState, this.red, this.green,
-                                   this.blue,
-                                   startChar.ToString(), 1);
-                hia.setYOffset(placementOffset);
-                this.addChild(hia);
+                pendingWidth += width;
+                prev = TEXT;
             }
-            int wordWidth = this.getWordWidth(word);
-            hia = new WordArea(currentFontState, this.red, this.green, this.blue,
-                               word, word.Length);
-            hia.setYOffset(placementOffset);
-            this.addChild(hia);
+            return Character.OK;
+        }
+
+        private void addMapWord( char startChar, StringBuilder wordBuf )
+        {
+            var mapBuf = new StringBuilder( wordBuf.Length );
+            for ( var i = 0; i < wordBuf.Length; i++ )
+                mapBuf.Append( currentFontState.MapCharacter( wordBuf[ i ] ) );
+
+            addWord( startChar, mapBuf );
+        }
+
+        private void addWord( char startChar, StringBuilder wordBuf )
+        {
+            string word = wordBuf != null ? wordBuf.ToString() : "";
+            WordArea hia;
+            int startCharWidth = getCharWidth( startChar );
+
+            if ( isAnySpace( startChar ) )
+                addChild( new InlineSpace( startCharWidth ) );
+            else
+            {
+                hia = new WordArea( currentFontState, red, green,
+                    blue,
+                    startChar.ToString(), 1 );
+                hia.setYOffset( placementOffset );
+                addChild( hia );
+            }
+            int wordWidth = getWordWidth( word );
+            hia = new WordArea( currentFontState, red, green, blue,
+                word, word.Length );
+            hia.setYOffset( placementOffset );
+            addChild( hia );
 
             finalWidth += startCharWidth + wordWidth;
         }
 
         private bool canBreakMidWord()
         {
-            bool ret = false;
-            if (hyphProps != null && hyphProps.language != null
-                && !hyphProps.language.Equals("NONE"))
+            var ret = false;
+            if ( hyphProps != null && hyphProps.language != null
+                && !hyphProps.language.Equals( "NONE" ) )
             {
                 string lang = hyphProps.language.ToLower();
-                if ("zh".Equals(lang) || "ja".Equals(lang) || "ko".Equals(lang)
-                    || "vi".Equals(lang))
-                {
+                if ( "zh".Equals( lang ) || "ja".Equals( lang ) || "ko".Equals( lang )
+                    || "vi".Equals( lang ) )
                     ret = true;
-                }
             }
             return ret;
         }
 
-        private int getCharWidth(char c)
+        private int getCharWidth( char c )
         {
             int width;
 
-            if ((c == '\n') || (c == '\r') || (c == '\t') || (c == '\u00A0'))
-            {
-                width = getCharWidth(' ');
-            }
+            if ( c == '\n' || c == '\r' || c == '\t' || c == '\u00A0' )
+                width = getCharWidth( ' ' );
             else
             {
-                width = currentFontState.GetWidth(currentFontState.MapCharacter(c));
-                if (width <= 0)
+                width = currentFontState.GetWidth( currentFontState.MapCharacter( c ) );
+                if ( width <= 0 )
                 {
-                    int em = currentFontState.GetWidth(currentFontState.MapCharacter('m'));
-                    int en = currentFontState.GetWidth(currentFontState.MapCharacter('n'));
-                    if (em <= 0)
-                    {
+                    int em = currentFontState.GetWidth( currentFontState.MapCharacter( 'm' ) );
+                    int en = currentFontState.GetWidth( currentFontState.MapCharacter( 'n' ) );
+                    if ( em <= 0 )
                         em = 500 * currentFontState.FontSize;
-                    }
-                    if (en <= 0)
-                    {
+                    if ( en <= 0 )
                         en = em - 10;
-                    }
 
-                    if (c == ' ')
-                    {
+                    if ( c == ' ' )
                         width = em;
-                    }
-                    if (c == '\u2000')
-                    {
+                    if ( c == '\u2000' )
                         width = en;
-                    }
-                    if (c == '\u2001')
-                    {
+                    if ( c == '\u2001' )
                         width = em;
-                    }
-                    if (c == '\u2002')
-                    {
+                    if ( c == '\u2002' )
                         width = em / 2;
-                    }
-                    if (c == '\u2003')
-                    {
+                    if ( c == '\u2003' )
                         width = currentFontState.FontSize;
-                    }
-                    if (c == '\u2004')
-                    {
+                    if ( c == '\u2004' )
                         width = em / 3;
-                    }
-                    if (c == '\u2005')
-                    {
+                    if ( c == '\u2005' )
                         width = em / 4;
-                    }
-                    if (c == '\u2006')
-                    {
+                    if ( c == '\u2006' )
                         width = em / 6;
-                    }
-                    if (c == '\u2007')
-                    {
-                        width = getCharWidth(' ');
-                    }
-                    if (c == '\u2008')
-                    {
-                        width = getCharWidth('.');
-                    }
-                    if (c == '\u2009')
-                    {
+                    if ( c == '\u2007' )
+                        width = getCharWidth( ' ' );
+                    if ( c == '\u2008' )
+                        width = getCharWidth( '.' );
+                    if ( c == '\u2009' )
                         width = em / 5;
-                    }
-                    if (c == '\u200A')
-                    {
+                    if ( c == '\u200A' )
                         width = 5;
-                    }
-                    if (c == '\u200B')
-                    {
+                    if ( c == '\u200B' )
                         width = 100;
-                    }
-                    if (c == '\u202F')
-                    {
-                        width = getCharWidth(' ') / 2;
-                    }
-                    if (c == '\u3000')
-                    {
-                        width = getCharWidth(' ') * 2;
-                    }
+                    if ( c == '\u202F' )
+                        width = getCharWidth( ' ' ) / 2;
+                    if ( c == '\u3000' )
+                        width = getCharWidth( ' ' ) * 2;
                 }
             }
 
             return width;
         }
 
-        private bool isSpace(char c)
+        private bool isSpace( char c )
         {
-            if (c == ' ' || c == '\u2000' || // en quad
+            if ( c == ' ' || c == '\u2000' || // en quad
                 c == '\u2001' || // em quad
                 c == '\u2002' || // en space
                 c == '\u2003' || // em space
@@ -1089,39 +945,32 @@ namespace Fonet.Layout
                 c == '\u2008' || // punctuation space
                 c == '\u2009' || // thin space
                 c == '\u200A' || // hair space
-                c == '\u200B') // zero width space
-            {
+                c == '\u200B' ) // zero width space
                 return true;
-            }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
-        private bool isNBSP(char c)
+        private bool isNBSP( char c )
         {
-            if (c == '\u00A0' || c == '\u202F' || // narrow no-break space
+            if ( c == '\u00A0' || c == '\u202F' || // narrow no-break space
                 c == '\u3000' || // ideographic space
-                c == '\uFEFF')
-            { // zero width no-break space
+                c == '\uFEFF' )
+            {
+                // zero width no-break space
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
-        private bool isAnySpace(char c)
+        private bool isAnySpace( char c )
         {
-            bool ret = (isSpace(c) || isNBSP(c));
+            bool ret = isSpace( c ) || isNBSP( c );
             return ret;
         }
 
-        private void addSpacedWord(string word, LinkSet ls, int startw,
-                                   int spacew, TextState textState,
-                                   bool addToPending)
+        private void addSpacedWord( string word, LinkSet ls, int startw,
+            int spacew, TextState textState,
+            bool addToPending )
         {
             /*
              * Split string based on four delimeters:
@@ -1130,75 +979,65 @@ namespace Fonet.Layout
              * \u3000 - CJK IDSP (Ideographic space)
              * \uFEFF - Arabic ZWN BSP (Zero width no break space)
              */
-            StringTokenizer st = new StringTokenizer(word, "\u00A0\u202F\u3000\uFEFF", true);
-            int extraw = 0;
-            while (st.MoveNext())
+            var st = new StringTokenizer( word, "\u00A0\u202F\u3000\uFEFF", true );
+            var extraw = 0;
+            while ( st.MoveNext() )
             {
-                string currentWord = (string)st.Current;
+                var currentWord = (string)st.Current;
 
-                if (currentWord.Length == 1
-                    && (isNBSP(currentWord[0])))
+                if ( currentWord.Length == 1
+                    && isNBSP( currentWord[ 0 ] ) )
                 {
                     // Add an InlineSpace
-                    int spaceWidth = getCharWidth(currentWord[0]);
-                    if (spaceWidth > 0)
+                    int spaceWidth = getCharWidth( currentWord[ 0 ] );
+                    if ( spaceWidth > 0 )
                     {
-                        InlineSpace ispace = new InlineSpace(spaceWidth);
+                        var ispace = new InlineSpace( spaceWidth );
                         extraw += spaceWidth;
-                        if (prevUlState)
-                        {
-                            ispace.setUnderlined(textState.getUnderlined());
-                        }
-                        if (prevOlState)
-                        {
-                            ispace.setOverlined(textState.getOverlined());
-                        }
-                        if (prevLTState)
-                        {
-                            ispace.setLineThrough(textState.getLineThrough());
-                        }
+                        if ( prevUlState )
+                            ispace.setUnderlined( textState.getUnderlined() );
+                        if ( prevOlState )
+                            ispace.setOverlined( textState.getOverlined() );
+                        if ( prevLTState )
+                            ispace.setLineThrough( textState.getLineThrough() );
 
-                        if (addToPending)
+                        if ( addToPending )
                         {
-                            pendingAreas.Add(ispace);
+                            pendingAreas.Add( ispace );
                             pendingWidth += spaceWidth;
                         }
                         else
-                        {
-                            addChild(ispace);
-                        }
+                            addChild( ispace );
                     }
                 }
                 else
                 {
-                    WordArea ia = new WordArea(currentFontState, this.red,
-                                               this.green, this.blue,
-                                               currentWord,
-                                               getWordWidth(currentWord));
-                    ia.setYOffset(placementOffset);
-                    ia.setUnderlined(textState.getUnderlined());
+                    var ia = new WordArea( currentFontState, red,
+                        green, blue,
+                        currentWord,
+                        getWordWidth( currentWord ) );
+                    ia.setYOffset( placementOffset );
+                    ia.setUnderlined( textState.getUnderlined() );
                     prevUlState = textState.getUnderlined();
-                    ia.setOverlined(textState.getOverlined());
+                    ia.setOverlined( textState.getOverlined() );
                     prevOlState = textState.getOverlined();
-                    ia.setLineThrough(textState.getLineThrough());
+                    ia.setLineThrough( textState.getLineThrough() );
                     prevLTState = textState.getLineThrough();
-                    ia.setVerticalAlign(vAlign);
+                    ia.setVerticalAlign( vAlign );
 
-                    if (addToPending)
+                    if ( addToPending )
                     {
-                        pendingAreas.Add(ia);
-                        pendingWidth += getWordWidth(currentWord);
+                        pendingAreas.Add( ia );
+                        pendingWidth += getWordWidth( currentWord );
                     }
                     else
+                        addChild( ia );
+                    if ( ls != null )
                     {
-                        addChild(ia);
-                    }
-                    if (ls != null)
-                    {
-                        Rectangle lr = new Rectangle(startw + extraw, spacew,
-                                                     ia.getContentWidth(),
-                                                     fontState.FontSize);
-                        ls.addRect(lr, this, ia);
+                        var lr = new Rectangle( startw + extraw, spacew,
+                            ia.getContentWidth(),
+                            fontState.FontSize );
+                        ls.addRect( lr, this, ia );
                     }
                 }
             }

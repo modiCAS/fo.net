@@ -1,176 +1,93 @@
+using Fonet.Pdf.Gdi;
+using Fonet.Render.Pdf;
+using Fonet.Render.Pdf.Fonts;
+
 namespace Fonet.Layout
 {
-    using Fonet.Render.Pdf;
-    using Fonet.Render.Pdf.Fonts;
-    using Fonet.Pdf.Gdi;
-
     internal class FontState
     {
-        private FontInfo fontInfo;
+        private readonly IFontMetric metric;
 
-        private string fontName;
-
-        private int fontSize;
-
-        private string fontFamily;
-
-        private string fontStyle;
-
-        private string fontWeight;
-
-        private int fontVariant;
-
-        private IFontMetric metric;
-
-        private int letterSpacing;
-
-        public FontState(FontInfo fontInfo, string fontFamily, string fontStyle,
-                         string fontWeight, int fontSize, int fontVariant)
+        public FontState( FontInfo fontInfo, string fontFamily, string fontStyle,
+            string fontWeight, int fontSize, int fontVariant )
         {
-            this.fontInfo = fontInfo;
-            this.fontFamily = fontFamily;
-            this.fontStyle = fontStyle;
-            this.fontWeight = fontWeight;
-            this.fontSize = fontSize;
-            this.fontName = fontInfo.FontLookup(fontFamily, fontStyle, fontWeight);
-            this.metric = fontInfo.GetMetricsFor(fontName);
-            this.fontVariant = fontVariant;
-            this.letterSpacing = 0;
+            FontInfo = fontInfo;
+            FontFamily = fontFamily;
+            FontStyle = fontStyle;
+            FontWeight = fontWeight;
+            FontSize = fontSize;
+            FontName = fontInfo.FontLookup( fontFamily, fontStyle, fontWeight );
+            metric = fontInfo.GetMetricsFor( FontName );
+            FontVariant = fontVariant;
+            LetterSpacing = 0;
         }
 
-        public FontState(FontInfo fontInfo, string fontFamily, string fontStyle,
-                         string fontWeight, int fontSize, int fontVariant, int letterSpacing)
-            : this(fontInfo, fontFamily, fontStyle, fontWeight, fontSize, fontVariant)
+        public FontState( FontInfo fontInfo, string fontFamily, string fontStyle,
+            string fontWeight, int fontSize, int fontVariant, int letterSpacing )
+            : this( fontInfo, fontFamily, fontStyle, fontWeight, fontSize, fontVariant )
         {
-            this.letterSpacing = letterSpacing;
+            LetterSpacing = letterSpacing;
         }
 
         public int Ascender
         {
-            get
-            {
-                return (metric.Ascender * fontSize) / 1000;
-            }
+            get { return metric.Ascender * FontSize / 1000; }
         }
 
-        public int LetterSpacing
-        {
-            get
-            {
-                return letterSpacing;
-            }
-        }
+        public int LetterSpacing { get; private set; }
 
         public int CapHeight
         {
-            get
-            {
-                return (metric.CapHeight * fontSize) / 1000;
-            }
+            get { return metric.CapHeight * FontSize / 1000; }
         }
 
         public int Descender
         {
-            get
-            {
-                return (metric.Descender * fontSize) / 1000;
-            }
+            get { return metric.Descender * FontSize / 1000; }
         }
 
-        public string FontName
-        {
-            get
-            {
-                return fontName;
-            }
-        }
+        public string FontName { get; private set; }
 
-        public int FontSize
-        {
-            get
-            {
-                return fontSize;
-            }
-        }
+        public int FontSize { get; private set; }
 
-        public string FontWeight
-        {
-            get
-            {
-                return fontWeight;
-            }
-        }
+        public string FontWeight { get; private set; }
 
-        public string FontFamily
-        {
-            get
-            {
-                return fontFamily;
-            }
-        }
+        public string FontFamily { get; private set; }
 
-        public string FontStyle
-        {
-            get
-            {
-                return fontStyle;
-            }
-        }
+        public string FontStyle { get; private set; }
 
-        public int FontVariant
-        {
-            get
-            {
-                return fontVariant;
-            }
-        }
+        public int FontVariant { get; private set; }
 
-        public FontInfo FontInfo
-        {
-            get
-            {
-                return fontInfo;
-            }
-        }
+        public FontInfo FontInfo { get; private set; }
 
         public GdiKerningPairs Kerning
         {
             get
             {
                 IFontDescriptor descriptor = metric.Descriptor;
-                if (descriptor != null)
+                if ( descriptor != null )
                 {
-                    if (descriptor.HasKerningInfo)
-                    {
+                    if ( descriptor.HasKerningInfo )
                         return descriptor.KerningInfo;
-                    }
                 }
                 return GdiKerningPairs.Empty;
             }
         }
 
-        public int GetWidth(ushort charId)
+        public int GetWidth( ushort charId )
         {
-            return letterSpacing + ((metric.GetWidth(charId) * fontSize) / 1000);
+            return LetterSpacing + metric.GetWidth( charId ) * FontSize / 1000;
         }
 
-        public ushort MapCharacter(char c)
+        public ushort MapCharacter( char c )
         {
-            if (metric is Font)
-            {
-                return ((Font)metric).MapCharacter(c);
-            }
+            if ( metric is Font )
+                return ( (Font)metric ).MapCharacter( c );
 
-            ushort charIndex = CodePointMapping.GetMapping("WinAnsiEncoding").MapCharacter(c);
-            if (charIndex != 0)
-            {
+            ushort charIndex = CodePointMapping.GetMapping( "WinAnsiEncoding" ).MapCharacter( c );
+            if ( charIndex != 0 )
                 return charIndex;
-            }
-            else
-            {
-                return (ushort)'#';
-            }
+            return '#';
         }
-
     }
 }

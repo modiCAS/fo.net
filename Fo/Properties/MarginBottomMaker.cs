@@ -2,12 +2,16 @@ namespace Fonet.Fo.Properties
 {
     internal class MarginBottomMaker : LengthProperty.Maker
     {
-        new public static PropertyMaker Maker(string propName)
+        private Property m_defaultProp;
+
+        protected MarginBottomMaker( string name ) : base( name )
         {
-            return new MarginBottomMaker(propName);
         }
 
-        protected MarginBottomMaker(string name) : base(name) { }
+        public new static PropertyMaker Maker( string propName )
+        {
+            return new MarginBottomMaker( propName );
+        }
 
 
         public override bool IsInherited()
@@ -15,17 +19,11 @@ namespace Fonet.Fo.Properties
             return false;
         }
 
-        private Property m_defaultProp = null;
-
-        public override Property Make(PropertyList propertyList)
+        public override Property Make( PropertyList propertyList )
         {
-            if (m_defaultProp == null)
-            {
-                m_defaultProp = Make(propertyList, "0pt", propertyList.getParentFObj());
-            }
+            if ( m_defaultProp == null )
+                m_defaultProp = Make( propertyList, "0pt", propertyList.getParentFObj() );
             return m_defaultProp;
-
         }
-
     }
 }

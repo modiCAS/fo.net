@@ -1,39 +1,31 @@
+using Fonet.Layout;
+
 namespace Fonet.Fo.Flow
 {
-    using Fonet.Layout;
-
     internal class ListBlock : FObj
     {
-        new internal class Maker : FObj.Maker
+        private int align;
+        private int alignLast;
+        private int endIndent;
+        private int lineHeight;
+        private int spaceAfter;
+        private int spaceBefore;
+        private int startIndent;
+
+        public ListBlock( FObj parent, PropertyList propertyList )
+            : base( parent, propertyList )
         {
-            public override FObj Make(FObj parent, PropertyList propertyList)
-            {
-                return new ListBlock(parent, propertyList);
-            }
+            name = "fo:list-block";
         }
 
-        new public static FObj.Maker GetMaker()
+        public new static FObj.Maker GetMaker()
         {
             return new Maker();
         }
 
-        private int align;
-        private int alignLast;
-        private int lineHeight;
-        private int startIndent;
-        private int endIndent;
-        private int spaceBefore;
-        private int spaceAfter;
-
-        public ListBlock(FObj parent, PropertyList propertyList)
-            : base(parent, propertyList)
+        public override Status Layout( Area area )
         {
-            this.name = "fo:list-block";
-        }
-
-        public override Status Layout(Area area)
-        {
-            if (this.marker == MarkerStart)
+            if ( marker == MarkerStart )
             {
                 AccessibilityProps mAccProps = propMgr.GetAccessibilityProps();
                 AuralProps mAurProps = propMgr.GetAuralProps();
@@ -42,105 +34,101 @@ namespace Fonet.Fo.Flow
                 MarginProps mProps = propMgr.GetMarginProps();
                 RelativePositionProps mRelProps = propMgr.GetRelativePositionProps();
 
-                this.align = this.properties.GetProperty("text-align").GetEnum();
-                this.alignLast = this.properties.GetProperty("text-align-last").GetEnum();
-                this.lineHeight =
-                    this.properties.GetProperty("line-height").GetLength().MValue();
-                this.startIndent =
-                    this.properties.GetProperty("start-indent").GetLength().MValue();
-                this.endIndent =
-                    this.properties.GetProperty("end-indent").GetLength().MValue();
-                this.spaceBefore =
-                    this.properties.GetProperty("space-before.optimum").GetLength().MValue();
-                this.spaceAfter =
-                    this.properties.GetProperty("space-after.optimum").GetLength().MValue();
+                align = properties.GetProperty( "text-align" ).GetEnum();
+                alignLast = properties.GetProperty( "text-align-last" ).GetEnum();
+                lineHeight =
+                    properties.GetProperty( "line-height" ).GetLength().MValue();
+                startIndent =
+                    properties.GetProperty( "start-indent" ).GetLength().MValue();
+                endIndent =
+                    properties.GetProperty( "end-indent" ).GetLength().MValue();
+                spaceBefore =
+                    properties.GetProperty( "space-before.optimum" ).GetLength().MValue();
+                spaceAfter =
+                    properties.GetProperty( "space-after.optimum" ).GetLength().MValue();
 
-                this.marker = 0;
+                marker = 0;
 
-                if (area is BlockArea)
-                {
+                if ( area is BlockArea )
                     area.end();
-                }
 
-                if (spaceBefore != 0)
-                {
-                    area.addDisplaySpace(spaceBefore);
-                }
+                if ( spaceBefore != 0 )
+                    area.addDisplaySpace( spaceBefore );
 
-                if (this.isInTableCell)
+                if ( isInTableCell )
                 {
                     startIndent += forcedStartOffset;
                     endIndent += area.getAllocationWidth() - forcedWidth
                         - forcedStartOffset;
                 }
 
-                string id = this.properties.GetProperty("id").GetString();
-                area.getIDReferences().InitializeID(id, area);
+                string id = properties.GetProperty( "id" ).GetString();
+                area.getIDReferences().InitializeID( id, area );
             }
 
-            BlockArea blockArea =
-                new BlockArea(propMgr.GetFontState(area.getFontInfo()),
-                              area.getAllocationWidth(), area.spaceLeft(),
-                              startIndent, endIndent, 0, align, alignLast,
-                              lineHeight);
-            blockArea.setTableCellXOffset(area.getTableCellXOffset());
-            blockArea.setGeneratedBy(this);
-            this.areasGenerated++;
-            if (this.areasGenerated == 1)
-            {
-                blockArea.isFirst(true);
-            }
-            blockArea.addLineagePair(this, this.areasGenerated);
+            var blockArea =
+                new BlockArea( propMgr.GetFontState( area.getFontInfo() ),
+                    area.getAllocationWidth(), area.spaceLeft(),
+                    startIndent, endIndent, 0, align, alignLast,
+                    lineHeight );
+            blockArea.setTableCellXOffset( area.getTableCellXOffset() );
+            blockArea.setGeneratedBy( this );
+            areasGenerated++;
+            if ( areasGenerated == 1 )
+                blockArea.isFirst( true );
+            blockArea.addLineagePair( this, areasGenerated );
 
-            blockArea.setParent(area);
-            blockArea.setPage(area.getPage());
-            blockArea.setBackground(propMgr.GetBackgroundProps());
+            blockArea.setParent( area );
+            blockArea.setPage( area.getPage() );
+            blockArea.setBackground( propMgr.GetBackgroundProps() );
             blockArea.start();
 
-            blockArea.setAbsoluteHeight(area.getAbsoluteHeight());
-            blockArea.setIDReferences(area.getIDReferences());
+            blockArea.setAbsoluteHeight( area.getAbsoluteHeight() );
+            blockArea.setIDReferences( area.getIDReferences() );
 
-            int numChildren = this.children.Count;
-            for (int i = this.marker; i < numChildren; i++)
+            int numChildren = children.Count;
+            for ( int i = marker; i < numChildren; i++ )
             {
-                if (!(children[i] is ListItem))
+                if ( !( children[ i ] is ListItem ) )
                 {
                     FonetDriver.ActiveDriver.FireFonetError(
-                        "Children of list-blocks must be list-items");
-                    return new Status(Status.OK);
+                        "Children of list-blocks must be list-items" );
+                    return new Status( Status.OK );
                 }
-                ListItem listItem = (ListItem)children[i];
+                var listItem = (ListItem)children[ i ];
                 Status status;
-                if ((status = listItem.Layout(blockArea)).isIncomplete())
+                if ( ( status = listItem.Layout( blockArea ) ).isIncomplete() )
                 {
-                    if (status.getCode() == Status.AREA_FULL_NONE && i > 0)
-                    {
-                        status = new Status(Status.AREA_FULL_SOME);
-                    }
-                    this.marker = i;
+                    if ( status.getCode() == Status.AREA_FULL_NONE && i > 0 )
+                        status = new Status( Status.AREA_FULL_SOME );
+                    marker = i;
                     blockArea.end();
-                    area.addChild(blockArea);
-                    area.increaseHeight(blockArea.GetHeight());
+                    area.addChild( blockArea );
+                    area.increaseHeight( blockArea.GetHeight() );
                     return status;
                 }
             }
 
             blockArea.end();
-            area.addChild(blockArea);
-            area.increaseHeight(blockArea.GetHeight());
+            area.addChild( blockArea );
+            area.increaseHeight( blockArea.GetHeight() );
 
-            if (spaceAfter != 0)
-            {
-                area.addDisplaySpace(spaceAfter);
-            }
+            if ( spaceAfter != 0 )
+                area.addDisplaySpace( spaceAfter );
 
-            if (area is BlockArea)
-            {
+            if ( area is BlockArea )
                 area.start();
-            }
 
-            blockArea.isLast(true);
-            return new Status(Status.OK);
+            blockArea.isLast( true );
+            return new Status( Status.OK );
+        }
+
+        internal new class Maker : FObj.Maker
+        {
+            public override FObj Make( FObj parent, PropertyList propertyList )
+            {
+                return new ListBlock( parent, propertyList );
+            }
         }
     }
 }

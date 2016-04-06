@@ -2,17 +2,21 @@ namespace Fonet.Fo.Properties
 {
     internal class PrecedenceMaker : EnumProperty.Maker
     {
-        protected static readonly EnumProperty s_propTRUE = new EnumProperty(Constants.TRUE);
+        protected static readonly EnumProperty s_propTRUE = new EnumProperty( Constants.TRUE );
 
-        protected static readonly EnumProperty s_propFALSE = new EnumProperty(Constants.FALSE);
+        protected static readonly EnumProperty s_propFALSE = new EnumProperty( Constants.FALSE );
 
+        private Property m_defaultProp;
 
-        new public static PropertyMaker Maker(string propName)
+        protected PrecedenceMaker( string name ) : base( name )
         {
-            return new PrecedenceMaker(propName);
         }
 
-        protected PrecedenceMaker(string name) : base(name) { }
+
+        public new static PropertyMaker Maker( string propName )
+        {
+            return new PrecedenceMaker( propName );
+        }
 
 
         public override bool IsInherited()
@@ -20,32 +24,22 @@ namespace Fonet.Fo.Properties
             return false;
         }
 
-        public override Property CheckEnumValues(string value)
+        public override Property CheckEnumValues( string value )
         {
-            if (value.Equals("true"))
-            {
+            if ( value.Equals( "true" ) )
                 return s_propTRUE;
-            }
 
-            if (value.Equals("false"))
-            {
+            if ( value.Equals( "false" ) )
                 return s_propFALSE;
-            }
 
-            return base.CheckEnumValues(value);
+            return base.CheckEnumValues( value );
         }
 
-        private Property m_defaultProp = null;
-
-        public override Property Make(PropertyList propertyList)
+        public override Property Make( PropertyList propertyList )
         {
-            if (m_defaultProp == null)
-            {
-                m_defaultProp = Make(propertyList, "false", propertyList.getParentFObj());
-            }
+            if ( m_defaultProp == null )
+                m_defaultProp = Make( propertyList, "false", propertyList.getParentFObj() );
             return m_defaultProp;
-
         }
-
     }
 }

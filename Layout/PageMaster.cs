@@ -2,81 +2,70 @@ namespace Fonet.Layout
 {
     internal class PageMaster
     {
-        private int width;
-        private int height;
-        private BodyRegionArea body;
-        private RegionArea before;
         private RegionArea after;
-        private RegionArea start;
+        private RegionArea before;
+        private BodyRegionArea body;
         private RegionArea end;
+        private readonly int height;
+        private RegionArea start;
+        private readonly int width;
 
-        public PageMaster(int pageWidth, int pageHeight)
+        public PageMaster( int pageWidth, int pageHeight )
         {
-            this.width = pageWidth;
-            this.height = pageHeight;
+            width = pageWidth;
+            height = pageHeight;
         }
 
-        public void addAfter(RegionArea region)
+        public void addAfter( RegionArea region )
         {
-            this.after = region;
+            after = region;
         }
 
-        public void addBefore(RegionArea region)
+        public void addBefore( RegionArea region )
         {
-            this.before = region;
+            before = region;
         }
 
-        public void addBody(BodyRegionArea region)
+        public void addBody( BodyRegionArea region )
         {
-            this.body = region;
+            body = region;
         }
 
-        public void addEnd(RegionArea region)
+        public void addEnd( RegionArea region )
         {
-            this.end = region;
+            end = region;
         }
 
-        public void addStart(RegionArea region)
+        public void addStart( RegionArea region )
         {
-            this.start = region;
+            start = region;
         }
 
         public int GetHeight()
         {
-            return this.height;
+            return height;
         }
 
         public int getWidth()
         {
-            return this.width;
+            return width;
         }
 
-        public Page makePage(AreaTree areaTree)
+        public Page makePage( AreaTree areaTree )
         {
-            Page p = new Page(areaTree, this.height, this.width);
-            if (this.body != null)
-            {
-                p.addBody(body.makeBodyAreaContainer());
-            }
-            if (this.before != null)
-            {
-                p.addBefore(before.makeAreaContainer());
-            }
-            if (this.after != null)
-            {
-                p.addAfter(after.makeAreaContainer());
-            }
-            if (this.start != null)
-            {
-                p.addStart(start.makeAreaContainer());
-            }
-            if (this.end != null)
-            {
-                p.addEnd(end.makeAreaContainer());
-            }
+            var p = new Page( areaTree, height, width );
+            if ( body != null )
+                p.addBody( body.makeBodyAreaContainer() );
+            if ( before != null )
+                p.addBefore( before.makeAreaContainer() );
+            if ( after != null )
+                p.addAfter( after.makeAreaContainer() );
+            if ( start != null )
+                p.addStart( start.makeAreaContainer() );
+            if ( end != null )
+                p.addEnd( end.makeAreaContainer() );
 
             return p;
         }
-
     }
 }

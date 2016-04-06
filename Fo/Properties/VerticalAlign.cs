@@ -17,6 +17,5 @@ namespace Fonet.Fo.Properties
         public const int TOP = Constants.TOP;
 
         public const int BOTTOM = Constants.BOTTOM;
-
     }
 }

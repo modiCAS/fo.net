@@ -9,6 +9,5 @@ namespace Fonet.Fo.Properties
         public const int LSWP = Constants.LSWP;
 
         public const int LEWP = Constants.LEWP;
-
     }
 }

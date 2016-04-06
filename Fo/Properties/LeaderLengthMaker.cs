@@ -1,70 +1,36 @@
-using System;
 using Fonet.DataTypes;
 
 namespace Fonet.Fo.Properties
 {
     internal class LeaderLengthMaker : LengthRangeProperty.Maker
     {
-        private class SP_MinimumMaker : LengthProperty.Maker
-        {
-            protected internal SP_MinimumMaker(string sPropName) : base(sPropName) { }
-
-            public override IPercentBase GetPercentBase(FObj fo, PropertyList propertyList)
-            {
-                return new LengthBase(fo, propertyList, LengthBase.CONTAINING_BOX);
-            }
-        }
-
         private static readonly PropertyMaker s_MinimumMaker =
-            new SP_MinimumMaker("leader-length.minimum");
-
-        private class SP_OptimumMaker : LengthProperty.Maker
-        {
-            protected internal SP_OptimumMaker(string sPropName) : base(sPropName) { }
-
-            public override IPercentBase GetPercentBase(FObj fo, PropertyList propertyList)
-            {
-                return new LengthBase(fo, propertyList, LengthBase.CONTAINING_BOX);
-            }
-        }
+            new SP_MinimumMaker( "leader-length.minimum" );
 
         private static readonly PropertyMaker s_OptimumMaker =
-            new SP_OptimumMaker("leader-length.optimum");
-
-        private class SP_MaximumMaker : LengthProperty.Maker
-        {
-            protected internal SP_MaximumMaker(string sPropName) : base(sPropName) { }
-
-            public override IPercentBase GetPercentBase(FObj fo, PropertyList propertyList)
-            {
-                return new LengthBase(fo, propertyList, LengthBase.CONTAINING_BOX);
-
-            }
-
-        }
+            new SP_OptimumMaker( "leader-length.optimum" );
 
         private static readonly PropertyMaker s_MaximumMaker =
-            new SP_MaximumMaker("leader-length.maximum");
+            new SP_MaximumMaker( "leader-length.maximum" );
 
 
-        new public static PropertyMaker Maker(string propName)
+        private readonly PropertyMaker m_shorthandMaker;
+
+        protected LeaderLengthMaker( string name )
+            : base( name )
         {
-            return new LeaderLengthMaker(propName);
-        }
-
-        protected LeaderLengthMaker(string name)
-            : base(name)
-        {
-            m_shorthandMaker = GetSubpropMaker("minimum");
-
+            m_shorthandMaker = GetSubpropMaker( "minimum" );
         }
 
 
-        private PropertyMaker m_shorthandMaker;
-
-        public override Property CheckEnumValues(string value)
+        public new static PropertyMaker Maker( string propName )
         {
-            return m_shorthandMaker.CheckEnumValues(value);
+            return new LeaderLengthMaker( propName );
+        }
+
+        public override Property CheckEnumValues( string value )
+        {
+            return m_shorthandMaker.CheckEnumValues( value );
         }
 
         protected override bool IsCompoundMaker()
@@ -72,108 +38,92 @@ namespace Fonet.Fo.Properties
             return true;
         }
 
-        protected override PropertyMaker GetSubpropMaker(string subprop)
+        protected override PropertyMaker GetSubpropMaker( string subprop )
         {
-            if (subprop.Equals("minimum"))
-            {
+            if ( subprop.Equals( "minimum" ) )
                 return s_MinimumMaker;
-            }
 
-            if (subprop.Equals("optimum"))
-            {
+            if ( subprop.Equals( "optimum" ) )
                 return s_OptimumMaker;
-            }
 
-            if (subprop.Equals("maximum"))
-            {
+            if ( subprop.Equals( "maximum" ) )
                 return s_MaximumMaker;
-            }
 
-            return base.GetSubpropMaker(subprop);
+            return base.GetSubpropMaker( subprop );
         }
 
-        protected override Property SetSubprop(Property baseProp, string subpropName, Property subProp)
+        protected override Property SetSubprop( Property baseProp, string subpropName, Property subProp )
         {
             LengthRange val = baseProp.GetLengthRange();
-            val.SetComponent(subpropName, subProp, false);
+            val.SetComponent( subpropName, subProp, false );
             return baseProp;
         }
 
-        public override Property GetSubpropValue(Property baseProp, string subpropName)
+        public override Property GetSubpropValue( Property baseProp, string subpropName )
         {
             LengthRange val = baseProp.GetLengthRange();
-            return val.GetComponent(subpropName);
+            return val.GetComponent( subpropName );
         }
 
-        public override Property Make(PropertyList propertyList)
+        public override Property Make( PropertyList propertyList )
         {
-            return MakeCompound(propertyList, propertyList.getParentFObj());
+            return MakeCompound( propertyList, propertyList.getParentFObj() );
         }
 
 
-        protected override Property MakeCompound(PropertyList pList, FObj fo)
+        protected override Property MakeCompound( PropertyList pList, FObj fo )
         {
-            LengthRange p = new LengthRange();
+            var p = new LengthRange();
             Property subProp;
 
-            subProp = GetSubpropMaker("minimum").Make(pList,
-                                                      GetDefaultForMinimum(), fo);
-            p.SetComponent("minimum", subProp, true);
+            subProp = GetSubpropMaker( "minimum" ).Make( pList,
+                GetDefaultForMinimum(), fo );
+            p.SetComponent( "minimum", subProp, true );
 
-            subProp = GetSubpropMaker("optimum").Make(pList,
-                                                      GetDefaultForOptimum(), fo);
-            p.SetComponent("optimum", subProp, true);
+            subProp = GetSubpropMaker( "optimum" ).Make( pList,
+                GetDefaultForOptimum(), fo );
+            p.SetComponent( "optimum", subProp, true );
 
-            subProp = GetSubpropMaker("maximum").Make(pList,
-                                                      GetDefaultForMaximum(), fo);
-            p.SetComponent("maximum", subProp, true);
+            subProp = GetSubpropMaker( "maximum" ).Make( pList,
+                GetDefaultForMaximum(), fo );
+            p.SetComponent( "maximum", subProp, true );
 
-            return new LengthRangeProperty(p);
+            return new LengthRangeProperty( p );
         }
 
 
-        protected virtual String GetDefaultForMinimum()
+        protected virtual string GetDefaultForMinimum()
         {
             return "0pt";
-
         }
 
-        protected virtual String GetDefaultForOptimum()
+        protected virtual string GetDefaultForOptimum()
         {
             return "12.0pt";
-
         }
 
-        protected virtual String GetDefaultForMaximum()
+        protected virtual string GetDefaultForMaximum()
         {
             return "100%";
-
         }
 
-        public override Property ConvertProperty(Property p, PropertyList pList, FObj fo)
+        public override Property ConvertProperty( Property p, PropertyList pList, FObj fo )
         {
-            if (p is LengthRangeProperty)
-            {
+            if ( p is LengthRangeProperty )
                 return p;
-            }
-            if (!(p is EnumProperty))
+            if ( !( p is EnumProperty ) )
+                p = m_shorthandMaker.ConvertProperty( p, pList, fo );
+            if ( p != null )
             {
-                p = m_shorthandMaker.ConvertProperty(p, pList, fo);
-            }
-            if (p != null)
-            {
-                Property prop = MakeCompound(pList, fo);
+                Property prop = MakeCompound( pList, fo );
                 LengthRange pval = prop.GetLengthRange();
 
-                pval.SetComponent("minimum", p, false);
-                pval.SetComponent("optimum", p, false);
-                pval.SetComponent("maximum", p, false);
+                pval.SetComponent( "minimum", p, false );
+                pval.SetComponent( "optimum", p, false );
+                pval.SetComponent( "maximum", p, false );
                 return prop;
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
 
         public override bool IsInherited()
@@ -181,9 +131,45 @@ namespace Fonet.Fo.Properties
             return true;
         }
 
-        public override IPercentBase GetPercentBase(FObj fo, PropertyList propertyList)
+        public override IPercentBase GetPercentBase( FObj fo, PropertyList propertyList )
         {
-            return new LengthBase(fo, propertyList, LengthBase.CONTAINING_BOX);
+            return new LengthBase( fo, propertyList, LengthBase.CONTAINING_BOX );
+        }
+
+        private class SP_MinimumMaker : LengthProperty.Maker
+        {
+            protected internal SP_MinimumMaker( string sPropName ) : base( sPropName )
+            {
+            }
+
+            public override IPercentBase GetPercentBase( FObj fo, PropertyList propertyList )
+            {
+                return new LengthBase( fo, propertyList, LengthBase.CONTAINING_BOX );
+            }
+        }
+
+        private class SP_OptimumMaker : LengthProperty.Maker
+        {
+            protected internal SP_OptimumMaker( string sPropName ) : base( sPropName )
+            {
+            }
+
+            public override IPercentBase GetPercentBase( FObj fo, PropertyList propertyList )
+            {
+                return new LengthBase( fo, propertyList, LengthBase.CONTAINING_BOX );
+            }
+        }
+
+        private class SP_MaximumMaker : LengthProperty.Maker
+        {
+            protected internal SP_MaximumMaker( string sPropName ) : base( sPropName )
+            {
+            }
+
+            public override IPercentBase GetPercentBase( FObj fo, PropertyList propertyList )
+            {
+                return new LengthBase( fo, propertyList, LengthBase.CONTAINING_BOX );
+            }
         }
     }
 }

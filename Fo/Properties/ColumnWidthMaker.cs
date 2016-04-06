@@ -2,12 +2,14 @@ namespace Fonet.Fo.Properties
 {
     internal class ColumnWidthMaker : LengthProperty.Maker
     {
-        new public static PropertyMaker Maker(string propName)
+        protected ColumnWidthMaker( string name ) : base( name )
         {
-            return new ColumnWidthMaker(propName);
         }
 
-        protected ColumnWidthMaker(string name) : base(name) { }
+        public new static PropertyMaker Maker( string propName )
+        {
+            return new ColumnWidthMaker( propName );
+        }
 
 
         public override bool IsInherited()
@@ -15,11 +17,9 @@ namespace Fonet.Fo.Properties
             return false;
         }
 
-        public override Property Make(PropertyList propertyList)
+        public override Property Make( PropertyList propertyList )
         {
-            return Make(propertyList, "proportional-column-width(1)", propertyList.getParentFObj());
-
+            return Make( propertyList, "proportional-column-width(1)", propertyList.getParentFObj() );
         }
-
     }
 }

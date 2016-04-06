@@ -1,31 +1,31 @@
+using Fonet.Layout;
+
 namespace Fonet.Fo.Flow
 {
-    using Fonet.Layout;
-
     internal class MultiPropertySet : ToBeImplementedElement
     {
-        new internal class Maker : FObj.Maker
+        protected MultiPropertySet( FObj parent, PropertyList propertyList )
+            : base( parent, propertyList )
         {
-            public override FObj Make(FObj parent, PropertyList propertyList)
-            {
-                return new MultiPropertySet(parent, propertyList);
-            }
+            name = "fo:multi-property-set";
         }
 
-        new public static FObj.Maker GetMaker()
+        public new static FObj.Maker GetMaker()
         {
             return new Maker();
         }
 
-        protected MultiPropertySet(FObj parent, PropertyList propertyList)
-            : base(parent, propertyList)
+        public override Status Layout( Area area )
         {
-            this.name = "fo:multi-property-set";
+            return base.Layout( area );
         }
 
-        public override Status Layout(Area area)
+        internal new class Maker : FObj.Maker
         {
-            return base.Layout(area);
+            public override FObj Make( FObj parent, PropertyList propertyList )
+            {
+                return new MultiPropertySet( parent, propertyList );
+            }
         }
     }
 }

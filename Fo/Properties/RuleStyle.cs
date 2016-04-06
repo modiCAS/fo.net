@@ -15,6 +15,5 @@ namespace Fonet.Fo.Properties
         public const int GROOVE = Constants.GROOVE;
 
         public const int RIDGE = Constants.RIDGE;
-
     }
 }

@@ -8,55 +8,39 @@ namespace Fonet.Fo.Pagination
 {
     internal class PageSequence : FObj
     {
-        new internal class Maker : FObj.Maker
-        {
-            public override FObj Make(FObj parent, PropertyList propertyList)
-            {
-                return new PageSequence(parent, propertyList);
-            }
-        }
-
-        new public static FObj.Maker GetMaker()
-        {
-            return new Maker();
-        }
-
         private const int EXPLICIT = 0;
         private const int AUTO = 1;
         private const int AUTO_EVEN = 2;
         private const int AUTO_ODD = 3;
-
-        private Root root;
-        private LayoutMasterSet layoutMasterSet;
-        private Hashtable _flowMap;
-        private string masterName;
-        private bool _isFlowSet = false;
+        private readonly Hashtable _flowMap;
         private Page currentPage;
-        private string ipnValue;
-        private int currentPageNumber = 0;
-        private PageNumberGenerator pageNumberGenerator;
-        private int forcePageCount = 0;
-        private int pageCount = 0;
-        private bool isForcing = false;
-        private int pageNumberType;
-        private bool thisIsFirstPage;
+        private string currentPageMasterName;
         private SubSequenceSpecifier currentSubsequence;
         private int currentSubsequenceNumber = -1;
-        private string currentPageMasterName;
+        private readonly int forcePageCount;
+        private bool isForcing;
+        private readonly LayoutMasterSet layoutMasterSet;
+        private readonly string masterName;
+        private readonly PageNumberGenerator pageNumberGenerator;
+        private readonly int pageNumberType;
 
-        protected PageSequence(FObj parent, PropertyList propertyList)
-            : base(parent, propertyList)
+        private readonly Root root;
+        private bool thisIsFirstPage;
+
+        protected PageSequence( FObj parent, PropertyList propertyList )
+            : base( parent, propertyList )
         {
-            this.name = "fo:page-sequence";
+            PageCount = 0;
+            CurrentPageNumber = 0;
+            IsFlowSet = false;
+            name = "fo:page-sequence";
 
-            if (parent.GetName().Equals("fo:root"))
-            {
-                this.root = (Root)parent;
-            }
+            if ( parent.GetName().Equals( "fo:root" ) )
+                root = (Root)parent;
             else
             {
-                throw new FonetException("page-sequence must be child of root, not "
-                    + parent.GetName());
+                throw new FonetException( "page-sequence must be child of root, not "
+                    + parent.GetName() );
             }
 
             layoutMasterSet = root.getLayoutMasterSet();
@@ -65,350 +49,331 @@ namespace Fonet.Fo.Pagination
             _flowMap = new Hashtable();
 
             thisIsFirstPage = true;
-            ipnValue = this.properties.GetProperty("initial-page-number").GetString();
+            IpnValue = properties.GetProperty( "initial-page-number" ).GetString();
 
-            if (ipnValue.Equals("auto"))
-            {
+            if ( IpnValue.Equals( "auto" ) )
                 pageNumberType = AUTO;
-            }
-            else if (ipnValue.Equals("auto-even"))
-            {
+            else if ( IpnValue.Equals( "auto-even" ) )
                 pageNumberType = AUTO_EVEN;
-            }
-            else if (ipnValue.Equals("auto-odd"))
-            {
+            else if ( IpnValue.Equals( "auto-odd" ) )
                 pageNumberType = AUTO_ODD;
-            }
             else
             {
                 pageNumberType = EXPLICIT;
                 try
                 {
-                    int pageStart = Int32.Parse(ipnValue);
-                    this.currentPageNumber = (pageStart > 0) ? pageStart - 1 : 0;
+                    int pageStart = int.Parse( IpnValue );
+                    CurrentPageNumber = pageStart > 0 ? pageStart - 1 : 0;
                 }
-                catch (FormatException)
+                catch ( FormatException )
                 {
-                    throw new FonetException("\"" + ipnValue
-                        + "\" is not a valid value for initial-page-number");
+                    throw new FonetException( "\"" + IpnValue
+                        + "\" is not a valid value for initial-page-number" );
                 }
             }
 
-            masterName = this.properties.GetProperty("master-reference").GetString();
+            masterName = properties.GetProperty( "master-reference" ).GetString();
 
-            this.pageNumberGenerator =
-                new PageNumberGenerator(this.properties.GetProperty("format").GetString(),
-                                        this.properties.GetProperty("grouping-separator").GetCharacter(),
-                                        this.properties.GetProperty("grouping-size").GetNumber().IntValue(),
-                                        this.properties.GetProperty("letter-value").GetEnum());
+            pageNumberGenerator =
+                new PageNumberGenerator( properties.GetProperty( "format" ).GetString(),
+                    properties.GetProperty( "grouping-separator" ).GetCharacter(),
+                    properties.GetProperty( "grouping-size" ).GetNumber().IntValue(),
+                    properties.GetProperty( "letter-value" ).GetEnum() );
 
-            this.forcePageCount =
-                this.properties.GetProperty("force-page-count").GetEnum();
+            forcePageCount =
+                properties.GetProperty( "force-page-count" ).GetEnum();
+        }
 
+        public bool IsFlowSet { get; set; }
+
+        public string IpnValue { get; private set; }
+
+        public int CurrentPageNumber { get; private set; }
+
+        public int PageCount { get; private set; }
+
+        public new static FObj.Maker GetMaker()
+        {
+            return new Maker();
         }
 
 
-        public void AddFlow(Flow.Flow flow)
+        public void AddFlow( Flow.Flow flow )
         {
-            if (_flowMap.ContainsKey(flow.GetFlowName()))
-            {
-                throw new FonetException("flow-names must be unique within an fo:page-sequence");
-            }
-            if (!this.layoutMasterSet.regionNameExists(flow.GetFlowName()))
+            if ( _flowMap.ContainsKey( flow.GetFlowName() ) )
+                throw new FonetException( "flow-names must be unique within an fo:page-sequence" );
+            if ( !layoutMasterSet.regionNameExists( flow.GetFlowName() ) )
             {
                 FonetDriver.ActiveDriver.FireFonetError(
-                    "region-name '" + flow.GetFlowName() + "' doesn't exist in the layout-master-set.");
+                    "region-name '" + flow.GetFlowName() + "' doesn't exist in the layout-master-set." );
             }
-            _flowMap.Add(flow.GetFlowName(), flow);
+            _flowMap.Add( flow.GetFlowName(), flow );
             IsFlowSet = true;
         }
 
-        public void Format(AreaTree areaTree)
+        public void Format( AreaTree areaTree )
         {
-            Status status = new Status(Status.OK);
+            var status = new Status( Status.OK );
 
-            this.layoutMasterSet.resetPageMasters();
+            layoutMasterSet.resetPageMasters();
 
-            int firstAvailPageNumber = 0;
+            var firstAvailPageNumber = 0;
             do
             {
-                firstAvailPageNumber = this.root.getRunningPageNumberCounter();
-                bool tempIsFirstPage = false;
+                firstAvailPageNumber = root.getRunningPageNumberCounter();
+                var tempIsFirstPage = false;
 
-                if (thisIsFirstPage)
+                if ( thisIsFirstPage )
                 {
                     tempIsFirstPage = thisIsFirstPage;
-                    if (pageNumberType == AUTO)
+                    if ( pageNumberType == AUTO )
                     {
-                        this.currentPageNumber =
-                            this.root.getRunningPageNumberCounter();
+                        CurrentPageNumber =
+                            root.getRunningPageNumberCounter();
                     }
-                    else if (pageNumberType == AUTO_ODD)
+                    else if ( pageNumberType == AUTO_ODD )
                     {
-                        this.currentPageNumber =
-                            this.root.getRunningPageNumberCounter();
-                        if (this.currentPageNumber % 2 == 1)
-                        {
-                            this.currentPageNumber++;
-                        }
+                        CurrentPageNumber =
+                            root.getRunningPageNumberCounter();
+                        if ( CurrentPageNumber % 2 == 1 )
+                            CurrentPageNumber++;
                     }
-                    else if (pageNumberType == AUTO_EVEN)
+                    else if ( pageNumberType == AUTO_EVEN )
                     {
-                        this.currentPageNumber =
-                            this.root.getRunningPageNumberCounter();
-                        if (this.currentPageNumber % 2 == 0)
-                        {
-                            this.currentPageNumber++;
-                        }
+                        CurrentPageNumber =
+                            root.getRunningPageNumberCounter();
+                        if ( CurrentPageNumber % 2 == 0 )
+                            CurrentPageNumber++;
                     }
                     thisIsFirstPage = false;
                 }
 
-                this.currentPageNumber++;
-                bool isEmptyPage = false;
+                CurrentPageNumber++;
+                var isEmptyPage = false;
 
-                if ((status.getCode() == Status.FORCE_PAGE_BREAK_EVEN)
-                    && ((currentPageNumber % 2) == 1))
-                {
+                if ( status.getCode() == Status.FORCE_PAGE_BREAK_EVEN
+                    && CurrentPageNumber % 2 == 1 )
                     isEmptyPage = true;
-                }
-                else if ((status.getCode() == Status.FORCE_PAGE_BREAK_ODD)
-                    && ((currentPageNumber % 2) == 0))
-                {
+                else if ( status.getCode() == Status.FORCE_PAGE_BREAK_ODD
+                    && CurrentPageNumber % 2 == 0 )
                     isEmptyPage = true;
-                }
                 else
-                {
                     isEmptyPage = false;
-                }
 
-                currentPage = MakePage(areaTree, firstAvailPageNumber,
-                                       tempIsFirstPage, isEmptyPage);
+                currentPage = MakePage( areaTree, firstAvailPageNumber,
+                    tempIsFirstPage, isEmptyPage );
 
-                currentPage.setNumber(this.currentPageNumber);
+                currentPage.setNumber( CurrentPageNumber );
                 string formattedPageNumber =
-                    pageNumberGenerator.makeFormattedPageNumber(this.currentPageNumber);
-                currentPage.setFormattedNumber(formattedPageNumber);
-                this.root.setRunningPageNumberCounter(this.currentPageNumber);
+                    pageNumberGenerator.makeFormattedPageNumber( CurrentPageNumber );
+                currentPage.setFormattedNumber( formattedPageNumber );
+                root.setRunningPageNumberCounter( CurrentPageNumber );
 
                 FonetDriver.ActiveDriver.FireFonetInfo(
-                    "[" + currentPageNumber + "]");
+                    "[" + CurrentPageNumber + "]" );
 
-                if ((status.getCode() == Status.FORCE_PAGE_BREAK_EVEN)
-                    && ((currentPageNumber % 2) == 1)) { }
-                else if ((status.getCode() == Status.FORCE_PAGE_BREAK_ODD)
-                    && ((currentPageNumber % 2) == 0)) { }
+                if ( status.getCode() == Status.FORCE_PAGE_BREAK_EVEN
+                    && CurrentPageNumber % 2 == 1 )
+                {
+                }
+                else if ( status.getCode() == Status.FORCE_PAGE_BREAK_ODD
+                    && CurrentPageNumber % 2 == 0 )
+                {
+                }
                 else
                 {
                     BodyAreaContainer bodyArea = currentPage.getBody();
-                    bodyArea.setIDReferences(areaTree.getIDReferences());
+                    bodyArea.setIDReferences( areaTree.getIDReferences() );
 
-                    Flow.Flow flow = GetCurrentFlow(RegionBody.REGION_CLASS);
+                    Flow.Flow flow = GetCurrentFlow( RegionBody.REGION_CLASS );
 
-                    if (flow == null)
+                    if ( flow == null )
                     {
                         FonetDriver.ActiveDriver.FireFonetError(
-                            "No flow found for region-body in page-master '" + currentPageMasterName + "'");
+                            "No flow found for region-body in page-master '" + currentPageMasterName + "'" );
                         break;
                     }
-                    else
-                    {
-                        status = flow.Layout(bodyArea);
-                    }
-
+                    status = flow.Layout( bodyArea );
                 }
 
-                currentPage.setPageSequence(this);
-                FormatStaticContent(areaTree);
+                currentPage.setPageSequence( this );
+                FormatStaticContent( areaTree );
 
-                areaTree.addPage(currentPage);
-                this.pageCount++;
-            } while (FlowsAreIncomplete());
-            ForcePage(areaTree, firstAvailPageNumber);
+                areaTree.addPage( currentPage );
+                PageCount++;
+            }
+            while ( FlowsAreIncomplete() );
+            ForcePage( areaTree, firstAvailPageNumber );
             currentPage = null;
         }
 
-        private Page MakePage(AreaTree areaTree, int firstAvailPageNumber,
-                              bool isFirstPage,
-                              bool isEmptyPage)
+        private Page MakePage( AreaTree areaTree, int firstAvailPageNumber,
+            bool isFirstPage,
+            bool isEmptyPage )
         {
-            PageMaster pageMaster = GetNextPageMaster(masterName,
-                                                      firstAvailPageNumber,
-                                                      isFirstPage, isEmptyPage);
-            if (pageMaster == null)
-            {
-                throw new FonetException("page masters exhausted. Cannot recover.");
-            }
-            Page p = pageMaster.makePage(areaTree);
-            if (currentPage != null)
+            PageMaster pageMaster = GetNextPageMaster( masterName,
+                firstAvailPageNumber,
+                isFirstPage, isEmptyPage );
+            if ( pageMaster == null )
+                throw new FonetException( "page masters exhausted. Cannot recover." );
+            Page p = pageMaster.makePage( areaTree );
+            if ( currentPage != null )
             {
                 ArrayList foots = currentPage.getPendingFootnotes();
-                p.setPendingFootnotes(foots);
+                p.setPendingFootnotes( foots );
             }
             return p;
         }
 
-        private void FormatStaticContent(AreaTree areaTree)
+        private void FormatStaticContent( AreaTree areaTree )
         {
             SimplePageMaster simpleMaster = GetCurrentSimplePageMaster();
 
-            if (simpleMaster.getRegion(RegionBefore.REGION_CLASS) != null
-                && (currentPage.getBefore() != null))
+            if ( simpleMaster.getRegion( RegionBefore.REGION_CLASS ) != null
+                && currentPage.getBefore() != null )
             {
-                Flow.Flow staticFlow =
-                    (Flow.Flow)_flowMap[simpleMaster.getRegion(RegionBefore.REGION_CLASS).getRegionName()];
-                if (staticFlow != null)
+                var staticFlow =
+                    (Flow.Flow)_flowMap[ simpleMaster.getRegion( RegionBefore.REGION_CLASS ).getRegionName() ];
+                if ( staticFlow != null )
                 {
                     AreaContainer beforeArea = currentPage.getBefore();
-                    beforeArea.setIDReferences(areaTree.getIDReferences());
-                    LayoutStaticContent(staticFlow,
-                                        simpleMaster.getRegion(RegionBefore.REGION_CLASS),
-                                        beforeArea);
+                    beforeArea.setIDReferences( areaTree.getIDReferences() );
+                    LayoutStaticContent( staticFlow,
+                        simpleMaster.getRegion( RegionBefore.REGION_CLASS ),
+                        beforeArea );
                 }
             }
 
-            if (simpleMaster.getRegion(RegionAfter.REGION_CLASS) != null
-                && (currentPage.getAfter() != null))
+            if ( simpleMaster.getRegion( RegionAfter.REGION_CLASS ) != null
+                && currentPage.getAfter() != null )
             {
-                Flow.Flow staticFlow =
-                    (Flow.Flow)_flowMap[simpleMaster.getRegion(RegionAfter.REGION_CLASS).getRegionName()];
-                if (staticFlow != null)
+                var staticFlow =
+                    (Flow.Flow)_flowMap[ simpleMaster.getRegion( RegionAfter.REGION_CLASS ).getRegionName() ];
+                if ( staticFlow != null )
                 {
                     AreaContainer afterArea = currentPage.getAfter();
-                    afterArea.setIDReferences(areaTree.getIDReferences());
-                    LayoutStaticContent(staticFlow,
-                                        simpleMaster.getRegion(RegionAfter.REGION_CLASS),
-                                        afterArea);
+                    afterArea.setIDReferences( areaTree.getIDReferences() );
+                    LayoutStaticContent( staticFlow,
+                        simpleMaster.getRegion( RegionAfter.REGION_CLASS ),
+                        afterArea );
                 }
             }
 
-            if (simpleMaster.getRegion(RegionStart.REGION_CLASS) != null
-                && (currentPage.getStart() != null))
+            if ( simpleMaster.getRegion( RegionStart.REGION_CLASS ) != null
+                && currentPage.getStart() != null )
             {
-                Flow.Flow staticFlow =
-                    (Flow.Flow)_flowMap[simpleMaster.getRegion(RegionStart.REGION_CLASS).getRegionName()];
-                if (staticFlow != null)
+                var staticFlow =
+                    (Flow.Flow)_flowMap[ simpleMaster.getRegion( RegionStart.REGION_CLASS ).getRegionName() ];
+                if ( staticFlow != null )
                 {
                     AreaContainer startArea = currentPage.getStart();
-                    startArea.setIDReferences(areaTree.getIDReferences());
-                    LayoutStaticContent(staticFlow,
-                                        simpleMaster.getRegion(RegionStart.REGION_CLASS),
-                                        startArea);
+                    startArea.setIDReferences( areaTree.getIDReferences() );
+                    LayoutStaticContent( staticFlow,
+                        simpleMaster.getRegion( RegionStart.REGION_CLASS ),
+                        startArea );
                 }
             }
 
-            if (simpleMaster.getRegion(RegionEnd.REGION_CLASS) != null
-                && (currentPage.getEnd() != null))
+            if ( simpleMaster.getRegion( RegionEnd.REGION_CLASS ) != null
+                && currentPage.getEnd() != null )
             {
-                Flow.Flow staticFlow =
-                    (Flow.Flow)_flowMap[simpleMaster.getRegion(RegionEnd.REGION_CLASS).getRegionName()];
-                if (staticFlow != null)
+                var staticFlow =
+                    (Flow.Flow)_flowMap[ simpleMaster.getRegion( RegionEnd.REGION_CLASS ).getRegionName() ];
+                if ( staticFlow != null )
                 {
                     AreaContainer endArea = currentPage.getEnd();
-                    endArea.setIDReferences(areaTree.getIDReferences());
-                    LayoutStaticContent(staticFlow,
-                                        simpleMaster.getRegion(RegionEnd.REGION_CLASS),
-                                        endArea);
+                    endArea.setIDReferences( areaTree.getIDReferences() );
+                    LayoutStaticContent( staticFlow,
+                        simpleMaster.getRegion( RegionEnd.REGION_CLASS ),
+                        endArea );
                 }
             }
-
         }
 
-        private void LayoutStaticContent(Flow.Flow flow, Region region,
-                                         AreaContainer area)
+        private void LayoutStaticContent( Flow.Flow flow, Region region,
+            AreaContainer area )
         {
-            if (flow is StaticContent)
-            {
-                ((StaticContent)flow).Layout(area, region);
-            }
+            if ( flow is StaticContent )
+                ( (StaticContent)flow ).Layout( area, region );
             else
             {
-                FonetDriver.ActiveDriver.FireFonetError(region.GetName()
+                FonetDriver.ActiveDriver.FireFonetError( region.GetName()
                     + " only supports static-content flows currently. "
                     + "Cannot use flow named '"
-                    + flow.GetFlowName() + "'");
+                    + flow.GetFlowName() + "'" );
             }
         }
 
-        private SubSequenceSpecifier GetNextSubsequence(PageSequenceMaster master)
+        private SubSequenceSpecifier GetNextSubsequence( PageSequenceMaster master )
         {
-            if (master.GetSubSequenceSpecifierCount()
-                > currentSubsequenceNumber + 1)
+            if ( master.GetSubSequenceSpecifierCount()
+                > currentSubsequenceNumber + 1 )
             {
                 currentSubsequence =
-                    master.getSubSequenceSpecifier(currentSubsequenceNumber + 1);
+                    master.getSubSequenceSpecifier( currentSubsequenceNumber + 1 );
                 currentSubsequenceNumber++;
                 return currentSubsequence;
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
 
-        private SimplePageMaster GetNextSimplePageMaster(PageSequenceMaster sequenceMaster,
-                                                         int currentPageNumber, bool thisIsFirstPage,
-                                                         bool isEmptyPage)
+        private SimplePageMaster GetNextSimplePageMaster( PageSequenceMaster sequenceMaster,
+            int currentPageNumber, bool thisIsFirstPage,
+            bool isEmptyPage )
         {
-            if (isForcing)
+            if ( isForcing )
             {
-                return this.layoutMasterSet.getSimplePageMaster(
-                    GetNextPageMasterName(sequenceMaster, currentPageNumber, false, true));
+                return layoutMasterSet.getSimplePageMaster(
+                    GetNextPageMasterName( sequenceMaster, currentPageNumber, false, true ) );
             }
             string nextPageMaster =
-                GetNextPageMasterName(sequenceMaster, currentPageNumber, thisIsFirstPage, isEmptyPage);
-            return this.layoutMasterSet.getSimplePageMaster(nextPageMaster);
-
+                GetNextPageMasterName( sequenceMaster, currentPageNumber, thisIsFirstPage, isEmptyPage );
+            return layoutMasterSet.getSimplePageMaster( nextPageMaster );
         }
 
-        private string GetNextPageMasterName(PageSequenceMaster sequenceMaster,
-                                             int currentPageNumber,
-                                             bool thisIsFirstPage,
-                                             bool isEmptyPage)
+        private string GetNextPageMasterName( PageSequenceMaster sequenceMaster,
+            int currentPageNumber,
+            bool thisIsFirstPage,
+            bool isEmptyPage )
         {
-            if (null == currentSubsequence)
-            {
-                currentSubsequence = GetNextSubsequence(sequenceMaster);
-            }
+            if ( null == currentSubsequence )
+                currentSubsequence = GetNextSubsequence( sequenceMaster );
 
             string nextPageMaster =
-                currentSubsequence.GetNextPageMaster(currentPageNumber,
-                                                     thisIsFirstPage,
-                                                     isEmptyPage);
+                currentSubsequence.GetNextPageMaster( currentPageNumber,
+                    thisIsFirstPage,
+                    isEmptyPage );
 
 
-            if (null == nextPageMaster
-                || IsFlowForMasterNameDone(currentPageMasterName))
+            if ( null == nextPageMaster
+                || IsFlowForMasterNameDone( currentPageMasterName ) )
             {
                 SubSequenceSpecifier nextSubsequence =
-                    GetNextSubsequence(sequenceMaster);
-                if (nextSubsequence == null)
+                    GetNextSubsequence( sequenceMaster );
+                if ( nextSubsequence == null )
                 {
                     FonetDriver.ActiveDriver.FireFonetError(
-                        "Page subsequences exhausted. Using previous subsequence.");
+                        "Page subsequences exhausted. Using previous subsequence." );
                     thisIsFirstPage =
                         true;
                     currentSubsequence.Reset();
                 }
                 else
-                {
                     currentSubsequence = nextSubsequence;
-                }
 
                 nextPageMaster =
-                    currentSubsequence.GetNextPageMaster(currentPageNumber,
-                                                         thisIsFirstPage,
-                                                         isEmptyPage);
+                    currentSubsequence.GetNextPageMaster( currentPageNumber,
+                        thisIsFirstPage,
+                        isEmptyPage );
             }
             currentPageMasterName = nextPageMaster;
 
             return nextPageMaster;
-
         }
 
         private SimplePageMaster GetCurrentSimplePageMaster()
         {
-            return this.layoutMasterSet.getSimplePageMaster(currentPageMasterName);
+            return layoutMasterSet.getSimplePageMaster( currentPageMasterName );
         }
 
         private string GetCurrentPageMasterName()
@@ -416,32 +381,31 @@ namespace Fonet.Fo.Pagination
             return currentPageMasterName;
         }
 
-        private PageMaster GetNextPageMaster(string pageSequenceName,
-                                             int currentPageNumber,
-                                             bool thisIsFirstPage,
-                                             bool isEmptyPage)
+        private PageMaster GetNextPageMaster( string pageSequenceName,
+            int currentPageNumber,
+            bool thisIsFirstPage,
+            bool isEmptyPage )
         {
             PageMaster pageMaster = null;
 
             PageSequenceMaster sequenceMaster =
-                this.layoutMasterSet.getPageSequenceMaster(pageSequenceName);
+                layoutMasterSet.getPageSequenceMaster( pageSequenceName );
 
-            if (sequenceMaster != null)
+            if ( sequenceMaster != null )
             {
-                pageMaster = GetNextSimplePageMaster(sequenceMaster,
-                                                     currentPageNumber,
-                                                     thisIsFirstPage,
-                                                     isEmptyPage).getPageMaster();
-
+                pageMaster = GetNextSimplePageMaster( sequenceMaster,
+                    currentPageNumber,
+                    thisIsFirstPage,
+                    isEmptyPage ).getPageMaster();
             }
             else
             {
                 SimplePageMaster simpleMaster =
-                    this.layoutMasterSet.getSimplePageMaster(pageSequenceName);
-                if (simpleMaster == null)
+                    layoutMasterSet.getSimplePageMaster( pageSequenceName );
+                if ( simpleMaster == null )
                 {
-                    throw new FonetException("'master-reference' for 'fo:page-sequence'"
-                        + "matches no 'simple-page-master' or 'page-sequence-master'");
+                    throw new FonetException( "'master-reference' for 'fo:page-sequence'"
+                        + "matches no 'simple-page-master' or 'page-sequence-master'" );
                 }
                 currentPageMasterName = pageSequenceName;
 
@@ -452,184 +416,140 @@ namespace Fonet.Fo.Pagination
 
         private bool FlowsAreIncomplete()
         {
-            bool isIncomplete = false;
+            var isIncomplete = false;
 
-            foreach (Flow.Flow flow in _flowMap.Values)
+            foreach ( Flow.Flow flow in _flowMap.Values )
             {
-                if (flow is StaticContent)
-                {
+                if ( flow is StaticContent )
                     continue;
-                }
                 Status status = flow.getStatus();
                 isIncomplete |= status.isIncomplete();
             }
             return isIncomplete;
         }
 
-        private Flow.Flow GetCurrentFlow(string regionClass)
+        private Flow.Flow GetCurrentFlow( string regionClass )
         {
-            Region region = GetCurrentSimplePageMaster().getRegion(regionClass);
-            if (region != null)
+            Region region = GetCurrentSimplePageMaster().getRegion( regionClass );
+            if ( region != null )
             {
-                Flow.Flow flow = (Flow.Flow)_flowMap[region.getRegionName()];
+                var flow = (Flow.Flow)_flowMap[ region.getRegionName() ];
                 return flow;
-
             }
-            else
-            {
-                FonetDriver.ActiveDriver.FireFonetInfo(
-                    "flow is null. regionClass = '" + regionClass
-                        + "' currentSPM = "
-                        + GetCurrentSimplePageMaster());
-                return null;
-            }
-
+            FonetDriver.ActiveDriver.FireFonetInfo(
+                "flow is null. regionClass = '" + regionClass
+                    + "' currentSPM = "
+                    + GetCurrentSimplePageMaster() );
+            return null;
         }
 
-        private bool IsFlowForMasterNameDone(string masterName)
+        private bool IsFlowForMasterNameDone( string masterName )
         {
-            if (isForcing)
-            {
+            if ( isForcing )
                 return false;
-            }
-            if (masterName != null)
+            if ( masterName != null )
             {
                 SimplePageMaster spm =
-                    this.layoutMasterSet.getSimplePageMaster(masterName);
-                Region region = spm.getRegion(RegionBody.REGION_CLASS);
+                    layoutMasterSet.getSimplePageMaster( masterName );
+                Region region = spm.getRegion( RegionBody.REGION_CLASS );
 
 
-                Flow.Flow flow = (Flow.Flow)_flowMap[region.getRegionName()];
-                if ((null == flow) || flow.getStatus().isIncomplete())
-                {
+                var flow = (Flow.Flow)_flowMap[ region.getRegionName() ];
+                if ( null == flow || flow.getStatus().isIncomplete() )
                     return false;
-                }
-                else
-                {
-                    return true;
-                }
+                return true;
             }
             return false;
         }
 
-        public bool IsFlowSet
+        private void ForcePage( AreaTree areaTree, int firstAvailPageNumber )
         {
-            get { return _isFlowSet; }
-            set { _isFlowSet = value; }
-        }
-
-        public string IpnValue
-        {
-            get { return ipnValue; }
-        }
-
-        public int CurrentPageNumber
-        {
-            get { return currentPageNumber; }
-        }
-
-        public int PageCount
-        {
-            get { return this.pageCount; }
-        }
-
-        private void ForcePage(AreaTree areaTree, int firstAvailPageNumber)
-        {
-            bool bmakePage = false;
-            if (this.forcePageCount == ForcePageCount.AUTO)
+            var bmakePage = false;
+            if ( forcePageCount == ForcePageCount.AUTO )
             {
                 PageSequence nextSequence =
-                    this.root.getSucceedingPageSequence(this);
-                if (nextSequence != null)
+                    root.getSucceedingPageSequence( this );
+                if ( nextSequence != null )
                 {
-                    if (nextSequence.IpnValue.Equals("auto"))
+                    if ( nextSequence.IpnValue.Equals( "auto" ) )
                     {
                         // do nothing
                     }
-                    else if (nextSequence.IpnValue.Equals("auto-odd"))
+                    else if ( nextSequence.IpnValue.Equals( "auto-odd" ) )
                     {
-                        if (firstAvailPageNumber % 2 == 0)
-                        {
+                        if ( firstAvailPageNumber % 2 == 0 )
                             bmakePage = true;
-                        }
                     }
-                    else if (nextSequence.IpnValue.Equals("auto-even"))
+                    else if ( nextSequence.IpnValue.Equals( "auto-even" ) )
                     {
-                        if (firstAvailPageNumber % 2 != 0)
-                        {
+                        if ( firstAvailPageNumber % 2 != 0 )
                             bmakePage = true;
-                        }
                     }
                     else
                     {
                         int nextSequenceStartPageNumber =
                             nextSequence.CurrentPageNumber;
-                        if ((nextSequenceStartPageNumber % 2 == 0)
-                            && (firstAvailPageNumber % 2 == 0))
-                        {
+                        if ( nextSequenceStartPageNumber % 2 == 0
+                            && firstAvailPageNumber % 2 == 0 )
                             bmakePage = true;
-                        }
-                        else if ((nextSequenceStartPageNumber % 2 != 0)
-                            && (firstAvailPageNumber % 2 != 0))
-                        {
+                        else if ( nextSequenceStartPageNumber % 2 != 0
+                            && firstAvailPageNumber % 2 != 0 )
                             bmakePage = true;
-                        }
                     }
                 }
             }
-            else if ((this.forcePageCount == ForcePageCount.EVEN)
-                && (this.pageCount % 2 != 0))
-            {
+            else if ( forcePageCount == ForcePageCount.EVEN
+                && PageCount % 2 != 0 )
                 bmakePage = true;
-            }
-            else if ((this.forcePageCount == ForcePageCount.ODD)
-                && (this.pageCount % 2 == 0))
-            {
+            else if ( forcePageCount == ForcePageCount.ODD
+                && PageCount % 2 == 0 )
                 bmakePage = true;
-            }
-            else if ((this.forcePageCount == ForcePageCount.END_ON_EVEN)
-                && (firstAvailPageNumber % 2 == 0))
-            {
+            else if ( forcePageCount == ForcePageCount.END_ON_EVEN
+                && firstAvailPageNumber % 2 == 0 )
                 bmakePage = true;
-            }
-            else if ((this.forcePageCount == ForcePageCount.END_ON_ODD)
-                && (firstAvailPageNumber % 2 != 0))
-            {
+            else if ( forcePageCount == ForcePageCount.END_ON_ODD
+                && firstAvailPageNumber % 2 != 0 )
                 bmakePage = true;
-            }
-            else if (this.forcePageCount == ForcePageCount.NO_FORCE)
+            else if ( forcePageCount == ForcePageCount.NO_FORCE )
             {
                 // do nothing
             }
 
-            if (bmakePage)
+            if ( bmakePage )
             {
                 try
                 {
-                    this.isForcing = true;
-                    this.currentPageNumber++;
-                    firstAvailPageNumber = this.currentPageNumber;
-                    currentPage = MakePage(areaTree, firstAvailPageNumber, false, true);
+                    isForcing = true;
+                    CurrentPageNumber++;
+                    firstAvailPageNumber = CurrentPageNumber;
+                    currentPage = MakePage( areaTree, firstAvailPageNumber, false, true );
                     string formattedPageNumber =
-                        pageNumberGenerator.makeFormattedPageNumber(this.currentPageNumber);
-                    currentPage.setFormattedNumber(formattedPageNumber);
-                    currentPage.setPageSequence(this);
-                    FormatStaticContent(areaTree);
+                        pageNumberGenerator.makeFormattedPageNumber( CurrentPageNumber );
+                    currentPage.setFormattedNumber( formattedPageNumber );
+                    currentPage.setPageSequence( this );
+                    FormatStaticContent( areaTree );
 
                     FonetDriver.ActiveDriver.FireFonetInfo(
-                        "[forced-" + firstAvailPageNumber + "]");
+                        "[forced-" + firstAvailPageNumber + "]" );
 
-                    areaTree.addPage(currentPage);
-                    this.root.setRunningPageNumberCounter(this.currentPageNumber);
-                    this.isForcing = false;
+                    areaTree.addPage( currentPage );
+                    root.setRunningPageNumberCounter( CurrentPageNumber );
+                    isForcing = false;
                 }
-                catch (FonetException)
+                catch ( FonetException )
                 {
                     FonetDriver.ActiveDriver.FireFonetInfo(
-                        "'force-page-count' failure");
+                        "'force-page-count' failure" );
                 }
             }
         }
 
+        internal new class Maker : FObj.Maker
+        {
+            public override FObj Make( FObj parent, PropertyList propertyList )
+            {
+                return new PageSequence( parent, propertyList );
+            }
+        }
     }
 }

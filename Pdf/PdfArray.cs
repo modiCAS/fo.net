@@ -5,49 +5,25 @@ namespace Fonet.Pdf
 {
     public class PdfArray : PdfObject, IEnumerable
     {
-        private ArrayList elements = new ArrayList();
+        private readonly ArrayList elements = new ArrayList();
 
         public PdfArray()
         {
         }
 
-        public PdfArray(PdfObjectId objectId) : base(objectId)
+        public PdfArray( PdfObjectId objectId ) : base( objectId )
         {
         }
 
-        public int Add(PdfObject value)
+        public PdfObject this[ int index ]
         {
-            return elements.Add(value);
+            get { return (PdfObject)elements[ index ]; }
+            set { elements[ index ] = value; }
         }
 
-        public void Clear()
+        public int Count
         {
-            elements.Clear();
-        }
-
-        public bool Contains(PdfObject value)
-        {
-            return elements.Contains(value);
-        }
-
-        public int IndexOf(PdfObject value)
-        {
-            return elements.IndexOf(value);
-        }
-
-        public void Insert(int index, PdfObject value)
-        {
-            elements.Insert(index, value);
-        }
-
-        public void Remove(PdfObject value)
-        {
-            elements.Remove(value);
-        }
-
-        public void RemoveAt(int index)
-        {
-            elements.RemoveAt(index);
+            get { return elements.Count; }
         }
 
         public IEnumerator GetEnumerator()
@@ -55,53 +31,60 @@ namespace Fonet.Pdf
             return elements.GetEnumerator();
         }
 
-        public PdfObject this[int index]
+        public int Add( PdfObject value )
         {
-            get
-            {
-                return (PdfObject)elements[index];
-            }
-            set
-            {
-                elements[index] = value;
-            }
+            return elements.Add( value );
         }
 
-        public int Count
+        public void Clear()
         {
-            get
-            {
-                return elements.Count;
-            }
+            elements.Clear();
         }
 
-        public void AddArray(Array data)
+        public bool Contains( PdfObject value )
         {
-            foreach (object entry in data)
-            {
-                Add(new PdfNumeric(Convert.ToDecimal(entry)));
-            }
+            return elements.Contains( value );
         }
 
-        protected internal override void Write(PdfWriter writer)
+        public int IndexOf( PdfObject value )
         {
-            writer.WriteKeyword(Keyword.ArrayBegin);
-            bool isFirst = true;
-            foreach (PdfObject obj in elements)
+            return elements.IndexOf( value );
+        }
+
+        public void Insert( int index, PdfObject value )
+        {
+            elements.Insert( index, value );
+        }
+
+        public void Remove( PdfObject value )
+        {
+            elements.Remove( value );
+        }
+
+        public void RemoveAt( int index )
+        {
+            elements.RemoveAt( index );
+        }
+
+        public void AddArray( Array data )
+        {
+            foreach ( object entry in data )
+                Add( new PdfNumeric( Convert.ToDecimal( entry ) ) );
+        }
+
+        protected internal override void Write( PdfWriter writer )
+        {
+            writer.WriteKeyword( Keyword.ArrayBegin );
+            var isFirst = true;
+            foreach ( PdfObject obj in elements )
             {
-                if (!isFirst)
-                {
+                if ( !isFirst )
                     writer.WriteSpace();
-                }
                 else
-                {
                     isFirst = false;
-                }
-                writer.Write(obj);
+                writer.Write( obj );
             }
-            writer.WriteKeyword(Keyword.ArrayEnd);
+            writer.WriteKeyword( Keyword.ArrayEnd );
         }
-
     }
-
 }

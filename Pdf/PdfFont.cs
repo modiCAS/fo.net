@@ -2,11 +2,11 @@ namespace Fonet.Pdf
 {
     public abstract class PdfFont : PdfDictionary
     {
-        public PdfFont(string fontname, PdfObjectId objectId)
-            : base(objectId)
+        public PdfFont( string fontname, PdfObjectId objectId )
+            : base( objectId )
         {
-            this[PdfName.Names.Type] = PdfName.Names.Font;
-            this[PdfName.Names.Name] = new PdfName(fontname);
+            this[ PdfName.Names.Type ] = PdfName.Names.Font;
+            this[ PdfName.Names.Name ] = new PdfName( fontname );
         }
 
         /// <summary>
@@ -14,8 +14,7 @@ namespace Fonet.Pdf
         /// </summary>
         public PdfName Name
         {
-            get { return (PdfName)this[PdfName.Names.Name]; }
+            get { return (PdfName)this[ PdfName.Names.Name ]; }
         }
-
     }
 }

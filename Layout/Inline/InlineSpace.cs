@@ -4,52 +4,52 @@ namespace Fonet.Layout.Inline
 {
     internal class InlineSpace : Space
     {
-        private int size;
+        private bool eatable;
+        protected bool lineThrough;
+        protected bool overlined;
         private bool resizeable = true;
-        private bool eatable = false;
-        protected bool underlined = false;
-        protected bool overlined = false;
-        protected bool lineThrough = false;
+        private int size;
+        protected bool underlined;
 
-        public InlineSpace(int amount)
+        public InlineSpace( int amount )
         {
-            this.size = amount;
+            size = amount;
         }
 
-        public InlineSpace(int amount, bool resizeable)
+        public InlineSpace( int amount, bool resizeable )
         {
             this.resizeable = resizeable;
-            this.size = amount;
+            size = amount;
         }
 
-        public void setUnderlined(bool ul)
+        public void setUnderlined( bool ul )
         {
-            this.underlined = ul;
+            underlined = ul;
         }
 
         public bool getUnderlined()
         {
-            return this.underlined;
+            return underlined;
         }
 
-        public void setOverlined(bool ol)
+        public void setOverlined( bool ol )
         {
-            this.overlined = ol;
+            overlined = ol;
         }
 
         public bool getOverlined()
         {
-            return this.overlined;
+            return overlined;
         }
 
-        public void setLineThrough(bool lt)
+        public void setLineThrough( bool lt )
         {
-            this.lineThrough = lt;
+            lineThrough = lt;
         }
 
         public bool getLineThrough()
         {
-            return this.lineThrough;
+            return lineThrough;
         }
 
         public int getSize()
@@ -57,9 +57,9 @@ namespace Fonet.Layout.Inline
             return size;
         }
 
-        public void setSize(int amount)
+        public void setSize( int amount )
         {
-            this.size = amount;
+            size = amount;
         }
 
         public bool getResizeable()
@@ -67,12 +67,12 @@ namespace Fonet.Layout.Inline
             return resizeable;
         }
 
-        public void setResizeable(bool resizeable)
+        public void setResizeable( bool resizeable )
         {
             this.resizeable = resizeable;
         }
 
-        public void setEatable(bool eatable)
+        public void setEatable( bool eatable )
         {
             this.eatable = eatable;
         }
@@ -82,10 +82,9 @@ namespace Fonet.Layout.Inline
             return eatable;
         }
 
-        public override void render(PdfRenderer renderer)
+        public override void render( PdfRenderer renderer )
         {
-            renderer.RenderInlineSpace(this);
+            renderer.RenderInlineSpace( this );
         }
-
     }
 }

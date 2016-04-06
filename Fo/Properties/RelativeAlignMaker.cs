@@ -2,17 +2,21 @@ namespace Fonet.Fo.Properties
 {
     internal class RelativeAlignMaker : EnumProperty.Maker
     {
-        protected static readonly EnumProperty s_propBEFORE = new EnumProperty(Constants.BEFORE);
+        protected static readonly EnumProperty s_propBEFORE = new EnumProperty( Constants.BEFORE );
 
-        protected static readonly EnumProperty s_propBASELINE = new EnumProperty(Constants.BASELINE);
+        protected static readonly EnumProperty s_propBASELINE = new EnumProperty( Constants.BASELINE );
 
+        private Property m_defaultProp;
 
-        new public static PropertyMaker Maker(string propName)
+        protected RelativeAlignMaker( string name ) : base( name )
         {
-            return new RelativeAlignMaker(propName);
         }
 
-        protected RelativeAlignMaker(string name) : base(name) { }
+
+        public new static PropertyMaker Maker( string propName )
+        {
+            return new RelativeAlignMaker( propName );
+        }
 
 
         public override bool IsInherited()
@@ -20,32 +24,22 @@ namespace Fonet.Fo.Properties
             return true;
         }
 
-        public override Property CheckEnumValues(string value)
+        public override Property CheckEnumValues( string value )
         {
-            if (value.Equals("before"))
-            {
+            if ( value.Equals( "before" ) )
                 return s_propBEFORE;
-            }
 
-            if (value.Equals("after"))
-            {
+            if ( value.Equals( "after" ) )
                 return s_propBASELINE;
-            }
 
-            return base.CheckEnumValues(value);
+            return base.CheckEnumValues( value );
         }
 
-        private Property m_defaultProp = null;
-
-        public override Property Make(PropertyList propertyList)
+        public override Property Make( PropertyList propertyList )
         {
-            if (m_defaultProp == null)
-            {
-                m_defaultProp = Make(propertyList, "before", propertyList.getParentFObj());
-            }
+            if ( m_defaultProp == null )
+                m_defaultProp = Make( propertyList, "before", propertyList.getParentFObj() );
             return m_defaultProp;
-
         }
-
     }
 }

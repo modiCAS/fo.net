@@ -1,14 +1,16 @@
 using System;
 using System.Text;
 
-namespace Fonet.Pdf.Gdi.Font {
+namespace Fonet.Pdf.Gdi.Font
+{
     /// <summary>
     ///     Class that represents the Naming ('name') table
     /// </summary>
     /// <remarks>
     ///     http://www.microsoft.com/typography/otspec/name.htm
     /// </remarks>
-    internal class NameTable : FontTable {
+    internal class NameTable : FontTable
+    {
         // Platform identifiers
         private const int MicrosoftPlatformID = 3;
 
@@ -27,38 +29,43 @@ namespace Fonet.Pdf.Gdi.Font {
         private const int VersionNameID = 5;
         private const int PostscriptNameID = 6;
 
-        private string familyName = String.Empty;
-        private string fullName = String.Empty;
+        private string familyName = string.Empty;
+        private string fullName = string.Empty;
 
         /// <summary>
         ///     Offset to start of string storage (from start of table).
         /// </summary>
         private ushort storageOffset;
 
-        public NameTable(DirectoryEntry entry)
-            : base(TableNames.Name, entry) {}
+        public NameTable( DirectoryEntry entry )
+            : base( TableNames.Name, entry )
+        {
+        }
 
         /// <summary>
         ///     Get the font family name.
         /// </summary>
-        public string FamilyName {
+        public string FamilyName
+        {
             get { return familyName; }
         }
 
         /// <summary>
-        ///     Gets the font full name composed of the family name and the 
+        ///     Gets the font full name composed of the family name and the
         ///     subfamily name.
         /// </summary>
-        public string FullName {
+        public string FullName
+        {
             get { return fullName; }
         }
 
         /// <summary>
-        ///     Reads the contents of the "name" table from the supplied stream 
+        ///     Reads the contents of the "name" table from the supplied stream
         ///     at the current position.
         /// </summary>
         /// <param name="reader"></param>
-        protected internal override void Read(FontFileReader reader) {
+        protected internal override void Read( FontFileReader reader )
+        {
             FontFileStream stream = reader.Stream;
 
             // Ignore format selector field
@@ -70,7 +77,8 @@ namespace Fonet.Pdf.Gdi.Font {
             // Offset to start of string storage (from start of table).
             storageOffset = stream.ReadUShort();
 
-            for (int i = 0; i < numRecords; i++) {
+            for ( var i = 0; i < numRecords; i++ )
+            {
                 int platformID = stream.ReadUShort();
                 int encodingID = stream.ReadUShort();
                 int languageID = stream.ReadUShort();
@@ -80,37 +88,39 @@ namespace Fonet.Pdf.Gdi.Font {
 
                 // Only interested in name records for Microsoft platform, 
                 // Unicode encoding and US English language.
-                if (platformID == MicrosoftPlatformID &&
-                    (encodingID == SymbolEncoding || encodingID == UnicodeEncoding) &&
-                    languageID == EnglishAmericanLanguage) {
-                    switch (nameID) {
-                        case FamilyNameID:
-                            familyName = ReadString(stream, stringOffset, length);
-                            break;
-                        case FullNameID:
-                            fullName = ReadString(stream, stringOffset, length);
-                            break;
-                    }
-
-                    if (familyName != String.Empty && fullName != String.Empty) {
+                if ( platformID == MicrosoftPlatformID &&
+                    ( encodingID == SymbolEncoding || encodingID == UnicodeEncoding ) &&
+                    languageID == EnglishAmericanLanguage )
+                {
+                    switch ( nameID )
+                    {
+                    case FamilyNameID:
+                        familyName = ReadString( stream, stringOffset, length );
+                        break;
+                    case FullNameID:
+                        fullName = ReadString( stream, stringOffset, length );
                         break;
                     }
+
+                    if ( familyName != string.Empty && fullName != string.Empty )
+                        break;
                 }
             }
         }
 
         /// <summary>
         ///     Reads a string from the storage area beginning at <i>offset</i>
-        ///     consisting of <i>length</i> bytes.  The returned string will be 
+        ///     consisting of <i>length</i> bytes.  The returned string will be
         ///     converted using the Unicode encoding.
         /// </summary>
         /// <param name="stream">Big-endian font stream.</param>
         /// <param name="stringOffset">
         ///     The offset in bytes from the beginning of the string storage area.
-        ///  </param>
+        /// </param>
         /// <param name="length">The length of the string in bytes.</param>
         /// <returns></returns>
-        private string ReadString(FontFileStream stream, int stringOffset, int length) {
+        private string ReadString( FontFileStream stream, int stringOffset, int length )
+        {
             // Set a restore point
             stream.SetRestorePoint();
 
@@ -118,20 +128,21 @@ namespace Fonet.Pdf.Gdi.Font {
             stream.Position = Entry.Offset + storageOffset + stringOffset;
 
             // Read string data 
-            byte[] buffer = new byte[length];
-            stream.Read(buffer, 0, length);
+            var buffer = new byte[ length ];
+            stream.Read( buffer, 0, length );
             stream.Restore();
 
             // Convert to a little-endian Unicode string
-            return Encoding.BigEndianUnicode.GetString(buffer);
+            return Encoding.BigEndianUnicode.GetString( buffer );
         }
 
         /// <summary>
         ///     Not supported.
         /// </summary>
         /// <param name="writer"></param>
-        protected internal override void Write(FontFileWriter writer) {
-            throw new NotImplementedException("Write is not implemented.");
+        protected internal override void Write( FontFileWriter writer )
+        {
+            throw new NotImplementedException( "Write is not implemented." );
         }
     }
 }

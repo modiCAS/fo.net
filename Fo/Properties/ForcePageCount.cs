@@ -13,6 +13,5 @@ namespace Fonet.Fo.Properties
         public const int NO_FORCE = Constants.NO_FORCE;
 
         public const int AUTO = Constants.AUTO;
-
     }
 }

@@ -2,67 +2,52 @@ namespace Fonet.Fo.Pagination
 {
     internal abstract class PageMasterReference : FObj, SubSequenceSpecifier
     {
-        private string _masterName;
-
-        private PageSequenceMaster _pageSequenceMaster;
-
-        public PageMasterReference(FObj parent, PropertyList propertyList)
-            : base(parent, propertyList)
+        public PageMasterReference( FObj parent, PropertyList propertyList )
+            : base( parent, propertyList )
         {
-            this.name = GetElementName();
-            if (GetProperty("master-reference") != null)
-            {
-                SetMasterName(GetProperty("master-reference").GetString());
-            }
-            validateParent(parent);
+            name = GetElementName();
+            if ( GetProperty( "master-reference" ) != null )
+                SetMasterName( GetProperty( "master-reference" ).GetString() );
+            validateParent( parent );
         }
 
-        protected void SetMasterName(string masterName)
-        {
-            _masterName = masterName;
-        }
+        public string MasterName { get; private set; }
 
-        public string MasterName
-        {
-            get { return _masterName; }
-        }
+        protected PageSequenceMaster PageSequenceMaster { get; set; }
 
-        protected PageSequenceMaster PageSequenceMaster
-        {
-            get { return _pageSequenceMaster; }
-            set { _pageSequenceMaster = value; }
-        }
+        public abstract string GetNextPageMaster( int currentPageNumber,
+            bool thisIsFirstPage,
+            bool isEmptyPage );
 
-        public abstract string GetNextPageMaster(int currentPageNumber,
-                                                 bool thisIsFirstPage,
-                                                 bool isEmptyPage);
+        public abstract void Reset();
+
+        protected void SetMasterName( string masterName )
+        {
+            MasterName = masterName;
+        }
 
         protected abstract string GetElementName();
 
-        protected void validateParent(FObj parent)
+        protected void validateParent( FObj parent )
         {
-            if (parent.GetName().Equals("fo:page-sequence-master"))
+            if ( parent.GetName().Equals( "fo:page-sequence-master" ) )
             {
-                _pageSequenceMaster = (PageSequenceMaster)parent;
+                PageSequenceMaster = (PageSequenceMaster)parent;
 
-                if (MasterName == null)
+                if ( MasterName == null )
                 {
                     FonetDriver.ActiveDriver.FireFonetWarning(
-                        GetElementName() + " does not have a master-reference and so is being ignored");
+                        GetElementName() + " does not have a master-reference and so is being ignored" );
                 }
                 else
-                {
-                    _pageSequenceMaster.AddSubsequenceSpecifier(this);
-                }
+                    PageSequenceMaster.AddSubsequenceSpecifier( this );
             }
             else
             {
-                throw new FonetException(GetElementName() + " must be"
+                throw new FonetException( GetElementName() + " must be"
                     + "child of fo:page-sequence-master, not "
-                    + parent.GetName());
+                    + parent.GetName() );
             }
         }
-
-        public abstract void Reset();
     }
 }

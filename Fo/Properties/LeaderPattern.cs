@@ -9,6 +9,5 @@ namespace Fonet.Fo.Properties
         public const int DOTS = Constants.DOTS;
 
         public const int USECONTENT = Constants.USECONTENT;
-
     }
 }

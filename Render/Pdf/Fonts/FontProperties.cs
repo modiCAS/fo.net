@@ -1,13 +1,11 @@
-namespace Fonet.Render.Pdf.Fonts {
+namespace Fonet.Render.Pdf.Fonts
+{
     /// <summary>
-    ///     Collection of font properties such as face name and whether the 
+    ///     Collection of font properties such as face name and whether the
     ///     a font is bold and/or italic.
     /// </summary>
-    internal sealed class FontProperties {
-        private string faceName;
-        private bool bold;
-        private bool italic;
-
+    internal sealed class FontProperties
+    {
         /// <summary>
         ///     Class constructor.
         /// </summary>
@@ -20,30 +18,27 @@ namespace Fonet.Render.Pdf.Fonts {
         /// <param name="faceName">Font face name, e.g. Arial.</param>
         /// <param name="bold">Bold flag.</param>
         /// <param name="italic">Italic flag.</param>
-        public FontProperties(string faceName, bool bold, bool italic) {
-            this.faceName = faceName;
-            this.bold = bold;
-            this.italic = italic;
+        public FontProperties( string faceName, bool bold, bool italic )
+        {
+            FaceName = faceName;
+            IsBold = bold;
+            IsItalic = italic;
         }
 
-        public string FaceName {
-            get { return faceName; }
+        public string FaceName { get; private set; }
+
+        public bool IsRegular
+        {
+            get { return !IsBold && !IsItalic; }
         }
 
-        public bool IsRegular {
-            get { return (!IsBold && !IsItalic); }
-        }
+        public bool IsBold { get; private set; }
 
-        public bool IsBold {
-            get { return bold; }
-        }
+        public bool IsItalic { get; private set; }
 
-        public bool IsItalic {
-            get { return italic; }
-        }
-
-        public bool IsBoldItalic {
-            get { return (IsBold && IsItalic); }
+        public bool IsBoldItalic
+        {
+            get { return IsBold && IsItalic; }
         }
     }
 }

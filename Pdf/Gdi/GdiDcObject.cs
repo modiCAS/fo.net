@@ -1,5 +1,7 @@
-namespace Fonet.Pdf.Gdi {
-    public enum GdiDcObject {
+namespace Fonet.Pdf.Gdi
+{
+    public enum GdiDcObject
+    {
         Pen = 1,
         Brush = 2,
         Pal = 5,

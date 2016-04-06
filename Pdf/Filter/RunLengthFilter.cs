@@ -4,34 +4,25 @@ namespace Fonet.Pdf.Filter
     {
         public RunLengthFilter()
         {
-            throw new UnsupportedFilterException("RunLengthDecode");
+            throw new UnsupportedFilterException( "RunLengthDecode" );
         }
 
         public PdfObject Name
         {
-            get
-            {
-                return PdfName.Names.RunLengthDecode;
-            }
+            get { return PdfName.Names.RunLengthDecode; }
         }
 
         public PdfObject DecodeParms
         {
-            get
-            {
-                return PdfNull.Null;
-            }
+            get { return PdfNull.Null; }
         }
 
         public bool HasDecodeParams
         {
-            get
-            {
-                return false;
-            }
+            get { return false; }
         }
 
-        public byte[] Encode(byte[] data)
+        public byte[] Encode( byte[] data )
         {
             return data;
         }

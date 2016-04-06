@@ -4,28 +4,28 @@ namespace Fonet.Fo
 {
     internal class KeepProperty : Property
     {
-        internal class Maker : PropertyMaker
-        {
-            protected Maker(string name) : base(name) { }
+        private readonly Keep keep;
 
-        }
-
-        private Keep keep;
-
-        public KeepProperty(Keep keep)
+        public KeepProperty( Keep keep )
         {
             this.keep = keep;
         }
 
         public override Keep GetKeep()
         {
-            return this.keep;
+            return keep;
         }
 
         public override object GetObject()
         {
-            return this.keep;
+            return keep;
         }
 
+        internal class Maker : PropertyMaker
+        {
+            protected Maker( string name ) : base( name )
+            {
+            }
+        }
     }
 }

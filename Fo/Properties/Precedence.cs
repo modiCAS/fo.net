@@ -5,6 +5,5 @@ namespace Fonet.Fo.Properties
         public const int TRUE = Constants.TRUE;
 
         public const int FALSE = Constants.FALSE;
-
     }
 }

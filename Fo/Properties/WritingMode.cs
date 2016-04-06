@@ -7,6 +7,5 @@ namespace Fonet.Fo.Properties
         public const int RL_TB = Constants.RL_TB;
 
         public const int TB_RL = Constants.TB_RL;
-
     }
 }

@@ -2,19 +2,23 @@ namespace Fonet.Fo.Properties
 {
     internal class OddOrEvenMaker : EnumProperty.Maker
     {
-        protected static readonly EnumProperty s_propODD = new EnumProperty(Constants.ODD);
+        protected static readonly EnumProperty s_propODD = new EnumProperty( Constants.ODD );
 
-        protected static readonly EnumProperty s_propEVEN = new EnumProperty(Constants.EVEN);
+        protected static readonly EnumProperty s_propEVEN = new EnumProperty( Constants.EVEN );
 
-        protected static readonly EnumProperty s_propANY = new EnumProperty(Constants.ANY);
+        protected static readonly EnumProperty s_propANY = new EnumProperty( Constants.ANY );
 
+        private Property m_defaultProp;
 
-        new public static PropertyMaker Maker(string propName)
+        protected OddOrEvenMaker( string name ) : base( name )
         {
-            return new OddOrEvenMaker(propName);
         }
 
-        protected OddOrEvenMaker(string name) : base(name) { }
+
+        public new static PropertyMaker Maker( string propName )
+        {
+            return new OddOrEvenMaker( propName );
+        }
 
 
         public override bool IsInherited()
@@ -22,37 +26,25 @@ namespace Fonet.Fo.Properties
             return false;
         }
 
-        public override Property CheckEnumValues(string value)
+        public override Property CheckEnumValues( string value )
         {
-            if (value.Equals("odd"))
-            {
+            if ( value.Equals( "odd" ) )
                 return s_propODD;
-            }
 
-            if (value.Equals("even"))
-            {
+            if ( value.Equals( "even" ) )
                 return s_propEVEN;
-            }
 
-            if (value.Equals("any"))
-            {
+            if ( value.Equals( "any" ) )
                 return s_propANY;
-            }
 
-            return base.CheckEnumValues(value);
+            return base.CheckEnumValues( value );
         }
 
-        private Property m_defaultProp = null;
-
-        public override Property Make(PropertyList propertyList)
+        public override Property Make( PropertyList propertyList )
         {
-            if (m_defaultProp == null)
-            {
-                m_defaultProp = Make(propertyList, "any", propertyList.getParentFObj());
-            }
+            if ( m_defaultProp == null )
+                m_defaultProp = Make( propertyList, "any", propertyList.getParentFObj() );
             return m_defaultProp;
-
         }
-
     }
 }

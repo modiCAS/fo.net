@@ -37,10 +37,5 @@ namespace Fonet.Layout
         public int voiceFamily = 0;
 
         public int volume = 0;
-
-        public AuralProps()
-        {
-        }
-
     }
 }

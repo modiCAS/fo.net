@@ -1,4 +1,3 @@
-using System;
 using Fonet.DataTypes;
 using Fonet.Fo.Properties;
 using Fonet.Layout;
@@ -7,232 +6,207 @@ namespace Fonet.Fo
 {
     internal class FOText : FONode
     {
+        private float blue;
         protected char[] ca;
-        protected int start;
-        protected int length;
 
         private FontState fs;
-        private float red;
         private float green;
-        private float blue;
-        private int wrapOption;
-        private int whiteSpaceCollapse;
-        private int verticalAlign;
-
-        protected bool underlined = false;
-        protected bool overlined = false;
-        protected bool lineThrough = false;
+        protected int length;
+        protected bool lineThrough;
+        protected bool overlined;
+        private float red;
+        protected int start;
 
         private TextState ts;
 
-        public FOText(char[] chars, int s, int e, FObj parent)
-            : base(parent)
+        protected bool underlined;
+        private int verticalAlign;
+        private int whiteSpaceCollapse;
+        private int wrapOption;
+
+        public FOText( char[] chars, int s, int e, FObj parent )
+            : base( parent )
         {
-            this.start = 0;
-            this.ca = new char[e - s];
-            for (int i = s; i < e; i++)
-            {
-                ca[i - s] = chars[i];
-            }
-            this.length = e - s;
+            start = 0;
+            ca = new char[ e - s ];
+            for ( int i = s; i < e; i++ )
+                ca[ i - s ] = chars[ i ];
+            length = e - s;
         }
 
-        public void setUnderlined(bool ul)
+        public void setUnderlined( bool ul )
         {
-            this.underlined = ul;
+            underlined = ul;
         }
 
-        public void setOverlined(bool ol)
+        public void setOverlined( bool ol )
         {
-            this.overlined = ol;
+            overlined = ol;
         }
 
-        public void setLineThrough(bool lt)
+        public void setLineThrough( bool lt )
         {
-            this.lineThrough = lt;
+            lineThrough = lt;
         }
 
         public bool willCreateArea()
         {
-            this.whiteSpaceCollapse =
-                this.parent.properties.GetProperty("white-space-collapse").GetEnum();
-            if (this.whiteSpaceCollapse == WhiteSpaceCollapse.FALSE
-                && length > 0)
-            {
+            whiteSpaceCollapse =
+                parent.properties.GetProperty( "white-space-collapse" ).GetEnum();
+            if ( whiteSpaceCollapse == GenericBoolean.Enums.FALSE
+                && length > 0 )
                 return true;
-            }
 
-            for (int i = start; i < start + length; i++)
+            for ( int i = start; i < start + length; i++ )
             {
-                char ch = ca[i];
-                if (!((ch == ' ') || (ch == '\n') || (ch == '\r')
-                    || (ch == '\t')))
-                {
+                char ch = ca[ i ];
+                if ( !( ch == ' ' || ch == '\n' || ch == '\r'
+                    || ch == '\t' ) )
                     return true;
-                }
             }
             return false;
         }
 
         public override bool MayPrecedeMarker()
         {
-            for (int i = 0; i < ca.Length; i++)
+            for ( var i = 0; i < ca.Length; i++ )
             {
-                char ch = ca[i];
-                if ((ch != ' ') || (ch != '\n') || (ch != '\r') || (ch != '\t'))
-                {
+                char ch = ca[ i ];
+                if ( ch != ' ' || ch != '\n' || ch != '\r' || ch != '\t' )
                     return true;
-                }
             }
             return false;
         }
 
-        public override Status Layout(Area area)
+        public override Status Layout( Area area )
         {
-            if (!(area is BlockArea))
+            if ( !( area is BlockArea ) )
             {
                 FonetDriver.ActiveDriver.FireFonetError(
-                    "Text outside block area" + new String(ca, start, length));
-                return new Status(Status.OK);
+                    "Text outside block area" + new string( ca, start, length ) );
+                return new Status( Status.OK );
             }
-            if (this.marker == MarkerStart)
+            if ( marker == MarkerStart )
             {
                 string fontFamily =
-                    this.parent.properties.GetProperty("font-family").GetString();
+                    parent.properties.GetProperty( "font-family" ).GetString();
                 string fontStyle =
-                    this.parent.properties.GetProperty("font-style").GetString();
+                    parent.properties.GetProperty( "font-style" ).GetString();
                 string fontWeight =
-                    this.parent.properties.GetProperty("font-weight").GetString();
+                    parent.properties.GetProperty( "font-weight" ).GetString();
                 int fontSize =
-                    this.parent.properties.GetProperty("font-size").GetLength().MValue();
+                    parent.properties.GetProperty( "font-size" ).GetLength().MValue();
                 int fontVariant =
-                    this.parent.properties.GetProperty("font-variant").GetEnum();
+                    parent.properties.GetProperty( "font-variant" ).GetEnum();
 
                 int letterSpacing =
-                    this.parent.properties.GetProperty("letter-spacing").GetLength().MValue();
-                this.fs = new FontState(area.getFontInfo(), fontFamily,
-                                        fontStyle, fontWeight, fontSize,
-                                        fontVariant, letterSpacing);
+                    parent.properties.GetProperty( "letter-spacing" ).GetLength().MValue();
+                fs = new FontState( area.getFontInfo(), fontFamily,
+                    fontStyle, fontWeight, fontSize,
+                    fontVariant, letterSpacing );
 
-                ColorType c = this.parent.properties.GetProperty("color").GetColorType();
-                this.red = c.Red;
-                this.green = c.Green;
-                this.blue = c.Blue;
+                ColorType c = parent.properties.GetProperty( "color" ).GetColorType();
+                red = c.Red;
+                green = c.Green;
+                blue = c.Blue;
 
-                this.verticalAlign =
-                    this.parent.properties.GetProperty("vertical-align").GetEnum();
+                verticalAlign =
+                    parent.properties.GetProperty( "vertical-align" ).GetEnum();
 
-                this.wrapOption =
-                    this.parent.properties.GetProperty("wrap-option").GetEnum();
-                this.whiteSpaceCollapse =
-                    this.parent.properties.GetProperty("white-space-collapse").GetEnum();
-                this.ts = new TextState();
-                ts.setUnderlined(underlined);
-                ts.setOverlined(overlined);
-                ts.setLineThrough(lineThrough);
+                wrapOption =
+                    parent.properties.GetProperty( "wrap-option" ).GetEnum();
+                whiteSpaceCollapse =
+                    parent.properties.GetProperty( "white-space-collapse" ).GetEnum();
+                ts = new TextState();
+                ts.setUnderlined( underlined );
+                ts.setOverlined( overlined );
+                ts.setLineThrough( lineThrough );
 
-                this.marker = this.start;
+                marker = start;
             }
-            int orig_start = this.marker;
-            this.marker = addText((BlockArea)area, fs, red, green, blue,
-                                  wrapOption, this.GetLinkSet(),
-                                  whiteSpaceCollapse, ca, this.marker, length,
-                                  ts, verticalAlign);
-            if (this.marker == -1)
-            {
-                return new Status(Status.OK);
-            }
-            else if (this.marker != orig_start)
-            {
-                return new Status(Status.AREA_FULL_SOME);
-            }
-            else
-            {
-                return new Status(Status.AREA_FULL_NONE);
-            }
+            int orig_start = marker;
+            marker = addText( (BlockArea)area, fs, red, green, blue,
+                wrapOption, GetLinkSet(),
+                whiteSpaceCollapse, ca, marker, length,
+                ts, verticalAlign );
+            if ( marker == -1 )
+                return new Status( Status.OK );
+            if ( marker != orig_start )
+                return new Status( Status.AREA_FULL_SOME );
+            return new Status( Status.AREA_FULL_NONE );
         }
 
-        public static int addText(BlockArea ba, FontState fontState, float red,
-                                  float green, float blue, int wrapOption,
-                                  LinkSet ls, int whiteSpaceCollapse,
-                                  char[] data, int start, int end,
-                                  TextState textState, int vAlign)
+        public static int addText( BlockArea ba, FontState fontState, float red,
+            float green, float blue, int wrapOption,
+            LinkSet ls, int whiteSpaceCollapse,
+            char[] data, int start, int end,
+            TextState textState, int vAlign )
         {
-            if (fontState.FontVariant == FontVariant.SMALL_CAPS)
+            if ( fontState.FontVariant == FontVariant.SMALL_CAPS )
             {
                 FontState smallCapsFontState;
                 try
                 {
-                    int smallCapsFontHeight =
-                        (int)(((double)fontState.FontSize) * 0.8d);
-                    smallCapsFontState = new FontState(fontState.FontInfo,
-                                                       fontState.FontFamily,
-                                                       fontState.FontStyle,
-                                                       fontState.FontWeight,
-                                                       smallCapsFontHeight,
-                                                       FontVariant.NORMAL);
+                    var smallCapsFontHeight =
+                        (int)( fontState.FontSize * 0.8d );
+                    smallCapsFontState = new FontState( fontState.FontInfo,
+                        fontState.FontFamily,
+                        fontState.FontStyle,
+                        fontState.FontWeight,
+                        smallCapsFontHeight,
+                        FontVariant.NORMAL );
                 }
-                catch (FonetException ex)
+                catch ( FonetException ex )
                 {
                     smallCapsFontState = fontState;
                     FonetDriver.ActiveDriver.FireFonetError(
-                        "Error creating small-caps FontState: " + ex.Message);
+                        "Error creating small-caps FontState: " + ex.Message );
                 }
 
                 char c;
                 bool isLowerCase;
                 int caseStart;
                 FontState fontStateToUse;
-                for (int i = start; i < end; )
+                for ( int i = start; i < end; )
                 {
                     caseStart = i;
-                    c = data[i];
-                    isLowerCase = (Char.IsLetter(c) && Char.IsLower(c));
-                    while (isLowerCase == (Char.IsLetter(c) && Char.IsLower(c)))
+                    c = data[ i ];
+                    isLowerCase = char.IsLetter( c ) && char.IsLower( c );
+                    while ( isLowerCase == ( char.IsLetter( c ) && char.IsLower( c ) ) )
                     {
-                        if (isLowerCase)
-                        {
-                            data[i] = Char.ToUpper(c);
-                        }
+                        if ( isLowerCase )
+                            data[ i ] = char.ToUpper( c );
                         i++;
-                        if (i == end)
-                        {
+                        if ( i == end )
                             break;
-                        }
-                        c = data[i];
+                        c = data[ i ];
                     }
-                    if (isLowerCase)
-                    {
+                    if ( isLowerCase )
                         fontStateToUse = smallCapsFontState;
-                    }
                     else
-                    {
                         fontStateToUse = fontState;
-                    }
-                    int index = addRealText(ba, fontStateToUse, red, green, blue,
-                                            wrapOption, ls, whiteSpaceCollapse,
-                                            data, caseStart, i, textState,
-                                            vAlign);
-                    if (index != -1)
-                    {
+                    int index = addRealText( ba, fontStateToUse, red, green, blue,
+                        wrapOption, ls, whiteSpaceCollapse,
+                        data, caseStart, i, textState,
+                        vAlign );
+                    if ( index != -1 )
                         return index;
-                    }
                 }
 
                 return -1;
             }
 
-            return addRealText(ba, fontState, red, green, blue, wrapOption, ls,
-                               whiteSpaceCollapse, data, start, end, textState,
-                               vAlign);
+            return addRealText( ba, fontState, red, green, blue, wrapOption, ls,
+                whiteSpaceCollapse, data, start, end, textState,
+                vAlign );
         }
 
-        protected static int addRealText(BlockArea ba, FontState fontState,
-                                         float red, float green, float blue,
-                                         int wrapOption, LinkSet ls,
-                                         int whiteSpaceCollapse, char[] data,
-                                         int start, int end, TextState textState,
-                                         int vAlign)
+        protected static int addRealText( BlockArea ba, FontState fontState,
+            float red, float green, float blue,
+            int wrapOption, LinkSet ls,
+            int whiteSpaceCollapse, char[] data,
+            int start, int end, TextState textState,
+            int vAlign )
         {
             int ts, te;
             char[] ca;
@@ -242,34 +216,30 @@ namespace Fonet.Fo
             ca = data;
 
             LineArea la = ba.getCurrentLineArea();
-            if (la == null)
-            {
+            if ( la == null )
                 return start;
-            }
 
-            la.changeFont(fontState);
-            la.changeColor(red, green, blue);
-            la.changeWrapOption(wrapOption);
-            la.changeWhiteSpaceCollapse(whiteSpaceCollapse);
-            la.changeVerticalAlign(vAlign);
-            ba.setupLinkSet(ls);
+            la.changeFont( fontState );
+            la.changeColor( red, green, blue );
+            la.changeWrapOption( wrapOption );
+            la.changeWhiteSpaceCollapse( whiteSpaceCollapse );
+            la.changeVerticalAlign( vAlign );
+            ba.setupLinkSet( ls );
 
-            ts = la.addText(ca, ts, te, ls, textState);
+            ts = la.addText( ca, ts, te, ls, textState );
 
-            while (ts != -1)
+            while ( ts != -1 )
             {
                 la = ba.createNextLineArea();
-                if (la == null)
-                {
+                if ( la == null )
                     return ts;
-                }
-                la.changeFont(fontState);
-                la.changeColor(red, green, blue);
-                la.changeWrapOption(wrapOption);
-                la.changeWhiteSpaceCollapse(whiteSpaceCollapse);
-                ba.setupLinkSet(ls);
+                la.changeFont( fontState );
+                la.changeColor( red, green, blue );
+                la.changeWrapOption( wrapOption );
+                la.changeWhiteSpaceCollapse( whiteSpaceCollapse );
+                ba.setupLinkSet( ls );
 
-                ts = la.addText(ca, ts, te, ls, textState);
+                ts = la.addText( ca, ts, te, ls, textState );
             }
             return -1;
         }

@@ -5,6 +5,5 @@ namespace Fonet.Fo.Properties
         public const int NONE = Constants.NONE;
 
         public const int ALL = Constants.ALL;
-
     }
 }

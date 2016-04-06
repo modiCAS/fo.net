@@ -4,33 +4,33 @@ namespace Fonet.Fo.Flow
 {
     internal class TableCaption : ToBeImplementedElement
     {
-        new internal class Maker : FObj.Maker
+        protected TableCaption( FObj parent, PropertyList propertyList )
+            : base( parent, propertyList )
         {
-            public override FObj Make(FObj parent, PropertyList propertyList)
-            {
-                return new TableCaption(parent, propertyList);
-            }
+            name = "fo:table-caption";
         }
 
-        new public static FObj.Maker GetMaker()
+        public new static FObj.Maker GetMaker()
         {
             return new Maker();
         }
 
-        protected TableCaption(FObj parent, PropertyList propertyList)
-            : base(parent, propertyList)
-        {
-            this.name = "fo:table-caption";
-        }
-
-        public override Status Layout(Area area)
+        public override Status Layout( Area area )
         {
             AccessibilityProps mAccProps = propMgr.GetAccessibilityProps();
             AuralProps mAurProps = propMgr.GetAuralProps();
             BorderAndPadding bap = propMgr.GetBorderAndPadding();
             BackgroundProps bProps = propMgr.GetBackgroundProps();
             RelativePositionProps mRelProps = propMgr.GetRelativePositionProps();
-            return base.Layout(area);
+            return base.Layout( area );
+        }
+
+        internal new class Maker : FObj.Maker
+        {
+            public override FObj Make( FObj parent, PropertyList propertyList )
+            {
+                return new TableCaption( parent, propertyList );
+            }
         }
     }
 }

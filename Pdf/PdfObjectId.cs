@@ -2,17 +2,17 @@ namespace Fonet.Pdf
 {
     public struct PdfObjectId
     {
-        private uint objectNumber;
+        private readonly uint objectNumber;
 
-        private ushort generationNumber;
+        private readonly ushort generationNumber;
 
-        public PdfObjectId(uint objectNumber)
+        public PdfObjectId( uint objectNumber )
         {
             this.objectNumber = objectNumber;
-            this.generationNumber = 0;
+            generationNumber = 0;
         }
 
-        public PdfObjectId(uint objectNumber, ushort generationNumber)
+        public PdfObjectId( uint objectNumber, ushort generationNumber )
         {
             this.objectNumber = objectNumber;
             this.generationNumber = generationNumber;
@@ -29,6 +29,5 @@ namespace Fonet.Pdf
         }
 
         // TODO: implement equals/hashcode etc.
-
     }
 }

@@ -2,12 +2,16 @@ namespace Fonet.Fo.Properties
 {
     internal class NumberRowsSpannedMaker : NumberProperty.Maker
     {
-        new public static PropertyMaker Maker(string propName)
+        private Property m_defaultProp;
+
+        protected NumberRowsSpannedMaker( string name ) : base( name )
         {
-            return new NumberRowsSpannedMaker(propName);
         }
 
-        protected NumberRowsSpannedMaker(string name) : base(name) { }
+        public new static PropertyMaker Maker( string propName )
+        {
+            return new NumberRowsSpannedMaker( propName );
+        }
 
 
         public override bool IsInherited()
@@ -15,17 +19,11 @@ namespace Fonet.Fo.Properties
             return false;
         }
 
-        private Property m_defaultProp = null;
-
-        public override Property Make(PropertyList propertyList)
+        public override Property Make( PropertyList propertyList )
         {
-            if (m_defaultProp == null)
-            {
-                m_defaultProp = Make(propertyList, "1", propertyList.getParentFObj());
-            }
+            if ( m_defaultProp == null )
+                m_defaultProp = Make( propertyList, "1", propertyList.getParentFObj() );
             return m_defaultProp;
-
         }
-
     }
 }

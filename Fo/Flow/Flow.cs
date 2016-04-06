@@ -1,75 +1,61 @@
+using System.Collections;
+using Fonet.Fo.Pagination;
+using Fonet.Layout;
+
 namespace Fonet.Fo.Flow
 {
-    using System.Collections;
-    using Fonet.Fo.Pagination;
-    using Fonet.Layout;
-
     internal class Flow : FObj
     {
-        new internal class Maker : FObj.Maker
+        private string _flowName;
+        private Status _status = new Status( Status.AREA_FULL_NONE );
+        private int contentWidth;
+        private ArrayList markerSnapshot;
+
+        private readonly PageSequence pageSequence;
+
+        protected Flow( FObj parent, PropertyList propertyList )
+            : base( parent, propertyList )
         {
-            public override FObj Make(FObj parent, PropertyList propertyList)
+            name = GetElementName();
+
+            if ( parent.GetName().Equals( "fo:page-sequence" ) )
+                pageSequence = (PageSequence)parent;
+            else
             {
-                return new Flow(parent, propertyList);
+                throw new FonetException( "flow must be child of "
+                    + "page-sequence, not "
+                    + parent.GetName() );
             }
+            SetFlowName( GetProperty( "flow-name" ).GetString() );
+
+            if ( pageSequence.IsFlowSet )
+            {
+                if ( name.Equals( "fo:flow" ) )
+                {
+                    throw new FonetException( "Only a single fo:flow permitted"
+                        + " per fo:page-sequence" );
+                }
+                throw new FonetException( name
+                    + " not allowed after fo:flow" );
+            }
+            pageSequence.AddFlow( this );
         }
 
-        new public static FObj.Maker GetMaker()
+        public new static FObj.Maker GetMaker()
         {
             return new Maker();
         }
 
-        private PageSequence pageSequence;
-        private ArrayList markerSnapshot;
-        private string _flowName;
-        private int contentWidth;
-        private Status _status = new Status(Status.AREA_FULL_NONE);
-
-        protected Flow(FObj parent, PropertyList propertyList)
-            : base(parent, propertyList)
+        protected virtual void SetFlowName( string name )
         {
-            this.name = GetElementName();
-
-            if (parent.GetName().Equals("fo:page-sequence"))
-            {
-                this.pageSequence = (PageSequence)parent;
-            }
-            else
-            {
-                throw new FonetException("flow must be child of "
-                    + "page-sequence, not "
-                    + parent.GetName());
-            }
-            SetFlowName(GetProperty("flow-name").GetString());
-
-            if (pageSequence.IsFlowSet)
-            {
-                if (this.name.Equals("fo:flow"))
-                {
-                    throw new FonetException("Only a single fo:flow permitted"
-                        + " per fo:page-sequence");
-                }
-                else
-                {
-                    throw new FonetException(this.name
-                        + " not allowed after fo:flow");
-                }
-            }
-            pageSequence.AddFlow(this);
-        }
-
-        protected virtual void SetFlowName(string name)
-        {
-            if (name == null || name.Equals(""))
+            if ( name == null || name.Equals( "" ) )
             {
                 FonetDriver.ActiveDriver.FireFonetWarning(
-                    "A 'flow-name' is required for " + GetElementName() + ".");
+                    "A 'flow-name' is required for " + GetElementName() + "." );
                 _flowName = "xsl-region-body";
             }
             else
-            {
                 _flowName = name;
-            }
         }
 
         public string GetFlowName()
@@ -77,109 +63,95 @@ namespace Fonet.Fo.Flow
             return _flowName;
         }
 
-        public override Status Layout(Area area)
+        public override Status Layout( Area area )
         {
-            return Layout(area, null);
+            return Layout( area, null );
         }
 
-        public virtual Status Layout(Area area, Region region)
+        public virtual Status Layout( Area area, Region region )
         {
-            if (this.marker == MarkerStart)
+            if ( marker == MarkerStart )
+                marker = 0;
+
+            var bac = (BodyAreaContainer)area;
+
+            var prevChildMustKeepWithNext = false;
+            ArrayList pageMarker = getMarkerSnapshot( new ArrayList() );
+
+            int numChildren = children.Count;
+            if ( numChildren == 0 )
+                throw new FonetException( "fo:flow must contain block-level children" );
+            for ( int i = marker; i < numChildren; i++ )
             {
-                this.marker = 0;
-            }
+                var fo = (FObj)children[ i ];
 
-            BodyAreaContainer bac = (BodyAreaContainer)area;
-
-            bool prevChildMustKeepWithNext = false;
-            ArrayList pageMarker = this.getMarkerSnapshot(new ArrayList());
-
-            int numChildren = this.children.Count;
-            if (numChildren == 0)
-            {
-                throw new FonetException("fo:flow must contain block-level children");
-            }
-            for (int i = this.marker; i < numChildren; i++)
-            {
-                FObj fo = (FObj)children[i];
-
-                if (bac.isBalancingRequired(fo))
+                if ( bac.isBalancingRequired( fo ) )
                 {
                     bac.resetSpanArea();
 
-                    this.Rollback(markerSnapshot);
-                    i = this.marker - 1;
+                    Rollback( markerSnapshot );
+                    i = marker - 1;
                     continue;
                 }
-                Area currentArea = bac.getNextArea(fo);
-                currentArea.setIDReferences(bac.getIDReferences());
-                if (bac.isNewSpanArea())
+                Area currentArea = bac.getNextArea( fo );
+                currentArea.setIDReferences( bac.getIDReferences() );
+                if ( bac.isNewSpanArea() )
                 {
-                    this.marker = i;
-                    markerSnapshot = this.getMarkerSnapshot(new ArrayList());
+                    marker = i;
+                    markerSnapshot = getMarkerSnapshot( new ArrayList() );
                 }
-                SetContentWidth(currentArea.getContentWidth());
+                SetContentWidth( currentArea.getContentWidth() );
 
-                _status = fo.Layout(currentArea);
+                _status = fo.Layout( currentArea );
 
-                if (_status.isIncomplete())
+                if ( _status.isIncomplete() )
                 {
-                    if ((prevChildMustKeepWithNext) && (_status.laidOutNone()))
+                    if ( prevChildMustKeepWithNext && _status.laidOutNone() )
                     {
-                        this.marker = i - 1;
-                        FObj prevChild = (FObj)children[this.marker];
+                        marker = i - 1;
+                        var prevChild = (FObj)children[ marker ];
                         prevChild.RemoveAreas();
                         prevChild.ResetMarker();
-                        prevChild.RemoveID(area.getIDReferences());
-                        _status = new Status(Status.AREA_FULL_SOME);
+                        prevChild.RemoveID( area.getIDReferences() );
+                        _status = new Status( Status.AREA_FULL_SOME );
                         return _status;
                     }
-                    if (bac.isLastColumn())
+                    if ( bac.isLastColumn() )
                     {
-                        if (_status.getCode() == Status.FORCE_COLUMN_BREAK)
+                        if ( _status.getCode() == Status.FORCE_COLUMN_BREAK )
                         {
-                            this.marker = i;
+                            marker = i;
                             _status =
-                                new Status(Status.FORCE_PAGE_BREAK);
+                                new Status( Status.FORCE_PAGE_BREAK );
                             return _status;
                         }
-                        else
-                        {
-                            this.marker = i;
-                            return _status;
-                        }
+                        marker = i;
+                        return _status;
                     }
-                    else
+                    if ( _status.isPageBreak() )
                     {
-                        if (_status.isPageBreak())
-                        {
-                            this.marker = i;
-                            return _status;
-                        }
-                        ((ColumnArea)currentArea).incrementSpanIndex();
-                        i--;
+                        marker = i;
+                        return _status;
                     }
+                    ( (ColumnArea)currentArea ).incrementSpanIndex();
+                    i--;
                 }
-                if (_status.getCode() == Status.KEEP_WITH_NEXT)
-                {
+                if ( _status.getCode() == Status.KEEP_WITH_NEXT )
                     prevChildMustKeepWithNext = true;
-                }
                 else
-                {
                     prevChildMustKeepWithNext = false;
-                }
             }
             return _status;
         }
 
-        protected void SetContentWidth(int contentWidth)
+        protected void SetContentWidth( int contentWidth )
         {
             this.contentWidth = contentWidth;
         }
 
         public override int GetContentWidth()
         {
-            return this.contentWidth;
+            return contentWidth;
         }
 
         protected virtual string GetElementName()
@@ -195,6 +167,14 @@ namespace Fonet.Fo.Flow
         public override bool GeneratesReferenceAreas()
         {
             return true;
+        }
+
+        internal new class Maker : FObj.Maker
+        {
+            public override FObj Make( FObj parent, PropertyList propertyList )
+            {
+                return new Flow( parent, propertyList );
+            }
         }
     }
 }

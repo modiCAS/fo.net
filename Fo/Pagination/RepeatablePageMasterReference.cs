@@ -7,77 +7,64 @@ namespace Fonet.Fo.Pagination
     {
         private const int INFINITE = -1;
 
-        new internal class Maker : FObj.Maker
-        {
-            public override FObj Make(FObj parent, PropertyList propertyList)
-            {
-                return new RepeatablePageMasterReference(parent, propertyList);
-            }
-        }
-
-        new public static FObj.Maker GetMaker()
-        {
-            return new Maker();
-        }
-
         private int maximumRepeats;
 
-        private int numberConsumed = 0;
+        private int numberConsumed;
 
-        public RepeatablePageMasterReference(FObj parent, PropertyList propertyList)
-            : base(parent, propertyList)
+        public RepeatablePageMasterReference( FObj parent, PropertyList propertyList )
+            : base( parent, propertyList )
         {
-            string mr = GetProperty("maximum-repeats").GetString();
-            if (mr.Equals("no-limit"))
-            {
-                setMaximumRepeats(INFINITE);
-            }
+            string mr = GetProperty( "maximum-repeats" ).GetString();
+            if ( mr.Equals( "no-limit" ) )
+                setMaximumRepeats( INFINITE );
             else
             {
                 try
                 {
-                    setMaximumRepeats(Int32.Parse(mr));
+                    setMaximumRepeats( int.Parse( mr ) );
                 }
-                catch (FormatException)
+                catch ( FormatException )
                 {
-                    throw new FonetException("Invalid number for 'maximum-repeats' property");
+                    throw new FonetException( "Invalid number for 'maximum-repeats' property" );
                 }
             }
         }
 
         public override string GetNextPageMaster(
-            int currentPageNumber, bool thisIsFirstPage, bool isEmptyPage)
+            int currentPageNumber, bool thisIsFirstPage, bool isEmptyPage )
         {
             string pm = MasterName;
-            if (getMaximumRepeats() != INFINITE)
+            if ( getMaximumRepeats() != INFINITE )
             {
-                if (numberConsumed < getMaximumRepeats())
-                {
+                if ( numberConsumed < getMaximumRepeats() )
                     numberConsumed++;
-                }
                 else
-                {
                     pm = null;
-                }
             }
             return pm;
         }
 
-        private void setMaximumRepeats(int maximumRepeats)
+        public override void Reset()
         {
-            if (maximumRepeats == INFINITE)
-            {
+            numberConsumed = 0;
+        }
+
+        public new static FObj.Maker GetMaker()
+        {
+            return new Maker();
+        }
+
+        private void setMaximumRepeats( int maximumRepeats )
+        {
+            if ( maximumRepeats == INFINITE )
                 this.maximumRepeats = maximumRepeats;
-            }
             else
-            {
-                this.maximumRepeats = (maximumRepeats < 0) ? 0 : maximumRepeats;
-            }
+                this.maximumRepeats = maximumRepeats < 0 ? 0 : maximumRepeats;
         }
 
         private int getMaximumRepeats()
         {
-            return this.maximumRepeats;
+            return maximumRepeats;
         }
 
         protected override string GetElementName()
@@ -85,9 +72,12 @@ namespace Fonet.Fo.Pagination
             return "fo:repeatable-page-master-reference";
         }
 
-        public override void Reset()
+        internal new class Maker : FObj.Maker
         {
-            this.numberConsumed = 0;
+            public override FObj Make( FObj parent, PropertyList propertyList )
+            {
+                return new RepeatablePageMasterReference( parent, propertyList );
+            }
         }
     }
 }

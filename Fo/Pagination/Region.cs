@@ -1,56 +1,52 @@
+using Fonet.Layout;
+
 namespace Fonet.Fo.Pagination
 {
-    using Fonet.Layout;
-
     internal abstract class Region : FObj
     {
         public const string PROP_REGION_NAME = "region-name";
 
-        private SimplePageMaster _layoutMaster;
+        private readonly SimplePageMaster _layoutMaster;
         private string _regionName;
 
-        protected Region(FObj parent, PropertyList propertyList)
-            : base(parent, propertyList)
+        protected Region( FObj parent, PropertyList propertyList )
+            : base( parent, propertyList )
         {
-            this.name = GetElementName();
+            name = GetElementName();
 
-            if (null == this.properties.GetProperty(PROP_REGION_NAME))
-            {
-                setRegionName(GetDefaultRegionName());
-            }
-            else if (this.properties.GetProperty(PROP_REGION_NAME).GetString().Equals(""))
-            {
-                setRegionName(GetDefaultRegionName());
-            }
+            if ( null == properties.GetProperty( PROP_REGION_NAME ) )
+                setRegionName( GetDefaultRegionName() );
+            else if ( properties.GetProperty( PROP_REGION_NAME ).GetString().Equals( "" ) )
+                setRegionName( GetDefaultRegionName() );
             else
             {
-                setRegionName(this.properties.GetProperty(PROP_REGION_NAME).GetString());
-                if (isReserved(getRegionName())
-                    && !getRegionName().Equals(GetDefaultRegionName()))
+                setRegionName( properties.GetProperty( PROP_REGION_NAME ).GetString() );
+                if ( isReserved( getRegionName() )
+                    && !getRegionName().Equals( GetDefaultRegionName() ) )
                 {
-                    throw new FonetException(PROP_REGION_NAME + " '" + _regionName
-                        + "' for " + this.name
-                        + " not permitted.");
+                    throw new FonetException( PROP_REGION_NAME + " '" + _regionName
+                        + "' for " + name
+                        + " not permitted." );
                 }
             }
 
-            if (parent.GetName().Equals("fo:simple-page-master"))
+            if ( parent.GetName().Equals( "fo:simple-page-master" ) )
             {
                 _layoutMaster = (SimplePageMaster)parent;
-                getPageMaster().addRegion(this);
+                getPageMaster().addRegion( this );
             }
             else
             {
-                throw new FonetException(GetElementName() + " must be child "
+                throw new FonetException( GetElementName() + " must be child "
                     + "of simple-page-master, not "
-                    + parent.GetName());
+                    + parent.GetName() );
             }
         }
 
-        public abstract RegionArea MakeRegionArea(int allocationRectangleXPosition,
-                                                  int allocationRectangleYPosition,
-                                                  int allocationRectangleWidth,
-                                                  int allocationRectangleHeight);
+        public abstract RegionArea MakeRegionArea( int allocationRectangleXPosition,
+            int allocationRectangleYPosition,
+            int allocationRectangleWidth,
+            int allocationRectangleHeight );
 
         protected abstract string GetDefaultRegionName();
 
@@ -63,7 +59,7 @@ namespace Fonet.Fo.Pagination
             return _regionName;
         }
 
-        private void setRegionName(string name)
+        private void setRegionName( string name )
         {
             _regionName = name;
         }
@@ -73,14 +69,14 @@ namespace Fonet.Fo.Pagination
             return _layoutMaster;
         }
 
-        protected bool isReserved(string name)
+        protected bool isReserved( string name )
         {
-            return (name.Equals("xsl-region-before")
-                || name.Equals("xsl-region-start")
-                || name.Equals("xsl-region-end")
-                || name.Equals("xsl-region-after")
-                || name.Equals("xsl-before-float-separator")
-                || name.Equals("xsl-footnote-separator"));
+            return name.Equals( "xsl-region-before" )
+                || name.Equals( "xsl-region-start" )
+                || name.Equals( "xsl-region-end" )
+                || name.Equals( "xsl-region-after" )
+                || name.Equals( "xsl-before-float-separator" )
+                || name.Equals( "xsl-footnote-separator" );
         }
 
         public override bool GeneratesReferenceAreas()

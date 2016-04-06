@@ -2,11 +2,13 @@ using System;
 using Fonet.Layout;
 using Fonet.Pdf;
 
-namespace Fonet.Render.Pdf.Fonts {
+namespace Fonet.Render.Pdf.Fonts
+{
     /// <summary>
     ///     Base class for the standard 14 fonts as defined in the PDF spec.
     /// </summary>
-    internal abstract class Base14Font : Font {
+    internal abstract class Base14Font : Font
+    {
         public static readonly Font Courier = new Courier();
         public static readonly Font CourierBold = new CourierBold();
         public static readonly Font CourierItalic = new CourierOblique();
@@ -24,16 +26,16 @@ namespace Fonet.Render.Pdf.Fonts {
 
         public static readonly Font Symbol = new Symbol();
         public static readonly Font ZapfDingbats = new ZapfDingbats();
-
-        private string fontName;
+        private readonly int ascender;
+        private readonly int capHeight;
+        private readonly int descender;
         private string encoding;
-        private int capHeight;
-        private int ascender;
-        private int descender;
-        private int firstChar;
-        private int lastChar;
-        private int[] widths;
-        private CodePointMapping mapping;
+        private readonly int firstChar;
+
+        private readonly string fontName;
+        private readonly int lastChar;
+        private readonly CodePointMapping mapping;
+        private readonly int[] widths;
 
         /// <summary>
         ///     Class constructor.
@@ -47,7 +49,8 @@ namespace Fonet.Render.Pdf.Fonts {
             int firstChar,
             int lastChar,
             int[] widths,
-            CodePointMapping mapping) {
+            CodePointMapping mapping )
+        {
             this.fontName = fontName;
             this.encoding = encoding;
             this.capHeight = capHeight;
@@ -59,79 +62,91 @@ namespace Fonet.Render.Pdf.Fonts {
             this.mapping = mapping;
         }
 
-        public override string Encoding {
+        public override string Encoding
+        {
             get { return mapping.Name; }
         }
 
-        public override string FontName {
+        public override string FontName
+        {
             get { return fontName; }
         }
 
-        public override PdfFontTypeEnum Type {
+        public override PdfFontTypeEnum Type
+        {
             get { return PdfFontTypeEnum.Type1; }
         }
 
-        public override PdfFontSubTypeEnum SubType {
+        public override PdfFontSubTypeEnum SubType
+        {
             get { return PdfFontSubTypeEnum.Type1; }
         }
 
         /// <summary>
-        ///     Will always return null since the standard 14 fonts do not 
+        ///     Will always return null since the standard 14 fonts do not
         ///     have a FontDescriptor.
         /// </summary>
         /// <remarks>
-        ///     It is possible to override the default metrics, but the 
+        ///     It is possible to override the default metrics, but the
         ///     current version of FO.NET does not support this feature.
         /// </remarks>
-        public override IFontDescriptor Descriptor {
+        public override IFontDescriptor Descriptor
+        {
             get { return null; }
         }
 
-        public override bool MultiByteFont {
+        public override bool MultiByteFont
+        {
             get { return false; }
         }
 
-        public override int Ascender {
+        public override int Ascender
+        {
             get { return ascender; }
         }
 
-        public override int Descender {
+        public override int Descender
+        {
             get { return descender; }
         }
 
-        public override int CapHeight {
+        public override int CapHeight
+        {
             get { return capHeight; }
         }
 
-        public override int FirstChar {
+        public override int FirstChar
+        {
             get { return firstChar; }
         }
 
-        public override int LastChar {
+        public override int LastChar
+        {
             get { return lastChar; }
         }
 
-        public override int GetWidth(ushort charIndex) {
-            return widths[charIndex];
-        }
-
-        public override int[] Widths {
-            get {
-                int[] arr = new int[LastChar - FirstChar + 1];
-                Array.Copy(widths, FirstChar, arr, 0, LastChar - FirstChar + 1);
+        public override int[] Widths
+        {
+            get
+            {
+                var arr = new int[ LastChar - FirstChar + 1 ];
+                Array.Copy( widths, FirstChar, arr, 0, LastChar - FirstChar + 1 );
 
                 return arr;
             }
         }
 
-        public override ushort MapCharacter(char c) {
-            ushort charIndex = mapping.MapCharacter(c);
-            if (charIndex != 0) {
+        public override int GetWidth( ushort charIndex )
+        {
+            return widths[ charIndex ];
+        }
+
+        public override ushort MapCharacter( char c )
+        {
+            ushort charIndex = mapping.MapCharacter( c );
+            if ( charIndex != 0 )
                 return charIndex;
-            }
-            else {
-                return Convert.ToUInt16('#');
-            }
+            return Convert.ToUInt16( '#' );
         }
     }
 }

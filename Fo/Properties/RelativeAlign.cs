@@ -5,6 +5,5 @@ namespace Fonet.Fo.Properties
         public const int BEFORE = Constants.BEFORE;
 
         public const int BASELINE = Constants.BASELINE;
-
     }
 }

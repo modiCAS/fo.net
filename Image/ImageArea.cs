@@ -1,41 +1,41 @@
+using Fonet.Layout;
+using Fonet.Layout.Inline;
+using Fonet.Render.Pdf;
+
 namespace Fonet.Image
 {
-    using Fonet.Layout;
-    using Fonet.Layout.Inline;
-    using Fonet.Render.Pdf;
-
     internal class ImageArea : InlineArea
     {
-        protected int xOffset = 0;
         protected int align;
-        protected int valign;
         protected FonetImage image;
+        protected int valign;
+        protected int xOffset;
 
-        public ImageArea(FontState fontState, FonetImage img, int AllocationWidth,
-                         int width, int height, int startIndent, int endIndent,
-                         int align)
-            : base(fontState, width, 0, 0, 0)
+        public ImageArea( FontState fontState, FonetImage img, int AllocationWidth,
+            int width, int height, int startIndent, int endIndent,
+            int align )
+            : base( fontState, width, 0, 0, 0 )
         {
-            this.currentHeight = height;
-            this.contentRectangleWidth = width;
+            currentHeight = height;
+            contentRectangleWidth = width;
             this.height = height;
-            this.image = img;
+            image = img;
             this.align = align;
         }
 
         public override int getXOffset()
         {
-            return this.xOffset;
+            return xOffset;
         }
 
         public FonetImage getImage()
         {
-            return this.image;
+            return image;
         }
 
-        public override void render(PdfRenderer renderer)
+        public override void render( PdfRenderer renderer )
         {
-            renderer.RenderImageArea(this);
+            renderer.RenderImageArea( this );
         }
 
         public int getImageHeight()
@@ -43,30 +43,29 @@ namespace Fonet.Image
             return currentHeight;
         }
 
-        public void setAlign(int align)
+        public void setAlign( int align )
         {
             this.align = align;
         }
 
         public int getAlign()
         {
-            return this.align;
+            return align;
         }
 
-        public override void setVerticalAlign(int align)
+        public override void setVerticalAlign( int align )
         {
-            this.valign = align;
+            valign = align;
         }
 
         public override int getVerticalAlign()
         {
-            return this.valign;
+            return valign;
         }
 
-        public void setStartIndent(int startIndent)
+        public void setStartIndent( int startIndent )
         {
             xOffset = startIndent;
         }
-
     }
 }

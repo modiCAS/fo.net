@@ -9,34 +9,27 @@ namespace Fonet.Pdf
     /// </remarks>
     public sealed class PdfPageTree : PdfDictionary
     {
-        private PdfArray kids;
-
-        public PdfPageTree(PdfObjectId objectId)
-            : base(objectId)
+        public PdfPageTree( PdfObjectId objectId )
+            : base( objectId )
         {
-            this[PdfName.Names.Type] = PdfName.Names.Pages;
-            this.kids = new PdfArray();
-            this[PdfName.Names.Kids] = kids;
+            this[ PdfName.Names.Type ] = PdfName.Names.Pages;
+            Kids = new PdfArray();
+            this[ PdfName.Names.Kids ] = Kids;
         }
 
-        public PdfArray Kids
-        {
-            get { return kids; }
-        }
+        public PdfArray Kids { get; private set; }
 
-        protected internal override void Write(PdfWriter writer)
+        protected internal override void Write( PdfWriter writer )
         {
             // Add a dictionary entry for /Count (the number of leaf 
             // nodes (page objects) that are descendants of this
             // node within the page tree.
-            int count = 0;
-            for (int x = 0; x < kids.Count; x++)
-            {
+            var count = 0;
+            for ( var x = 0; x < Kids.Count; x++ )
                 count++; // TODO: test if it is a leaf.
-            }
-            this[PdfName.Names.Count] = new PdfNumeric(count);
+            this[ PdfName.Names.Count ] = new PdfNumeric( count );
 
-            base.Write(writer);
+            base.Write( writer );
         }
     }
 }

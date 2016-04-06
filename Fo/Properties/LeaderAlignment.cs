@@ -7,6 +7,5 @@ namespace Fonet.Fo.Properties
         public const int REFERENCE_AREA = Constants.REFERENCE_AREA;
 
         public const int PAGE = Constants.PAGE;
-
     }
 }

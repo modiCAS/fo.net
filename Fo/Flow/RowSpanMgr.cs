@@ -2,135 +2,69 @@ namespace Fonet.Fo.Flow
 {
     internal class RowSpanMgr
     {
-        public class SpanInfo
+        private bool ignoreKeeps;
+
+        private readonly SpanInfo[] spanInfo;
+
+        public RowSpanMgr( int numCols )
         {
-            public int cellHeight;
-            public int totalRowHeight;
-            public int rowsRemaining;
-            public TableCell cell;
-
-            public SpanInfo(TableCell cell, int cellHeight, int rowsSpanned)
-            {
-                this.cell = cell;
-                this.cellHeight = cellHeight;
-                this.totalRowHeight = 0;
-                this.rowsRemaining = rowsSpanned;
-            }
-
-            public int heightRemaining()
-            {
-                int hl = cellHeight - totalRowHeight;
-                return (hl > 0) ? hl : 0;
-            }
-
-            public bool isInLastRow()
-            {
-                return (rowsRemaining == 1);
-            }
-
-            public bool finishRow(int rowHeight)
-            {
-                totalRowHeight += rowHeight;
-                if (--rowsRemaining == 0)
-                {
-                    if (cell != null)
-                    {
-                        cell.SetRowHeight(totalRowHeight);
-                    }
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
+            spanInfo = new SpanInfo[ numCols ];
         }
 
-        private SpanInfo[] spanInfo;
-
-        private bool ignoreKeeps = false;
-
-        public RowSpanMgr(int numCols)
+        public void AddRowSpan( TableCell cell, int firstCol, int numCols,
+            int cellHeight, int rowsSpanned )
         {
-            this.spanInfo = new SpanInfo[numCols];
+            spanInfo[ firstCol - 1 ] = new SpanInfo( cell, cellHeight, rowsSpanned );
+            for ( var i = 0; i < numCols - 1; i++ )
+                spanInfo[ firstCol + i ] = new SpanInfo( null, cellHeight, rowsSpanned );
         }
 
-        public void AddRowSpan(TableCell cell, int firstCol, int numCols,
-                               int cellHeight, int rowsSpanned)
+        public bool IsSpanned( int colNum )
         {
-            spanInfo[firstCol - 1] = new SpanInfo(cell, cellHeight, rowsSpanned);
-            for (int i = 0; i < numCols - 1; i++)
-            {
-                spanInfo[firstCol + i] = new SpanInfo(null, cellHeight, rowsSpanned);
-            }
+            return spanInfo[ colNum - 1 ] != null;
         }
 
-        public bool IsSpanned(int colNum)
+        public TableCell GetSpanningCell( int colNum )
         {
-            return (spanInfo[colNum - 1] != null);
-        }
-
-        public TableCell GetSpanningCell(int colNum)
-        {
-            if (spanInfo[colNum - 1] != null)
-            {
-                return spanInfo[colNum - 1].cell;
-            }
-            else
-            {
-                return null;
-            }
+            if ( spanInfo[ colNum - 1 ] != null )
+                return spanInfo[ colNum - 1 ].cell;
+            return null;
         }
 
         public bool HasUnfinishedSpans()
         {
-            for (int i = 0; i < spanInfo.Length; i++)
+            for ( var i = 0; i < spanInfo.Length; i++ )
             {
-                if (spanInfo[i] != null)
-                {
+                if ( spanInfo[ i ] != null )
                     return true;
-                }
             }
             return false;
         }
 
-        public void FinishRow(int rowHeight)
+        public void FinishRow( int rowHeight )
         {
-            for (int i = 0; i < spanInfo.Length; i++)
+            for ( var i = 0; i < spanInfo.Length; i++ )
             {
-                if (spanInfo[i] != null && spanInfo[i].finishRow(rowHeight))
-                {
-                    spanInfo[i] = null;
-                }
+                if ( spanInfo[ i ] != null && spanInfo[ i ].finishRow( rowHeight ) )
+                    spanInfo[ i ] = null;
             }
         }
 
-        public int GetRemainingHeight(int colNum)
+        public int GetRemainingHeight( int colNum )
         {
-            if (spanInfo[colNum - 1] != null)
-            {
-                return spanInfo[colNum - 1].heightRemaining();
-            }
-            else
-            {
-                return 0;
-            }
+            if ( spanInfo[ colNum - 1 ] != null )
+                return spanInfo[ colNum - 1 ].heightRemaining();
+            return 0;
         }
 
-        public bool IsInLastRow(int colNum)
+        public bool IsInLastRow( int colNum )
         {
-            if (spanInfo[colNum - 1] != null)
-            {
-                return spanInfo[colNum - 1].isInLastRow();
-            }
-            else
-            {
-                return false;
-            }
+            if ( spanInfo[ colNum - 1 ] != null )
+                return spanInfo[ colNum - 1 ].isInLastRow();
+            return false;
         }
 
-        public void SetIgnoreKeeps(bool ignoreKeeps)
+        public void SetIgnoreKeeps( bool ignoreKeeps )
         {
             this.ignoreKeeps = ignoreKeeps;
         }
@@ -138,6 +72,45 @@ namespace Fonet.Fo.Flow
         public bool IgnoreKeeps()
         {
             return ignoreKeeps;
+        }
+
+        public class SpanInfo
+        {
+            public TableCell cell;
+            public int cellHeight;
+            public int rowsRemaining;
+            public int totalRowHeight;
+
+            public SpanInfo( TableCell cell, int cellHeight, int rowsSpanned )
+            {
+                this.cell = cell;
+                this.cellHeight = cellHeight;
+                totalRowHeight = 0;
+                rowsRemaining = rowsSpanned;
+            }
+
+            public int heightRemaining()
+            {
+                int hl = cellHeight - totalRowHeight;
+                return hl > 0 ? hl : 0;
+            }
+
+            public bool isInLastRow()
+            {
+                return rowsRemaining == 1;
+            }
+
+            public bool finishRow( int rowHeight )
+            {
+                totalRowHeight += rowHeight;
+                if ( --rowsRemaining == 0 )
+                {
+                    if ( cell != null )
+                        cell.SetRowHeight( totalRowHeight );
+                    return true;
+                }
+                return false;
+            }
         }
     }
 }

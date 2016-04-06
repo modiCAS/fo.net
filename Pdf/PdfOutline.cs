@@ -9,10 +9,13 @@ namespace Fonet.Pdf
     /// </summary>
     public class PdfOutline : PdfObject
     {
-        /// <summary>
-        ///     List of sub-entries (outline objects)
-        /// </summary>
-        private ArrayList subentries;
+        private readonly PdfObjectReference actionRef;
+
+        private int count;
+
+        private PdfOutline first;
+        private PdfOutline last;
+        private PdfOutline next;
 
         /// <summary>
         ///     Parent outline object. Root Outlines parent is null
@@ -20,19 +23,16 @@ namespace Fonet.Pdf
         private PdfOutline parent;
 
         private PdfOutline prev;
-        private PdfOutline next;
 
-        private PdfOutline first;
-        private PdfOutline last;
-
-        private int count;
+        /// <summary>
+        ///     List of sub-entries (outline objects)
+        /// </summary>
+        private readonly ArrayList subentries;
 
         /// <summary>
         ///     Title to display for the bookmark entry
         /// </summary>
         private string title;
-
-        private PdfObjectReference actionRef;
 
         /// <summary>
         ///     Class constructor.
@@ -40,21 +40,21 @@ namespace Fonet.Pdf
         /// <param name="objectId">The object id number</param>
         /// <param name="title">The title of the outline entry (can only be null for root Outlines obj)</param>
         /// <param name="action">The page which this outline refers to.</param>
-        public PdfOutline(PdfObjectId objectId, string title, PdfObjectReference action)
-            : base(objectId)
+        public PdfOutline( PdfObjectId objectId, string title, PdfObjectReference action )
+            : base( objectId )
         {
-            this.subentries = new ArrayList();
-            this.count = 0;
-            this.parent = null;
-            this.prev = null;
-            this.next = null;
-            this.first = null;
-            this.last = null;
+            subentries = new ArrayList();
+            count = 0;
+            parent = null;
+            prev = null;
+            next = null;
+            first = null;
+            last = null;
             this.title = title;
-            this.actionRef = action;
+            actionRef = action;
         }
 
-        public void SetTitle(string title)
+        public void SetTitle( string title )
         {
             this.title = title;
         }
@@ -63,19 +63,17 @@ namespace Fonet.Pdf
         ///     Add a sub element to this outline
         /// </summary>
         /// <param name="outline"></param>
-        public void AddOutline(PdfOutline outline)
+        public void AddOutline( PdfOutline outline )
         {
-            if (subentries.Count > 0)
+            if ( subentries.Count > 0 )
             {
-                outline.prev = (PdfOutline)subentries[subentries.Count - 1];
+                outline.prev = (PdfOutline)subentries[ subentries.Count - 1 ];
                 outline.prev.next = outline;
             }
             else
-            {
                 first = outline;
-            }
 
-            subentries.Add(outline);
+            subentries.Add( outline );
             outline.parent = this;
 
             IncrementCount(); // note: count is not just the immediate children
@@ -87,56 +85,45 @@ namespace Fonet.Pdf
         {
             // count is a total of our immediate subentries and all descendent subentries
             count++;
-            if (parent != null)
-            {
+            if ( parent != null )
                 parent.IncrementCount();
-            }
         }
 
-        protected internal override void Write(PdfWriter writer)
+        protected internal override void Write( PdfWriter writer )
         {
-            PdfDictionary dict = new PdfDictionary();
+            var dict = new PdfDictionary();
 
-            if (parent == null)
+            if ( parent == null )
             {
                 // root Outlines object
-                if (first != null && last != null)
+                if ( first != null && last != null )
                 {
-                    dict.Add(PdfName.Names.First, first.GetReference());
-                    dict.Add(PdfName.Names.Last, last.GetReference());
+                    dict.Add( PdfName.Names.First, first.GetReference() );
+                    dict.Add( PdfName.Names.Last, last.GetReference() );
                 }
-
             }
             else
             {
-                dict.Add(PdfName.Names.Title, new PdfString(title));
-                dict.Add(PdfName.Names.Parent, parent.GetReference());
+                dict.Add( PdfName.Names.Title, new PdfString( title ) );
+                dict.Add( PdfName.Names.Parent, parent.GetReference() );
 
-                if (first != null && last != null)
+                if ( first != null && last != null )
                 {
-                    dict.Add(PdfName.Names.First, first.GetReference());
-                    dict.Add(PdfName.Names.Last, last.GetReference());
+                    dict.Add( PdfName.Names.First, first.GetReference() );
+                    dict.Add( PdfName.Names.Last, last.GetReference() );
                 }
-                if (prev != null)
-                {
-                    dict.Add(PdfName.Names.Prev, prev.GetReference());
-                }
-                if (next != null)
-                {
-                    dict.Add(PdfName.Names.Next, next.GetReference());
-                }
-                if (count > 0)
-                {
-                    dict.Add(PdfName.Names.Count, new PdfNumeric(count));
-                }
+                if ( prev != null )
+                    dict.Add( PdfName.Names.Prev, prev.GetReference() );
+                if ( next != null )
+                    dict.Add( PdfName.Names.Next, next.GetReference() );
+                if ( count > 0 )
+                    dict.Add( PdfName.Names.Count, new PdfNumeric( count ) );
 
-                if (actionRef != null)
-                {
-                    dict.Add(PdfName.Names.A, actionRef);
-                }
+                if ( actionRef != null )
+                    dict.Add( PdfName.Names.A, actionRef );
             }
 
-            writer.Write(dict);
+            writer.Write( dict );
         }
     }
 }

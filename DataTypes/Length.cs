@@ -1,18 +1,16 @@
+using Fonet.Fo.Expr;
+
 namespace Fonet.DataTypes
 {
-    using Fonet.Fo.Expr;
-
     internal class Length
     {
-        protected int millipoints = 0;
-        protected bool bIsComputed = false;
+        protected bool bIsComputed;
+        protected int millipoints;
 
         public int MValue()
         {
-            if (!bIsComputed)
-            {
+            if ( !bIsComputed )
                 ComputeValue();
-            }
             return millipoints;
         }
 
@@ -20,15 +18,15 @@ namespace Fonet.DataTypes
         {
         }
 
-        protected void SetComputedValue(int millipoints)
+        protected void SetComputedValue( int millipoints )
         {
-            SetComputedValue(millipoints, true);
+            SetComputedValue( millipoints, true );
         }
 
-        protected void SetComputedValue(int millipoints, bool bSetComputed)
+        protected void SetComputedValue( int millipoints, bool bSetComputed )
         {
             this.millipoints = millipoints;
-            this.bIsComputed = bSetComputed;
+            bIsComputed = bSetComputed;
         }
 
         public virtual bool IsAuto()
@@ -46,7 +44,7 @@ namespace Fonet.DataTypes
             return 0.0;
         }
 
-        public virtual void ResolveTableUnit(double dTableUnit)
+        public virtual void ResolveTableUnit( double dTableUnit )
         {
         }
 

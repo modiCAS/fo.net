@@ -9,6 +9,5 @@ namespace Fonet.Fo.Properties
         public const int ABSOLUTE = Constants.ABSOLUTE;
 
         public const int FIXED = Constants.FIXED;
-
     }
 }

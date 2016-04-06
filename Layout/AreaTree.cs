@@ -9,32 +9,32 @@ namespace Fonet.Layout
     {
         private FontInfo fontInfo;
 
-        private StreamRenderer streamRenderer;
+        private readonly StreamRenderer streamRenderer;
 
-        public AreaTree(StreamRenderer streamRenderer)
+        public AreaTree( StreamRenderer streamRenderer )
         {
             this.streamRenderer = streamRenderer;
         }
 
-        public void setFontInfo(FontInfo fontInfo)
+        public void setFontInfo( FontInfo fontInfo )
         {
             this.fontInfo = fontInfo;
         }
 
         public FontInfo getFontInfo()
         {
-            return this.fontInfo;
+            return fontInfo;
         }
 
-        public void addPage(Page page)
+        public void addPage( Page page )
         {
             try
             {
-                streamRenderer.QueuePage(page);
+                streamRenderer.QueuePage( page );
             }
-            catch (IOException e)
+            catch ( IOException e )
             {
-                throw new FonetException("", e);
+                throw new FonetException( "", e );
             }
         }
 

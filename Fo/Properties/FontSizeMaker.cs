@@ -4,12 +4,16 @@ namespace Fonet.Fo.Properties
 {
     internal class FontSizeMaker : LengthProperty.Maker
     {
-        new public static PropertyMaker Maker(string propName)
+        private Property m_defaultProp;
+
+        protected FontSizeMaker( string name ) : base( name )
         {
-            return new FontSizeMaker(propName);
         }
 
-        protected FontSizeMaker(string name) : base(name) { }
+        public new static PropertyMaker Maker( string propName )
+        {
+            return new FontSizeMaker( propName );
+        }
 
 
         public override bool IsInherited()
@@ -17,23 +21,16 @@ namespace Fonet.Fo.Properties
             return true;
         }
 
-        private Property m_defaultProp = null;
-
-        public override Property Make(PropertyList propertyList)
+        public override Property Make( PropertyList propertyList )
         {
-            if (m_defaultProp == null)
-            {
-                m_defaultProp = Make(propertyList, "12pt", propertyList.getParentFObj());
-            }
+            if ( m_defaultProp == null )
+                m_defaultProp = Make( propertyList, "12pt", propertyList.getParentFObj() );
             return m_defaultProp;
-
         }
 
-        public override IPercentBase GetPercentBase(FObj fo, PropertyList propertyList)
+        public override IPercentBase GetPercentBase( FObj fo, PropertyList propertyList )
         {
-            return new LengthBase(fo, propertyList, LengthBase.INH_FONTSIZE);
-
+            return new LengthBase( fo, propertyList, LengthBase.INH_FONTSIZE );
         }
-
     }
 }
