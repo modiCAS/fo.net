@@ -10,8 +10,13 @@ namespace Fonet.DataTypes
         private const int MINSET = 1;
         private const int OPTSET = 2;
         private const int MAXSET = 4;
-        private int bfSet = 0;
         private bool bChecked = false;
+        private int bfSet = 0;
+
+        public int BfSet
+        {
+            get { return bfSet; }
+        }
 
         public virtual void SetComponent(string sCmpnName, Property cmpnValue,
                                          bool bIsDefault)

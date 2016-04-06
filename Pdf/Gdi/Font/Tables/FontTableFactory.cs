@@ -16,6 +16,7 @@ namespace Fonet.Pdf.Gdi.Font {
         /// <param name="tableName">
         ///     One of the pre-defined TrueType tables from the <see cref="TableNames"/> class.
         /// </param>
+        /// <param name="reader"></param>
         /// <returns>
         ///     A subclass of <see cref="FontTable"/> that is capable of parsing 
         ///     a TrueType table.

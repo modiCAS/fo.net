@@ -55,6 +55,7 @@ namespace Fonet.Pdf.Gdi.Font {
         ///     the beginning of the glyph description, i.e. the flags field.
         /// </remarks>
         /// <param name="stream"></param>
+        /// <param name="glyph"></param>
         private void ReadCompositeGlyph(FontFileStream stream, Glyph glyph) {
             bool moreComposites = true;
             while (moreComposites) {

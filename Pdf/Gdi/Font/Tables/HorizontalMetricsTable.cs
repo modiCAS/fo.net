@@ -22,6 +22,7 @@ namespace Fonet.Pdf.Gdi.Font {
         ///     Initialises a new instance of the HorizontalMetricsTable class.
         /// </summary>
         /// <param name="entry"></param>
+        /// <param name="numMetrics"></param>
         public HorizontalMetricsTable(DirectoryEntry entry, int numMetrics)
             : base(TableNames.Hmtx, entry) {
             this.metrics = new ArrayList(numMetrics);

@@ -22,6 +22,7 @@ namespace Fonet.Pdf.Gdi.Font {
         ///     Initialises a new instance of the IndexToLocationTable class.
         /// </summary>
         /// <param name="entry"></param>
+        /// <param name="numOffsets"></param>
         public IndexToLocationTable(DirectoryEntry entry, int numOffsets)
             : base(TableNames.Loca, entry) {
             this.offsets = new ArrayList(numOffsets);

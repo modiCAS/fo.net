@@ -21,6 +21,7 @@ namespace Fonet.Pdf.Gdi {
         /// <summary>
         ///     Class constructor.
         /// </summary>
+        /// <param name="dc"></param>
         /// <param name="start">Value representing start of unicode range.</param>
         /// <param name="end">Value representing end of unicode range.</param>
         public UnicodeRange(GdiDeviceContent dc, ushort start, ushort end) {

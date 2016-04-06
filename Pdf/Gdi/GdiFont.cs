@@ -13,6 +13,8 @@ namespace Fonet.Pdf.Gdi {
         ///     Class constructor
         /// </summary>
         /// <param name="hFont">A handle to an existing font.</param>
+        /// <param name="faceName"></param>
+        /// <param name="height"></param>
         public GdiFont(IntPtr hFont, string faceName, int height) {
             this.hFont = hFont;
             this.faceName = faceName;
@@ -49,6 +51,8 @@ namespace Fonet.Pdf.Gdi {
         ///     The height, in logical units, of the font's character 
         ///     cell or character.
         /// </param>
+        /// <param name="bold"></param>
+        /// <param name="italic"></param>
         /// <returns></returns>
         public static GdiFont CreateFont(string faceName, int height, bool bold, bool italic) {
             LogFont lf = new LogFont();
@@ -66,6 +70,9 @@ namespace Fonet.Pdf.Gdi {
         ///     of the EM Square
         /// </summary>
         /// <param name="faceName">The typeface name of a font.</param>
+        /// <param name="bold"></param>
+        /// <param name="italic"></param>
+        /// <param name="dc"></param>
         /// <returns></returns>
         public static GdiFont CreateDesignFont(string faceName, bool bold, bool italic, GdiDeviceContent dc) {
             // TODO: Is there a simpler method of obtaining the em-sqaure?
