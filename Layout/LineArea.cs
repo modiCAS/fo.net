@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using Fonet.Fo.Flow;
 using Fonet.Fo.Properties;
@@ -12,30 +14,28 @@ namespace Fonet.Layout
 {
     internal class LineArea : Area
     {
-        protected const int Nothing = 0;
-        protected const int Whitespace = 1;
-        protected const int Text = 2;
-        protected const int Multibytechar = 3;
-        protected int AllocationHeight;
+        private const int Nothing = 0;
+        private const int Whitespace = 1;
+        private const int Text = 2;
+        private const int Multibytechar = 3;
+        private int _allocationHeight;
         private FontState _currentFontState;
-        protected int EmbeddedLinkStart;
-        protected int EndIndent;
-        protected int FinalWidth;
-        protected int HalfLeading;
+        private int _embeddedLinkStart;
+        private int _endIndent;
+        private int _finalWidth;
+        private int _halfLeading;
         private HyphenationProps _hyphProps;
-        protected int LineHeight;
-        protected int NominalFontSize;
-        protected int NominalGlyphHeight;
-        protected ArrayList PendingAreas = new ArrayList();
-        protected int PendingWidth;
+        private int _nominalFontSize;
+        private ArrayList _pendingAreas = new ArrayList();
+        private int _pendingWidth;
         private readonly int _placementOffset;
-        protected int Prev = Nothing;
-        protected bool PrevLtState;
-        protected bool PrevOlState;
-        protected bool PrevUlState;
+        private int _prev = Nothing;
+        private bool _prevLtState;
+        private bool _prevOlState;
+        private bool _prevUlState;
         private float _red, _green, _blue;
-        protected int SpaceWidth;
-        protected int StartIndent;
+        private int _spaceWidth;
+        private int _startIndent;
         private int _vAlign;
         private int _whiteSpaceCollapse;
         private int _wrapOption;
@@ -46,24 +46,24 @@ namespace Fonet.Layout
             : base( fontState )
         {
             _currentFontState = fontState;
-            this.LineHeight = lineHeight;
-            NominalFontSize = fontState.FontSize;
-            NominalGlyphHeight = fontState.Ascender - fontState.Descender;
+            _nominalFontSize = fontState.FontSize;
+
+            int nominalGlyphHeight = fontState.Ascender - fontState.Descender;
 
             _placementOffset = fontState.Ascender;
             ContentRectangleWidth = allocationWidth - startIndent
                 - endIndent;
-            this.FontState = fontState;
+            FontState = fontState;
 
-            AllocationHeight = NominalGlyphHeight;
-            this.HalfLeading = this.LineHeight - AllocationHeight;
+            _allocationHeight = nominalGlyphHeight;
+            _halfLeading = lineHeight - _allocationHeight;
 
-            this.StartIndent = startIndent;
-            this.EndIndent = endIndent;
+            _startIndent = startIndent;
+            _endIndent = endIndent;
 
             if ( prevLineArea != null )
             {
-                IEnumerator e = prevLineArea.PendingAreas.GetEnumerator();
+                IEnumerator e = prevLineArea._pendingAreas.GetEnumerator();
                 Box b = null;
                 var eatMoreSpace = true;
                 var eatenWidth = 0;
@@ -73,9 +73,10 @@ namespace Fonet.Layout
                     if ( e.MoveNext() )
                     {
                         b = (Box)e.Current;
-                        if ( b is InlineSpace )
+                        var space = b as InlineSpace;
+                        if ( space != null )
                         {
-                            var isp = (InlineSpace)b;
+                            InlineSpace isp = space;
                             if ( isp.IsEatable() )
                                 eatenWidth += isp.GetSize();
                             else
@@ -93,13 +94,13 @@ namespace Fonet.Layout
 
                 while ( b != null )
                 {
-                    PendingAreas.Add( b );
+                    _pendingAreas.Add( b );
                     if ( e.MoveNext() )
                         b = (Box)e.Current;
                     else
                         b = null;
                 }
-                PendingWidth = prevLineArea.GetPendingWidth() - eatenWidth;
+                _pendingWidth = prevLineArea.GetPendingWidth() - eatenWidth;
             }
         }
 
@@ -117,9 +118,9 @@ namespace Fonet.Layout
                 _red, _green, _blue, refid, width );
 
             pia.SetYOffset( _placementOffset );
-            PendingAreas.Add( pia );
-            PendingWidth += width;
-            Prev = Text;
+            _pendingAreas.Add( pia );
+            _pendingWidth += width;
+            _prev = Text;
 
             return -1;
         }
@@ -145,8 +146,8 @@ namespace Fonet.Layout
             {
                 int charWidth;
                 char c = data[ i ];
-                var isMultiByteChar = false;
-                var isText = false;
+                bool isMultiByteChar;
+                bool isText;
                 if ( !( IsSpace( c ) || c == '\n' || c == '\r' || c == '\t'
                     || c == '\u2028' ) )
                 {
@@ -166,104 +167,114 @@ namespace Fonet.Layout
                     isText = false;
                     isMultiByteChar = false;
 
-                    if ( Prev == Whitespace )
+                    if ( _prev == Whitespace )
                     {
                         if ( _whiteSpaceCollapse == GenericBoolean.Enums.False )
                         {
                             if ( IsSpace( c ) )
-                                SpaceWidth += GetCharWidth( c );
-                            else if ( c == '\n' || c == '\u2028' )
-                            {
-                                if ( SpaceWidth > 0 )
+                                _spaceWidth += GetCharWidth( c );
+                            else
+                                switch ( c )
                                 {
-                                    var isp = new InlineSpace( SpaceWidth );
+                                case '\n':
+                                case '\u2028':
+                                    if ( _spaceWidth <= 0 ) return i + 1;
+
+                                    var isp = new InlineSpace( _spaceWidth );
                                     isp.SetUnderlined( textState.GetUnderlined() );
                                     isp.SetOverlined( textState.GetOverlined() );
                                     isp.SetLineThrough( textState.GetLineThrough() );
                                     AddChild( isp );
-                                    FinalWidth += SpaceWidth;
-                                    SpaceWidth = 0;
+                                    _finalWidth += _spaceWidth;
+                                    _spaceWidth = 0;
+                                    return i + 1;
+                                case '\t':
+                                    _spaceWidth += 8 * whitespaceWidth;
+                                    break;
                                 }
-                                return i + 1;
-                            }
-                            else if ( c == '\t' )
-                                SpaceWidth += 8 * whitespaceWidth;
                         }
                         else if ( c == '\u2028' )
                         {
-                            if ( SpaceWidth > 0 )
-                            {
-                                var isp = new InlineSpace( SpaceWidth );
-                                isp.SetUnderlined( textState.GetUnderlined() );
-                                isp.SetOverlined( textState.GetOverlined() );
-                                isp.SetLineThrough( textState.GetLineThrough() );
-                                AddChild( isp );
-                                FinalWidth += SpaceWidth;
-                                SpaceWidth = 0;
-                            }
+                            if ( _spaceWidth <= 0 ) return i + 1;
+
+                            var isp = new InlineSpace( _spaceWidth );
+                            isp.SetUnderlined( textState.GetUnderlined() );
+                            isp.SetOverlined( textState.GetOverlined() );
+                            isp.SetLineThrough( textState.GetLineThrough() );
+                            AddChild( isp );
+                            _finalWidth += _spaceWidth;
+                            _spaceWidth = 0;
                             return i + 1;
                         }
                     }
-                    else if ( Prev == Text || Prev == Multibytechar )
+                    else if ( _prev == Text || _prev == Multibytechar )
                     {
-                        if ( SpaceWidth > 0 )
+                        if ( _spaceWidth > 0 )
                         {
-                            var isp = new InlineSpace( SpaceWidth );
-                            if ( PrevUlState )
+                            var isp = new InlineSpace( _spaceWidth );
+                            if ( _prevUlState )
                                 isp.SetUnderlined( textState.GetUnderlined() );
-                            if ( PrevOlState )
+                            if ( _prevOlState )
                                 isp.SetOverlined( textState.GetOverlined() );
-                            if ( PrevLtState )
+                            if ( _prevLtState )
                                 isp.SetLineThrough( textState.GetLineThrough() );
                             AddChild( isp );
-                            FinalWidth += SpaceWidth;
-                            SpaceWidth = 0;
+                            _finalWidth += _spaceWidth;
+                            _spaceWidth = 0;
                         }
 
-                        IEnumerator e = PendingAreas.GetEnumerator();
+                        IEnumerator e = _pendingAreas.GetEnumerator();
                         while ( e.MoveNext() )
                         {
                             var box = (Box)e.Current;
-                            if ( box is InlineArea )
+                            var area = box as InlineArea;
+                            if ( area != null )
                             {
                                 if ( ls != null )
                                 {
                                     var lr =
-                                        new Rectangle( FinalWidth, 0,
-                                            ( (InlineArea)box ).GetContentWidth(),
+                                        new Rectangle( _finalWidth, 0,
+                                            area.GetContentWidth(),
                                             FontState.FontSize );
-                                    ls.AddRect( lr, this, (InlineArea)box );
+                                    ls.AddRect( lr, this, area );
                                 }
                             }
+
                             AddChild( box );
                         }
 
-                        FinalWidth += PendingWidth;
+                        _finalWidth += _pendingWidth;
 
-                        PendingWidth = 0;
-                        PendingAreas = new ArrayList();
+                        _pendingWidth = 0;
+                        _pendingAreas = new ArrayList();
 
                         if ( wordLength > 0 )
                         {
                             AddSpacedWord( new string( data, wordStart, wordLength ),
-                                ls, FinalWidth, 0, textState, false );
-                            FinalWidth += wordWidth;
+                                ls, _finalWidth, 0, textState, false );
+                            _finalWidth += wordWidth;
 
                             wordWidth = 0;
                         }
 
-                        Prev = Whitespace;
+                        _prev = Whitespace;
 
-                        EmbeddedLinkStart = 0;
+                        _embeddedLinkStart = 0;
 
-                        SpaceWidth = GetCharWidth( c );
+                        _spaceWidth = GetCharWidth( c );
 
                         if ( _whiteSpaceCollapse == GenericBoolean.Enums.False )
                         {
-                            if ( c == '\n' || c == '\u2028' )
+                            switch ( c )
+                            {
+                            case '\n':
+                            case '\u2028':
                                 return i + 1;
-                            if ( c == '\t' )
-                                SpaceWidth = whitespaceWidth;
+
+                            case '\t':
+                                _spaceWidth = whitespaceWidth;
+                                break;
+                            }
                         }
                         else if ( c == '\u2028' )
                             return i + 1;
@@ -274,152 +285,148 @@ namespace Fonet.Layout
                         {
                             if ( IsSpace( c ) )
                             {
-                                Prev = Whitespace;
-                                SpaceWidth = GetCharWidth( c );
+                                _prev = Whitespace;
+                                _spaceWidth = GetCharWidth( c );
                             }
-                            else if ( c == '\n' )
-                            {
-                                var isp = new InlineSpace( SpaceWidth );
-                                AddChild( isp );
-                                return i + 1;
-                            }
-                            else if ( c == '\t' )
-                            {
-                                Prev = Whitespace;
-                                SpaceWidth = 8 * whitespaceWidth;
-                            }
+                            else
+                                switch ( c )
+                                {
+                                case '\n':
+                                    var isp = new InlineSpace( _spaceWidth );
+                                    AddChild( isp );
+                                    return i + 1;
+
+                                case '\t':
+                                    _prev = Whitespace;
+                                    _spaceWidth = 8 * whitespaceWidth;
+                                    break;
+                                }
                         }
                         else
                             wordStart++;
                     }
                 }
 
-                if ( isText )
+                if ( !isText ) continue;
+
+                int curr = isMultiByteChar ? Multibytechar : Text;
+                switch ( _prev )
                 {
-                    int curr = isMultiByteChar ? Multibytechar : Text;
-                    if ( Prev == Whitespace )
+                case Whitespace:
+                    wordWidth = charWidth;
+                    if ( _finalWidth + _spaceWidth + wordWidth
+                        > GetContentWidth() )
                     {
-                        wordWidth = charWidth;
-                        if ( FinalWidth + SpaceWidth + wordWidth
-                            > GetContentWidth() )
+                        if ( overrun )
                         {
-                            if ( overrun )
-                            {
-                                FonetDriver.ActiveDriver.FireFonetWarning(
-                                    "Area contents overflows area" );
-                            }
-                            if ( _wrapOption == WrapOption.Wrap )
-                                return i;
+                            FonetDriver.ActiveDriver.FireFonetWarning(
+                                "Area contents overflows area" );
                         }
-                        Prev = curr;
-                        wordStart = i;
-                        wordLength = 1;
+                        if ( _wrapOption == WrapOption.Wrap )
+                            return i;
                     }
-                    else if ( Prev == Text || Prev == Multibytechar )
+                    _prev = curr;
+                    wordStart = i;
+                    wordLength = 1;
+                    break;
+                case Text:
+                case Multibytechar:
+                    if ( _prev == Text && curr == Text || !CanBreakMidWord() )
                     {
-                        if ( Prev == Text && curr == Text || !CanBreakMidWord() )
-                        {
-                            wordLength++;
-                            wordWidth += charWidth;
-                        }
-                        else
-                        {
-                            var isp = new InlineSpace( SpaceWidth );
-                            if ( PrevUlState )
-                                isp.SetUnderlined( textState.GetUnderlined() );
-                            if ( PrevOlState )
-                                isp.SetOverlined( textState.GetOverlined() );
-                            if ( PrevLtState )
-                                isp.SetLineThrough( textState.GetLineThrough() );
-                            AddChild( isp );
-                            FinalWidth += SpaceWidth;
-                            SpaceWidth = 0;
-
-                            IEnumerator e = PendingAreas.GetEnumerator();
-                            while ( e.MoveNext() )
-                            {
-                                var box = (Box)e.Current;
-                                if ( box is InlineArea )
-                                {
-                                    if ( ls != null )
-                                    {
-                                        var lr =
-                                            new Rectangle( FinalWidth, 0,
-                                                ( (InlineArea)box ).GetContentWidth(),
-                                                FontState.FontSize );
-                                        ls.AddRect( lr, this, (InlineArea)box );
-                                    }
-                                }
-                                AddChild( box );
-                            }
-
-                            FinalWidth += PendingWidth;
-
-                            PendingWidth = 0;
-                            PendingAreas = new ArrayList();
-
-                            if ( wordLength > 0 )
-                            {
-                                AddSpacedWord( new string( data, wordStart, wordLength ),
-                                    ls, FinalWidth, 0, textState, false );
-                                FinalWidth += wordWidth;
-                            }
-                            SpaceWidth = 0;
-                            wordStart = i;
-                            wordLength = 1;
-                            wordWidth = charWidth;
-                        }
-                        Prev = curr;
+                        wordLength++;
+                        wordWidth += charWidth;
                     }
                     else
                     {
-                        Prev = curr;
+                        var isp = new InlineSpace( _spaceWidth );
+                        if ( _prevUlState )
+                            isp.SetUnderlined( textState.GetUnderlined() );
+                        if ( _prevOlState )
+                            isp.SetOverlined( textState.GetOverlined() );
+                        if ( _prevLtState )
+                            isp.SetLineThrough( textState.GetLineThrough() );
+                        AddChild( isp );
+                        _finalWidth += _spaceWidth;
+                        _spaceWidth = 0;
+
+                        IEnumerator e = _pendingAreas.GetEnumerator();
+                        while ( e.MoveNext() )
+                        {
+                            var box = (Box)e.Current;
+                            var area = box as InlineArea;
+                            if ( area != null )
+                            {
+                                if ( ls != null )
+                                {
+                                    var lr =
+                                        new Rectangle( _finalWidth, 0,
+                                            area.GetContentWidth(),
+                                            FontState.FontSize );
+                                    ls.AddRect( lr, this, area );
+                                }
+                            }
+                            AddChild( box );
+                        }
+
+                        _finalWidth += _pendingWidth;
+
+                        _pendingWidth = 0;
+                        _pendingAreas = new ArrayList();
+
+                        if ( wordLength > 0 )
+                        {
+                            AddSpacedWord( new string( data, wordStart, wordLength ),
+                                ls, _finalWidth, 0, textState, false );
+                            _finalWidth += wordWidth;
+                        }
+                        _spaceWidth = 0;
                         wordStart = i;
                         wordLength = 1;
                         wordWidth = charWidth;
                     }
-
-                    if ( FinalWidth + SpaceWidth + PendingWidth + wordWidth
-                        > GetContentWidth() )
-                    {
-                        if ( _wrapOption == WrapOption.Wrap )
-                        {
-                            if ( wordStart == start )
-                            {
-                                overrun = true;
-                                if ( FinalWidth > 0 )
-                                    return wordStart;
-                            }
-                            else
-                                return wordStart;
-                        }
-                    }
+                    _prev = curr;
+                    break;
+                default:
+                    _prev = curr;
+                    wordStart = i;
+                    wordLength = 1;
+                    wordWidth = charWidth;
+                    break;
                 }
+
+                if ( _finalWidth + _spaceWidth + _pendingWidth + wordWidth <= GetContentWidth() ) continue;
+                if ( _wrapOption != WrapOption.Wrap ) continue;
+
+                if ( wordStart == start )
+                {
+                    overrun = true;
+                    if ( _finalWidth > 0 ) return wordStart;
+                }
+                else return wordStart;
             }
 
-            if ( Prev == Text || Prev == Multibytechar )
+            if ( _prev == Text || _prev == Multibytechar )
             {
-                if ( SpaceWidth > 0 )
+                if ( _spaceWidth > 0 )
                 {
-                    var pis = new InlineSpace( SpaceWidth );
+                    var pis = new InlineSpace( _spaceWidth );
                     pis.SetEatable( true );
-                    if ( PrevUlState )
+                    if ( _prevUlState )
                         pis.SetUnderlined( textState.GetUnderlined() );
-                    if ( PrevOlState )
+                    if ( _prevOlState )
                         pis.SetOverlined( textState.GetOverlined() );
-                    if ( PrevLtState )
+                    if ( _prevLtState )
                         pis.SetLineThrough( textState.GetLineThrough() );
-                    PendingAreas.Add( pis );
-                    PendingWidth += SpaceWidth;
-                    SpaceWidth = 0;
+                    _pendingAreas.Add( pis );
+                    _pendingWidth += _spaceWidth;
+                    _spaceWidth = 0;
                 }
 
                 AddSpacedWord( new string( data, wordStart, wordLength ), ls,
-                    FinalWidth + PendingWidth,
-                    SpaceWidth, textState, true );
+                    _finalWidth + _pendingWidth,
+                    _spaceWidth, textState, true );
 
-                EmbeddedLinkStart += wordWidth;
-                wordWidth = 0;
+                _embeddedLinkStart += wordWidth;
             }
 
             if ( overrun )
@@ -427,6 +434,7 @@ namespace Fonet.Layout
                 FonetDriver.ActiveDriver.FireFonetWarning(
                     "Area contents overflows area" );
             }
+
             return -1;
         }
 
@@ -439,8 +447,7 @@ namespace Fonet.Layout
             const char dotIndex = '.';
             int dotWidth = _currentFontState.GetWidth( _currentFontState.MapCharacter( dotIndex ) );
             const char whitespaceIndex = ' ';
-            int whitespaceWidth =
-                _currentFontState.GetWidth( _currentFontState.MapCharacter( whitespaceIndex ) );
+            int whitespaceWidth = _currentFontState.GetWidth( _currentFontState.MapCharacter( whitespaceIndex ) );
 
             int remainingWidth = GetRemainingWidth();
 
@@ -457,21 +464,21 @@ namespace Fonet.Layout
             {
             case LeaderPattern.Space:
                 var spaceArea = new InlineSpace( leaderLength );
-                PendingAreas.Add( spaceArea );
+                _pendingAreas.Add( spaceArea );
                 break;
 
             case LeaderPattern.Rule:
                 var leaderArea = new LeaderArea( FontState, _red, _green, _blue,
                     string.Empty, leaderLength, leaderPattern, ruleThickness, ruleStyle );
                 leaderArea.SetYOffset( _placementOffset );
-                PendingAreas.Add( leaderArea );
+                _pendingAreas.Add( leaderArea );
                 break;
 
             case LeaderPattern.Dots:
                 if ( leaderPatternWidth < dotWidth ) leaderPatternWidth = 0;
                 if ( leaderPatternWidth == 0 )
                 {
-                    PendingAreas.Add( BuildSimpleLeader( dotIndex, leaderLength ) );
+                    _pendingAreas.Add( BuildSimpleLeader( dotIndex, leaderLength ) );
                 }
                 else
                 {
@@ -482,9 +489,9 @@ namespace Fonet.Layout
                                 leaderPatternWidth );
                         if ( spaceBeforeLeader != 0 )
                         {
-                            PendingAreas.Add( new InlineSpace( spaceBeforeLeader,
+                            _pendingAreas.Add( new InlineSpace( spaceBeforeLeader,
                                 false ) );
-                            PendingWidth += spaceBeforeLeader;
+                            _pendingWidth += spaceBeforeLeader;
                             leaderLength -= spaceBeforeLeader;
                         }
                     }
@@ -498,11 +505,11 @@ namespace Fonet.Layout
 
                     for ( var i = 0; i < dotsFactor; i++ )
                     {
-                        PendingAreas.Add( leaderPatternArea );
-                        PendingAreas.Add( spaceBetweenDots );
+                        _pendingAreas.Add( leaderPatternArea );
+                        _pendingAreas.Add( spaceBetweenDots );
                     }
 
-                    PendingAreas.Add( new InlineSpace( leaderLength - dotsFactor * leaderPatternWidth ) );
+                    _pendingAreas.Add( new InlineSpace( leaderLength - dotsFactor * leaderPatternWidth ) );
                 }
                 break;
 
@@ -512,26 +519,26 @@ namespace Fonet.Layout
                 return;
             }
 
-            PendingWidth += leaderLength;
-            Prev = Text;
+            _pendingWidth += leaderLength;
+            _prev = Text;
         }
 
         public void AddPending()
         {
-            if ( SpaceWidth > 0 )
+            if ( _spaceWidth > 0 )
             {
-                AddChild( new InlineSpace( SpaceWidth ) );
-                FinalWidth += SpaceWidth;
-                SpaceWidth = 0;
+                AddChild( new InlineSpace( _spaceWidth ) );
+                _finalWidth += _spaceWidth;
+                _spaceWidth = 0;
             }
 
-            foreach ( Box box in PendingAreas )
+            foreach ( Box box in _pendingAreas )
                 AddChild( box );
 
-            FinalWidth += PendingWidth;
+            _finalWidth += _pendingWidth;
 
-            PendingWidth = 0;
-            PendingAreas = new ArrayList();
+            _pendingWidth = 0;
+            _pendingAreas = new ArrayList();
         }
 
         public void Align( int type )
@@ -541,47 +548,38 @@ namespace Fonet.Layout
             switch ( type )
             {
             case TextAlign.Start:
-                padding = GetContentWidth() - FinalWidth;
-                EndIndent += padding;
+                padding = GetContentWidth() - _finalWidth;
+                _endIndent += padding;
                 break;
             case TextAlign.End:
-                padding = GetContentWidth() - FinalWidth;
-                StartIndent += padding;
+                padding = GetContentWidth() - _finalWidth;
+                _startIndent += padding;
                 break;
             case TextAlign.Center:
-                padding = ( GetContentWidth() - FinalWidth ) / 2;
-                StartIndent += padding;
-                EndIndent += padding;
+                padding = ( GetContentWidth() - _finalWidth ) / 2;
+                _startIndent += padding;
+                _endIndent += padding;
                 break;
             case TextAlign.Justify:
-                var spaceCount = 0;
-                foreach ( Box b in Children )
-                {
-                    if ( b is InlineSpace )
-                    {
-                        var space = (InlineSpace)b;
-                        if ( space.GetResizeable() )
-                            spaceCount++;
-                    }
-                }
-                if ( spaceCount > 0 )
-                    padding = ( GetContentWidth() - FinalWidth ) / spaceCount;
-                else
-                    padding = 0;
+                int spaceCount = Children.OfType<InlineSpace>().Count( space => space.GetResizeable() );
+
+                padding = spaceCount > 0 ? ( GetContentWidth() - _finalWidth ) / spaceCount : 0;
                 spaceCount = 0;
+
                 foreach ( Box b in Children )
                 {
-                    if ( b is InlineSpace )
+                    var space = b as InlineSpace;
+                    if ( space != null )
                     {
-                        var space = (InlineSpace)b;
-                        if ( space.GetResizeable() )
-                        {
-                            space.SetSize( space.GetSize() + padding );
-                            spaceCount++;
-                        }
+                        if ( !space.GetResizeable() ) continue;
+
+                        space.SetSize( space.GetSize() + padding );
+                        spaceCount++;
                     }
                     else if ( b is InlineArea )
+                    {
                         ( (InlineArea)b ).SetXOffset( spaceCount * padding );
+                    }
                 }
                 break;
             }
@@ -590,37 +588,39 @@ namespace Fonet.Layout
         public void VerticalAlign()
         {
             int superHeight = -_placementOffset;
-            int maxHeight = AllocationHeight;
-            foreach ( Box b in Children )
+            int maxHeight = _allocationHeight;
+
+            foreach ( InlineArea ia in Children.OfType<InlineArea>() )
             {
-                if ( b is InlineArea )
+                if ( ia is WordArea ) ia.SetYOffset( _placementOffset );
+                if ( ia.GetHeight() > maxHeight ) maxHeight = ia.GetHeight();
+
+                int vert = ia.GetVerticalAlign();
+                switch ( vert )
                 {
-                    var ia = (InlineArea)b;
-                    if ( ia is WordArea )
-                        ia.SetYOffset( _placementOffset );
-                    if ( ia.GetHeight() > maxHeight )
-                        maxHeight = ia.GetHeight();
-                    int vert = ia.GetVerticalAlign();
-                    if ( vert == Fo.Properties.VerticalAlign.Super )
+                case Fo.Properties.VerticalAlign.Super:
                     {
-                        int fh = FontState.Ascender;
-                        ia.SetYOffset( (int)( _placementOffset - 2 * fh / 3.0 ) );
+                    int fh = FontState.Ascender;
+                    ia.SetYOffset( (int)( _placementOffset - 2 * fh / 3.0 ) );
                     }
-                    else if ( vert == Fo.Properties.VerticalAlign.Sub )
+                    break;
+
+                case Fo.Properties.VerticalAlign.Sub:
                     {
-                        int fh = FontState.Ascender;
-                        ia.SetYOffset( (int)( _placementOffset + 2 * fh / 3.0 ) );
+                    int fh = FontState.Ascender;
+                    ia.SetYOffset( (int)( _placementOffset + 2 * fh / 3.0 ) );
                     }
+                    break;
                 }
             }
-            AllocationHeight = maxHeight;
+            _allocationHeight = maxHeight;
         }
 
         public void ChangeColor( float red, float green, float blue )
         {
-            this._red = red;
-            this._green = green;
-            this._blue = blue;
+            _red = red;
+            _green = green;
+            _blue = blue;
         }
 
         public void ChangeFont( FontState fontState )
@@ -630,27 +630,27 @@ namespace Fonet.Layout
 
         public void ChangeWhiteSpaceCollapse( int whiteSpaceCollapse )
         {
-            this._whiteSpaceCollapse = whiteSpaceCollapse;
+            _whiteSpaceCollapse = whiteSpaceCollapse;
         }
 
         public void ChangeWrapOption( int wrapOption )
         {
-            this._wrapOption = wrapOption;
+            _wrapOption = wrapOption;
         }
 
         public void ChangeVerticalAlign( int vAlign )
         {
-            this._vAlign = vAlign;
+            _vAlign = vAlign;
         }
 
         public int GetEndIndent()
         {
-            return EndIndent;
+            return _endIndent;
         }
 
         public override int GetHeight()
         {
-            return AllocationHeight;
+            return _allocationHeight;
         }
 
         public int GetPlacementOffset()
@@ -660,37 +660,37 @@ namespace Fonet.Layout
 
         public int GetStartIndent()
         {
-            return StartIndent;
+            return _startIndent;
         }
 
         public bool IsEmpty()
         {
-            return !( PendingAreas.Count > 0 || Children.Count > 0 );
+            return !( _pendingAreas.Count > 0 || Children.Count > 0 );
         }
 
         public ArrayList GetPendingAreas()
         {
-            return PendingAreas;
+            return _pendingAreas;
         }
 
         public int GetPendingWidth()
         {
-            return PendingWidth;
+            return _pendingWidth;
         }
 
         public void SetPendingAreas( ArrayList areas )
         {
-            PendingAreas = areas;
+            _pendingAreas = areas;
         }
 
         public void SetPendingWidth( int width )
         {
-            PendingWidth = width;
+            _pendingWidth = width;
         }
 
         public void ChangeHyphenation( HyphenationProps hyphProps )
         {
-            this._hyphProps = hyphProps;
+            _hyphProps = hyphProps;
         }
 
         private InlineArea BuildSimpleLeader( char c, int leaderLength )
@@ -714,8 +714,7 @@ namespace Fonet.Layout
             return leaderPatternArea;
         }
 
-        private int GetLeaderAlignIndent( int leaderLength,
-            int leaderPatternWidth )
+        private int GetLeaderAlignIndent( int leaderLength, int leaderPatternWidth )
         {
             double position = GetCurrentXPosition();
             double nextRepeatedLeaderPatternCycle = Math.Ceiling( position
@@ -727,16 +726,16 @@ namespace Fonet.Layout
 
         private int GetCurrentXPosition()
         {
-            return FinalWidth + SpaceWidth + StartIndent + PendingWidth;
+            return _finalWidth + _spaceWidth + _startIndent + _pendingWidth;
         }
 
-        private string GetHyphenationWord( char[] characters, int wordStart )
+        private string GetHyphenationWord( IReadOnlyList<char> characters, int wordStart )
         {
             var wordendFound = false;
             var counter = 0;
-            var newWord = new char[ characters.Length ];
+            var newWord = new char[ characters.Count ];
             while ( !wordendFound
-                && wordStart + counter < characters.Length )
+                && wordStart + counter < characters.Count )
             {
                 char tk = characters[ wordStart + counter ];
                 if ( char.IsLetter( tk ) )
@@ -752,17 +751,12 @@ namespace Fonet.Layout
 
         private int GetWordWidth( string word )
         {
-            if ( word == null )
-                return 0;
-            var width = 0;
-            foreach ( char c in word )
-                width += GetCharWidth( c );
-            return width;
+            return word == null ? 0 : word.Sum( c => GetCharWidth( c ) );
         }
 
         public int GetRemainingWidth()
         {
-            return GetContentWidth() + StartIndent - GetCurrentXPosition();
+            return GetContentWidth() + _startIndent - GetCurrentXPosition();
         }
 
         public void SetLinkSet( LinkSet ls )
@@ -775,46 +769,44 @@ namespace Fonet.Layout
             AddChild( box );
             if ( ls != null )
             {
-                var lr = new Rectangle( FinalWidth, 0, box.GetContentWidth(), box.GetContentHeight() );
+                var lr = new Rectangle( _finalWidth, 0, box.GetContentWidth(), box.GetContentHeight() );
                 ls.AddRect( lr, this, box );
             }
-            Prev = Text;
-            FinalWidth += box.GetContentWidth();
+
+            _prev = Text;
+            _finalWidth += box.GetContentWidth();
         }
 
         public void AddInlineSpace( InlineSpace isp, int spaceWidth )
         {
             AddChild( isp );
-            FinalWidth += spaceWidth;
+            _finalWidth += spaceWidth;
         }
 
         public int AddCharacter( char data, LinkSet ls, bool ul )
         {
-            WordArea ia = null;
             int remainingWidth = GetRemainingWidth();
-            int width =
-                _currentFontState.GetWidth( _currentFontState.MapCharacter( data ) );
-            if ( width > remainingWidth )
-                return Character.DoesnotFit;
-            if ( char.IsWhiteSpace( data )
-                && _whiteSpaceCollapse == GenericBoolean.Enums.True )
-                return Character.Ok;
-            ia = new WordArea( _currentFontState, _red, _green,
-                _blue, data.ToString(),
-                width );
+            int width = _currentFontState.GetWidth( _currentFontState.MapCharacter( data ) );
+            if ( width > remainingWidth ) return Character.DoesnotFit;
+            if ( char.IsWhiteSpace( data ) && _whiteSpaceCollapse == GenericBoolean.Enums.True ) return Character.Ok;
+
+            var ia = new WordArea( _currentFontState, _red, _green,
+                _blue, data.ToString(), width );
             ia.SetYOffset( _placementOffset );
             ia.SetUnderlined( ul );
-            PendingAreas.Add( ia );
+            _pendingAreas.Add( ia );
+
             if ( char.IsWhiteSpace( data ) )
             {
-                SpaceWidth = +width;
-                Prev = Whitespace;
+                _spaceWidth = +width;
+                _prev = Whitespace;
             }
             else
             {
-                PendingWidth += width;
-                Prev = Text;
+                _pendingWidth += width;
+                _prev = Text;
             }
+
             return Character.Ok;
         }
 
@@ -833,8 +825,7 @@ namespace Fonet.Layout
             WordArea hia;
             int startCharWidth = GetCharWidth( startChar );
 
-            if ( IsAnySpace( startChar ) )
-                AddChild( new InlineSpace( startCharWidth ) );
+            if ( IsAnySpace( startChar ) ) AddChild( new InlineSpace( startCharWidth ) );
             else
             {
                 hia = new WordArea( _currentFontState, _red, _green,
@@ -843,86 +834,92 @@ namespace Fonet.Layout
                 hia.SetYOffset( _placementOffset );
                 AddChild( hia );
             }
+
             int wordWidth = GetWordWidth( word );
-            hia = new WordArea( _currentFontState, _red, _green, _blue,
-                word, word.Length );
+            hia = new WordArea( _currentFontState, _red, _green, _blue, word, word.Length );
             hia.SetYOffset( _placementOffset );
             AddChild( hia );
 
-            FinalWidth += startCharWidth + wordWidth;
+            _finalWidth += startCharWidth + wordWidth;
         }
 
         private bool CanBreakMidWord()
         {
-            var ret = false;
-            if ( _hyphProps != null && _hyphProps.Language != null
-                && !_hyphProps.Language.Equals( "NONE" ) )
-            {
-                string lang = _hyphProps.Language.ToLower();
-                if ( "zh".Equals( lang ) || "ja".Equals( lang ) || "ko".Equals( lang )
-                    || "vi".Equals( lang ) )
-                    ret = true;
-            }
-            return ret;
+            if ( _hyphProps == null || _hyphProps.Language == null || _hyphProps.Language.Equals( "NONE" ) ) return false;
+
+            string lang = _hyphProps.Language.ToLower();
+            return "zh".Equals( lang ) || "ja".Equals( lang ) || "ko".Equals( lang ) || "vi".Equals( lang );
         }
 
         private int GetCharWidth( char c )
         {
-            int width;
-
-            if ( c == '\n' || c == '\r' || c == '\t' || c == '\u00A0' )
-                width = GetCharWidth( ' ' );
-            else
+            float factor = 1;
+            switch ( c )
             {
-                width = _currentFontState.GetWidth( _currentFontState.MapCharacter( c ) );
-                if ( width <= 0 )
-                {
-                    int em = _currentFontState.GetWidth( _currentFontState.MapCharacter( 'm' ) );
-                    int en = _currentFontState.GetWidth( _currentFontState.MapCharacter( 'n' ) );
-                    if ( em <= 0 )
-                        em = 500 * _currentFontState.FontSize;
-                    if ( en <= 0 )
-                        en = em - 10;
+            case '\n':
+            case '\r':
+            case '\t':
+            case '\u00A0':
+            case '\u2007':
+                c = ' ';
+                break;
 
-                    if ( c == ' ' )
-                        width = em;
-                    if ( c == '\u2000' )
-                        width = en;
-                    if ( c == '\u2001' )
-                        width = em;
-                    if ( c == '\u2002' )
-                        width = em / 2;
-                    if ( c == '\u2003' )
-                        width = _currentFontState.FontSize;
-                    if ( c == '\u2004' )
-                        width = em / 3;
-                    if ( c == '\u2005' )
-                        width = em / 4;
-                    if ( c == '\u2006' )
-                        width = em / 6;
-                    if ( c == '\u2007' )
-                        width = GetCharWidth( ' ' );
-                    if ( c == '\u2008' )
-                        width = GetCharWidth( '.' );
-                    if ( c == '\u2009' )
-                        width = em / 5;
-                    if ( c == '\u200A' )
-                        width = 5;
-                    if ( c == '\u200B' )
-                        width = 100;
-                    if ( c == '\u202F' )
-                        width = GetCharWidth( ' ' ) / 2;
-                    if ( c == '\u3000' )
-                        width = GetCharWidth( ' ' ) * 2;
-                }
+            case '\u2008':
+                c = '.';
+                break;
+
+            case '\u202F':
+                c = ' ';
+                factor = 0.5f;
+                break;
+
+            case '\u3000':
+                c = ' ';
+                factor = 2;
+                break;
             }
 
-            return width;
+            int width = _currentFontState.GetWidth( _currentFontState.MapCharacter( c ) );
+            if ( width > 0 ) return width;
+
+            int em = _currentFontState.GetWidth( _currentFontState.MapCharacter( 'm' ) );
+            int en = _currentFontState.GetWidth( _currentFontState.MapCharacter( 'n' ) );
+            if ( em <= 0 ) em = 500 * _currentFontState.FontSize;
+            if ( en <= 0 ) en = em - 10;
+
+            switch ( c )
+            {
+            case ' ':
+                return (int)( em * factor );
+            case '\u2000':
+                return en;
+            case '\u2001':
+                return em;
+            case '\u2002':
+                return em / 2;
+            case '\u2003':
+                return _currentFontState.FontSize;
+            case '\u2004':
+                return em / 3;
+            case '\u2005':
+                return em / 4;
+            case '\u2006':
+                return em / 6;
+            case '\u2009':
+                return em / 5;
+            case '\u200A':
+                return 5;
+            case '\u200B':
+                return 100;
+            }
+
+            return 0;
         }
 
-        private bool IsSpace( char c )
+        private static bool IsSpace( char c )
         {
-            if ( c == ' ' || c == '\u2000' || // en quad
+            return c == ' ' ||
+                c == '\u2000' || // en quad
                 c == '\u2001' || // em quad
                 c == '\u2002' || // en space
                 c == '\u2003' || // em space
@@ -933,32 +930,24 @@ namespace Fonet.Layout
                 c == '\u2008' || // punctuation space
                 c == '\u2009' || // thin space
                 c == '\u200A' || // hair space
-                c == '\u200B' ) // zero width space
-                return true;
-            return false;
+                c == '\u200B';
         }
 
-        private bool IsNbsp( char c )
+        private static bool IsNbsp( char c )
         {
-            if ( c == '\u00A0' || c == '\u202F' || // narrow no-break space
+            return c == '\u00A0' ||
+                c == '\u202F' || // narrow no-break space
                 c == '\u3000' || // ideographic space
-                c == '\uFEFF' )
-            {
-                // zero width no-break space
-                return true;
-            }
-            return false;
+                c == '\uFEFF';
         }
 
-        private bool IsAnySpace( char c )
+        private static bool IsAnySpace( char c )
         {
-            bool ret = IsSpace( c ) || IsNbsp( c );
-            return ret;
+            return IsSpace( c ) || IsNbsp( c );
         }
 
         private void AddSpacedWord( string word, LinkSet ls, int startw,
-            int spacew, TextState textState,
-            bool addToPending )
+            int spacew, TextState textState, bool addToPending )
         {
             /*
              * Split string based on four delimeters:
@@ -978,25 +967,23 @@ namespace Fonet.Layout
                 {
                     // Add an InlineSpace
                     int spaceWidth = GetCharWidth( currentWord[ 0 ] );
-                    if ( spaceWidth > 0 )
-                    {
-                        var ispace = new InlineSpace( spaceWidth );
-                        extraw += spaceWidth;
-                        if ( PrevUlState )
-                            ispace.SetUnderlined( textState.GetUnderlined() );
-                        if ( PrevOlState )
-                            ispace.SetOverlined( textState.GetOverlined() );
-                        if ( PrevLtState )
-                            ispace.SetLineThrough( textState.GetLineThrough() );
+                    if ( spaceWidth <= 0 ) continue;
 
-                        if ( addToPending )
-                        {
-                            PendingAreas.Add( ispace );
-                            PendingWidth += spaceWidth;
-                        }
-                        else
-                            AddChild( ispace );
+                    var ispace = new InlineSpace( spaceWidth );
+                    extraw += spaceWidth;
+                    if ( _prevUlState )
+                        ispace.SetUnderlined( textState.GetUnderlined() );
+                    if ( _prevOlState )
+                        ispace.SetOverlined( textState.GetOverlined() );
+                    if ( _prevLtState )
+                        ispace.SetLineThrough( textState.GetLineThrough() );
+
+                    if ( addToPending )
+                    {
+                        _pendingAreas.Add( ispace );
+                        _pendingWidth += spaceWidth;
                     }
+                    else AddChild( ispace );
                 }
                 else
                 {
@@ -1006,27 +993,25 @@ namespace Fonet.Layout
                         GetWordWidth( currentWord ) );
                     ia.SetYOffset( _placementOffset );
                     ia.SetUnderlined( textState.GetUnderlined() );
-                    PrevUlState = textState.GetUnderlined();
+                    _prevUlState = textState.GetUnderlined();
                     ia.SetOverlined( textState.GetOverlined() );
-                    PrevOlState = textState.GetOverlined();
+                    _prevOlState = textState.GetOverlined();
                     ia.SetLineThrough( textState.GetLineThrough() );
-                    PrevLtState = textState.GetLineThrough();
+                    _prevLtState = textState.GetLineThrough();
                     ia.SetVerticalAlign( _vAlign );
 
                     if ( addToPending )
                     {
-                        PendingAreas.Add( ia );
-                        PendingWidth += GetWordWidth( currentWord );
+                        _pendingAreas.Add( ia );
+                        _pendingWidth += GetWordWidth( currentWord );
                     }
-                    else
-                        AddChild( ia );
-                    if ( ls != null )
-                    {
-                        var lr = new Rectangle( startw + extraw, spacew,
-                            ia.GetContentWidth(),
-                            FontState.FontSize );
-                        ls.AddRect( lr, this, ia );
-                    }
+                    else AddChild( ia );
+                    if ( ls == null ) continue;
+
+                    var lr = new Rectangle( startw + extraw, spacew,
+                        ia.GetContentWidth(),
+                        FontState.FontSize );
+                    ls.AddRect( lr, this, ia );
                 }
             }
         }
