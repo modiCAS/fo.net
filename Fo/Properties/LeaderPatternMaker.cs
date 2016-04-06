@@ -1,27 +1,20 @@
+using System;
+using System.Globalization;
+using System.Text.RegularExpressions;
+
 namespace Fonet.Fo.Properties
 {
-    internal class LeaderPatternMaker : EnumProperty.Maker
+    internal sealed class LeaderPatternMaker : PropertyMaker
     {
-        protected static readonly EnumProperty SPropSpace = new EnumProperty( Constants.Space );
-
-        protected static readonly EnumProperty SPropRule = new EnumProperty( Constants.Rule );
-
-        protected static readonly EnumProperty SPropDots = new EnumProperty( Constants.Dots );
-
-        protected static readonly EnumProperty SPropUsecontent = new EnumProperty( Constants.Usecontent );
-
-        private Property _mDefaultProp;
-
-        protected LeaderPatternMaker( string name ) : base( name )
+        private LeaderPatternMaker( string name )
+            : base( name )
         {
         }
-
 
         public new static PropertyMaker Maker( string propName )
         {
             return new LeaderPatternMaker( propName );
         }
-
 
         public override bool IsInherited()
         {
@@ -30,26 +23,20 @@ namespace Fonet.Fo.Properties
 
         public override Property CheckEnumValues( string value )
         {
-            if ( value.Equals( "space" ) )
-                return SPropSpace;
+            // TODO: handle 'inherit' somewhere higher
+            // if ( value == "inherit" ) return null;
+            // TODO: this should work for all enumerations
+            value = CultureInfo.InvariantCulture.TextInfo.ToTitleCase( value ).Replace( "-", string.Empty );
 
-            if ( value.Equals( "rule" ) )
-                return SPropRule;
+            LeaderPattern result;
+            if ( !Enum.TryParse( value, out result ) ) result = LeaderPattern.Space;
 
-            if ( value.Equals( "dots" ) )
-                return SPropDots;
-
-            if ( value.Equals( "use-content" ) )
-                return SPropUsecontent;
-
-            return base.CheckEnumValues( value );
+            return new EnumProperty<LeaderPattern>( result );
         }
 
         public override Property Make( PropertyList propertyList )
         {
-            if ( _mDefaultProp == null )
-                _mDefaultProp = Make( propertyList, "space", propertyList.GetParentFObj() );
-            return _mDefaultProp;
+            return new EnumProperty<LeaderPattern>( LeaderPattern.Space );
         }
     }
 }

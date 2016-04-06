@@ -438,7 +438,7 @@ namespace Fonet.Layout
             return -1;
         }
 
-        public void AddLeader( int leaderPattern, int leaderLengthMinimum,
+        public void AddLeader( LeaderPattern leaderPattern, int leaderLengthMinimum,
             int leaderLengthOptimum, int leaderLengthMaximum,
             int ruleStyle, int ruleThickness,
             int leaderPatternWidth, int leaderAlignment )
@@ -513,7 +513,7 @@ namespace Fonet.Layout
                 }
                 break;
 
-            case LeaderPattern.Usecontent:
+            case LeaderPattern.UseContent:
                 FonetDriver.ActiveDriver.FireFonetError(
                     "leader-pattern=\"use-content\" not supported by this version of FO.NET" );
                 return;

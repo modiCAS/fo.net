@@ -220,6 +220,7 @@
     <Compile Include="Fo\EnumProperty.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Fo\EnumProperty`1.cs" />
     <Compile Include="Fo\Expr\AbsFunction.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -340,6 +341,7 @@
     <Compile Include="Fo\Flow\Leader.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Fo\Properties\LeaderPattern.cs" />
     <Compile Include="Fo\Flow\ListBlock.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -987,9 +989,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Fo\Properties\LeaderLengthMaker.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Fo\Properties\LeaderPattern.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Fo\Properties\LeaderPatternMaker.cs">

@@ -11,9 +11,9 @@ namespace Fonet.Fo
 
         protected string Name;
 
-        public PropertyList Properties;
+        public readonly PropertyList Properties;
 
-        protected PropertyManager PropMgr;
+        protected readonly PropertyManager PropMgr;
 
         protected FObj( FObj parent, PropertyList propertyList )
             : base( parent )
@@ -97,7 +97,9 @@ namespace Fonet.Fo
             for ( p = this;
                 !p.GeneratesReferenceAreas() && ( parent = p.GetParent() ) != null;
                 p = parent )
-                ;
+            {
+            }
+
             Properties.SetWritingMode( p.GetProperty( "writing-mode" ).GetEnum() );
         }
 

@@ -210,6 +210,12 @@ namespace Fonet.Fo
             return GetProperty( propertyName, false, false );
         }
 
+        public T GetProperty<T>( string propertyName )
+        {
+            var property = GetProperty( propertyName ) as EnumProperty<T>;
+            return property != null ? property.Value : default(T);
+        }
+
         public Property GetProperty( string propertyName )
         {
             return GetProperty( propertyName, true, true );

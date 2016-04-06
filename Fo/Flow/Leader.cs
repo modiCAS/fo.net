@@ -1,4 +1,5 @@
 using Fonet.DataTypes;
+using Fonet.Fo.Properties;
 using Fonet.Layout;
 
 namespace Fonet.Fo.Flow
@@ -38,7 +39,7 @@ namespace Fonet.Fo.Flow
             float green = colorType.Green;
             float blue = colorType.Blue;
 
-            int leaderPattern = Properties.GetProperty( "leader-pattern" ).GetEnum();
+            var leaderPattern = Properties.GetProperty<LeaderPattern>( "leader-pattern" );
             int leaderLengthOptimum =
                 Properties.GetProperty( "leader-length.optimum" ).GetLength().MValue();
             int leaderLengthMinimum =
@@ -75,7 +76,7 @@ namespace Fonet.Fo.Flow
         }
 
         private static int AddLeader( BlockArea ba, FontState fontState, float red,
-            float green, float blue, int leaderPattern,
+            float green, float blue, LeaderPattern leaderPattern,
             int leaderLengthMinimum, int leaderLengthOptimum,
             int leaderLengthMaximum, int ruleThickness,
             int ruleStyle, int leaderPatternWidth,
