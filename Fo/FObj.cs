@@ -7,22 +7,27 @@ namespace Fonet.Fo
 {
     internal class FObj : FoNode
     {
+        private readonly PropertyList _properties;
+
         private Hashtable _markerClassNames;
 
         protected string Name;
-
-        public readonly PropertyList Properties;
 
         protected readonly PropertyManager PropMgr;
 
         protected FObj( FObj parent, PropertyList propertyList )
             : base( parent )
         {
-            Properties = propertyList;
+            _properties = propertyList;
             propertyList.FObj = this;
             PropMgr = MakePropertyManager( propertyList );
             Name = "default FO";
             SetWritingMode();
+        }
+
+        public PropertyList Properties
+        {
+            get { return _properties; }
         }
 
         public static Maker GetMaker()

@@ -61,47 +61,44 @@ namespace Fonet.Layout
             _startIndent = startIndent;
             _endIndent = endIndent;
 
-            if ( prevLineArea != null )
-            {
-                IEnumerator e = prevLineArea._pendingAreas.GetEnumerator();
-                Box b = null;
-                var eatMoreSpace = true;
-                var eatenWidth = 0;
+            if ( prevLineArea == null ) return;
 
-                while ( eatMoreSpace )
+            IEnumerator e = prevLineArea._pendingAreas.GetEnumerator();
+            Box b = null;
+            var eatMoreSpace = true;
+            var eatenWidth = 0;
+
+            while ( eatMoreSpace )
+            {
+                if ( e.MoveNext() )
                 {
-                    if ( e.MoveNext() )
+                    b = (Box)e.Current;
+                    var space = b as InlineSpace;
+                    if ( space != null )
                     {
-                        b = (Box)e.Current;
-                        var space = b as InlineSpace;
-                        if ( space != null )
-                        {
-                            InlineSpace isp = space;
-                            if ( isp.IsEatable() )
-                                eatenWidth += isp.GetSize();
-                            else
-                                eatMoreSpace = false;
-                        }
+                        InlineSpace isp = space;
+                        if ( isp.IsEatable() )
+                            eatenWidth += isp.GetSize();
                         else
                             eatMoreSpace = false;
                     }
                     else
-                    {
                         eatMoreSpace = false;
-                        b = null;
-                    }
                 }
-
-                while ( b != null )
+                else
                 {
-                    _pendingAreas.Add( b );
-                    if ( e.MoveNext() )
-                        b = (Box)e.Current;
-                    else
-                        b = null;
+                    eatMoreSpace = false;
+                    b = null;
                 }
-                _pendingWidth = prevLineArea.GetPendingWidth() - eatenWidth;
             }
+
+            while ( b != null )
+            {
+                _pendingAreas.Add( b );
+                b = e.MoveNext() ? (Box)e.Current : null;
+            }
+
+            _pendingWidth = prevLineArea.GetPendingWidth() - eatenWidth;
         }
 
         public override void Render( PdfRenderer renderer )
